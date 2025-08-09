@@ -107,10 +107,17 @@ export const ChatInterface = () => {
         if (responseText.trim()) {
           try {
             const data = JSON.parse(responseText);
+            console.log('Parsed n8n response:', data);
             
             // Add AI response to chat
             if (data.response || data.message || data.output) {
-              (window as any).addAIResponse?.(data.response || data.message || data.output);
+              const aiMessage = data.response || data.message || data.output;
+              console.log('Adding AI response:', aiMessage);
+              console.log('addAIResponse function exists:', typeof (window as any).addAIResponse);
+              (window as any).addAIResponse?.(aiMessage);
+            } else {
+              console.log('No response field found in data:', Object.keys(data));
+              (window as any).addAIResponse?.('Recebi sua mensagem.');
             }
             
             // Add actions if provided
@@ -118,7 +125,6 @@ export const ChatInterface = () => {
               setActions(prev => [...data.actions, ...prev]);
             }
             
-            console.log('Parsed n8n response:', data);
           } catch (parseError) {
             console.error('Failed to parse n8n response as JSON:', parseError);
             (window as any).addAIResponse?.('Recebi sua mensagem, mas houve um erro no formato da resposta.');
