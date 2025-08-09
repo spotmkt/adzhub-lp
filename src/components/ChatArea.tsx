@@ -185,31 +185,28 @@ export const ChatArea = ({ onSendMessage, selectedClient, onExitChat, onViewCard
               )}>
                 <p className="text-sm leading-relaxed">{message.content}</p>
                 
-                {/* Card notification with action button */}
+                {/* Card notification - single line */}
                 {message.cardData && (
-                  <div className="mt-3 p-3 bg-white rounded-lg border border-orange-300">
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex-1">
-                        <p className="font-medium text-sm text-gray-900">{message.cardData.title}</p>
-                        <p className="text-xs text-gray-600 mt-1 line-clamp-2">{message.cardData.description}</p>
-                        <Badge 
-                          variant={message.cardData.priority === 'high' ? 'destructive' : 
-                                  message.cardData.priority === 'medium' ? 'default' : 'secondary'} 
-                          className="mt-2 text-xs"
-                        >
-                          {message.cardData.priority}
-                        </Badge>
-                      </div>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => onViewCard?.(message.cardData!.id)}
-                        className="flex items-center gap-1 h-8 px-2"
+                  <div className="mt-2 p-2 bg-chat-bubble-ai rounded-lg flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-sm">{message.cardData.title}</span>
+                      <Badge 
+                        variant={message.cardData.priority === 'high' ? 'destructive' : 
+                                message.cardData.priority === 'medium' ? 'default' : 'secondary'} 
+                        className="text-xs"
                       >
-                        <Eye className="h-3 w-3" />
-                        Ver
-                      </Button>
+                        {message.cardData.priority}
+                      </Badge>
                     </div>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => onViewCard?.(message.cardData!.id)}
+                      className="flex items-center gap-1 h-7 px-2 text-xs"
+                    >
+                      <Eye className="h-3 w-3" />
+                      Ver
+                    </Button>
                   </div>
                 )}
                 
