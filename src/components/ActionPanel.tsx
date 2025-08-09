@@ -66,42 +66,42 @@ export const ActionPanel = ({
   };
 
   return (
-    <div className="w-80 bg-action-panel border-l border-border flex flex-col">
+    <div className="w-80 bg-action-panel border-l border-border flex flex-col h-screen">
       {/* Header */}
-      <div className="p-6 border-b border-border">
+      <div className="p-4 border-b border-border flex-shrink-0">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-foreground">Hoje</h2>
+          <h2 className="text-base font-semibold text-foreground">Hoje</h2>
           <Badge variant="secondary" className="text-xs">
             {actions.length} ações
           </Badge>
         </div>
-        <p className="text-sm text-muted-foreground mt-1">
+        <p className="text-xs text-muted-foreground mt-1">
           Ações recomendadas pela IA
         </p>
       </div>
 
       {/* Actions List */}
-      <ScrollArea className="flex-1">
-        <div className="p-4 space-y-4">
+      <ScrollArea className="flex-1 overflow-y-auto">
+        <div className="p-3 space-y-3">
           {actions.map((action) => (
             <div
               key={action.id}
               className={cn(
-                "bg-action-card border border-border rounded-xl p-4",
+                "bg-action-card border border-border rounded-lg p-3",
                 "hover:bg-action-card-hover transition-all duration-300",
                 "hover:shadow-glow hover:border-primary/20"
               )}
             >
               {/* Card Header */}
-              <div className="flex items-start justify-between mb-3">
+              <div className="flex items-start justify-between mb-2">
                 <div className="flex-1">
-                  <h3 className="font-medium text-foreground text-sm leading-snug">
+                  <h3 className="font-medium text-foreground text-xs leading-tight">
                     {action.title}
                   </h3>
                   {action.category && (
                     <Badge 
                       variant="outline" 
-                      className="mt-2 text-xs border-border"
+                      className="mt-1 text-[10px] px-1.5 py-0.5 h-auto border-border"
                     >
                       {action.category}
                     </Badge>
@@ -110,7 +110,7 @@ export const ActionPanel = ({
                 {action.priority && (
                   <Badge 
                     className={cn(
-                      "text-xs ml-2 flex-shrink-0",
+                      "text-[10px] ml-2 flex-shrink-0 px-1.5 py-0.5 h-auto",
                       getPriorityColor(action.priority)
                     )}
                   >
@@ -120,23 +120,23 @@ export const ActionPanel = ({
               </div>
 
               {/* Description */}
-              <p className="text-xs text-muted-foreground leading-relaxed mb-4">
+              <p className="text-[10px] text-muted-foreground leading-relaxed mb-2 line-clamp-2">
                 {action.description}
               </p>
 
               {/* Date */}
-              <div className="flex items-center text-xs text-muted-foreground mb-4">
-                <Calendar className="h-3 w-3 mr-1" />
+              <div className="flex items-center text-[10px] text-muted-foreground mb-3">
+                <Calendar className="h-2.5 w-2.5 mr-1" />
                 <span>{action.date}</span>
               </div>
 
               {/* Action Buttons */}
-              <div className="space-y-2">
-                <div className="flex space-x-2">
+              <div className="space-y-1.5">
+                <div className="flex space-x-1.5">
                   <Button
                     size="sm"
                     onClick={() => onExecute?.(action.id)}
-                    className="flex-1 h-8 text-xs bg-primary hover:bg-primary/90"
+                    className="flex-1 h-6 text-[10px] bg-primary hover:bg-primary/90"
                   >
                     Executar
                   </Button>
@@ -144,7 +144,7 @@ export const ActionPanel = ({
                     size="sm"
                     variant="outline"
                     onClick={() => onEdit?.(action.id)}
-                    className="h-8 px-3 text-xs border-border hover:bg-muted"
+                    className="h-6 px-2 text-[10px] border-border hover:bg-muted"
                   >
                     Editar
                   </Button>
@@ -152,7 +152,7 @@ export const ActionPanel = ({
                     size="sm"
                     variant="ghost"
                     onClick={() => onIgnore?.(action.id)}
-                    className="h-8 px-3 text-xs hover:bg-muted"
+                    className="h-6 px-2 text-[10px] hover:bg-muted"
                   >
                     Ignorar
                   </Button>
@@ -162,9 +162,9 @@ export const ActionPanel = ({
                     size="sm"
                     variant="secondary"
                     onClick={() => onView?.(action.id)}
-                    className="w-full h-8 text-xs"
+                    className="w-full h-6 text-[10px]"
                   >
-                    <Eye className="h-3 w-3 mr-1" />
+                    <Eye className="h-2.5 w-2.5 mr-1" />
                     Ver Briefing
                   </Button>
                 )}
