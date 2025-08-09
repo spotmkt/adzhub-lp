@@ -109,8 +109,8 @@ export const ChatInterface = () => {
             const data = JSON.parse(responseText);
             
             // Add AI response to chat
-            if (data.response || data.message) {
-              (window as any).addAIResponse?.(data.response || data.message);
+            if (data.response || data.message || data.output) {
+              (window as any).addAIResponse?.(data.response || data.message || data.output);
             }
             
             // Add actions if provided
