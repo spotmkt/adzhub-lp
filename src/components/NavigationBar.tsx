@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Link } from 'react-router-dom';
 import { ThemeToggle } from '@/components/ThemeToggle';
-import adzHubLogo from '@/assets/adzhub-logo.png';
+import adzHubLogo from '@/assets/adzhub-logo-new.png';
 
 interface NavigationBarProps {
   activeItem?: string;
