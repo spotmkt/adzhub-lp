@@ -1,15 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { Send, Bot, User, Loader2, LogOut } from 'lucide-react';
+import { Send, Bot, User, Loader2, LogOut, Bell, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
 interface Message {
   id: string;
   content: string;
-  sender: 'user' | 'ai';
+  sender: 'user' | 'ai' | 'system';
   timestamp: Date;
+  cardData?: {
+    id: string;
+    title: string;
+    description: string;
+    priority: 'high' | 'medium' | 'low';
+  };
 }
 
 interface Client {
@@ -23,9 +30,10 @@ interface ChatAreaProps {
   onSendMessage?: (message: string, messageData: Message) => void;
   selectedClient?: Client;
   onExitChat?: () => void;
+  onViewCard?: (cardId: string) => void;
 }
 
-export const ChatArea = ({ onSendMessage, selectedClient, onExitChat }: ChatAreaProps) => {
+export const ChatArea = ({ onSendMessage, selectedClient, onExitChat, onViewCard }: ChatAreaProps) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isThinking, setIsThinking] = useState(false);
@@ -71,6 +79,23 @@ export const ChatArea = ({ onSendMessage, selectedClient, onExitChat }: ChatArea
     setIsThinking(false);
   };
 
+  // Add function to add card notification
+  const addCardNotification = (cardData: any) => {
+    const cardNotification: Message = {
+      id: `card-${cardData.id}-${Date.now()}`,
+      content: `📋 Novo card recebido: ${cardData.title}`,
+      sender: 'system',
+      timestamp: new Date(),
+      cardData: {
+        id: cardData.id,
+        title: cardData.title,
+        description: cardData.description,
+        priority: cardData.priority
+      }
+    };
+    setMessages(prev => [...prev, cardNotification]);
+  };
+
   // Functions to manage chat history
   const setChatHistory = (history: Message[]) => {
     setMessages(history);
@@ -85,6 +110,7 @@ export const ChatArea = ({ onSendMessage, selectedClient, onExitChat }: ChatArea
     (window as any).addAIResponse = addAIResponse;
     (window as any).setChatHistory = setChatHistory;
     (window as any).clearChat = clearChat;
+    (window as any).addCardNotification = addCardNotification;
   }, []);
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -136,10 +162,14 @@ export const ChatArea = ({ onSendMessage, selectedClient, onExitChat }: ChatArea
                 "w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0",
                 message.sender === 'user' 
                   ? "bg-chat-bubble-user" 
+                  : message.sender === 'system'
+                  ? "bg-orange-500"
                   : "bg-chat-bubble-ai"
               )}>
                 {message.sender === 'user' ? (
                   <User className="h-4 w-4" />
+                ) : message.sender === 'system' ? (
+                  <Bell className="h-4 w-4 text-white" />
                 ) : (
                   <Bot className="h-4 w-4" />
                 )}
@@ -149,12 +179,44 @@ export const ChatArea = ({ onSendMessage, selectedClient, onExitChat }: ChatArea
                 "max-w-[70%] p-4 rounded-2xl shadow-sm",
                 message.sender === 'user'
                   ? "bg-chat-bubble-user text-primary-foreground ml-auto"
+                  : message.sender === 'system'
+                  ? "bg-orange-50 border border-orange-200 text-orange-900"
                   : "bg-chat-bubble-ai text-foreground"
               )}>
                 <p className="text-sm leading-relaxed">{message.content}</p>
+                
+                {/* Card notification with action button */}
+                {message.cardData && (
+                  <div className="mt-3 p-3 bg-white rounded-lg border border-orange-300">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex-1">
+                        <p className="font-medium text-sm text-gray-900">{message.cardData.title}</p>
+                        <p className="text-xs text-gray-600 mt-1 line-clamp-2">{message.cardData.description}</p>
+                        <Badge 
+                          variant={message.cardData.priority === 'high' ? 'destructive' : 
+                                  message.cardData.priority === 'medium' ? 'default' : 'secondary'} 
+                          className="mt-2 text-xs"
+                        >
+                          {message.cardData.priority}
+                        </Badge>
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => onViewCard?.(message.cardData!.id)}
+                        className="flex items-center gap-1 h-8 px-2"
+                      >
+                        <Eye className="h-3 w-3" />
+                        Ver
+                      </Button>
+                    </div>
+                  </div>
+                )}
+                
                 <span className={cn(
                   "text-xs mt-2 block opacity-70",
-                  message.sender === 'user' ? "text-primary-foreground" : "text-muted-foreground"
+                  message.sender === 'user' ? "text-primary-foreground" : 
+                  message.sender === 'system' ? "text-orange-700" : "text-muted-foreground"
                 )}>
                   {message.timestamp.toLocaleTimeString()}
                 </span>

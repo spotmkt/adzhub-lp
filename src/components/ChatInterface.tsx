@@ -55,7 +55,7 @@ export const ChatInterface = () => {
         (payload) => {
           console.log('New action received:', payload);
           const newAction = payload.new as any;
-          setActions(prev => [{
+          const actionCard: ActionCard = {
             id: newAction.id,
             title: newAction.title,
             description: newAction.description,
@@ -63,7 +63,14 @@ export const ChatInterface = () => {
             date: newAction.date,
             priority: newAction.priority as 'high' | 'medium' | 'low',
             category: newAction.category
-          }, ...prev]);
+          };
+          
+          setActions(prev => [actionCard, ...prev]);
+          
+          // Add notification to chat if a client is selected
+          if (selectedClient && (window as any).addCardNotification) {
+            (window as any).addCardNotification(actionCard);
+          }
         }
       )
       .subscribe();
@@ -327,11 +334,12 @@ export const ChatInterface = () => {
         onItemClick={setActiveNavItem}
       />
       
-      <ChatArea 
-        onSendMessage={handleSendMessage} 
-        selectedClient={selectedClient}
-        onExitChat={handleExitChat}
-      />
+        <ChatArea 
+          onSendMessage={handleSendMessage}
+          selectedClient={selectedClient}
+          onExitChat={handleExitChat}
+          onViewCard={handleViewAction}
+        />
       
       <ActionPanel
         actions={actions}
