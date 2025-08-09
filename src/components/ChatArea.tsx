@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Send, Bot, User, Loader2 } from 'lucide-react';
+import { Send, Bot, User, Loader2, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -12,21 +12,36 @@ interface Message {
   timestamp: Date;
 }
 
-interface ChatAreaProps {
-  onSendMessage?: (message: string, messageData: Message) => void;
+interface Client {
+  id: string;
+  name: string;
+  email?: string;
+  phone?: string;
 }
 
-export const ChatArea = ({ onSendMessage }: ChatAreaProps) => {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      content: 'Olá! Sou seu assistente pessoal para gestão de tarefas criativas. Como posso ajudá-lo hoje?',
-      sender: 'ai',
-      timestamp: new Date()
-    }
-  ]);
+interface ChatAreaProps {
+  onSendMessage?: (message: string, messageData: Message) => void;
+  selectedClient?: Client;
+  onExitChat?: () => void;
+}
+
+export const ChatArea = ({ onSendMessage, selectedClient, onExitChat }: ChatAreaProps) => {
+  const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isThinking, setIsThinking] = useState(false);
+
+  // Initialize with welcome message when client is selected
+  useEffect(() => {
+    if (selectedClient) {
+      const welcomeMessage: Message = {
+        id: 'welcome',
+        content: `Olá! Bem-vindo ao atendimento para ${selectedClient.name}. Como posso ajudá-lo hoje?`,
+        sender: 'ai',
+        timestamp: new Date()
+      };
+      setMessages([welcomeMessage]);
+    }
+  }, [selectedClient]);
 
   const handleSend = () => {
     if (inputValue.trim()) {
@@ -56,13 +71,21 @@ export const ChatArea = ({ onSendMessage }: ChatAreaProps) => {
     setIsThinking(false);
   };
 
-  // Expose addAIResponse through onSendMessage callback
+  // Functions to manage chat history
+  const setChatHistory = (history: Message[]) => {
+    setMessages(history);
+  };
+
+  const clearChat = () => {
+    setMessages([]);
+  };
+
+  // Expose functions globally
   useEffect(() => {
-    if (onSendMessage) {
-      // Override to pass addAIResponse function
-      (window as any).addAIResponse = addAIResponse;
-    }
-  }, [onSendMessage]);
+    (window as any).addAIResponse = addAIResponse;
+    (window as any).setChatHistory = setChatHistory;
+    (window as any).clearChat = clearChat;
+  }, []);
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -74,11 +97,28 @@ export const ChatArea = ({ onSendMessage }: ChatAreaProps) => {
   return (
     <div className="flex-1 bg-chat-background flex flex-col">
       {/* Header */}
-      <div className="border-b border-border p-6">
-        <h1 className="text-2xl font-semibold text-foreground">Assistente Criativo</h1>
-        <p className="text-muted-foreground mt-1">
-          Gerencie suas tarefas criativas com inteligência artificial
-        </p>
+      <div className="border-b border-border p-6 flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold text-foreground">
+            Chat - {selectedClient?.name}
+          </h1>
+          <p className="text-muted-foreground mt-1">
+            {selectedClient?.email && `${selectedClient.email} • `}
+            {selectedClient?.phone || 'Assistente IA'}
+          </p>
+        </div>
+        
+        {onExitChat && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onExitChat}
+            className="flex items-center space-x-2"
+          >
+            <LogOut className="h-4 w-4" />
+            <span>Sair do Chat</span>
+          </Button>
+        )}
       </div>
 
       {/* Messages */}

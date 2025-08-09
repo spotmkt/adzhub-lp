@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { NavigationBar } from './NavigationBar';
 import { ChatArea } from './ChatArea';
 import { ActionPanel } from './ActionPanel';
+import { ClientSelector } from './ClientSelector';
 import { supabase } from '@/integrations/supabase/client';
 
 interface Message {
@@ -20,9 +21,18 @@ interface ActionCard {
   category?: string;
 }
 
+interface Client {
+  id: string;
+  name: string;
+  email?: string;
+  phone?: string;
+}
+
 export const ChatInterface = () => {
   const [activeNavItem, setActiveNavItem] = useState('chats');
   const [actions, setActions] = useState<ActionCard[]>([]);
+  const [selectedClient, setSelectedClient] = useState<Client | null>(null);
+  const [chatHistory, setChatHistory] = useState<Message[]>([]);
 
   // Fetch actions from Supabase
   useEffect(() => {
@@ -89,12 +99,19 @@ export const ChatInterface = () => {
   const handleSendMessage = async (message: string, messageData: Message) => {
     console.log('Sending message to n8n:', message);
     
+    // Save user message to database
+    if (selectedClient) {
+      await saveMessageToHistory(selectedClient.id, message, 'user');
+    }
+    
     try {
       const response = await fetch('https://n8n-n8n.ascl7r.easypanel.host/webhook/7d06f022-1e56-4dad-ba4c-3684d9ee5562', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           message,
+          clientName: selectedClient?.name || 'Cliente não selecionado',
+          clientId: selectedClient?.id || null,
           timestamp: new Date().toISOString(),
           userId: 'user-' + Date.now()
         })
@@ -115,6 +132,11 @@ export const ChatInterface = () => {
               console.log('Adding AI response:', aiMessage);
               console.log('addAIResponse function exists:', typeof (window as any).addAIResponse);
               (window as any).addAIResponse?.(aiMessage);
+              
+              // Save AI response to database
+              if (selectedClient) {
+                await saveMessageToHistory(selectedClient.id, aiMessage, 'ai');
+              }
             } else {
               console.log('No response field found in data:', Object.keys(data));
               (window as any).addAIResponse?.('Recebi sua mensagem.');
@@ -141,6 +163,64 @@ export const ChatInterface = () => {
       console.error('Failed to send message to n8n:', error);
       (window as any).addAIResponse?.('Erro de conexão com o servidor. Verifique sua conexão.');
     }
+  };
+
+  const saveMessageToHistory = async (clientId: string, content: string, sender: 'user' | 'ai') => {
+    try {
+      const { error } = await supabase
+        .from('chat_messages')
+        .insert({
+          client_id: clientId,
+          content,
+          sender
+        });
+
+      if (error) {
+        console.error('Error saving message:', error);
+      }
+    } catch (error) {
+      console.error('Failed to save message:', error);
+    }
+  };
+
+  const loadChatHistory = async (clientId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('chat_messages')
+        .select('*')
+        .eq('client_id', clientId)
+        .order('timestamp', { ascending: true });
+
+      if (error) {
+        console.error('Error loading chat history:', error);
+        return;
+      }
+
+      const messages: Message[] = data.map(msg => ({
+        id: msg.id,
+        content: msg.content,
+        sender: msg.sender as 'user' | 'ai',
+        timestamp: new Date(msg.timestamp)
+      }));
+
+      setChatHistory(messages);
+      
+      // Set messages in ChatArea
+      (window as any).setChatHistory?.(messages);
+    } catch (error) {
+      console.error('Failed to load chat history:', error);
+    }
+  };
+
+  const handleClientSelect = (client: Client) => {
+    setSelectedClient(client);
+    loadChatHistory(client.id);
+  };
+
+  const handleExitChat = () => {
+    setSelectedClient(null);
+    setChatHistory([]);
+    (window as any).clearChat?.();
   };
 
   const handleExecuteAction = async (actionId: string) => {
@@ -186,6 +266,11 @@ export const ChatInterface = () => {
     }
   };
 
+  // Show client selector if no client is selected
+  if (!selectedClient) {
+    return <ClientSelector onClientSelect={handleClientSelect} />;
+  }
+
   return (
     <div className="min-h-screen bg-background flex">
       <NavigationBar 
@@ -193,7 +278,11 @@ export const ChatInterface = () => {
         onItemClick={setActiveNavItem}
       />
       
-      <ChatArea onSendMessage={handleSendMessage} />
+      <ChatArea 
+        onSendMessage={handleSendMessage} 
+        selectedClient={selectedClient}
+        onExitChat={handleExitChat}
+      />
       
       <ActionPanel
         actions={actions}
