@@ -1,4 +1,4 @@
-import { Calendar, Clock, Star } from 'lucide-react';
+import { Calendar, Clock, Star, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
@@ -8,6 +8,7 @@ interface ActionCard {
   id: string;
   title: string;
   description: string;
+  briefing?: string;
   date: string;
   priority?: 'high' | 'medium' | 'low';
   category?: string;
@@ -18,6 +19,7 @@ interface ActionPanelProps {
   onExecute?: (actionId: string) => void;
   onEdit?: (actionId: string) => void;
   onIgnore?: (actionId: string) => void;
+  onView?: (actionId: string) => void;
 }
 
 const defaultActions: ActionCard[] = [
@@ -51,7 +53,8 @@ export const ActionPanel = ({
   actions = defaultActions, 
   onExecute, 
   onEdit, 
-  onIgnore 
+  onIgnore,
+  onView 
 }: ActionPanelProps) => {
   const getPriorityColor = (priority?: string) => {
     switch (priority) {
@@ -128,30 +131,43 @@ export const ActionPanel = ({
               </div>
 
               {/* Action Buttons */}
-              <div className="flex space-x-2">
-                <Button
-                  size="sm"
-                  onClick={() => onExecute?.(action.id)}
-                  className="flex-1 h-8 text-xs bg-primary hover:bg-primary/90"
-                >
-                  Executar
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => onEdit?.(action.id)}
-                  className="h-8 px-3 text-xs border-border hover:bg-muted"
-                >
-                  Editar
-                </Button>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => onIgnore?.(action.id)}
-                  className="h-8 px-3 text-xs hover:bg-muted"
-                >
-                  Ignorar
-                </Button>
+              <div className="space-y-2">
+                <div className="flex space-x-2">
+                  <Button
+                    size="sm"
+                    onClick={() => onExecute?.(action.id)}
+                    className="flex-1 h-8 text-xs bg-primary hover:bg-primary/90"
+                  >
+                    Executar
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => onEdit?.(action.id)}
+                    className="h-8 px-3 text-xs border-border hover:bg-muted"
+                  >
+                    Editar
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => onIgnore?.(action.id)}
+                    className="h-8 px-3 text-xs hover:bg-muted"
+                  >
+                    Ignorar
+                  </Button>
+                </div>
+                {action.briefing && (
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => onView?.(action.id)}
+                    className="w-full h-8 text-xs"
+                  >
+                    <Eye className="h-3 w-3 mr-1" />
+                    Ver Briefing
+                  </Button>
+                )}
               </div>
             </div>
           ))}

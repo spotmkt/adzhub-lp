@@ -3,6 +3,7 @@ import { NavigationBar } from './NavigationBar';
 import { ChatArea } from './ChatArea';
 import { ActionPanel } from './ActionPanel';
 import { ClientSelector } from './ClientSelector';
+import { ActionViewDialog } from './ActionViewDialog';
 import { supabase } from '@/integrations/supabase/client';
 
 interface Message {
@@ -16,6 +17,7 @@ interface ActionCard {
   id: string;
   title: string;
   description: string;
+  briefing?: string;
   date: string;
   priority?: 'high' | 'medium' | 'low';
   category?: string;
@@ -33,6 +35,8 @@ export const ChatInterface = () => {
   const [actions, setActions] = useState<ActionCard[]>([]);
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [chatHistory, setChatHistory] = useState<Message[]>([]);
+  const [viewDialogOpen, setViewDialogOpen] = useState(false);
+  const [selectedAction, setSelectedAction] = useState<ActionCard | null>(null);
 
   // Fetch actions from Supabase
   useEffect(() => {
@@ -55,6 +59,7 @@ export const ChatInterface = () => {
             id: newAction.id,
             title: newAction.title,
             description: newAction.description,
+            briefing: newAction.briefing,
             date: newAction.date,
             priority: newAction.priority as 'high' | 'medium' | 'low',
             category: newAction.category
@@ -85,6 +90,7 @@ export const ChatInterface = () => {
         id: action.id,
         title: action.title,
         description: action.description,
+        briefing: action.briefing,
         date: action.date,
         priority: action.priority as 'high' | 'medium' | 'low',
         category: action.category
@@ -223,8 +229,37 @@ export const ChatInterface = () => {
     (window as any).clearChat?.();
   };
 
+  const saveActionToHistory = async (action: ActionCard, actionType: 'executed' | 'ignored') => {
+    try {
+      const { error } = await supabase
+        .from('action_history')
+        .insert({
+          action_id: action.id,
+          action_type: actionType,
+          title: action.title,
+          description: action.description,
+          briefing: action.briefing,
+          category: action.category,
+          priority: action.priority,
+          original_date: action.date,
+        });
+
+      if (error) {
+        console.error('Error saving to history:', error);
+      }
+    } catch (error) {
+      console.error('Failed to save to history:', error);
+    }
+  };
+
   const handleExecuteAction = async (actionId: string) => {
     try {
+      const action = actions.find(a => a.id === actionId);
+      if (!action) return;
+
+      // Save to history before removing from actions
+      await saveActionToHistory(action, 'executed');
+
       const { error } = await supabase
         .from('actions')
         .update({ status: 'executed' })
@@ -249,6 +284,12 @@ export const ChatInterface = () => {
 
   const handleIgnoreAction = async (actionId: string) => {
     try {
+      const action = actions.find(a => a.id === actionId);
+      if (!action) return;
+
+      // Save to history before removing from actions
+      await saveActionToHistory(action, 'ignored');
+
       const { error } = await supabase
         .from('actions')
         .update({ status: 'ignored' })
@@ -263,6 +304,14 @@ export const ChatInterface = () => {
       console.log('Action ignored:', actionId);
     } catch (error) {
       console.error('Failed to ignore action:', error);
+    }
+  };
+
+  const handleViewAction = (actionId: string) => {
+    const action = actions.find(a => a.id === actionId);
+    if (action) {
+      setSelectedAction(action);
+      setViewDialogOpen(true);
     }
   };
 
@@ -289,6 +338,13 @@ export const ChatInterface = () => {
         onExecute={handleExecuteAction}
         onEdit={handleEditAction}
         onIgnore={handleIgnoreAction}
+        onView={handleViewAction}
+      />
+      
+      <ActionViewDialog
+        action={selectedAction}
+        open={viewDialogOpen}
+        onOpenChange={setViewDialogOpen}
       />
     </div>
   );

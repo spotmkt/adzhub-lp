@@ -14,8 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
+      action_history: {
+        Row: {
+          action_date: string
+          action_id: string
+          action_type: string
+          briefing: string | null
+          category: string | null
+          created_at: string
+          description: string | null
+          id: string
+          original_date: string | null
+          priority: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          action_date?: string
+          action_id: string
+          action_type: string
+          briefing?: string | null
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          original_date?: string | null
+          priority?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          action_date?: string
+          action_id?: string
+          action_type?: string
+          briefing?: string | null
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          original_date?: string | null
+          priority?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       actions: {
         Row: {
+          briefing: string | null
           category: string | null
           created_at: string
           date: string
@@ -27,6 +73,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          briefing?: string | null
           category?: string | null
           created_at?: string
           date: string
@@ -38,6 +85,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          briefing?: string | null
           category?: string | null
           created_at?: string
           date?: string
