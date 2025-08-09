@@ -52,16 +52,35 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
-				sidebar: {
-					DEFAULT: 'hsl(var(--sidebar-background))',
-					foreground: 'hsl(var(--sidebar-foreground))',
-					primary: 'hsl(var(--sidebar-primary))',
-					'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
-					accent: 'hsl(var(--sidebar-accent))',
-					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-					border: 'hsl(var(--sidebar-border))',
-					ring: 'hsl(var(--sidebar-ring))'
+				/* Custom chat interface colors */
+				chat: {
+					background: 'hsl(var(--chat-background))',
+					'bubble-user': 'hsl(var(--chat-bubble-user))',
+					'bubble-ai': 'hsl(var(--chat-bubble-ai))',
+					input: 'hsl(var(--chat-input))'
+				},
+				nav: {
+					background: 'hsl(var(--nav-background))',
+					item: 'hsl(var(--nav-item))',
+					'item-active': 'hsl(var(--nav-item-active))'
+				},
+				action: {
+					panel: 'hsl(var(--action-panel))',
+					card: 'hsl(var(--action-card))',
+					'card-hover': 'hsl(var(--action-card-hover))'
+				},
+				glass: {
+					background: 'hsl(var(--glass-background))',
+					border: 'hsl(var(--glass-border))'
 				}
+			},
+			boxShadow: {
+				'glow': '0 0 20px hsl(var(--shadow-glow))',
+				'glow-lg': '0 0 40px hsl(var(--shadow-glow))',
+				'inner-glass': 'inset 0 1px 0 hsl(var(--glass-border))'
+			},
+			backdropBlur: {
+				'glass': '12px'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
