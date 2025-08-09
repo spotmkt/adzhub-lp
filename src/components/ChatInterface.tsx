@@ -328,26 +328,30 @@ export const ChatInterface = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background flex">
+    <div className="min-h-screen bg-background flex max-w-screen overflow-hidden">
       <NavigationBar 
         activeItem={activeNavItem}
         onItemClick={setActiveNavItem}
       />
       
+      <div className="flex-1 min-w-0">
         <ChatArea 
           onSendMessage={handleSendMessage}
           selectedClient={selectedClient}
           onExitChat={handleExitChat}
           onViewCard={handleViewAction}
         />
+      </div>
       
-      <ActionPanel
-        actions={actions}
-        onExecute={handleExecuteAction}
-        onEdit={handleEditAction}
-        onIgnore={handleIgnoreAction}
-        onView={handleViewAction}
-      />
+      <div className="w-80 flex-shrink-0">
+        <ActionPanel
+          actions={actions}
+          onExecute={handleExecuteAction}
+          onEdit={handleEditAction}
+          onIgnore={handleIgnoreAction}
+          onView={handleViewAction}
+        />
+      </div>
       
       <ActionViewDialog
         action={selectedAction}

@@ -121,14 +121,14 @@ export const ChatArea = ({ onSendMessage, selectedClient, onExitChat, onViewCard
   };
 
   return (
-    <div className="flex-1 bg-chat-background flex flex-col">
+    <div className="w-full bg-chat-background flex flex-col min-w-0">
       {/* Header */}
-      <div className="border-b border-border p-6 flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold text-foreground">
+      <div className="border-b border-border p-6 flex items-center justify-between flex-shrink-0">
+        <div className="min-w-0">
+          <h1 className="text-2xl font-semibold text-foreground truncate">
             Chat - {selectedClient?.name}
           </h1>
-          <p className="text-muted-foreground mt-1">
+          <p className="text-muted-foreground mt-1 truncate">
             {selectedClient?.email && `${selectedClient.email} • `}
             {selectedClient?.phone || 'Assistente IA'}
           </p>
@@ -139,7 +139,7 @@ export const ChatArea = ({ onSendMessage, selectedClient, onExitChat, onViewCard
             variant="outline"
             size="sm"
             onClick={onExitChat}
-            className="flex items-center space-x-2"
+            className="flex items-center space-x-2 flex-shrink-0"
           >
             <LogOut className="h-4 w-4" />
             <span>Sair do Chat</span>
@@ -148,7 +148,7 @@ export const ChatArea = ({ onSendMessage, selectedClient, onExitChat, onViewCard
       </div>
 
       {/* Messages */}
-      <ScrollArea className="flex-1 p-6">
+      <ScrollArea className="flex-1 p-6 min-h-0">
         <div className="space-y-6">
           {messages.map((message) => (
             <div
@@ -172,22 +172,22 @@ export const ChatArea = ({ onSendMessage, selectedClient, onExitChat, onViewCard
               </div>
               
               <div className={cn(
-                "max-w-[70%] p-4 rounded-2xl shadow-sm",
+                "max-w-[70%] p-4 rounded-2xl shadow-sm break-words",
                 message.sender === 'user'
                   ? "bg-chat-bubble-user text-primary-foreground ml-auto"
                   : "bg-chat-bubble-ai text-foreground"
               )}>
-                {message.content && <p className="text-sm leading-relaxed">{message.content}</p>}
+                {message.content && <p className="text-sm leading-relaxed break-words">{message.content}</p>}
                 
                 {/* Card notification - single line */}
                 {message.cardData && (
                   <div className="mt-2 p-2 bg-chat-bubble-ai rounded-lg flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium text-sm">{message.cardData.title}</span>
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="font-medium text-sm truncate">{message.cardData.title}</span>
                       <Badge 
                         variant={message.cardData.priority === 'high' ? 'destructive' : 
                                 message.cardData.priority === 'medium' ? 'default' : 'secondary'} 
-                        className="text-xs"
+                        className="text-xs flex-shrink-0"
                       >
                         {message.cardData.priority}
                       </Badge>
@@ -196,7 +196,7 @@ export const ChatArea = ({ onSendMessage, selectedClient, onExitChat, onViewCard
                       size="sm"
                       variant="outline"
                       onClick={() => onViewCard?.(message.cardData!.id)}
-                      className="flex items-center gap-1 h-7 px-2 text-xs"
+                      className="flex items-center gap-1 h-7 px-2 text-xs flex-shrink-0"
                     >
                       <Eye className="h-3 w-3" />
                       Ver
@@ -232,14 +232,14 @@ export const ChatArea = ({ onSendMessage, selectedClient, onExitChat, onViewCard
       </ScrollArea>
 
       {/* Input Area */}
-      <div className="border-t border-border p-6">
-        <div className="relative">
+      <div className="border-t border-border p-6 flex-shrink-0">
+        <div className="relative max-w-full">
           <Input
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="Digite sua mensagem..."
-            className="pr-12 bg-chat-input border-border rounded-xl h-12 text-foreground placeholder:text-muted-foreground"
+            className="pr-12 w-full bg-chat-input border-border rounded-xl h-12 text-foreground placeholder:text-muted-foreground"
           />
           <Button
             onClick={handleSend}
