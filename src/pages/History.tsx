@@ -73,10 +73,10 @@ export default function History() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <NavigationBar />
+    <div className="flex min-h-screen bg-background">
+      <NavigationBar activeItem="history" />
       
-      <main className="container mx-auto px-4 py-8">
+      <main className="flex-1 container mx-auto px-4 py-8 ml-16">
         <div className="max-w-6xl mx-auto">
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-foreground mb-2">
