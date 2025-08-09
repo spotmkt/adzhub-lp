@@ -328,7 +328,7 @@ export const ChatInterface = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background flex max-w-screen overflow-hidden">
+    <div className="h-screen bg-background flex overflow-hidden">
       <NavigationBar 
         activeItem={activeNavItem}
         onItemClick={setActiveNavItem}
@@ -343,7 +343,7 @@ export const ChatInterface = () => {
         />
       </div>
       
-      <div className="w-80 flex-shrink-0">
+      <div className="w-80 flex-shrink-0 h-screen overflow-hidden">
         <ActionPanel
           actions={actions}
           onExecute={handleExecuteAction}

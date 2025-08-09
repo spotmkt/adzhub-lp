@@ -121,14 +121,14 @@ export const ChatArea = ({ onSendMessage, selectedClient, onExitChat, onViewCard
   };
 
   return (
-    <div className="w-full bg-chat-background flex flex-col min-w-0">
+    <div className="h-screen bg-chat-background flex flex-col min-w-0">
       {/* Header */}
-      <div className="border-b border-border p-6 flex items-center justify-between flex-shrink-0">
+      <div className="border-b border-border p-4 flex items-center justify-between flex-shrink-0">
         <div className="min-w-0">
-          <h1 className="text-2xl font-semibold text-foreground truncate">
+          <h1 className="text-xl font-semibold text-foreground truncate">
             Chat - {selectedClient?.name}
           </h1>
-          <p className="text-muted-foreground mt-1 truncate">
+          <p className="text-muted-foreground text-sm truncate">
             {selectedClient?.email && `${selectedClient.email} • `}
             {selectedClient?.phone || 'Assistente IA'}
           </p>
@@ -148,8 +148,8 @@ export const ChatArea = ({ onSendMessage, selectedClient, onExitChat, onViewCard
       </div>
 
       {/* Messages */}
-      <ScrollArea className="flex-1 p-6 min-h-0">
-        <div className="space-y-6">
+      <ScrollArea className="flex-1 p-4 min-h-0">
+        <div className="space-y-4">
           {messages.map((message) => (
             <div
               key={message.id}
@@ -172,7 +172,7 @@ export const ChatArea = ({ onSendMessage, selectedClient, onExitChat, onViewCard
               </div>
               
               <div className={cn(
-                "max-w-[70%] p-4 rounded-2xl shadow-sm break-words",
+                "max-w-[70%] p-3 rounded-2xl shadow-sm break-words",
                 message.sender === 'user'
                   ? "bg-chat-bubble-user text-primary-foreground ml-auto"
                   : "bg-chat-bubble-ai text-foreground"
@@ -220,7 +220,7 @@ export const ChatArea = ({ onSendMessage, selectedClient, onExitChat, onViewCard
               <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-chat-bubble-ai">
                 <Bot className="h-4 w-4" />
               </div>
-              <div className="bg-chat-bubble-ai text-foreground p-4 rounded-2xl shadow-sm">
+              <div className="bg-chat-bubble-ai text-foreground p-3 rounded-2xl shadow-sm">
                 <div className="flex items-center space-x-2">
                   <Loader2 className="h-4 w-4 animate-spin" />
                   <span className="text-sm text-muted-foreground">Pensando...</span>
@@ -232,21 +232,21 @@ export const ChatArea = ({ onSendMessage, selectedClient, onExitChat, onViewCard
       </ScrollArea>
 
       {/* Input Area */}
-      <div className="border-t border-border p-6 flex-shrink-0">
+      <div className="border-t border-border p-4 flex-shrink-0">
         <div className="relative max-w-full">
           <Input
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="Digite sua mensagem..."
-            className="pr-12 w-full bg-chat-input border-border rounded-xl h-12 text-foreground placeholder:text-muted-foreground"
+            className="pr-12 w-full bg-chat-input border-border rounded-xl h-10 text-foreground placeholder:text-muted-foreground"
           />
           <Button
             onClick={handleSend}
             size="icon"
-            className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-lg bg-primary hover:bg-primary/90 shadow-glow"
+            className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 rounded-lg bg-primary hover:bg-primary/90 shadow-glow"
           >
-            <Send className="h-4 w-4" />
+            <Send className="h-3 w-3" />
           </Button>
         </div>
       </div>
