@@ -2,6 +2,8 @@ import { Plus, Star, Settings, MessageSquare, Bookmark, User, History } from 'lu
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Link } from 'react-router-dom';
+import { ThemeToggle } from '@/components/ThemeToggle';
+import adzHubLogo from '@/assets/adzhub-logo.png';
 
 interface NavigationBarProps {
   activeItem?: string;
@@ -21,6 +23,15 @@ const navigationItems = [
 export const NavigationBar = ({ activeItem = 'chats', onItemClick }: NavigationBarProps) => {
   return (
     <div className="w-16 bg-nav-background border-r border-border flex flex-col items-center py-6 space-y-4">
+      {/* Logo */}
+      <div className="mb-4">
+        <img 
+          src={adzHubLogo} 
+          alt="AdzHub" 
+          className="w-10 h-10 object-contain"
+        />
+      </div>
+      
       {navigationItems.map((item) => {
         const Icon = item.icon;
         const isActive = activeItem === item.id;
@@ -48,6 +59,11 @@ export const NavigationBar = ({ activeItem = 'chats', onItemClick }: NavigationB
           </Link>
         );
       })}
+      
+      {/* Theme Toggle */}
+      <div className="mt-auto">
+        <ThemeToggle />
+      </div>
     </div>
   );
 };

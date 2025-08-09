@@ -8,61 +8,113 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Dark theme design system */
-    --background: 220 15% 8%;
-    --foreground: 210 40% 95%;
+    /* Light theme - AdzHub brand colors */
+    --background: 38 33% 96%;
+    --foreground: 224 47% 25%;
 
-    --card: 220 15% 12%;
-    --card-foreground: 210 40% 95%;
+    --card: 0 0% 100%;
+    --card-foreground: 224 47% 25%;
 
-    --popover: 220 15% 12%;
-    --popover-foreground: 210 40% 95%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 47% 25%;
 
-    --primary: 255 85% 60%;
-    --primary-foreground: 220 15% 8%;
+    --primary: 224 47% 42%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 15% 15%;
-    --secondary-foreground: 210 40% 95%;
+    --secondary: 41 100% 58%;
+    --secondary-foreground: 224 47% 25%;
 
-    --muted: 220 15% 18%;
-    --muted-foreground: 210 20% 65%;
+    --muted: 38 33% 93%;
+    --muted-foreground: 224 20% 60%;
 
-    --accent: 255 85% 60%;
-    --accent-foreground: 220 15% 8%;
+    --accent: 41 100% 58%;
+    --accent-foreground: 224 47% 25%;
 
     --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 220 15% 20%;
-    --input: 220 15% 15%;
-    --ring: 255 85% 60%;
+    --border: 38 20% 85%;
+    --input: 0 0% 100%;
+    --ring: 224 47% 42%;
 
     --radius: 0.75rem;
 
     /* Chat specific colors */
-    --chat-background: 220 15% 10%;
-    --chat-bubble-user: 255 85% 60%;
-    --chat-bubble-ai: 220 15% 18%;
-    --chat-input: 220 15% 15%;
+    --chat-background: 38 33% 96%;
+    --chat-bubble-user: 224 47% 42%;
+    --chat-bubble-ai: 0 0% 100%;
+    --chat-input: 0 0% 100%;
     
     /* Navigation colors */
-    --nav-background: 220 15% 6%;
-    --nav-item: 220 15% 25%;
-    --nav-item-active: 255 85% 60%;
+    --nav-background: 0 0% 100%;
+    --nav-item: 38 20% 90%;
+    --nav-item-active: 224 47% 42%;
     
     /* Action panel colors */
-    --action-panel: 220 15% 10%;
-    --action-card: 220 15% 15%;
-    --action-card-hover: 220 15% 18%;
+    --action-panel: 38 33% 96%;
+    --action-card: 0 0% 100%;
+    --action-card-hover: 38 20% 95%;
     
     /* Glassmorphic effects */
-    --glass-background: 220 15% 12% / 0.8;
-    --glass-border: 220 15% 25% / 0.3;
-    --shadow-glow: 255 85% 60% / 0.15;
+    --glass-background: 0 0% 100% / 0.8;
+    --glass-border: 38 20% 85% / 0.3;
+    --shadow-glow: 224 47% 42% / 0.15;
     
     /* Animations */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+
+  .dark {
+    /* Dark theme - AdzHub brand colors adapted */
+    --background: 224 47% 8%;
+    --foreground: 38 33% 95%;
+
+    --card: 224 47% 12%;
+    --card-foreground: 38 33% 95%;
+
+    --popover: 224 47% 12%;
+    --popover-foreground: 38 33% 95%;
+
+    --primary: 41 100% 58%;
+    --primary-foreground: 224 47% 8%;
+
+    --secondary: 224 47% 15%;
+    --secondary-foreground: 38 33% 95%;
+
+    --muted: 224 47% 18%;
+    --muted-foreground: 38 20% 65%;
+
+    --accent: 41 100% 58%;
+    --accent-foreground: 224 47% 8%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 38 33% 98%;
+
+    --border: 224 47% 20%;
+    --input: 224 47% 15%;
+    --ring: 41 100% 58%;
+
+    /* Chat specific colors */
+    --chat-background: 224 47% 10%;
+    --chat-bubble-user: 41 100% 58%;
+    --chat-bubble-ai: 224 47% 18%;
+    --chat-input: 224 47% 15%;
+    
+    /* Navigation colors */
+    --nav-background: 224 47% 6%;
+    --nav-item: 224 47% 25%;
+    --nav-item-active: 41 100% 58%;
+    
+    /* Action panel colors */
+    --action-panel: 224 47% 10%;
+    --action-card: 224 47% 15%;
+    --action-card-hover: 224 47% 18%;
+    
+    /* Glassmorphic effects */
+    --glass-background: 224 47% 12% / 0.8;
+    --glass-border: 224 47% 25% / 0.3;
+    --shadow-glow: 41 100% 58% / 0.15;
   }
 }
 
