@@ -33,38 +33,44 @@ export const ChatInterface = () => {
         body: JSON.stringify({ 
           message,
           timestamp: new Date().toISOString(),
-          userId: 'user-' + Date.now() // You can replace with actual user ID if you have authentication
+          userId: 'user-' + Date.now()
         })
       });
       
       if (response.ok) {
-        const data = await response.json();
+        const responseText = await response.text();
+        console.log('Raw n8n response:', responseText);
         
-        // Check if n8n returned actions array
-        if (data.actions && Array.isArray(data.actions)) {
-          setActions(prev => [...data.actions, ...prev]);
+        if (responseText.trim()) {
+          try {
+            const data = JSON.parse(responseText);
+            
+            // Add AI response to chat
+            if (data.response || data.message) {
+              (window as any).addAIResponse?.(data.response || data.message);
+            }
+            
+            // Add actions if provided
+            if (data.actions && Array.isArray(data.actions)) {
+              setActions(prev => [...data.actions, ...prev]);
+            }
+            
+            console.log('Parsed n8n response:', data);
+          } catch (parseError) {
+            console.error('Failed to parse n8n response as JSON:', parseError);
+            (window as any).addAIResponse?.('Recebi sua mensagem, mas houve um erro no formato da resposta.');
+          }
+        } else {
+          console.warn('Empty response from n8n');
+          (window as any).addAIResponse?.('Mensagem recebida, mas sem resposta do servidor.');
         }
-        
-        console.log('n8n response:', data);
       } else {
         console.error('Error from n8n:', response.status, response.statusText);
+        (window as any).addAIResponse?.('Erro ao processar sua solicitação. Tente novamente.');
       }
     } catch (error) {
       console.error('Failed to send message to n8n:', error);
-      
-      // Fallback to mock data if n8n is unavailable
-      const mockActions: ActionCard[] = [
-        {
-          id: Date.now().toString(),
-          title: 'Erro de conexão - Ação de exemplo',
-          description: 'Esta é uma ação de exemplo pois não foi possível conectar com o n8n.',
-          date: new Date().toLocaleDateString('pt-BR'),
-          priority: 'high',
-          category: 'Sistema'
-        }
-      ];
-      
-      setActions(prev => [...mockActions, ...prev]);
+      (window as any).addAIResponse?.('Erro de conexão com o servidor. Verifique sua conexão.');
     }
   };
 

@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Send, Bot, User } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Send, Bot, User, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -26,6 +26,7 @@ export const ChatArea = ({ onSendMessage }: ChatAreaProps) => {
     }
   ]);
   const [inputValue, setInputValue] = useState('');
+  const [isThinking, setIsThinking] = useState(false);
 
   const handleSend = () => {
     if (inputValue.trim()) {
@@ -37,21 +38,31 @@ export const ChatArea = ({ onSendMessage }: ChatAreaProps) => {
       };
       
       setMessages(prev => [...prev, newMessage]);
+      setIsThinking(true);
       onSendMessage?.(inputValue, newMessage);
       setInputValue('');
-      
-      // Simulate AI response
-      setTimeout(() => {
-        const aiResponse: Message = {
-          id: (Date.now() + 1).toString(),
-          content: 'Entendi sua solicitação. Estou processando e criando algumas ações recomendadas para você.',
-          sender: 'ai',
-          timestamp: new Date()
-        };
-        setMessages(prev => [...prev, aiResponse]);
-      }, 1000);
     }
   };
+
+  // Add function to receive AI response
+  const addAIResponse = (content: string) => {
+    const aiResponse: Message = {
+      id: Date.now().toString(),
+      content,
+      sender: 'ai',
+      timestamp: new Date()
+    };
+    setMessages(prev => [...prev, aiResponse]);
+    setIsThinking(false);
+  };
+
+  // Expose addAIResponse through onSendMessage callback
+  useEffect(() => {
+    if (onSendMessage) {
+      // Override to pass addAIResponse function
+      (window as any).addAIResponse = addAIResponse;
+    }
+  }, [onSendMessage]);
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -110,6 +121,21 @@ export const ChatArea = ({ onSendMessage }: ChatAreaProps) => {
               </div>
             </div>
           ))}
+          
+          {/* Thinking Animation */}
+          {isThinking && (
+            <div className="flex items-start space-x-3 animate-fade-in">
+              <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-chat-bubble-ai">
+                <Bot className="h-4 w-4" />
+              </div>
+              <div className="bg-chat-bubble-ai text-foreground p-4 rounded-2xl shadow-sm">
+                <div className="flex items-center space-x-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span className="text-sm text-muted-foreground">Pensando...</span>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </ScrollArea>
 
