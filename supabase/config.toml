@@ -1,1 +1,4 @@
 project_id = "xciubsogktecqcgafwaa"
+
+[functions.receive-actions]
+verify_jwt = false

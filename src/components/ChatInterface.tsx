@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { NavigationBar } from './NavigationBar';
 import { ChatArea } from './ChatArea';
 import { ActionPanel } from './ActionPanel';
+import { supabase } from '@/integrations/supabase/client';
 
 interface Message {
   id: string;
@@ -22,6 +23,68 @@ interface ActionCard {
 export const ChatInterface = () => {
   const [activeNavItem, setActiveNavItem] = useState('chats');
   const [actions, setActions] = useState<ActionCard[]>([]);
+
+  // Fetch actions from Supabase
+  useEffect(() => {
+    fetchActions();
+    
+    // Subscribe to real-time updates
+    const channel = supabase
+      .channel('actions-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'actions'
+        },
+        (payload) => {
+          console.log('New action received:', payload);
+          const newAction = payload.new as any;
+          setActions(prev => [{
+            id: newAction.id,
+            title: newAction.title,
+            description: newAction.description,
+            date: newAction.date,
+            priority: newAction.priority as 'high' | 'medium' | 'low',
+            category: newAction.category
+          }, ...prev]);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  const fetchActions = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('actions')
+        .select('*')
+        .eq('status', 'pending')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching actions:', error);
+        return;
+      }
+
+      const formattedActions = data.map(action => ({
+        id: action.id,
+        title: action.title,
+        description: action.description,
+        date: action.date,
+        priority: action.priority as 'high' | 'medium' | 'low',
+        category: action.category
+      }));
+
+      setActions(formattedActions);
+    } catch (error) {
+      console.error('Failed to fetch actions:', error);
+    }
+  };
 
   const handleSendMessage = async (message: string, messageData: Message) => {
     console.log('Sending message to n8n:', message);
@@ -74,19 +137,47 @@ export const ChatInterface = () => {
     }
   };
 
-  const handleExecuteAction = (actionId: string) => {
-    console.log('Executing action:', actionId);
-    // Implement action execution logic
+  const handleExecuteAction = async (actionId: string) => {
+    try {
+      const { error } = await supabase
+        .from('actions')
+        .update({ status: 'executed' })
+        .eq('id', actionId);
+
+      if (error) {
+        console.error('Error executing action:', error);
+        return;
+      }
+
+      setActions(prev => prev.filter(action => action.id !== actionId));
+      console.log('Action executed:', actionId);
+    } catch (error) {
+      console.error('Failed to execute action:', error);
+    }
   };
 
   const handleEditAction = (actionId: string) => {
     console.log('Editing action:', actionId);
-    // Implement action editing logic
+    // TODO: Implement action editing logic
   };
 
-  const handleIgnoreAction = (actionId: string) => {
-    console.log('Ignoring action:', actionId);
-    setActions(prev => prev.filter(action => action.id !== actionId));
+  const handleIgnoreAction = async (actionId: string) => {
+    try {
+      const { error } = await supabase
+        .from('actions')
+        .update({ status: 'ignored' })
+        .eq('id', actionId);
+
+      if (error) {
+        console.error('Error ignoring action:', error);
+        return;
+      }
+
+      setActions(prev => prev.filter(action => action.id !== actionId));
+      console.log('Action ignored:', actionId);
+    } catch (error) {
+      console.error('Failed to ignore action:', error);
+    }
   };
 
   return (
