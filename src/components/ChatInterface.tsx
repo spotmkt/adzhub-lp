@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { NavigationBar } from './NavigationBar';
 import { ChatArea } from './ChatArea';
 import { ActionPanel } from './ActionPanel';
-import { ClientSelector } from './ClientSelector';
 import { ActionViewDialog } from './ActionViewDialog';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -322,11 +321,6 @@ export const ChatInterface = () => {
     }
   };
 
-  // Show client selector if no client is selected
-  if (!selectedClient) {
-    return <ClientSelector onClientSelect={handleClientSelect} />;
-  }
-
   return (
     <div className="h-screen bg-background flex overflow-hidden">
       <NavigationBar 
@@ -340,6 +334,7 @@ export const ChatInterface = () => {
           selectedClient={selectedClient}
           onExitChat={handleExitChat}
           onViewCard={handleViewAction}
+          onClientSelect={handleClientSelect}
         />
       </div>
       

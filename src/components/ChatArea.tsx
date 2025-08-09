@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import { ClientDropdown } from './ClientDropdown';
 
 interface Message {
   id: string;
@@ -31,9 +32,10 @@ interface ChatAreaProps {
   selectedClient?: Client;
   onExitChat?: () => void;
   onViewCard?: (cardId: string) => void;
+  onClientSelect?: (client: Client) => void;
 }
 
-export const ChatArea = ({ onSendMessage, selectedClient, onExitChat, onViewCard }: ChatAreaProps) => {
+export const ChatArea = ({ onSendMessage, selectedClient, onExitChat, onViewCard, onClientSelect }: ChatAreaProps) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isThinking, setIsThinking] = useState(false);
@@ -124,27 +126,11 @@ export const ChatArea = ({ onSendMessage, selectedClient, onExitChat, onViewCard
     <div className="h-screen bg-chat-background flex flex-col min-w-0">
       {/* Header */}
       <div className="border-b border-border p-4 flex items-center justify-between flex-shrink-0">
-        <div className="min-w-0">
-          <h1 className="text-xl font-semibold text-foreground truncate">
-            Chat - {selectedClient?.name}
-          </h1>
-          <p className="text-muted-foreground text-sm truncate">
-            {selectedClient?.email && `${selectedClient.email} • `}
-            {selectedClient?.phone || 'Assistente IA'}
-          </p>
-        </div>
-        
-        {onExitChat && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={onExitChat}
-            className="flex items-center space-x-2 flex-shrink-0"
-          >
-            <LogOut className="h-4 w-4" />
-            <span>Sair do Chat</span>
-          </Button>
-        )}
+        <ClientDropdown
+          selectedClient={selectedClient}
+          onClientSelect={onClientSelect}
+          onExitChat={onExitChat}
+        />
       </div>
 
       {/* Messages */}
