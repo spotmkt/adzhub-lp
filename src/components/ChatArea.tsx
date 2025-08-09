@@ -162,14 +162,10 @@ export const ChatArea = ({ onSendMessage, selectedClient, onExitChat, onViewCard
                 "w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0",
                 message.sender === 'user' 
                   ? "bg-chat-bubble-user" 
-                  : message.sender === 'system'
-                  ? "bg-orange-500"
                   : "bg-chat-bubble-ai"
               )}>
                 {message.sender === 'user' ? (
                   <User className="h-4 w-4" />
-                ) : message.sender === 'system' ? (
-                  <Bell className="h-4 w-4 text-white" />
                 ) : (
                   <Bot className="h-4 w-4" />
                 )}
@@ -179,11 +175,9 @@ export const ChatArea = ({ onSendMessage, selectedClient, onExitChat, onViewCard
                 "max-w-[70%] p-4 rounded-2xl shadow-sm",
                 message.sender === 'user'
                   ? "bg-chat-bubble-user text-primary-foreground ml-auto"
-                  : message.sender === 'system'
-                  ? "bg-orange-50 border border-orange-200 text-orange-900"
                   : "bg-chat-bubble-ai text-foreground"
               )}>
-                <p className="text-sm leading-relaxed">{message.content}</p>
+                {message.content && <p className="text-sm leading-relaxed">{message.content}</p>}
                 
                 {/* Card notification - single line */}
                 {message.cardData && (
@@ -212,8 +206,7 @@ export const ChatArea = ({ onSendMessage, selectedClient, onExitChat, onViewCard
                 
                 <span className={cn(
                   "text-xs mt-2 block opacity-70",
-                  message.sender === 'user' ? "text-primary-foreground" : 
-                  message.sender === 'system' ? "text-orange-700" : "text-muted-foreground"
+                  message.sender === 'user' ? "text-primary-foreground" : "text-muted-foreground"
                 )}>
                   {message.timestamp.toLocaleTimeString()}
                 </span>
