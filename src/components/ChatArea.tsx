@@ -83,7 +83,7 @@ export const ChatArea = ({ onSendMessage, selectedClient, onExitChat, onViewCard
   const addCardNotification = (cardData: any) => {
     const cardNotification: Message = {
       id: `card-${cardData.id}-${Date.now()}`,
-      content: `📋 Novo card recebido: ${cardData.title}`,
+      content: '',
       sender: 'system',
       timestamp: new Date(),
       cardData: {
