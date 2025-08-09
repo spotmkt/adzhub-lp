@@ -24,38 +24,48 @@ export const ChatInterface = () => {
   const [actions, setActions] = useState<ActionCard[]>([]);
 
   const handleSendMessage = async (message: string, messageData: Message) => {
-    console.log('Sending message to API:', message);
+    console.log('Sending message to n8n:', message);
     
-    // Here you would typically call your API endpoint
-    // const response = await fetch('/api/n8n-agent', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ message })
-    // });
-    
-    // For now, simulate API response with mock data
-    setTimeout(() => {
+    try {
+      const response = await fetch('https://n8n-n8n.ascl7r.easypanel.host/webhook/7d06f022-1e56-4dad-ba4c-3684d9ee5562', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          message,
+          timestamp: new Date().toISOString(),
+          userId: 'user-' + Date.now() // You can replace with actual user ID if you have authentication
+        })
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        
+        // Check if n8n returned actions array
+        if (data.actions && Array.isArray(data.actions)) {
+          setActions(prev => [...data.actions, ...prev]);
+        }
+        
+        console.log('n8n response:', data);
+      } else {
+        console.error('Error from n8n:', response.status, response.statusText);
+      }
+    } catch (error) {
+      console.error('Failed to send message to n8n:', error);
+      
+      // Fallback to mock data if n8n is unavailable
       const mockActions: ActionCard[] = [
         {
           id: Date.now().toString(),
-          title: 'Criar mockup de interface',
-          description: 'Desenvolver protótipo visual baseado nos requisitos mencionados.',
+          title: 'Erro de conexão - Ação de exemplo',
+          description: 'Esta é uma ação de exemplo pois não foi possível conectar com o n8n.',
           date: new Date().toLocaleDateString('pt-BR'),
           priority: 'high',
-          category: 'Design'
-        },
-        {
-          id: (Date.now() + 1).toString(),
-          title: 'Pesquisar referências',
-          description: 'Buscar inspirações visuais para o projeto atual.',
-          date: new Date().toLocaleDateString('pt-BR'),
-          priority: 'medium',
-          category: 'Pesquisa'
+          category: 'Sistema'
         }
       ];
       
       setActions(prev => [...mockActions, ...prev]);
-    }, 1500);
+    }
   };
 
   const handleExecuteAction = (actionId: string) => {
