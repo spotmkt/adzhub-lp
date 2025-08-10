@@ -2,14 +2,17 @@ import React, { useRef, useState } from 'react';
 import { Paperclip, Image, Mic, FileText, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { AudioRecorder } from './AudioRecorder';
 
 interface FileUploadProps {
   onFileSelect: (file: File, type: 'image' | 'audio' | 'document') => void;
+  onAudioRecord: (audioBlob: Blob) => void;
   className?: string;
 }
 
-export const FileUpload = ({ onFileSelect, className }: FileUploadProps) => {
+export const FileUpload = ({ onFileSelect, onAudioRecord, className }: FileUploadProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [showAudioRecorder, setShowAudioRecorder] = useState(false);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const audioInputRef = useRef<HTMLInputElement>(null);
   const documentInputRef = useRef<HTMLInputElement>(null);
@@ -24,6 +27,17 @@ export const FileUpload = ({ onFileSelect, className }: FileUploadProps) => {
     }
   };
 
+  const handleAudioRecordingComplete = (audioBlob: Blob) => {
+    onAudioRecord(audioBlob);
+    setShowAudioRecorder(false);
+    setIsOpen(false);
+  };
+
+  const handleAudioClick = () => {
+    setShowAudioRecorder(true);
+    setIsOpen(false);
+  };
+
   const uploadOptions = [
     {
       icon: Image,
@@ -31,6 +45,7 @@ export const FileUpload = ({ onFileSelect, className }: FileUploadProps) => {
       type: 'image' as const,
       accept: 'image/*',
       ref: imageInputRef,
+      onClick: () => imageInputRef.current?.click(),
     },
     {
       icon: Mic,
@@ -38,6 +53,7 @@ export const FileUpload = ({ onFileSelect, className }: FileUploadProps) => {
       type: 'audio' as const,
       accept: 'audio/*',
       ref: audioInputRef,
+      onClick: handleAudioClick,
     },
     {
       icon: FileText,
@@ -45,6 +61,7 @@ export const FileUpload = ({ onFileSelect, className }: FileUploadProps) => {
       type: 'document' as const,
       accept: '.pdf,.doc,.docx,.txt,.xlsx,.xls,.ppt,.pptx',
       ref: documentInputRef,
+      onClick: () => documentInputRef.current?.click(),
     },
   ];
 
@@ -66,17 +83,19 @@ export const FileUpload = ({ onFileSelect, className }: FileUploadProps) => {
               const Icon = option.icon;
               return (
                 <div key={option.type}>
-                  <input
-                    ref={option.ref}
-                    type="file"
-                    accept={option.accept}
-                    onChange={(e) => handleFileUpload(e, option.type)}
-                    className="hidden"
-                  />
+                  {(option.type === 'image' || option.type === 'document') && (
+                    <input
+                      ref={option.ref}
+                      type="file"
+                      accept={option.accept}
+                      onChange={(e) => handleFileUpload(e, option.type)}
+                      className="hidden"
+                    />
+                  )}
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => option.ref.current?.click()}
+                    onClick={option.onClick}
                     className="w-full justify-start gap-2 h-8"
                   >
                     <Icon className="h-4 w-4" />
@@ -86,6 +105,16 @@ export const FileUpload = ({ onFileSelect, className }: FileUploadProps) => {
               );
             })}
           </div>
+        </div>
+      )}
+
+      {/* Audio Recorder Overlay */}
+      {showAudioRecorder && (
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <AudioRecorder
+            onRecordingComplete={handleAudioRecordingComplete}
+            onClose={() => setShowAudioRecorder(false)}
+          />
         </div>
       )}
     </div>

@@ -133,6 +133,29 @@ export const ChatArea = ({
     onSendMessage?.(fileMessage.content, fileMessage);
   };
 
+  const handleAudioRecord = (audioBlob: Blob) => {
+    const file = new File([audioBlob], `audio-${Date.now()}.webm`, { 
+      type: 'audio/webm' 
+    });
+    const url = URL.createObjectURL(audioBlob);
+    
+    const audioMessage: Message = {
+      id: Date.now().toString(),
+      content: 'Enviou uma gravação de áudio',
+      sender: 'user',
+      timestamp: new Date(),
+      fileData: {
+        file,
+        type: 'audio',
+        url
+      }
+    };
+    
+    setMessages(prev => [...prev, audioMessage]);
+    setIsThinking(true);
+    onSendMessage?.(audioMessage.content, audioMessage);
+  };
+
   // Add function to receive AI response
   const addAIResponse = (content: string) => {
     const aiResponse: Message = {
@@ -395,7 +418,7 @@ export const ChatArea = ({
       {/* Input Area */}
       <div className="border-t border-border p-4 flex-shrink-0 bg-chat-background">
         <div className="relative max-w-full flex gap-2">
-          <FileUpload onFileSelect={handleFileSelect} />
+          <FileUpload onFileSelect={handleFileSelect} onAudioRecord={handleAudioRecord} />
           <div className="relative flex-1">
             <Input
               value={inputValue}
