@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Send, Bot, User, Loader2, LogOut, Bell, Eye, Calendar, History } from 'lucide-react';
+import { Send, Bot, User, Loader2, LogOut, Bell, Eye, Calendar, History, FileText, Download, Play, Pause } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -7,12 +7,18 @@ import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { ClientDropdown } from './ClientDropdown';
 import { ThemeToggle } from './ThemeToggle';
+import { FileUpload } from './FileUpload';
 
 interface Message {
   id: string;
   content: string;
   sender: 'user' | 'ai' | 'system';
   timestamp: Date;
+  fileData?: {
+    file: File;
+    type: 'image' | 'audio' | 'document';
+    url?: string;
+  };
   cardData?: {
     id: string;
     title: string;
@@ -106,6 +112,25 @@ export const ChatArea = ({
       onSendMessage?.(inputValue, newMessage);
       setInputValue('');
     }
+  };
+
+  const handleFileSelect = (file: File, type: 'image' | 'audio' | 'document') => {
+    const url = URL.createObjectURL(file);
+    const fileMessage: Message = {
+      id: Date.now().toString(),
+      content: `Enviou ${type === 'image' ? 'uma imagem' : type === 'audio' ? 'um áudio' : 'um documento'}: ${file.name}`,
+      sender: 'user',
+      timestamp: new Date(),
+      fileData: {
+        file,
+        type,
+        url
+      }
+    };
+    
+    setMessages(prev => [...prev, fileMessage]);
+    setIsThinking(true);
+    onSendMessage?.(fileMessage.content, fileMessage);
   };
 
   // Add function to receive AI response
@@ -245,6 +270,76 @@ export const ChatArea = ({
               )}>
                 {message.content && <p className="text-sm leading-relaxed break-words">{message.content}</p>}
                 
+                {/* File attachments */}
+                {message.fileData && (
+                  <div className="mt-2">
+                    {message.fileData.type === 'image' && (
+                      <div className="relative">
+                        <img 
+                          src={message.fileData.url} 
+                          alt={message.fileData.file.name}
+                          className="max-w-full h-auto rounded-lg border border-border max-h-64 object-contain"
+                        />
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            const link = document.createElement('a');
+                            link.href = message.fileData!.url!;
+                            link.download = message.fileData!.file.name;
+                            link.click();
+                          }}
+                          className="absolute top-2 right-2 h-7 w-7 p-0"
+                        >
+                          <Download className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    )}
+                    
+                    {message.fileData.type === 'audio' && (
+                      <div className="bg-accent rounded-lg p-3 flex items-center gap-3">
+                        <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                          <Play className="h-4 w-4 text-primary-foreground" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium truncate">{message.fileData.file.name}</p>
+                          <audio controls className="w-full mt-1">
+                            <source src={message.fileData.url} type={message.fileData.file.type} />
+                          </audio>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {message.fileData.type === 'document' && (
+                      <div className="bg-accent rounded-lg p-3 flex items-center gap-3">
+                        <div className="w-8 h-8 bg-secondary rounded-full flex items-center justify-center">
+                          <FileText className="h-4 w-4" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium truncate">{message.fileData.file.name}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {(message.fileData.file.size / 1024 / 1024).toFixed(2)} MB
+                          </p>
+                        </div>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            const link = document.createElement('a');
+                            link.href = message.fileData!.url!;
+                            link.download = message.fileData!.file.name;
+                            link.click();
+                          }}
+                          className="h-7 px-2 text-xs"
+                        >
+                          <Download className="h-3 w-3 mr-1" />
+                          Baixar
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                )}
+                
                 {/* Card notification - single line */}
                 {message.cardData && (
                   <div className="mt-2 p-2 bg-chat-bubble-ai rounded-lg flex items-center justify-between gap-2">
@@ -299,25 +394,28 @@ export const ChatArea = ({
 
       {/* Input Area */}
       <div className="border-t border-border p-4 flex-shrink-0 bg-chat-background">
-        <div className="relative max-w-full">
-          <Input
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder="Digite sua mensagem..."
-            className="pr-12 w-full bg-chat-input border-border rounded-xl h-10 text-foreground placeholder:text-muted-foreground"
-            style={{ 
-              paddingBottom: 'env(safe-area-inset-bottom)',
-              marginBottom: 'env(safe-area-inset-bottom)'
-            }}
-          />
-          <Button
-            onClick={handleSend}
-            size="icon"
-            className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 rounded-lg bg-primary hover:bg-primary/90 shadow-glow"
-          >
-            <Send className="h-3 w-3" />
-          </Button>
+        <div className="relative max-w-full flex gap-2">
+          <FileUpload onFileSelect={handleFileSelect} />
+          <div className="relative flex-1">
+            <Input
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="Digite sua mensagem..."
+              className="pr-12 w-full bg-chat-input border-border rounded-xl h-10 text-foreground placeholder:text-muted-foreground"
+              style={{ 
+                paddingBottom: 'env(safe-area-inset-bottom)',
+                marginBottom: 'env(safe-area-inset-bottom)'
+              }}
+            />
+            <Button
+              onClick={handleSend}
+              size="icon"
+              className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 rounded-lg bg-primary hover:bg-primary/90 shadow-glow"
+            >
+              <Send className="h-3 w-3" />
+            </Button>
+          </div>
         </div>
       </div>
     </div>
