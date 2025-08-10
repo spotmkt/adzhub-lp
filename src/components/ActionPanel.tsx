@@ -1,4 +1,4 @@
-import { Calendar, Clock, Star, Eye } from 'lucide-react';
+import { Calendar, Clock, Star, Eye, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
@@ -20,6 +20,7 @@ interface ActionPanelProps {
   onEdit?: (actionId: string) => void;
   onIgnore?: (actionId: string) => void;
   onView?: (actionId: string) => void;
+  onBack?: () => void;
 }
 
 const defaultActions: ActionCard[] = [
@@ -54,7 +55,8 @@ export const ActionPanel = ({
   onExecute, 
   onEdit, 
   onIgnore,
-  onView 
+  onView,
+  onBack 
 }: ActionPanelProps) => {
   const getPriorityColor = (priority?: string) => {
     switch (priority) {
@@ -66,11 +68,23 @@ export const ActionPanel = ({
   };
 
   return (
-    <div className="w-80 bg-action-panel border-l border-border flex flex-col h-screen">
+    <div className="w-full lg:w-80 bg-action-panel border-l border-border flex flex-col h-screen">
       {/* Header */}
       <div className="p-4 border-b border-border flex-shrink-0">
         <div className="flex items-center justify-between">
-          <h2 className="text-base font-semibold text-foreground">Hoje</h2>
+          <div className="flex items-center space-x-2">
+            {onBack && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onBack}
+                className="h-8 w-8 lg:hidden"
+              >
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+            )}
+            <h2 className="text-base font-semibold text-foreground">Hoje</h2>
+          </div>
           <Badge variant="secondary" className="text-xs">
             {actions.length} ações
           </Badge>

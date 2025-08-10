@@ -323,29 +323,53 @@ export const ChatInterface = () => {
 
   return (
     <div className="h-screen bg-background flex overflow-hidden">
-      <NavigationBar 
-        activeItem={activeNavItem}
-        onItemClick={setActiveNavItem}
-      />
-      
-      <div className="flex-1 min-w-0">
-        <ChatArea 
-          onSendMessage={handleSendMessage}
-          selectedClient={selectedClient}
-          onExitChat={handleExitChat}
-          onViewCard={handleViewAction}
-          onClientSelect={handleClientSelect}
+      {/* Desktop Navigation */}
+      <div className="hidden md:block">
+        <NavigationBar 
+          activeItem={activeNavItem}
+          onItemClick={setActiveNavItem}
         />
       </div>
       
-      <div className="w-80 flex-shrink-0 h-screen overflow-hidden">
-        <ActionPanel
-          actions={actions}
-          onExecute={handleExecuteAction}
-          onEdit={handleEditAction}
-          onIgnore={handleIgnoreAction}
-          onView={handleViewAction}
-        />
+      <div className="flex-1 min-w-0 flex flex-col md:flex-row">
+        <div className="flex-1 min-w-0">
+          <ChatArea 
+            onSendMessage={handleSendMessage}
+            selectedClient={selectedClient}
+            onExitChat={handleExitChat}
+            onViewCard={handleViewAction}
+            onClientSelect={handleClientSelect}
+            activeNavItem={activeNavItem}
+            onNavItemClick={setActiveNavItem}
+          />
+        </div>
+        
+        {/* Desktop Action Panel */}
+        <div className="hidden lg:block w-80 flex-shrink-0 h-screen overflow-hidden">
+          <ActionPanel
+            actions={actions}
+            onExecute={handleExecuteAction}
+            onEdit={handleEditAction}
+            onIgnore={handleIgnoreAction}
+            onView={handleViewAction}
+          />
+        </div>
+      </div>
+      
+      {/* Mobile Action Panel - Shows as overlay when needed */}
+      <div className="lg:hidden">
+        {activeNavItem === 'actions' && (
+          <div className="absolute inset-0 z-50 bg-background">
+            <ActionPanel
+              actions={actions}
+              onExecute={handleExecuteAction}
+              onEdit={handleEditAction}
+              onIgnore={handleIgnoreAction}
+              onView={handleViewAction}
+              onBack={() => setActiveNavItem('chats')}
+            />
+          </div>
+        )}
       </div>
       
       <ActionViewDialog

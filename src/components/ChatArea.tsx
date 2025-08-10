@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Send, Bot, User, Loader2, LogOut, Bell, Eye } from 'lucide-react';
+import { Send, Bot, User, Loader2, LogOut, Bell, Eye, Calendar, History } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { ClientDropdown } from './ClientDropdown';
+import { ThemeToggle } from './ThemeToggle';
 
 interface Message {
   id: string;
@@ -33,9 +34,19 @@ interface ChatAreaProps {
   onExitChat?: () => void;
   onViewCard?: (cardId: string) => void;
   onClientSelect?: (client: Client) => void;
+  activeNavItem?: string;
+  onNavItemClick?: (item: string) => void;
 }
 
-export const ChatArea = ({ onSendMessage, selectedClient, onExitChat, onViewCard, onClientSelect }: ChatAreaProps) => {
+export const ChatArea = ({ 
+  onSendMessage, 
+  selectedClient, 
+  onExitChat, 
+  onViewCard, 
+  onClientSelect,
+  activeNavItem,
+  onNavItemClick 
+}: ChatAreaProps) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isThinking, setIsThinking] = useState(false);
@@ -124,8 +135,38 @@ export const ChatArea = ({ onSendMessage, selectedClient, onExitChat, onViewCard
 
   return (
     <div className="h-screen bg-chat-background flex flex-col min-w-0">
-      {/* Header */}
-      <div className="border-b border-border p-4 flex items-center justify-between flex-shrink-0">
+      {/* Mobile Header with Navigation */}
+      <div className="md:hidden bg-chat-header border-b border-border p-3 flex items-center justify-between flex-shrink-0">
+        <div className="flex items-center space-x-3">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => onNavItemClick?.('actions')}
+            className="h-8 w-8"
+          >
+            <Calendar className="h-4 w-4" />
+          </Button>
+          <ClientDropdown
+            selectedClient={selectedClient}
+            onClientSelect={onClientSelect}
+            onExitChat={onExitChat}
+          />
+        </div>
+        <div className="flex items-center space-x-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => onNavItemClick?.('history')}
+            className="h-8 w-8"
+          >
+            <History className="h-4 w-4" />
+          </Button>
+          <ThemeToggle />
+        </div>
+      </div>
+
+      {/* Desktop Header */}
+      <div className="hidden md:block border-b border-border p-4 flex-shrink-0">
         <ClientDropdown
           selectedClient={selectedClient}
           onClientSelect={onClientSelect}
