@@ -127,3 +127,23 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 }
+
+/* Mobile viewport fix for iOS Safari */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .mobile-safe-area {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Ensure proper height calculation on mobile devices */
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Fix for iOS Safari viewport units */
+@supports (-webkit-touch-callout: none) {
+  .ios-vh-fix {
+    height: -webkit-fill-available;
+  }
+}

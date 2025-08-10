@@ -50,6 +50,7 @@ export const ChatArea = ({
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isThinking, setIsThinking] = useState(false);
+  const [viewportHeight, setViewportHeight] = useState(window.innerHeight);
 
   // Initialize with welcome message when client is selected
   useEffect(() => {
@@ -63,6 +64,33 @@ export const ChatArea = ({
       setMessages([welcomeMessage]);
     }
   }, [selectedClient]);
+
+  // Handle viewport changes for iOS Safari URL bar
+  useEffect(() => {
+    const handleResize = () => {
+      setViewportHeight(window.innerHeight);
+    };
+
+    const handleVisualViewportChange = () => {
+      if (window.visualViewport) {
+        setViewportHeight(window.visualViewport.height);
+      }
+    };
+
+    // Listen to both window resize and visual viewport changes
+    window.addEventListener('resize', handleResize);
+    
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', handleVisualViewportChange);
+    }
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', handleVisualViewportChange);
+      }
+    };
+  }, []);
 
   const handleSend = () => {
     if (inputValue.trim()) {
@@ -134,7 +162,10 @@ export const ChatArea = ({
   };
 
   return (
-    <div className="h-screen bg-chat-background flex flex-col min-w-0">
+    <div 
+      className="bg-chat-background flex flex-col min-w-0 relative"
+      style={{ height: `${viewportHeight}px` }}
+    >
       {/* Mobile Header with Navigation */}
       <div className="md:hidden bg-chat-header border-b border-border p-3 flex items-center justify-between flex-shrink-0">
         <div className="flex items-center space-x-3">
@@ -259,7 +290,7 @@ export const ChatArea = ({
       </ScrollArea>
 
       {/* Input Area */}
-      <div className="border-t border-border p-4 flex-shrink-0">
+      <div className="border-t border-border p-4 flex-shrink-0 bg-chat-background">
         <div className="relative max-w-full">
           <Input
             value={inputValue}
@@ -267,6 +298,10 @@ export const ChatArea = ({
             onKeyPress={handleKeyPress}
             placeholder="Digite sua mensagem..."
             className="pr-12 w-full bg-chat-input border-border rounded-xl h-10 text-foreground placeholder:text-muted-foreground"
+            style={{ 
+              paddingBottom: 'env(safe-area-inset-bottom)',
+              marginBottom: 'env(safe-area-inset-bottom)'
+            }}
           />
           <Button
             onClick={handleSend}
