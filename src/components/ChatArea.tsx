@@ -122,6 +122,8 @@ export const ChatArea = ({
 
   // Add function to add card notification
   const addCardNotification = (cardData: any) => {
+    console.log('addCardNotification called with:', cardData);
+    
     const cardNotification: Message = {
       id: `card-${cardData.id}-${Date.now()}`,
       content: '',
@@ -134,7 +136,13 @@ export const ChatArea = ({
         priority: cardData.priority
       }
     };
-    setMessages(prev => [...prev, cardNotification]);
+    
+    console.log('Adding card notification to messages:', cardNotification);
+    setMessages(prev => {
+      const newMessages = [...prev, cardNotification];
+      console.log('New messages array:', newMessages);
+      return newMessages;
+    });
   };
 
   // Functions to manage chat history

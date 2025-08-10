@@ -66,9 +66,14 @@ export const ChatInterface = () => {
           
           setActions(prev => [actionCard, ...prev]);
           
-          // Add notification to chat if a client is selected
-          if (selectedClient && (window as any).addCardNotification) {
+          // Add notification to chat always when a new action is created
+          console.log('Adding card notification:', actionCard);
+          console.log('addCardNotification function available:', typeof (window as any).addCardNotification);
+          
+          if ((window as any).addCardNotification) {
             (window as any).addCardNotification(actionCard);
+          } else {
+            console.warn('addCardNotification function not available on window');
           }
         }
       )
