@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import History from "./pages/History";
 import NotFound from "./pages/NotFound";
+import { Auth } from "./pages/Auth";
 
 // Create QueryClient outside of component to avoid recreation on each render
 const queryClient = new QueryClient({
@@ -29,6 +30,7 @@ function App(): React.ReactElement {
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/auth" element={<Auth />} />
               <Route path="/history" element={<History />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
