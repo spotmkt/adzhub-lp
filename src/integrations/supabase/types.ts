@@ -106,6 +106,7 @@ export type Database = {
           id: string
           sender: string
           timestamp: string
+          user_id: string | null
         }
         Insert: {
           client_id: string
@@ -114,6 +115,7 @@ export type Database = {
           id?: string
           sender: string
           timestamp?: string
+          user_id?: string | null
         }
         Update: {
           client_id?: string
@@ -122,6 +124,7 @@ export type Database = {
           id?: string
           sender?: string
           timestamp?: string
+          user_id?: string | null
         }
         Relationships: [
           {

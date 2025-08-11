@@ -184,12 +184,16 @@ export const ChatInterface = () => {
 
   const saveMessageToHistory = async (clientId: string, content: string, sender: 'user' | 'ai') => {
     try {
+      // Get current user - for now we'll handle the case where auth isn't implemented yet
+      const { data: { user } } = await supabase.auth.getUser();
+      
       const { error } = await supabase
         .from('chat_messages')
         .insert({
           client_id: clientId,
           content,
-          sender
+          sender,
+          user_id: user?.id // This will be null if user isn't authenticated
         });
 
       if (error) {
