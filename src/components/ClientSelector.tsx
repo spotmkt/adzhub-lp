@@ -25,10 +25,17 @@ export const ClientSelector = ({ onClientSelect }: ClientSelectorProps) => {
 
   const fetchClients = async () => {
     try {
-      const { data, error } = await supabase
-        .from('clients')
-        .select('*')
-        .order('name');
+      // Get current user - for now we'll handle the case where auth isn't implemented yet
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      let query = supabase.from('clients').select('*').order('name');
+      
+      // If user is authenticated, filter by user_id, otherwise get all (temporary for migration)
+      if (user) {
+        query = query.eq('user_id', user.id);
+      }
+      
+      const { data, error } = await query;
 
       if (error) {
         console.error('Error fetching clients:', error);
