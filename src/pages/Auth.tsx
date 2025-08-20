@@ -7,13 +7,15 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2 } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Loader2, Mail, CheckCircle } from 'lucide-react';
 
 export const Auth = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
+  const [showEmailVerificationDialog, setShowEmailVerificationDialog] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -67,10 +69,7 @@ export const Auth = () => {
           });
         }
       } else {
-        toast({
-          title: "Cadastro realizado!",
-          description: "Verifique seu email para confirmar a conta.",
-        });
+        setShowEmailVerificationDialog(true);
       }
     } catch (error) {
       toast({
@@ -199,6 +198,34 @@ export const Auth = () => {
           </Tabs>
         </CardContent>
       </Card>
+
+      {/* Email Verification Dialog */}
+      <Dialog open={showEmailVerificationDialog} onOpenChange={setShowEmailVerificationDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader className="text-center">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+              <Mail className="h-8 w-8 text-primary" />
+            </div>
+            <DialogTitle className="text-xl">Verifique seu email</DialogTitle>
+            <DialogDescription className="text-center space-y-2">
+              <p>Enviamos um link de confirmação para:</p>
+              <p className="font-medium text-foreground">{email}</p>
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="rounded-lg bg-muted/50 p-4 text-center text-sm text-muted-foreground">
+              <CheckCircle className="mx-auto mb-2 h-5 w-5 text-accent" />
+              <p>Clique no link do email para ativar sua conta e fazer login.</p>
+            </div>
+            <Button 
+              onClick={() => setShowEmailVerificationDialog(false)}
+              className="w-full"
+            >
+              Entendi
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
