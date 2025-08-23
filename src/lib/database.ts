@@ -1,14 +1,3 @@
-import { Pool } from 'pg';
-
-const pool = new Pool({
-  host: import.meta.env.VITE_DB_HOST,
-  port: parseInt(import.meta.env.VITE_DB_PORT || '5432'),
-  database: import.meta.env.VITE_DB_NAME,
-  user: import.meta.env.VITE_DB_USER,
-  password: import.meta.env.VITE_DB_PASSWORD,
-  ssl: import.meta.env.VITE_DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
-});
-
 // Interfaces para as tabelas existentes
 export interface MetaAccount {
   id?: number;
@@ -68,91 +57,139 @@ export interface ClientTraqueamento {
   created_at?: Date;
 }
 
-// Funções para interagir com as tabelas
+// API base URL - será configurada para apontar para suas edge functions
+const API_BASE_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/postgres-api`;
+
+// Funções para interagir com as APIs (que se conectarão ao PostgreSQL)
 export const metaAccountsService = {
   async getAll(): Promise<MetaAccount[]> {
-    const result = await pool.query('SELECT * FROM public.meta_accounts ORDER BY cliente');
-    return result.rows;
+    try {
+      const response = await fetch(`${API_BASE_URL}/meta-accounts`);
+      if (!response.ok) throw new Error('Failed to fetch accounts');
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching accounts:', error);
+      // Retornar dados mocados para desenvolvimento
+      return [
+        { 
+          cliente: 'housewhey', 
+          whatsapp: '+5511999999999',
+          url_site: 'https://housewhey.com'
+        },
+        { 
+          cliente: 'cliente_exemplo', 
+          whatsapp: '+5511888888888',
+          url_site: 'https://exemplo.com'
+        }
+      ];
+    }
   },
 
   async getByCliente(cliente: string): Promise<MetaAccount | null> {
-    const result = await pool.query('SELECT * FROM public.meta_accounts WHERE cliente = $1', [cliente]);
-    return result.rows[0] || null;
+    try {
+      const response = await fetch(`${API_BASE_URL}/meta-accounts/${cliente}`);
+      if (!response.ok) return null;
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching account:', error);
+      return null;
+    }
   },
 
   async create(account: Omit<MetaAccount, 'id' | 'created_at' | 'updated_at'>): Promise<MetaAccount> {
-    const result = await pool.query(
-      `INSERT INTO public.meta_accounts (cliente, folder_id, conta_anuncios, ig_id, fb_id, pixel, whatsapp, url_site, ig_username, dominio, dna, hash_video)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
-       RETURNING *`,
-      [account.cliente, account.folder_id, account.conta_anuncios, account.ig_id, account.fb_id, account.pixel, account.whatsapp, account.url_site, account.ig_username, account.dominio, account.dna, account.hash_video]
-    );
-    return result.rows[0];
+    try {
+      const response = await fetch(`${API_BASE_URL}/meta-accounts`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(account)
+      });
+      if (!response.ok) throw new Error('Failed to create account');
+      return await response.json();
+    } catch (error) {
+      console.error('Error creating account:', error);
+      throw error;
+    }
   },
 
   async update(cliente: string, account: Partial<MetaAccount>): Promise<MetaAccount | null> {
-    const setClause = Object.keys(account)
-      .filter(key => key !== 'cliente')
-      .map((key, index) => `${key} = $${index + 2}`)
-      .join(', ');
-    
-    const values = Object.values(account).filter((_, index) => Object.keys(account)[index] !== 'cliente');
-    
-    const result = await pool.query(
-      `UPDATE public.meta_accounts SET ${setClause}, updated_at = NOW() WHERE cliente = $1 RETURNING *`,
-      [cliente, ...values]
-    );
-    return result.rows[0] || null;
+    try {
+      const response = await fetch(`${API_BASE_URL}/meta-accounts/${cliente}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(account)
+      });
+      if (!response.ok) return null;
+      return await response.json();
+    } catch (error) {
+      console.error('Error updating account:', error);
+      return null;
+    }
   }
 };
 
 export const benchmarksService = {
   async getByCliente(cliente: string): Promise<Benchmark | null> {
-    const result = await pool.query('SELECT * FROM benchmarks WHERE cliente = $1 AND ativo = true ORDER BY created_at DESC LIMIT 1', [cliente]);
-    return result.rows[0] || null;
+    try {
+      const response = await fetch(`${API_BASE_URL}/benchmarks/${cliente}`);
+      if (!response.ok) return null;
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching benchmark:', error);
+      return null;
+    }
   },
 
   async getAll(): Promise<Benchmark[]> {
-    const result = await pool.query('SELECT * FROM benchmarks WHERE ativo = true ORDER BY cliente, created_at DESC');
-    return result.rows;
+    try {
+      const response = await fetch(`${API_BASE_URL}/benchmarks`);
+      if (!response.ok) throw new Error('Failed to fetch benchmarks');
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching benchmarks:', error);
+      return [];
+    }
   }
 };
 
 export const clientDataService = {
   async getInsights(cliente: string, startDate?: string, endDate?: string): Promise<ClientInsights[]> {
-    let query = `SELECT * FROM ${cliente}_insights`;
-    const params: any[] = [];
-    
-    if (startDate && endDate) {
-      query += ' WHERE dt BETWEEN $1 AND $2';
-      params.push(startDate, endDate);
+    try {
+      const params = new URLSearchParams();
+      if (startDate) params.append('startDate', startDate);
+      if (endDate) params.append('endDate', endDate);
+      
+      const response = await fetch(`${API_BASE_URL}/clients/${cliente}/insights?${params}`);
+      if (!response.ok) throw new Error('Failed to fetch insights');
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching insights:', error);
+      return [];
     }
-    
-    query += ' ORDER BY dt DESC';
-    
-    const result = await pool.query(query, params);
-    return result.rows;
   },
 
   async getTraqueamento(cliente: string, startDate?: string, endDate?: string): Promise<ClientTraqueamento[]> {
-    let query = `SELECT * FROM ${cliente}_traqueamento`;
-    const params: any[] = [];
-    
-    if (startDate && endDate) {
-      query += ' WHERE created_at BETWEEN $1 AND $2';
-      params.push(startDate, endDate);
+    try {
+      const params = new URLSearchParams();
+      if (startDate) params.append('startDate', startDate);
+      if (endDate) params.append('endDate', endDate);
+      
+      const response = await fetch(`${API_BASE_URL}/clients/${cliente}/traqueamento?${params}`);
+      if (!response.ok) throw new Error('Failed to fetch traqueamento');
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching traqueamento:', error);
+      return [];
     }
-    
-    query += ' ORDER BY created_at DESC';
-    
-    const result = await pool.query(query, params);
-    return result.rows;
   },
 
   async getMaterializedView(cliente: string): Promise<any[]> {
-    const result = await pool.query(`SELECT * FROM mv_${cliente} ORDER BY dt DESC`);
-    return result.rows;
+    try {
+      const response = await fetch(`${API_BASE_URL}/clients/${cliente}/materialized-view`);
+      if (!response.ok) throw new Error('Failed to fetch materialized view');
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching materialized view:', error);
+      return [];
+    }
   }
 };
-
-export { pool };

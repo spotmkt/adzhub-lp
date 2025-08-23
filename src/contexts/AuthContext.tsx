@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { User, signIn, signUp, verifyToken, initializeAuth } from '@/lib/auth';
+import { User, signIn, signUp, verifyToken } from '@/lib/auth';
 
 interface AuthContextType {
   user: User | null;
@@ -30,9 +30,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   useEffect(() => {
     const initAuth = async () => {
       try {
-        // Inicializar tabela de usuários
-        await initializeAuth();
-
         // Verificar se há token salvo
         const token = localStorage.getItem('auth_token');
         if (token) {

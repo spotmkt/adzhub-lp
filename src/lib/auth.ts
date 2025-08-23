@@ -1,7 +1,3 @@
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-import { pool } from './database';
-
 export interface User {
   id: string;
   email: string;
@@ -14,49 +10,36 @@ export interface AuthResponse {
   error?: string;
 }
 
-// Função para criar tabela de usuários se não existir
-export const initializeAuth = async () => {
-  try {
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS users (
-        id SERIAL PRIMARY KEY,
-        email VARCHAR(255) UNIQUE NOT NULL,
-        password_hash VARCHAR(255) NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      )
-    `);
-  } catch (error) {
-    console.error('Error initializing auth table:', error);
-  }
-};
-
+// Simulação de autenticação para desenvolvimento local
+// Em produção, isso seria conectado a uma API backend
 export const signUp = async (email: string, password: string): Promise<AuthResponse> => {
   try {
-    // Verificar se usuário já existe
-    const existingUser = await pool.query('SELECT id FROM users WHERE email = $1', [email]);
-    if (existingUser.rows.length > 0) {
+    // Simular delay de rede
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Verificar se usuário já existe no localStorage
+    const existingUsers = JSON.parse(localStorage.getItem('app_users') || '[]');
+    const userExists = existingUsers.find((u: any) => u.email === email);
+    
+    if (userExists) {
       return { error: 'Usuário já existe' };
     }
 
-    // Hash da senha
-    const saltRounds = 10;
-    const passwordHash = await bcrypt.hash(password, saltRounds);
+    // Criar novo usuário
+    const newUser: User = {
+      id: Date.now().toString(),
+      email,
+      created_at: new Date()
+    };
 
-    // Inserir usuário
-    const result = await pool.query(
-      'INSERT INTO users (email, password_hash) VALUES ($1, $2) RETURNING id, email, created_at',
-      [email, passwordHash]
-    );
+    // Salvar usuário (em produção seria hasheada a senha)
+    existingUsers.push({ ...newUser, password });
+    localStorage.setItem('app_users', JSON.stringify(existingUsers));
 
-    const user = result.rows[0];
-    const token = jwt.sign(
-      { userId: user.id, email: user.email },
-      import.meta.env.VITE_JWT_SECRET,
-      { expiresIn: '24h' }
-    );
+    // Gerar token simples (em produção seria JWT real)
+    const token = btoa(JSON.stringify({ userId: newUser.id, email: newUser.email }));
 
-    return { user, token };
+    return { user: newUser, token };
   } catch (error) {
     console.error('Error signing up:', error);
     return { error: 'Erro ao criar conta' };
@@ -65,30 +48,19 @@ export const signUp = async (email: string, password: string): Promise<AuthRespo
 
 export const signIn = async (email: string, password: string): Promise<AuthResponse> => {
   try {
-    // Buscar usuário
-    const result = await pool.query(
-      'SELECT id, email, password_hash, created_at FROM users WHERE email = $1',
-      [email]
-    );
+    // Simular delay de rede
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Buscar usuários salvos
+    const existingUsers = JSON.parse(localStorage.getItem('app_users') || '[]');
+    const user = existingUsers.find((u: any) => u.email === email && u.password === password);
 
-    if (result.rows.length === 0) {
-      return { error: 'Usuário não encontrado' };
-    }
-
-    const user = result.rows[0];
-
-    // Verificar senha
-    const isPasswordValid = await bcrypt.compare(password, user.password_hash);
-    if (!isPasswordValid) {
-      return { error: 'Senha incorreta' };
+    if (!user) {
+      return { error: 'Email ou senha incorretos' };
     }
 
     // Gerar token
-    const token = jwt.sign(
-      { userId: user.id, email: user.email },
-      import.meta.env.VITE_JWT_SECRET,
-      { expiresIn: '24h' }
-    );
+    const token = btoa(JSON.stringify({ userId: user.id, email: user.email }));
 
     return { 
       user: { id: user.id, email: user.email, created_at: user.created_at }, 
@@ -102,7 +74,7 @@ export const signIn = async (email: string, password: string): Promise<AuthRespo
 
 export const verifyToken = (token: string): { userId: string; email: string } | null => {
   try {
-    const decoded = jwt.verify(token, import.meta.env.VITE_JWT_SECRET) as any;
+    const decoded = JSON.parse(atob(token));
     return { userId: decoded.userId, email: decoded.email };
   } catch (error) {
     return null;
