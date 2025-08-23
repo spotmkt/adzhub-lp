@@ -1,12 +1,7 @@
 import { ChatInterface } from '@/components/ChatInterface';
-import { AuthGuard } from '@/components/AuthGuard';
 
 const Index = () => {
-  return (
-    <AuthGuard>
-      <ChatInterface />
-    </AuthGuard>
-  );
+  return <ChatInterface />;
 };
 
 export default Index;
