@@ -10,6 +10,7 @@ import History from "./pages/History";
 import NotFound from "./pages/NotFound";
 
 // Create QueryClient outside of component to avoid recreation on each render
+// Updated to fix caching issue
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
