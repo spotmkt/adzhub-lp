@@ -48,12 +48,17 @@ export const signUp = async (email: string, password: string): Promise<AuthRespo
 
 export const signIn = async (email: string, password: string): Promise<AuthResponse> => {
   try {
+    console.log('Login attempt for:', email);
+    
     // Simular delay de rede
     await new Promise(resolve => setTimeout(resolve, 1000));
     
     // Buscar usuários salvos
     const existingUsers = JSON.parse(localStorage.getItem('app_users') || '[]');
+    console.log('Existing users:', existingUsers);
+    
     const user = existingUsers.find((u: any) => u.email === email && u.password === password);
+    console.log('Found user:', user ? 'Yes' : 'No');
 
     if (!user) {
       return { error: 'Email ou senha incorretos' };

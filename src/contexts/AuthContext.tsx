@@ -52,19 +52,27 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const login = async (email: string, password: string) => {
     try {
+      console.log('AuthContext login called with:', email);
+      
       const response = await signIn(email, password);
+      console.log('SignIn response:', response);
+      
       if (response.error) {
+        console.log('Login failed with error:', response.error);
         return { success: false, error: response.error };
       }
 
       if (response.user && response.token) {
+        console.log('Login successful, setting user:', response.user);
         setUser(response.user);
         localStorage.setItem('auth_token', response.token);
         return { success: true };
       }
 
+      console.log('Login failed - no user or token in response');
       return { success: false, error: 'Erro desconhecido' };
     } catch (error) {
+      console.error('Login catch block error:', error);
       return { success: false, error: 'Erro ao fazer login' };
     }
   };
