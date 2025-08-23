@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { supabase } from '@/integrations/supabase/client';
+import { metaAccountsService, MetaAccount } from '@/lib/database';
 
 interface Client {
   id: string;
@@ -25,24 +25,17 @@ export const ClientSelector = ({ onClientSelect }: ClientSelectorProps) => {
 
   const fetchClients = async () => {
     try {
-      // Get current user - for now we'll handle the case where auth isn't implemented yet
-      const { data: { user } } = await supabase.auth.getUser();
+      const accounts = await metaAccountsService.getAll();
       
-      let query = supabase.from('clients').select('*').order('name');
-      
-      // If user is authenticated, filter by user_id, otherwise get all (temporary for migration)
-      if (user) {
-        query = query.eq('user_id', user.id);
-      }
-      
-      const { data, error } = await query;
+      // Converter MetaAccount para Client
+      const clientsData: Client[] = accounts.map(account => ({
+        id: account.cliente,
+        name: account.cliente,
+        email: account.whatsapp, // Usando whatsapp como contato
+        phone: account.whatsapp
+      }));
 
-      if (error) {
-        console.error('Error fetching clients:', error);
-        return;
-      }
-
-      setClients(data || []);
+      setClients(clientsData);
     } catch (error) {
       console.error('Failed to fetch clients:', error);
     } finally {
