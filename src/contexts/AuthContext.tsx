@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { User, signIn, signUp, verifyToken } from '@/lib/auth';
+import { User, AuthResponse, signIn, signUp, verifyToken } from '@/lib/auth';
 
 interface AuthContextType {
   user: User | null;
