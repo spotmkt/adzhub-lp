@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Send, Bot, User, Loader2, LogOut, Bell, Eye, Calendar, History, FileText, Download, Play, Pause } from 'lucide-react';
+import { Send, Bot, User, Loader2, LogOut, Bell, Eye, Calendar, History, FileText, Download, Play, Pause, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { cn } from '@/lib/utils';
 import { ClientDropdown } from './ClientDropdown';
 import { ThemeToggle } from './ThemeToggle';
@@ -38,6 +39,7 @@ interface ChatAreaProps {
   onSendMessage?: (message: string, messageData: Message) => void;
   selectedClient?: Client;
   onExitChat?: () => void;
+  onClearHistory?: () => void;
   onViewCard?: (cardId: string) => void;
   onClientSelect?: (client: Client) => void;
   activeNavItem?: string;
@@ -48,6 +50,7 @@ export const ChatArea = ({
   onSendMessage, 
   selectedClient, 
   onExitChat, 
+  onClearHistory,
   onViewCard, 
   onClientSelect,
   activeNavItem,
@@ -240,6 +243,33 @@ export const ChatArea = ({
           />
         </div>
         <div className="flex items-center space-x-2">
+          {selectedClient && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Limpar histórico</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Esta ação irá apagar permanentemente todo o histórico de conversa com {selectedClient.name}.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                  <AlertDialogAction onClick={onClearHistory}>
+                    Limpar
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
           <Button
             variant="ghost"
             size="icon"
@@ -254,11 +284,40 @@ export const ChatArea = ({
 
       {/* Desktop Header */}
       <div className="hidden md:block border-b border-border p-4 flex-shrink-0">
-        <ClientDropdown
-          selectedClient={selectedClient}
-          onClientSelect={onClientSelect}
-          onExitChat={onExitChat}
-        />
+        <div className="flex items-center justify-between">
+          <ClientDropdown
+            selectedClient={selectedClient}
+            onClientSelect={onClientSelect}
+            onExitChat={onExitChat}
+          />
+          {selectedClient && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Limpar histórico de conversa</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Esta ação irá apagar permanentemente todo o histórico de conversa com {selectedClient.name}. Esta ação não pode ser desfeita.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                  <AlertDialogAction onClick={onClearHistory}>
+                    Limpar histórico
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
+        </div>
       </div>
 
       {/* Messages */}

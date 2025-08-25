@@ -244,6 +244,28 @@ export const ChatInterface = () => {
     (window as any).clearChat?.();
   };
 
+  const handleClearChatHistory = async () => {
+    if (!selectedClient) return;
+    
+    try {
+      const { error } = await supabase
+        .from('chat_messages')
+        .delete()
+        .eq('client_id', selectedClient.id);
+
+      if (error) {
+        console.error('Error clearing chat history:', error);
+        return;
+      }
+
+      setChatHistory([]);
+      (window as any).clearChat?.();
+      console.log('Chat history cleared for client:', selectedClient.id);
+    } catch (error) {
+      console.error('Failed to clear chat history:', error);
+    }
+  };
+
   const saveActionToHistory = async (action: ActionCard, actionType: 'executed' | 'ignored') => {
     try {
       const { error } = await supabase
@@ -346,6 +368,7 @@ export const ChatInterface = () => {
             onSendMessage={handleSendMessage}
             selectedClient={selectedClient}
             onExitChat={handleExitChat}
+            onClearHistory={handleClearChatHistory}
             onViewCard={handleViewAction}
             onClientSelect={handleClientSelect}
             activeNavItem={activeNavItem}
