@@ -1,5 +1,3 @@
-import { supabase } from '@/integrations/supabase/client';
-
 // Interfaces para as tabelas existentes
 export interface MetaAccount {
   id?: number;
@@ -59,67 +57,39 @@ export interface ClientTraqueamento {
   created_at?: string;
 }
 
-// Funções para interagir com os dados locais do Supabase
+// API base URL - será configurada para apontar para suas edge functions
+const API_BASE_URL = `https://xciubsogktecqcgafwaa.supabase.co/functions/v1/postgres-api`;
+
+// Funções para interagir com as APIs (que se conectarão ao PostgreSQL)
 export const metaAccountsService = {
   async getAll(): Promise<MetaAccount[]> {
     try {
-      const { data, error } = await supabase
-        .from('clients')
-        .select('*')
-        .order('created_at', { ascending: false });
-      
-      if (error) throw error;
-      
-      // Converter dados da tabela clients para o formato MetaAccount
-      return data.map(client => ({
-        cliente: client.name,
-        whatsapp: client.phone || '',
-        url_site: client.email || '', // usando email como url_site temporariamente
-        folder_id: '',
-        conta_anuncios: '',
-        ig_id: '',
-        fb_id: '',
-        pixel: '',
-        ig_username: '',
-        dominio: '',
-        dna: '',
-        hash_video: '',
-        created_at: client.created_at,
-        updated_at: client.updated_at
-      }));
+      const response = await fetch(`${API_BASE_URL}/meta-accounts`);
+      if (!response.ok) throw new Error('Failed to fetch accounts');
+      return await response.json();
     } catch (error) {
       console.error('Error fetching accounts:', error);
-      return [];
+      // Retornar dados mocados para desenvolvimento
+      return [
+        { 
+          cliente: 'housewhey', 
+          whatsapp: '+5511999999999',
+          url_site: 'https://housewhey.com'
+        },
+        { 
+          cliente: 'cliente_exemplo', 
+          whatsapp: '+5511888888888',
+          url_site: 'https://exemplo.com'
+        }
+      ];
     }
   },
 
   async getByCliente(cliente: string): Promise<MetaAccount | null> {
     try {
-      const { data, error } = await supabase
-        .from('clients')
-        .select('*')
-        .eq('name', cliente)
-        .single();
-      
-      if (error) throw error;
-      
-      // Converter dados da tabela clients para o formato MetaAccount
-      return {
-        cliente: data.name,
-        whatsapp: data.phone || '',
-        url_site: data.email || '', // usando email como url_site temporariamente
-        folder_id: '',
-        conta_anuncios: '',
-        ig_id: '',
-        fb_id: '',
-        pixel: '',
-        ig_username: '',
-        dominio: '',
-        dna: '',
-        hash_video: '',
-        created_at: data.created_at,
-        updated_at: data.updated_at
-      };
+      const response = await fetch(`${API_BASE_URL}/meta-accounts/${cliente}`);
+      if (!response.ok) throw new Error('Failed to fetch account');
+      return await response.json();
     } catch (error) {
       console.error('Error fetching account:', error);
       return null;
@@ -128,23 +98,13 @@ export const metaAccountsService = {
 
   async create(account: Omit<MetaAccount, 'id' | 'created_at' | 'updated_at'>): Promise<MetaAccount> {
     try {
-      const { data, error } = await supabase
-        .from('clients')
-        .insert({
-          name: account.cliente,
-          phone: account.whatsapp,
-          email: account.url_site // usando url_site como email temporariamente
-        })
-        .select()
-        .single();
-      
-      if (error) throw error;
-      
-      return {
-        ...account,
-        created_at: data.created_at,
-        updated_at: data.updated_at
-      };
+      const response = await fetch(`${API_BASE_URL}/meta-accounts`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(account)
+      });
+      if (!response.ok) throw new Error('Failed to create account');
+      return await response.json();
     } catch (error) {
       console.error('Error creating account:', error);
       throw error;
@@ -153,35 +113,13 @@ export const metaAccountsService = {
 
   async update(cliente: string, account: Partial<MetaAccount>): Promise<MetaAccount | null> {
     try {
-      const { data, error } = await supabase
-        .from('clients')
-        .update({
-          name: account.cliente,
-          phone: account.whatsapp,
-          email: account.url_site
-        })
-        .eq('name', cliente)
-        .select()
-        .single();
-      
-      if (error) throw error;
-      
-      return {
-        cliente: data.name,
-        whatsapp: data.phone || '',
-        url_site: data.email || '',
-        folder_id: '',
-        conta_anuncios: '',
-        ig_id: '',
-        fb_id: '',
-        pixel: '',
-        ig_username: '',
-        dominio: '',
-        dna: '',
-        hash_video: '',
-        created_at: data.created_at,
-        updated_at: data.updated_at
-      };
+      const response = await fetch(`${API_BASE_URL}/meta-accounts/${cliente}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(account)
+      });
+      if (!response.ok) throw new Error('Failed to update account');
+      return await response.json();
     } catch (error) {
       console.error('Error updating account:', error);
       return null;
@@ -192,9 +130,9 @@ export const metaAccountsService = {
 export const benchmarksService = {
   async getByCliente(cliente: string): Promise<Benchmark | null> {
     try {
-      // Como não há tabela de benchmarks no Supabase local, retorna null por enquanto
-      console.log('Benchmark service not implemented for local Supabase');
-      return null;
+      const response = await fetch(`${API_BASE_URL}/benchmarks/${cliente}`);
+      if (!response.ok) throw new Error('Failed to fetch benchmark');
+      return await response.json();
     } catch (error) {
       console.error('Error fetching benchmark:', error);
       return null;
@@ -203,9 +141,9 @@ export const benchmarksService = {
 
   async getAll(): Promise<Benchmark[]> {
     try {
-      // Como não há tabela de benchmarks no Supabase local, retorna array vazio por enquanto
-      console.log('Benchmark service not implemented for local Supabase');
-      return [];
+      const response = await fetch(`${API_BASE_URL}/benchmarks`);
+      if (!response.ok) throw new Error('Failed to fetch benchmarks');
+      return await response.json();
     } catch (error) {
       console.error('Error fetching benchmarks:', error);
       return [];
@@ -216,9 +154,15 @@ export const benchmarksService = {
 export const clientDataService = {
   async getInsights(cliente: string, startDate?: string, endDate?: string): Promise<ClientInsights[]> {
     try {
-      // Como não há tabelas de insights no Supabase local, retorna array vazio por enquanto
-      console.log('Insights service not implemented for local Supabase');
-      return [];
+      let url = `${API_BASE_URL}/${cliente}/insights`;
+      const params = new URLSearchParams();
+      if (startDate) params.append('startDate', startDate);
+      if (endDate) params.append('endDate', endDate);
+      if (params.toString()) url += `?${params.toString()}`;
+      
+      const response = await fetch(url);
+      if (!response.ok) throw new Error('Failed to fetch insights');
+      return await response.json();
     } catch (error) {
       console.error('Error fetching insights:', error);
       return [];
@@ -227,9 +171,15 @@ export const clientDataService = {
 
   async getTraqueamento(cliente: string, startDate?: string, endDate?: string): Promise<ClientTraqueamento[]> {
     try {
-      // Como não há tabelas de traqueamento no Supabase local, retorna array vazio por enquanto
-      console.log('Traqueamento service not implemented for local Supabase');
-      return [];
+      let url = `${API_BASE_URL}/${cliente}/traqueamento`;
+      const params = new URLSearchParams();
+      if (startDate) params.append('startDate', startDate);
+      if (endDate) params.append('endDate', endDate);
+      if (params.toString()) url += `?${params.toString()}`;
+      
+      const response = await fetch(url);
+      if (!response.ok) throw new Error('Failed to fetch traqueamento');
+      return await response.json();
     } catch (error) {
       console.error('Error fetching traqueamento:', error);
       return [];
@@ -238,9 +188,9 @@ export const clientDataService = {
 
   async getMaterializedView(cliente: string): Promise<any[]> {
     try {
-      // Como não há materialized views no Supabase local, retorna array vazio por enquanto
-      console.log('Materialized view service not implemented for local Supabase');
-      return [];
+      const response = await fetch(`${API_BASE_URL}/${cliente}/materialized-view`);
+      if (!response.ok) throw new Error('Failed to fetch materialized view');
+      return await response.json();
     } catch (error) {
       console.error('Error fetching materialized view:', error);
       return [];
