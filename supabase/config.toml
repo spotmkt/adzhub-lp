@@ -2,3 +2,9 @@ project_id = "xciubsogktecqcgafwaa"
 
 [functions.receive-actions]
 verify_jwt = false
+
+[functions.postgres-api]
+verify_jwt = false
+
+[functions.test-postgres]
+verify_jwt = false

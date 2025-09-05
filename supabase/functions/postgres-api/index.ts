@@ -32,6 +32,9 @@ serve(async (req) => {
     return new Response('ok', { headers: corsHeaders })
   }
 
+  // Log da requisição para debug
+  console.log(`${req.method} ${req.url}`);
+
   try {
     const url = new URL(req.url);
     const pathname = url.pathname;
