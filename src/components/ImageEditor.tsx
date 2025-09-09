@@ -32,10 +32,10 @@ export const ImageEditor = ({ imageFile, open, onOpenChange, onSave }: ImageEdit
     img.onload = () => {
       console.log('ImageEditor - Image loaded successfully');
       
-      // Calculate initial scale and position
-      const scale = Math.min(canvasSize / img.width, canvasSize / img.height) * 0.8;
-      const x = (canvasSize - img.width * scale) / 2;
-      const y = (canvasSize - img.height * scale) / 2;
+      // Calculate initial scale to fit the crop area better
+      const scale = Math.min(cropSize / img.width, cropSize / img.height);
+      const x = canvasSize / 2 - (img.width * scale) / 2;
+      const y = canvasSize / 2 - (img.height * scale) / 2;
       
       setImage(img);
       setImageScale(scale);
@@ -150,9 +150,9 @@ export const ImageEditor = ({ imageFile, open, onOpenChange, onSave }: ImageEdit
   const handleReset = () => {
     if (!image) return;
     
-    const scale = Math.min(canvasSize / image.width, canvasSize / image.height) * 0.8;
-    const x = (canvasSize - image.width * scale) / 2;
-    const y = (canvasSize - image.height * scale) / 2;
+    const scale = Math.min(cropSize / image.width, cropSize / image.height);
+    const x = canvasSize / 2 - (image.width * scale) / 2;
+    const y = canvasSize / 2 - (image.height * scale) / 2;
     
     setImageScale(scale);
     setImagePosition({ x, y });
@@ -160,7 +160,24 @@ export const ImageEditor = ({ imageFile, open, onOpenChange, onSave }: ImageEdit
   };
 
   const handleZoom = (delta: number) => {
-    setImageScale(prev => Math.max(0.1, Math.min(3, prev + delta)));
+    if (!image) return;
+    
+    const newScale = Math.max(0.1, Math.min(3, imageScale + delta));
+    const scaleDiff = newScale - imageScale;
+    
+    // Center the zoom on the canvas center (crop area center)
+    const centerX = canvasSize / 2;
+    const centerY = canvasSize / 2;
+    
+    // Calculate how much the image position should change to keep it centered
+    const deltaX = (image.width * scaleDiff) / 2;
+    const deltaY = (image.height * scaleDiff) / 2;
+    
+    setImageScale(newScale);
+    setImagePosition(prev => ({
+      x: prev.x - deltaX,
+      y: prev.y - deltaY
+    }));
   };
 
   const handleSave = () => {
