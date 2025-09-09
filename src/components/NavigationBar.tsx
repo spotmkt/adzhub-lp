@@ -13,7 +13,7 @@ interface NavigationBarProps {
 }
 
 const navigationItems = [
-  { id: 'new', icon: Plus, label: 'New Chat', path: '/' },
+  { id: 'new', icon: User, label: 'New Chat', path: '/' },
   { id: 'chats', icon: MessageSquare, label: 'Chats', path: '/' },
   { id: 'history', icon: History, label: 'Histórico', path: '/history' },
   { id: 'content', icon: FileText, label: 'Conteúdo', path: '/content' },

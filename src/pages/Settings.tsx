@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
+import { Input } from '@/components/ui/input';
 import { toast } from '@/hooks/use-toast';
 import { Settings as SettingsIcon, Zap, AlertCircle } from 'lucide-react';
 
@@ -26,8 +27,16 @@ interface ClientProfile {
   };
 }
 
+interface Client {
+  id: string;
+  name: string;
+  email?: string;
+  phone?: string;
+}
+
 const Settings = () => {
   const [profile, setProfile] = useState<ClientProfile | null>(null);
+  const [client, setClient] = useState<Client | null>(null);
   const [selectedClient, setSelectedClient] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -65,7 +74,7 @@ const Settings = () => {
       const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
       if (uuidRegex.test(clientId)) {
         setSelectedClient(clientId);
-        fetchClientProfile(clientId);
+        fetchClientData(clientId);
       } else {
         console.error('Invalid UUID format:', clientId);
         setLoading(false);
@@ -75,8 +84,19 @@ const Settings = () => {
     }
   }, []);
 
-  const fetchClientProfile = async (clientId: string) => {
+  const fetchClientData = async (clientId: string) => {
     try {
+      // Fetch client data
+      const { data: clientData, error: clientError } = await supabase
+        .from('clients')
+        .select('*')
+        .eq('id', clientId)
+        .single();
+
+      if (clientError) throw clientError;
+      setClient(clientData);
+
+      // Fetch client profile
       const { data, error } = await supabase
         .from('client_profiles')
         .select('*')
@@ -134,10 +154,10 @@ const Settings = () => {
         } as ClientProfile);
       }
     } catch (error) {
-      console.error('Error fetching client profile:', error);
+      console.error('Error fetching client data:', error);
       toast({
         title: 'Erro',
-        description: 'Não foi possível carregar as configurações do cliente.',
+        description: 'Não foi possível carregar os dados do cliente.',
         variant: 'destructive',
       });
     } finally {
@@ -178,9 +198,47 @@ const Settings = () => {
     }
   };
 
+  const handleSaveClient = async () => {
+    if (!client) return;
+
+    setSaving(true);
+    try {
+      const { error } = await supabase
+        .from('clients')
+        .update({
+          name: client.name,
+          email: client.email,
+          phone: client.phone,
+        })
+        .eq('id', client.id);
+
+      if (error) throw error;
+
+      toast({
+        title: 'Sucesso',
+        description: 'Dados da empresa salvos com sucesso!',
+      });
+    } catch (error) {
+      console.error('Error saving client:', error);
+      toast({
+        title: 'Erro',
+        description: 'Não foi possível salvar os dados da empresa.',
+        variant: 'destructive',
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const updateProfile = (updates: Partial<ClientProfile>) => {
     if (profile) {
       setProfile({ ...profile, ...updates });
+    }
+  };
+
+  const updateClient = (updates: Partial<Client>) => {
+    if (client) {
+      setClient({ ...client, ...updates });
     }
   };
 
@@ -240,19 +298,54 @@ const Settings = () => {
         </TabsList>
 
         <TabsContent value="general" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Configurações Gerais</CardTitle>
-              <CardDescription>
-                Configurações básicas da plataforma
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">
-                As configurações gerais serão implementadas em futuras versões.
-              </p>
-            </CardContent>
-          </Card>
+          {client && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Dados da Empresa</CardTitle>
+                <CardDescription>
+                  Edite as informações básicas da empresa
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="company-name">Nome da Empresa</Label>
+                  <Input
+                    id="company-name"
+                    value={client.name}
+                    onChange={(e) => updateClient({ name: e.target.value })}
+                    placeholder="Digite o nome da empresa"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="company-email">Email</Label>
+                  <Input
+                    id="company-email"
+                    type="email"
+                    value={client.email || ''}
+                    onChange={(e) => updateClient({ email: e.target.value })}
+                    placeholder="email@empresa.com"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="company-phone">Telefone</Label>
+                  <Input
+                    id="company-phone"
+                    value={client.phone || ''}
+                    onChange={(e) => updateClient({ phone: e.target.value })}
+                    placeholder="(00) 00000-0000"
+                  />
+                </div>
+
+                <div className="flex justify-end">
+                  <Button onClick={handleSaveClient} disabled={saving}>
+                    {saving ? 'Salvando...' : 'Salvar Dados'}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </TabsContent>
 
         <TabsContent value="automation" className="space-y-6">
