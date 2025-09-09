@@ -38,6 +38,28 @@ export const ChatInterface = () => {
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [selectedAction, setSelectedAction] = useState<ActionCard | null>(null);
 
+  // Load client from localStorage on initialization  
+  useEffect(() => {
+    const savedClientId = localStorage.getItem('selectedClientId');
+    if (savedClientId) {
+      console.log('Restoring client from localStorage:', savedClientId);
+      const restoredClient: Client = {
+        id: savedClientId,
+        name: savedClientId,
+      };
+      setSelectedClient(restoredClient);
+      // Load chat history will be called after the client is set
+    }
+  }, []);
+
+  // Load chat history when selectedClient changes
+  useEffect(() => {
+    if (selectedClient) {
+      loadChatHistory(selectedClient.id);
+      fetchActions();
+    }
+  }, [selectedClient]);
+
   // Fetch actions from Supabase
   useEffect(() => {
     fetchActions();
@@ -249,11 +271,14 @@ export const ChatInterface = () => {
 
   const handleClientSelect = (client: Client) => {
     setSelectedClient(client);
+    localStorage.setItem('selectedClientId', client.id);
     loadChatHistory(client.id);
+    fetchActions(); // Refresh actions and content ideas count
   };
 
   const handleExitChat = () => {
     setSelectedClient(null);
+    localStorage.removeItem('selectedClientId');
     setChatHistory([]);
     (window as any).clearChat?.();
   };
