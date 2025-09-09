@@ -21,6 +21,7 @@ export type Database = {
           action_type: string
           briefing: string | null
           category: string | null
+          client_id: string | null
           created_at: string
           description: string | null
           id: string
@@ -35,6 +36,7 @@ export type Database = {
           action_type: string
           briefing?: string | null
           category?: string | null
+          client_id?: string | null
           created_at?: string
           description?: string | null
           id?: string
@@ -49,6 +51,7 @@ export type Database = {
           action_type?: string
           briefing?: string | null
           category?: string | null
+          client_id?: string | null
           created_at?: string
           description?: string | null
           id?: string
@@ -57,12 +60,21 @@ export type Database = {
           title?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "action_history_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       actions: {
         Row: {
           briefing: string | null
           category: string | null
+          client_id: string | null
           created_at: string
           date: string
           description: string | null
@@ -75,6 +87,7 @@ export type Database = {
         Insert: {
           briefing?: string | null
           category?: string | null
+          client_id?: string | null
           created_at?: string
           date: string
           description?: string | null
@@ -87,6 +100,7 @@ export type Database = {
         Update: {
           briefing?: string | null
           category?: string | null
+          client_id?: string | null
           created_at?: string
           date?: string
           description?: string | null
@@ -96,7 +110,15 @@ export type Database = {
           title?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "actions_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       blog_calendar: {
         Row: {}

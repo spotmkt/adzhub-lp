@@ -108,11 +108,18 @@ export const ChatInterface = () => {
   }, []);
 
   const fetchActions = async () => {
+    if (!selectedClient) {
+      setActions([]);
+      setContentIdeasCount(0);
+      return;
+    }
+
     try {
       const { data, error } = await supabase
         .from('actions')
         .select('*')
         .eq('status', 'pending')
+        .eq('client_id', selectedClient.id)
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -133,16 +140,14 @@ export const ChatInterface = () => {
       setActions(formattedActions);
 
       // Fetch content ideas count for selected client
-      if (selectedClient) {
-        const { data: contentIdeasData, error: contentError } = await supabase
-          .from('content_ideas')
-          .select('id')
-          .eq('client_id', selectedClient.id)
-          .eq('status', 'pending');
+      const { data: contentIdeasData, error: contentError } = await supabase
+        .from('content_ideas')
+        .select('id')
+        .eq('client_id', selectedClient.id)
+        .eq('status', 'pending');
 
-        if (!contentError) {
-          setContentIdeasCount(contentIdeasData?.length || 0);
-        }
+      if (!contentError) {
+        setContentIdeasCount(contentIdeasData?.length || 0);
       }
     } catch (error) {
       console.error('Failed to fetch actions:', error);
@@ -306,6 +311,8 @@ export const ChatInterface = () => {
   };
 
   const saveActionToHistory = async (action: ActionCard, actionType: 'executed' | 'ignored') => {
+    if (!selectedClient) return;
+
     try {
       const { error } = await supabase
         .from('action_history')
@@ -318,6 +325,7 @@ export const ChatInterface = () => {
           category: action.category,
           priority: action.priority,
           original_date: action.date,
+          client_id: selectedClient.id,
         });
 
       if (error) {

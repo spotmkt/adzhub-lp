@@ -51,7 +51,6 @@ const History = () => {
       const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
       if (uuidRegex.test(clientId)) {
         setSelectedClient(clientId);
-        fetchActionHistory();
       } else {
         console.error('Invalid UUID format:', clientId);
         setLoading(false);
@@ -61,11 +60,23 @@ const History = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (selectedClient) {
+      fetchActionHistory();
+    }
+  }, [selectedClient]);
+
   const fetchActionHistory = async () => {
+    if (!selectedClient) {
+      setLoading(false);
+      return;
+    }
+
     try {
       const { data, error } = await supabase
         .from('action_history')
         .select('*')
+        .eq('client_id', selectedClient)
         .order('action_date', { ascending: false });
 
       if (error) throw error;
