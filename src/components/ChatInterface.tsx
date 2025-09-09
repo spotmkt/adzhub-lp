@@ -32,6 +32,7 @@ interface Client {
 export const ChatInterface = () => {
   const [activeNavItem, setActiveNavItem] = useState('chats');
   const [actions, setActions] = useState<ActionCard[]>([]);
+  const [contentIdeasCount, setContentIdeasCount] = useState(0);
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [chatHistory, setChatHistory] = useState<Message[]>([]);
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
@@ -108,6 +109,19 @@ export const ChatInterface = () => {
       }));
 
       setActions(formattedActions);
+
+      // Fetch content ideas count for selected client
+      if (selectedClient) {
+        const { data: contentIdeasData, error: contentError } = await supabase
+          .from('content_ideas')
+          .select('id')
+          .eq('client_id', selectedClient.id)
+          .eq('status', 'pending');
+
+        if (!contentError) {
+          setContentIdeasCount(contentIdeasData?.length || 0);
+        }
+      }
     } catch (error) {
       console.error('Failed to fetch actions:', error);
     }
@@ -380,6 +394,7 @@ export const ChatInterface = () => {
         <div className="hidden lg:block w-80 flex-shrink-0 h-screen overflow-hidden">
           <ActionPanel
             actions={actions}
+            contentIdeasCount={contentIdeasCount}
             onExecute={handleExecuteAction}
             onEdit={handleEditAction}
             onIgnore={handleIgnoreAction}
@@ -394,6 +409,7 @@ export const ChatInterface = () => {
           <div className="absolute inset-0 z-50 bg-background">
             <ActionPanel
               actions={actions}
+              contentIdeasCount={contentIdeasCount}
               onExecute={handleExecuteAction}
               onEdit={handleEditAction}
               onIgnore={handleIgnoreAction}

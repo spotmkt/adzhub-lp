@@ -175,6 +175,39 @@ export type Database = {
           },
         ]
       }
+      client_profiles: {
+        Row: {
+          canais_habilitados: Json | null
+          client_id: string
+          created_at: string
+          frequencia_publicacao: string | null
+          id: string
+          tom_voz: string | null
+          tom_voz_detalhes: string | null
+          updated_at: string
+        }
+        Insert: {
+          canais_habilitados?: Json | null
+          client_id: string
+          created_at?: string
+          frequencia_publicacao?: string | null
+          id?: string
+          tom_voz?: string | null
+          tom_voz_detalhes?: string | null
+          updated_at?: string
+        }
+        Update: {
+          canais_habilitados?: Json | null
+          client_id?: string
+          created_at?: string
+          frequencia_publicacao?: string | null
+          id?: string
+          tom_voz?: string | null
+          tom_voz_detalhes?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       clients: {
         Row: {
           created_at: string
@@ -202,6 +235,95 @@ export type Database = {
           phone?: string | null
           updated_at?: string
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      content_assets: {
+        Row: {
+          canal: string
+          client_id: string
+          content_idea_id: string
+          conteudo: string | null
+          created_at: string
+          data_publicacao: string | null
+          id: string
+          status_publicacao: string | null
+          tipo_conteudo: string
+          titulo: string | null
+          updated_at: string
+          url_asset: string | null
+        }
+        Insert: {
+          canal: string
+          client_id: string
+          content_idea_id: string
+          conteudo?: string | null
+          created_at?: string
+          data_publicacao?: string | null
+          id?: string
+          status_publicacao?: string | null
+          tipo_conteudo: string
+          titulo?: string | null
+          updated_at?: string
+          url_asset?: string | null
+        }
+        Update: {
+          canal?: string
+          client_id?: string
+          content_idea_id?: string
+          conteudo?: string | null
+          created_at?: string
+          data_publicacao?: string | null
+          id?: string
+          status_publicacao?: string | null
+          tipo_conteudo?: string
+          titulo?: string | null
+          updated_at?: string
+          url_asset?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_assets_content_idea_id_fkey"
+            columns: ["content_idea_id"]
+            isOneToOne: false
+            referencedRelation: "content_ideas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      content_ideas: {
+        Row: {
+          categoria: string | null
+          client_id: string
+          created_at: string
+          descricao: string | null
+          id: string
+          prioridade: string | null
+          status: string | null
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          categoria?: string | null
+          client_id: string
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          prioridade?: string | null
+          status?: string | null
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          categoria?: string | null
+          client_id?: string
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          prioridade?: string | null
+          status?: string | null
+          titulo?: string
+          updated_at?: string
         }
         Relationships: []
       }

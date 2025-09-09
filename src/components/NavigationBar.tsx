@@ -1,4 +1,4 @@
-import { Plus, Star, Settings, MessageSquare, Bookmark, User, History } from 'lucide-react';
+import { Plus, Star, Settings, MessageSquare, Bookmark, User, History, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Link } from 'react-router-dom';
@@ -17,7 +17,8 @@ const navigationItems = [
   { id: 'favorites', icon: Star, label: 'Favorites', path: '/' },
   { id: 'bookmarks', icon: Bookmark, label: 'Bookmarks', path: '/' },
   { id: 'profile', icon: User, label: 'Profile', path: '/' },
-  { id: 'settings', icon: Settings, label: 'Settings', path: '/' },
+  { id: 'content', icon: FileText, label: 'Conteúdo', path: '/content' },
+  { id: 'settings', icon: Settings, label: 'Settings', path: '/settings' },
 ];
 
 export const NavigationBar = ({ activeItem = 'chats', onItemClick }: NavigationBarProps) => {

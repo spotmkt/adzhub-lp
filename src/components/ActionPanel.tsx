@@ -1,8 +1,10 @@
-import { Calendar, Clock, Star, Eye, ArrowLeft } from 'lucide-react';
+import { Calendar, Clock, Star, Eye, ArrowLeft, FileText, CheckCircle, XCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import { Link } from 'react-router-dom';
 
 interface ActionCard {
   id: string;
@@ -16,6 +18,7 @@ interface ActionCard {
 
 interface ActionPanelProps {
   actions?: ActionCard[];
+  contentIdeasCount?: number;
   onExecute?: (actionId: string) => void;
   onEdit?: (actionId: string) => void;
   onIgnore?: (actionId: string) => void;
@@ -52,6 +55,7 @@ const defaultActions: ActionCard[] = [
 
 export const ActionPanel = ({ 
   actions = defaultActions, 
+  contentIdeasCount = 0,
   onExecute, 
   onEdit, 
   onIgnore,
@@ -68,123 +72,125 @@ export const ActionPanel = ({
   };
 
   return (
-    <div className="w-full lg:w-80 bg-action-panel border-l border-border flex flex-col h-screen">
-      {/* Header */}
-      <div className="p-4 border-b border-border flex-shrink-0">
+    <div className="w-full lg:w-80 bg-card border-l border-border flex flex-col h-full">
+      <div className="p-6 border-b border-border">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            {onBack && (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={onBack}
-                className="h-8 w-8 lg:hidden"
-              >
-                <ArrowLeft className="h-4 w-4" />
-              </Button>
-            )}
-            <h2 className="text-base font-semibold text-foreground">Hoje</h2>
-          </div>
-          <Badge variant="secondary" className="text-xs">
-            {actions.length} ações
-          </Badge>
+          <h2 className="text-xl font-semibold">Ações recomendadas pela IA</h2>
+          {onBack && (
+            <Button variant="ghost" size="sm" onClick={onBack}>
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+          )}
         </div>
-        <p className="text-xs text-muted-foreground mt-1">
-          Ações recomendadas pela IA
-        </p>
       </div>
 
-      {/* Actions List */}
-      <ScrollArea className="flex-1 overflow-y-auto">
-        <div className="p-3 space-y-3">
-          {actions.map((action) => (
-            <div
-              key={action.id}
-              className={cn(
-                "bg-action-card border border-border rounded-lg p-3",
-                "hover:bg-action-card-hover transition-all duration-300",
-                "hover:shadow-glow hover:border-primary/20"
-              )}
-            >
-              {/* Card Header */}
-              <div className="flex items-start justify-between mb-2">
-                <div className="flex-1">
-                  <h3 className="font-medium text-foreground text-xs leading-tight">
-                    {action.title}
-                  </h3>
-                  {action.category && (
-                    <Badge 
-                      variant="outline" 
-                      className="mt-1 text-[10px] px-1.5 py-0.5 h-auto border-border"
-                    >
-                      {action.category}
+      <ScrollArea className="flex-1 p-6">
+        <div className="space-y-4">
+          {/* Content Ideas Notification */}
+          {contentIdeasCount > 0 && (
+            <Card className="border-primary/20 bg-primary/5">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <FileText className="h-5 w-5 text-primary" />
+                    <CardTitle className="text-base">Ideias de Conteúdo</CardTitle>
+                  </div>
+                  <Badge variant="secondary">{contentIdeasCount}</Badge>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <CardDescription className="mb-3">
+                  {contentIdeasCount === 1 
+                    ? 'Nova big idea pendente de aprovação'
+                    : `${contentIdeasCount} big ideas pendentes de aprovação`
+                  }
+                </CardDescription>
+                <Link to="/content">
+                  <Button size="sm" className="w-full">
+                    <Eye className="h-4 w-4 mr-1" />
+                    Revisar Ideias
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Regular Actions */}
+          {actions.length === 0 && contentIdeasCount === 0 ? (
+            <div className="text-center py-8">
+              <div className="w-16 h-16 mx-auto mb-4 bg-muted rounded-full flex items-center justify-center">
+                <Star className="h-8 w-8 text-muted-foreground" />
+              </div>
+              <h3 className="text-lg font-medium mb-2">Nenhuma ação pendente</h3>
+              <p className="text-muted-foreground text-sm">
+                Suas ações recomendadas aparecerão aqui
+              </p>
+            </div>
+          ) : (
+            actions.map((action) => (
+              <div key={action.id} className="bg-card border border-border rounded-lg p-4 space-y-3">
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <h3 className="font-medium text-foreground mb-1">{action.title}</h3>
+                    <p className="text-sm text-muted-foreground line-clamp-2">
+                      {action.description}
+                    </p>
+                  </div>
+                  {action.priority && (
+                    <Badge className={cn("text-xs ml-2", getPriorityColor(action.priority))}>
+                      {action.priority.toUpperCase()}
                     </Badge>
                   )}
                 </div>
-                {action.priority && (
-                  <Badge 
-                    className={cn(
-                      "text-[10px] ml-2 flex-shrink-0 px-1.5 py-0.5 h-auto",
-                      getPriorityColor(action.priority)
-                    )}
-                  >
-                    {action.priority}
-                  </Badge>
-                )}
-              </div>
 
-              {/* Description */}
-              <p className="text-[10px] text-muted-foreground leading-relaxed mb-2 line-clamp-2">
-                {action.description}
-              </p>
-
-              {/* Date */}
-              <div className="flex items-center text-[10px] text-muted-foreground mb-3">
-                <Calendar className="h-2.5 w-2.5 mr-1" />
-                <span>{action.date}</span>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="space-y-1.5">
-                <div className="flex space-x-1.5">
-                  <Button
-                    size="sm"
-                    onClick={() => onExecute?.(action.id)}
-                    className="flex-1 h-6 text-[10px] bg-primary hover:bg-primary/90"
-                  >
-                    Executar
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => onEdit?.(action.id)}
-                    className="h-6 px-2 text-[10px] border-border hover:bg-muted"
-                  >
-                    Editar
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => onIgnore?.(action.id)}
-                    className="h-6 px-2 text-[10px] hover:bg-muted"
-                  >
-                    Ignorar
-                  </Button>
+                <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                  {action.category && (
+                    <div className="flex items-center gap-1">
+                      <Star className="h-3 w-3" />
+                      {action.category}
+                    </div>
+                  )}
+                  <div className="flex items-center gap-1">
+                    <Calendar className="h-3 w-3" />
+                    {action.date}
+                  </div>
                 </div>
-                {action.briefing && (
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    onClick={() => onView?.(action.id)}
-                    className="w-full h-6 text-[10px]"
-                  >
-                    <Eye className="h-2.5 w-2.5 mr-1" />
-                    Ver Briefing
-                  </Button>
-                )}
+
+                <div className="flex gap-2">
+                  {onView && (
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => onView(action.id)}
+                    >
+                      <Eye className="h-3 w-3 mr-1" />
+                      Ver
+                    </Button>
+                  )}
+                  {onIgnore && (
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      className="text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                      onClick={() => onIgnore(action.id)}
+                    >
+                      <XCircle className="h-3 w-3 mr-1" />
+                      Ignorar
+                    </Button>
+                  )}
+                  {onExecute && (
+                    <Button 
+                      size="sm"
+                      onClick={() => onExecute(action.id)}
+                    >
+                      <CheckCircle className="h-3 w-3 mr-1" />
+                      Executar
+                    </Button>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </ScrollArea>
     </div>
