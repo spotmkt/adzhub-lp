@@ -70,8 +70,21 @@ export const PhotoUpload = ({ currentPhotoUrl, onPhotoUpdate, clientId, disabled
         .from('company-profiles')
         .getPublicUrl(filePath);
 
+      // Update client record in database
+      const { error: updateError } = await supabase
+        .from('clients')
+        .update({ profile_photo_url: publicUrl })
+        .eq('id', clientId);
+
+      if (updateError) throw updateError;
+
       setPreviewUrl(publicUrl);
       onPhotoUpdate(publicUrl);
+
+      // Dispatch event to update ProfileSelector
+      window.dispatchEvent(new CustomEvent('clientPhotoUpdated', { 
+        detail: { clientId, photoUrl: publicUrl } 
+      }));
 
       toast({
         title: 'Sucesso',
@@ -102,8 +115,21 @@ export const PhotoUpload = ({ currentPhotoUrl, onPhotoUpdate, clientId, disabled
         .from('company-profiles')
         .remove([filePath]);
 
+      // Update client record in database
+      const { error: updateError } = await supabase
+        .from('clients')
+        .update({ profile_photo_url: null })
+        .eq('id', clientId);
+
+      if (updateError) throw updateError;
+
       setPreviewUrl(null);
       onPhotoUpdate('');
+
+      // Dispatch event to update ProfileSelector
+      window.dispatchEvent(new CustomEvent('clientPhotoUpdated', { 
+        detail: { clientId, photoUrl: null } 
+      }));
 
       toast({
         title: 'Sucesso',

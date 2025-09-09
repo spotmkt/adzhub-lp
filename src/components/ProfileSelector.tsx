@@ -26,6 +26,31 @@ export const ProfileSelector = ({ onClientSelect }: ProfileSelectorProps) => {
 
   useEffect(() => {
     fetchClients();
+
+    // Listen for client photo updates
+    const handleClientPhotoUpdate = (event: CustomEvent) => {
+      const { clientId, photoUrl } = event.detail;
+      console.log('ProfileSelector - Photo updated for client:', clientId, photoUrl);
+      
+      setClients(prev => prev.map(client => 
+        client.id === clientId 
+          ? { ...client, profile_photo_url: photoUrl } 
+          : client
+      ));
+      
+      // Update selected client if it's the same one
+      setSelectedClient(prev => 
+        prev && prev.id === clientId 
+          ? { ...prev, profile_photo_url: photoUrl }
+          : prev
+      );
+    };
+
+    window.addEventListener('clientPhotoUpdated', handleClientPhotoUpdate as EventListener);
+
+    return () => {
+      window.removeEventListener('clientPhotoUpdated', handleClientPhotoUpdate as EventListener);
+    };
   }, []);
 
   useEffect(() => {
