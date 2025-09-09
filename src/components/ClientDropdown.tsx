@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
-import { metaAccountsService, MetaAccount } from '@/lib/database';
+import { supabase } from '@/integrations/supabase/client';
 
 interface Client {
   id: string;
@@ -30,17 +30,22 @@ export const ClientDropdown = ({ selectedClient, onClientSelect, onExitChat }: C
 
   const fetchClients = async () => {
     try {
-      const accounts = await metaAccountsService.getAll();
-      
-      // Converter MetaAccount para Client
-      const clientsData: Client[] = accounts.map(account => ({
-        id: account.cliente,
-        name: account.cliente,
-        email: account.whatsapp, // Usando whatsapp como contato
-        phone: account.whatsapp
-      }));
+      const { data: clientsData, error } = await supabase
+        .from('clients')
+        .select('*')
+        .order('name', { ascending: true });
 
-      setClients(clientsData);
+      if (error) throw error;
+
+      // Converter para o formato Client
+      const clients: Client[] = clientsData?.map(client => ({
+        id: client.id,
+        name: client.name,
+        email: client.email,
+        phone: client.phone
+      })) || [];
+
+      setClients(clients);
     } catch (error) {
       console.error('Failed to fetch clients:', error);
     } finally {
