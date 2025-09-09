@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { Canvas as FabricCanvas, FabricImage, Rect } from 'fabric';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Crop, RotateCcw, Download, X } from 'lucide-react';
+import { Crop, RotateCcw, Download, X, Move } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
 interface ImageEditorProps {
@@ -14,214 +13,222 @@ interface ImageEditorProps {
 
 export const ImageEditor = ({ imageFile, open, onOpenChange, onSave }: ImageEditorProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [fabricCanvas, setFabricCanvas] = useState<FabricCanvas | null>(null);
-  const [cropArea, setCropArea] = useState<Rect | null>(null);
-  const [originalImage, setOriginalImage] = useState<FabricImage | null>(null);
+  const [image, setImage] = useState<HTMLImageElement | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 });
+  const [imageScale, setImageScale] = useState(1);
+  const [rotation, setRotation] = useState(0);
+
+  const canvasSize = 400;
+  const cropSize = 300;
 
   useEffect(() => {
-    if (!canvasRef.current || !open || !imageFile) return;
+    if (!open || !imageFile) return;
 
-    console.log('ImageEditor - Initializing canvas with image:', imageFile.name);
+    console.log('ImageEditor - Loading image:', imageFile.name);
 
-    const canvas = new FabricCanvas(canvasRef.current, {
-      width: 400,
-      height: 400,
-      backgroundColor: '#f8f9fa',
-    });
-
-    // Initialize the canvas first
-    setFabricCanvas(canvas);
-
-    // Small delay to ensure canvas is properly initialized
-    setTimeout(() => {
-      loadImageToCanvas(canvas, imageFile);
-    }, 100);
-
-    return () => {
-      console.log('ImageEditor - Disposing canvas');
-      canvas.dispose();
+    const img = new Image();
+    img.onload = () => {
+      console.log('ImageEditor - Image loaded successfully');
+      
+      // Calculate initial scale and position
+      const scale = Math.min(canvasSize / img.width, canvasSize / img.height) * 0.8;
+      const x = (canvasSize - img.width * scale) / 2;
+      const y = (canvasSize - img.height * scale) / 2;
+      
+      setImage(img);
+      setImageScale(scale);
+      setImagePosition({ x, y });
+      setRotation(0);
     };
-  }, [open, imageFile]);
 
-  const loadImageToCanvas = async (canvas: FabricCanvas, file: File) => {
-    console.log('ImageEditor - Loading image to canvas:', file.name);
-    
-    try {
-      const imageUrl = URL.createObjectURL(file);
-      console.log('ImageEditor - Created blob URL:', imageUrl);
-      
-      const img = new Image();
-      
-      img.onload = () => {
-        console.log('ImageEditor - Image loaded successfully, dimensions:', img.width, 'x', img.height);
-        
-        try {
-          const fabricImg = new FabricImage(img, {
-            left: 0,
-            top: 0,
-            selectable: false, // Make the image non-selectable so only crop area can be moved
-          });
-          
-          const canvasWidth = canvas.width || 400;
-          const canvasHeight = canvas.height || 400;
-          const imageWidth = fabricImg.width || 1;
-          const imageHeight = fabricImg.height || 1;
-          
-          console.log('ImageEditor - Canvas size:', canvasWidth, 'x', canvasHeight);
-          console.log('ImageEditor - Image size:', imageWidth, 'x', imageHeight);
-          
-          const scaleX = canvasWidth / imageWidth;
-          const scaleY = canvasHeight / imageHeight;
-          const scale = Math.min(scaleX, scaleY);
-          
-          console.log('ImageEditor - Calculated scale:', scale);
-          
-          fabricImg.scale(scale);
-          fabricImg.set({
-            left: (canvasWidth - imageWidth * scale) / 2,
-            top: (canvasHeight - imageHeight * scale) / 2
-          });
-          
-          canvas.add(fabricImg);
-          setOriginalImage(fabricImg);
-          
-          console.log('ImageEditor - Added image to canvas');
-          
-          // Add crop area (square crop for profile photos)
-          const cropSize = Math.min(canvasWidth, canvasHeight) * 0.7;
-          const crop = new Rect({
-            left: (canvasWidth - cropSize) / 2,
-            top: (canvasHeight - cropSize) / 2,
-            width: cropSize,
-            height: cropSize,
-            fill: 'transparent',
-            stroke: '#3b82f6',
-            strokeWidth: 2,
-            strokeDashArray: [5, 5],
-            selectable: true,
-            hasControls: true,
-            hasBorders: true,
-            lockRotation: true,
-            cornerSize: 12,
-            transparentCorners: false,
-            cornerColor: '#3b82f6',
-            borderColor: '#3b82f6',
-          });
-          
-          canvas.add(crop);
-          setCropArea(crop);
-          
-          console.log('ImageEditor - Added crop area');
-          
-          canvas.renderAll();
-          console.log('ImageEditor - Canvas rendered');
-          
-        } catch (fabricError) {
-          console.error('ImageEditor - Error creating FabricImage:', fabricError);
-          toast({
-            title: 'Erro',
-            description: 'Erro ao processar a imagem no editor.',
-            variant: 'destructive',
-          });
-        } finally {
-          URL.revokeObjectURL(imageUrl);
-        }
-      };
-      
-      img.onerror = (error) => {
-        console.error('ImageEditor - Error loading image:', error);
-        toast({
-          title: 'Erro',
-          description: 'Erro ao carregar a imagem para edição.',
-          variant: 'destructive',
-        });
-        URL.revokeObjectURL(imageUrl);
-      };
-      
-      img.src = imageUrl;
-    } catch (error) {
-      console.error('ImageEditor - Error in loadImageToCanvas:', error);
+    img.onerror = () => {
+      console.error('ImageEditor - Failed to load image');
       toast({
         title: 'Erro',
-        description: 'Erro ao carregar a imagem para edição.',
+        description: 'Erro ao carregar a imagem.',
         variant: 'destructive',
       });
-    }
+    };
+
+    img.src = URL.createObjectURL(imageFile);
+
+    return () => {
+      URL.revokeObjectURL(img.src);
+    };
+  }, [imageFile, open]);
+
+  // Redraw canvas
+  useEffect(() => {
+    if (!image || !canvasRef.current) return;
+
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Clear canvas
+    ctx.clearRect(0, 0, canvasSize, canvasSize);
+
+    // Save context
+    ctx.save();
+
+    // Move to image center for rotation
+    const centerX = imagePosition.x + (image.width * imageScale) / 2;
+    const centerY = imagePosition.y + (image.height * imageScale) / 2;
+    ctx.translate(centerX, centerY);
+    ctx.rotate((rotation * Math.PI) / 180);
+    
+    // Draw image
+    ctx.drawImage(
+      image,
+      -(image.width * imageScale) / 2,
+      -(image.height * imageScale) / 2,
+      image.width * imageScale,
+      image.height * imageScale
+    );
+
+    // Restore context
+    ctx.restore();
+
+    // Draw crop area
+    const cropX = (canvasSize - cropSize) / 2;
+    const cropY = (canvasSize - cropSize) / 2;
+    
+    // Semi-transparent overlay
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    ctx.fillRect(0, 0, canvasSize, canvasSize);
+    
+    // Clear crop area
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.fillRect(cropX, cropY, cropSize, cropSize);
+    
+    // Reset composite operation
+    ctx.globalCompositeOperation = 'source-over';
+    
+    // Draw crop border
+    ctx.strokeStyle = '#3b82f6';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 5]);
+    ctx.strokeRect(cropX, cropY, cropSize, cropSize);
+    
+    // Reset line dash
+    ctx.setLineDash([]);
+  }, [image, imagePosition, imageScale, rotation]);
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    const rect = canvasRef.current?.getBoundingClientRect();
+    if (!rect) return;
+
+    setIsDragging(true);
+    setDragStart({
+      x: e.clientX - rect.left - imagePosition.x,
+      y: e.clientY - rect.top - imagePosition.y,
+    });
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging) return;
+
+    const rect = canvasRef.current?.getBoundingClientRect();
+    if (!rect) return;
+
+    setImagePosition({
+      x: e.clientX - rect.left - dragStart.x,
+      y: e.clientY - rect.top - dragStart.y,
+    });
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
   };
 
   const handleRotate = () => {
-    if (originalImage) {
-      const currentAngle = originalImage.angle || 0;
-      originalImage.rotate(currentAngle + 90);
-      fabricCanvas?.renderAll();
-    }
+    setRotation((prev) => (prev + 90) % 360);
   };
 
   const handleReset = () => {
-    if (fabricCanvas && originalImage) {
-      fabricCanvas.clear();
-      loadImageToCanvas(fabricCanvas, imageFile);
-    }
+    if (!image) return;
+    
+    const scale = Math.min(canvasSize / image.width, canvasSize / image.height) * 0.8;
+    const x = (canvasSize - image.width * scale) / 2;
+    const y = (canvasSize - image.height * scale) / 2;
+    
+    setImageScale(scale);
+    setImagePosition({ x, y });
+    setRotation(0);
   };
 
-  const handleSave = async () => {
-    if (!fabricCanvas || !cropArea || !originalImage) return;
+  const handleZoom = (delta: number) => {
+    setImageScale(prev => Math.max(0.1, Math.min(3, prev + delta)));
+  };
+
+  const handleSave = () => {
+    if (!image || !canvasRef.current) return;
 
     try {
-      // Get crop area bounds
-      const cropBounds = cropArea.getBoundingRect();
-      
-      // Create a temporary canvas for cropping
+      // Create temporary canvas for cropped image
       const tempCanvas = document.createElement('canvas');
       const tempCtx = tempCanvas.getContext('2d');
       
       if (!tempCtx) throw new Error('Could not get canvas context');
-      
+
       // Set final image size (square for profile photos)
       const finalSize = 300;
       tempCanvas.width = finalSize;
       tempCanvas.height = finalSize;
+
+      // Calculate crop area on original canvas
+      const cropX = (canvasSize - cropSize) / 2;
+      const cropY = (canvasSize - cropSize) / 2;
+
+      // Copy the cropped area
+      const sourceCanvas = canvasRef.current;
       
-      // Get the main canvas as image data
-      const canvasDataUrl = fabricCanvas.toDataURL({
-        format: 'png',
-        quality: 1,
-        multiplier: 1,
-      });
+      // First, we need to render just the image without overlays
+      const imageCanvas = document.createElement('canvas');
+      const imageCtx = imageCanvas.getContext('2d');
       
-      const mainImg = new Image();
-      mainImg.onload = () => {
-        // Calculate scale factors
-        const scaleX = mainImg.width / (fabricCanvas.width || 400);
-        const scaleY = mainImg.height / (fabricCanvas.height || 400);
-        
-        // Draw cropped area to temp canvas
-        tempCtx.drawImage(
-          mainImg,
-          cropBounds.left * scaleX,
-          cropBounds.top * scaleY,
-          cropBounds.width * scaleX,
-          cropBounds.height * scaleY,
-          0,
-          0,
-          finalSize,
-          finalSize
-        );
-        
-        // Convert to blob
-        tempCanvas.toBlob((blob) => {
-          if (blob) {
-            onSave(blob);
-            onOpenChange(false);
-            toast({
-              title: 'Sucesso',
-              description: 'Imagem editada com sucesso!',
-            });
-          }
-        }, 'image/jpeg', 0.9);
-      };
+      if (!imageCtx) throw new Error('Could not get image canvas context');
       
-      mainImg.src = canvasDataUrl;
+      imageCanvas.width = canvasSize;
+      imageCanvas.height = canvasSize;
+      
+      // Draw image with rotation
+      imageCtx.save();
+      const centerX = imagePosition.x + (image.width * imageScale) / 2;
+      const centerY = imagePosition.y + (image.height * imageScale) / 2;
+      imageCtx.translate(centerX, centerY);
+      imageCtx.rotate((rotation * Math.PI) / 180);
+      
+      imageCtx.drawImage(
+        image,
+        -(image.width * imageScale) / 2,
+        -(image.height * imageScale) / 2,
+        image.width * imageScale,
+        image.height * imageScale
+      );
+      
+      imageCtx.restore();
+      
+      // Copy cropped area to final canvas
+      tempCtx.drawImage(
+        imageCanvas,
+        cropX, cropY, cropSize, cropSize,
+        0, 0, finalSize, finalSize
+      );
+
+      // Convert to blob
+      tempCanvas.toBlob((blob) => {
+        if (blob) {
+          onSave(blob);
+          onOpenChange(false);
+          toast({
+            title: 'Sucesso',
+            description: 'Imagem editada com sucesso!',
+          });
+        }
+      }, 'image/jpeg', 0.9);
     } catch (error) {
       console.error('Error saving cropped image:', error);
       toast({
@@ -244,14 +251,44 @@ export const ImageEditor = ({ imageFile, open, onOpenChange, onSave }: ImageEdit
         
         <div className="space-y-4">
           <div className="relative border-2 border-dashed border-border rounded-lg overflow-hidden">
-            <canvas 
-              ref={canvasRef} 
-              className="max-w-full"
+            <canvas
+              ref={canvasRef}
+              width={canvasSize}
+              height={canvasSize}
+              className="max-w-full cursor-move"
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
             />
           </div>
           
-          <div className="text-sm text-muted-foreground text-center">
-            Mova e redimensione a área de corte azul para enquadrar sua imagem
+          <div className="text-sm text-muted-foreground text-center space-y-2">
+            <div className="flex items-center justify-center gap-2">
+              <Move className="h-4 w-4" />
+              Arraste a imagem para posicionar
+            </div>
+            
+            {/* Zoom controls */}
+            <div className="flex items-center justify-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleZoom(-0.1)}
+                disabled={imageScale <= 0.1}
+              >
+                -
+              </Button>
+              <span className="text-xs">Zoom: {Math.round(imageScale * 100)}%</span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleZoom(0.1)}
+                disabled={imageScale >= 3}
+              >
+                +
+              </Button>
+            </div>
           </div>
           
           <div className="flex justify-center gap-2">
@@ -277,6 +314,7 @@ export const ImageEditor = ({ imageFile, open, onOpenChange, onSave }: ImageEdit
               onClick={handleSave}
               size="sm"
               className="flex-1"
+              disabled={!image}
             >
               <Download className="h-4 w-4 mr-2" />
               Salvar
