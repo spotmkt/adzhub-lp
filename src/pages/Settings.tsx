@@ -70,24 +70,19 @@ const Settings = () => {
   ];
 
   useEffect(() => {
-    const clientId = localStorage.getItem('selectedClientId');
-    if (clientId) {
-      // Validate clientId is a valid UUID
-      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-      if (uuidRegex.test(clientId)) {
+    // Listen for profile changes
+    const handleProfileChange = (event: CustomEvent) => {
+      console.log('Settings - Received profile change event:', event.detail);
+      if (event.detail) {
+        const clientId = event.detail.id;
         setSelectedClient(clientId);
         fetchClientData(clientId);
-      } else {
-        console.error('Invalid UUID format:', clientId);
-        setLoading(false);
       }
-    } else {
-      setLoading(false);
-    }
+    };
 
-    // Listen for localStorage changes to update when profile changes
     const handleStorageChange = () => {
       const newClientId = localStorage.getItem('selectedClientId');
+      console.log('Settings - Storage changed:', newClientId);
       if (newClientId !== selectedClient) {
         const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
         if (newClientId && uuidRegex.test(newClientId)) {
@@ -101,18 +96,36 @@ const Settings = () => {
       }
     };
 
+    // Initial load
+    const clientId = localStorage.getItem('selectedClientId');
+    if (clientId) {
+      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+      if (uuidRegex.test(clientId)) {
+        console.log('Settings - Initial client load:', clientId);
+        setSelectedClient(clientId);
+        fetchClientData(clientId);
+      } else {
+        console.error('Invalid UUID format:', clientId);
+        setLoading(false);
+      }
+    } else {
+      setLoading(false);
+    }
+
+    // Add event listeners
     window.addEventListener('storage', handleStorageChange);
-    
-    // Custom event for same-window changes
-    window.addEventListener('profileChanged', handleStorageChange);
+    window.addEventListener('profileChanged', handleProfileChange as EventListener);
 
     return () => {
       window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('profileChanged', handleStorageChange);
+      window.removeEventListener('profileChanged', handleProfileChange as EventListener);
     };
-  }, [selectedClient]);
+  }, []);
 
   const fetchClientData = async (clientId: string) => {
+    console.log('Settings - Fetching data for client:', clientId);
+    setLoading(true);
+    
     try {
       // Fetch client data
       const { data: clientData, error: clientError } = await supabase
@@ -122,13 +135,17 @@ const Settings = () => {
         .single();
 
       if (clientError) throw clientError;
-      setClient({
+      
+      const newClient = {
         id: clientData.id,
         name: clientData.name,
         email: clientData.email,
         phone: clientData.phone,
         profile_photo_url: clientData.profile_photo_url
-      });
+      };
+      
+      console.log('Settings - Loaded client data:', newClient);
+      setClient(newClient);
 
       // Fetch client profile
       const { data, error } = await supabase
@@ -140,7 +157,7 @@ const Settings = () => {
       if (error) throw error;
 
       if (data) {
-        setProfile({
+        const newProfile = {
           ...data,
           canais_habilitados: data.canais_habilitados as {
             linkedin: boolean;
@@ -150,9 +167,13 @@ const Settings = () => {
             youtube: boolean;
             tiktok: boolean;
           }
-        } as ClientProfile);
+        } as ClientProfile;
+        
+        console.log('Settings - Loaded profile data:', newProfile);
+        setProfile(newProfile);
       } else {
         // Create default profile if doesn't exist
+        console.log('Settings - Creating default profile for client:', clientId);
         const defaultProfile = {
           client_id: clientId,
           tom_voz: 'profissional',
@@ -175,7 +196,7 @@ const Settings = () => {
           .single();
 
         if (createError) throw createError;
-        setProfile({
+        const createdProfile = {
           ...newData,
           canais_habilitados: newData.canais_habilitados as {
             linkedin: boolean;
@@ -185,7 +206,10 @@ const Settings = () => {
             youtube: boolean;
             tiktok: boolean;
           }
-        } as ClientProfile);
+        } as ClientProfile;
+        
+        console.log('Settings - Created profile:', createdProfile);
+        setProfile(createdProfile);
       }
     } catch (error) {
       console.error('Error fetching client data:', error);

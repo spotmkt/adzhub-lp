@@ -35,11 +35,13 @@ export const ProfileSelector = ({ onClientSelect }: ProfileSelectorProps) => {
       if (savedClientId) {
         const savedClient = clients.find(c => c.id === savedClientId);
         if (savedClient) {
+          console.log('Setting saved client from localStorage:', savedClient);
           setSelectedClient(savedClient);
+          onClientSelect?.(savedClient);
         }
       }
     }
-  }, [clients]);
+  }, [clients, onClientSelect]);
 
   const fetchClients = async () => {
     try {
@@ -70,14 +72,14 @@ export const ProfileSelector = ({ onClientSelect }: ProfileSelectorProps) => {
   };
 
   const handleClientSelect = (client: Client) => {
-    console.log('Selecting client:', client);
+    console.log('ProfileSelector - Selecting client:', client);
     setSelectedClient(client);
     localStorage.setItem('selectedClientId', client.id);
     onClientSelect?.(client);
     setOpen(false);
     
     // Dispatch custom event for same-window listeners
-    window.dispatchEvent(new CustomEvent('profileChanged'));
+    window.dispatchEvent(new CustomEvent('profileChanged', { detail: client }));
   };
 
   return (
@@ -92,29 +94,27 @@ export const ProfileSelector = ({ onClientSelect }: ProfileSelectorProps) => {
             selectedClient && "bg-nav-item-active text-primary-foreground shadow-glow-lg"
           )}
           title={selectedClient ? `Perfil: ${selectedClient.name}` : 'Selecionar Perfil'}
-          key={selectedClient?.id || 'no-client'} // Force re-render when client changes
         >
           {selectedClient?.profile_photo_url ? (
             <img
               src={selectedClient.profile_photo_url}
               alt={selectedClient.name}
               className="w-full h-full object-cover rounded-full"
-              key={`${selectedClient.id}-${selectedClient.profile_photo_url}`} // Unique key
               onError={(e) => {
                 console.log('Error loading profile image for:', selectedClient.name);
                 e.currentTarget.style.display = 'none';
-                const nextSibling = e.currentTarget.nextElementSibling as HTMLElement;
-                if (nextSibling) {
-                  nextSibling.classList.remove('hidden');
+                const userIcon = e.currentTarget.parentElement?.querySelector('.user-icon') as HTMLElement;
+                if (userIcon) {
+                  userIcon.style.display = 'block';
                 }
               }}
             />
           ) : null}
           <User 
             className={cn(
-              "h-5 w-5 transition-transform duration-300",
+              "user-icon h-5 w-5 transition-transform duration-300",
               selectedClient && "scale-110",
-              selectedClient?.profile_photo_url && "hidden"
+              selectedClient?.profile_photo_url ? "hidden" : "block"
             )} 
           />
         </Button>
@@ -136,18 +136,31 @@ export const ProfileSelector = ({ onClientSelect }: ProfileSelectorProps) => {
                 onSelect={() => handleClientSelect(client)}
                 className="flex items-center justify-between"
               >
-                <div className="flex flex-col flex-1 overflow-hidden">
-                  <span className="font-medium truncate">{client.name}</span>
-                  {client.email && (
-                    <span className="text-xs text-muted-foreground truncate">
-                      {client.email}
-                    </span>
+                <div className="flex items-center gap-3">
+                  {client.profile_photo_url ? (
+                    <img
+                      src={client.profile_photo_url}
+                      alt={client.name}
+                      className="w-8 h-8 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
+                      <User className="h-4 w-4" />
+                    </div>
                   )}
-                  {client.phone && (
-                    <span className="text-xs text-muted-foreground truncate">
-                      {client.phone}
-                    </span>
-                  )}
+                  <div className="flex flex-col flex-1 overflow-hidden">
+                    <span className="font-medium truncate">{client.name}</span>
+                    {client.email && (
+                      <span className="text-xs text-muted-foreground truncate">
+                        {client.email}
+                      </span>
+                    )}
+                    {client.phone && (
+                      <span className="text-xs text-muted-foreground truncate">
+                        {client.phone}
+                      </span>
+                    )}
+                  </div>
                 </div>
                 <Check
                   className={cn(
