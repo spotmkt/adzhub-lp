@@ -26,13 +26,17 @@ export const ProfileSelector = ({ onClientSelect }: ProfileSelectorProps) => {
 
   useEffect(() => {
     fetchClients();
-    
-    // Load saved client from localStorage
-    const savedClientId = localStorage.getItem('selectedClientId');
-    if (savedClientId) {
-      const savedClient = clients.find(c => c.id === savedClientId);
-      if (savedClient) {
-        setSelectedClient(savedClient);
+  }, []);
+
+  useEffect(() => {
+    // Load saved client from localStorage after clients are loaded
+    if (clients.length > 0) {
+      const savedClientId = localStorage.getItem('selectedClientId');
+      if (savedClientId) {
+        const savedClient = clients.find(c => c.id === savedClientId);
+        if (savedClient) {
+          setSelectedClient(savedClient);
+        }
       }
     }
   }, [clients]);
@@ -66,6 +70,7 @@ export const ProfileSelector = ({ onClientSelect }: ProfileSelectorProps) => {
   };
 
   const handleClientSelect = (client: Client) => {
+    console.log('Selecting client:', client);
     setSelectedClient(client);
     localStorage.setItem('selectedClientId', client.id);
     onClientSelect?.(client);
@@ -93,9 +98,14 @@ export const ProfileSelector = ({ onClientSelect }: ProfileSelectorProps) => {
               src={selectedClient.profile_photo_url}
               alt={selectedClient.name}
               className="w-full h-full object-cover rounded-full"
+              key={selectedClient.id} // Force re-render when client changes
               onError={(e) => {
+                console.log('Error loading profile image for:', selectedClient.name);
                 e.currentTarget.style.display = 'none';
-                e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                const nextSibling = e.currentTarget.nextElementSibling as HTMLElement;
+                if (nextSibling) {
+                  nextSibling.classList.remove('hidden');
+                }
               }}
             />
           ) : null}
