@@ -4,16 +4,30 @@ import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-
+  
   useEffect(() => {
     setMounted(true);
   }, []);
 
   if (!mounted) {
-    return null;
+    return (
+      <Button
+        variant="ghost"
+        size="icon"
+        className="w-10 h-10 rounded-full transition-all duration-300 hover:bg-nav-item hover:shadow-glow"
+        disabled
+      >
+        <Sun className="h-4 w-4" />
+      </Button>
+    );
   }
+
+  return <ThemeToggleContent />;
+}
+
+function ThemeToggleContent() {
+  const { theme, setTheme } = useTheme();
 
   return (
     <Button
