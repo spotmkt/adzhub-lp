@@ -1,4 +1,4 @@
-import { Calendar, Clock, Star, Eye, ArrowLeft, FileText, CheckCircle, XCircle } from 'lucide-react';
+import { Calendar, Clock, Star, Eye, ArrowLeft, FileText, CheckCircle, XCircle, History } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
@@ -74,7 +74,7 @@ export const ActionPanel = ({
   return (
     <div className="w-full lg:w-80 bg-card border-l border-border flex flex-col h-full">
       <div className="p-6 border-b border-border">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold">Ações recomendadas pela IA</h2>
           {onBack && (
             <Button variant="ghost" size="sm" onClick={onBack}>
@@ -82,6 +82,14 @@ export const ActionPanel = ({
             </Button>
           )}
         </div>
+        
+        {/* History Link */}
+        <Link to="/history">
+          <Button variant="ghost" size="sm" className="w-full justify-start">
+            <History className="h-4 w-4 mr-2" />
+            Ver Histórico de Ações
+          </Button>
+        </Link>
       </div>
 
       <ScrollArea className="flex-1 p-6">

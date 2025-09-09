@@ -167,7 +167,6 @@ export const Layout = ({ children }: LayoutProps) => {
   useEffect(() => {
     const path = window.location.pathname;
     if (path === '/') setActiveNavItem('chats');
-    else if (path === '/history') setActiveNavItem('history');
     else if (path === '/content') setActiveNavItem('content');
     else if (path === '/settings') setActiveNavItem('settings');
   }, []);
