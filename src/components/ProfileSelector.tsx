@@ -11,6 +11,7 @@ interface Client {
   name: string;
   email?: string;
   phone?: string;
+  profile_photo_url?: string;
 }
 
 interface ProfileSelectorProps {
@@ -52,7 +53,8 @@ export const ProfileSelector = ({ onClientSelect }: ProfileSelectorProps) => {
         id: client.id,
         name: client.name,
         email: client.email,
-        phone: client.phone
+        phone: client.phone,
+        profile_photo_url: client.profile_photo_url
       }));
 
       setClients(clientsData);
@@ -68,6 +70,9 @@ export const ProfileSelector = ({ onClientSelect }: ProfileSelectorProps) => {
     localStorage.setItem('selectedClientId', client.id);
     onClientSelect?.(client);
     setOpen(false);
+    
+    // Dispatch custom event for same-window listeners
+    window.dispatchEvent(new CustomEvent('profileChanged'));
   };
 
   return (
@@ -77,16 +82,28 @@ export const ProfileSelector = ({ onClientSelect }: ProfileSelectorProps) => {
           variant="ghost"
           size="icon"
           className={cn(
-            "w-12 h-12 rounded-full transition-all duration-300",
+            "w-12 h-12 rounded-full transition-all duration-300 overflow-hidden",
             "hover:bg-nav-item hover:shadow-glow",
             selectedClient && "bg-nav-item-active text-primary-foreground shadow-glow-lg"
           )}
           title={selectedClient ? `Perfil: ${selectedClient.name}` : 'Selecionar Perfil'}
         >
+          {selectedClient?.profile_photo_url ? (
+            <img
+              src={selectedClient.profile_photo_url}
+              alt={selectedClient.name}
+              className="w-full h-full object-cover rounded-full"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+                e.currentTarget.nextElementSibling?.classList.remove('hidden');
+              }}
+            />
+          ) : null}
           <User 
             className={cn(
               "h-5 w-5 transition-transform duration-300",
-              selectedClient && "scale-110"
+              selectedClient && "scale-110",
+              selectedClient?.profile_photo_url && "hidden"
             )} 
           />
         </Button>

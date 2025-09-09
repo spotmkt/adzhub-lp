@@ -84,7 +84,33 @@ const Settings = () => {
     } else {
       setLoading(false);
     }
-  }, []);
+
+    // Listen for localStorage changes to update when profile changes
+    const handleStorageChange = () => {
+      const newClientId = localStorage.getItem('selectedClientId');
+      if (newClientId !== selectedClient) {
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+        if (newClientId && uuidRegex.test(newClientId)) {
+          setSelectedClient(newClientId);
+          fetchClientData(newClientId);
+        } else if (!newClientId) {
+          setSelectedClient('');
+          setClient(null);
+          setProfile(null);
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Custom event for same-window changes
+    window.addEventListener('profileChanged', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('profileChanged', handleStorageChange);
+    };
+  }, [selectedClient]);
 
   const fetchClientData = async (clientId: string) => {
     try {
