@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
+import { PhotoUpload } from '@/components/PhotoUpload';
 import { toast } from '@/hooks/use-toast';
 import { Settings as SettingsIcon, Zap, AlertCircle } from 'lucide-react';
 
@@ -32,6 +33,7 @@ interface Client {
   name: string;
   email?: string;
   phone?: string;
+  profile_photo_url?: string;
 }
 
 const Settings = () => {
@@ -94,7 +96,13 @@ const Settings = () => {
         .single();
 
       if (clientError) throw clientError;
-      setClient(clientData);
+      setClient({
+        id: clientData.id,
+        name: clientData.name,
+        email: clientData.email,
+        phone: clientData.phone,
+        profile_photo_url: clientData.profile_photo_url
+      });
 
       // Fetch client profile
       const { data, error } = await supabase
@@ -209,6 +217,7 @@ const Settings = () => {
           name: client.name,
           email: client.email,
           phone: client.phone,
+          profile_photo_url: client.profile_photo_url,
         })
         .eq('id', client.id);
 
@@ -306,36 +315,49 @@ const Settings = () => {
                   Edite as informações básicas da empresa
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-6">
+                {/* Photo Upload Section */}
                 <div className="space-y-2">
-                  <Label htmlFor="company-name">Nome da Empresa</Label>
-                  <Input
-                    id="company-name"
-                    value={client.name}
-                    onChange={(e) => updateClient({ name: e.target.value })}
-                    placeholder="Digite o nome da empresa"
+                  <label className="text-sm font-medium">Foto do Perfil</label>
+                  <PhotoUpload
+                    currentPhotoUrl={client.profile_photo_url}
+                    onPhotoUpdate={(photoUrl) => updateClient({ profile_photo_url: photoUrl })}
+                    clientId={client.id}
+                    disabled={saving}
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="company-email">Email</Label>
-                  <Input
-                    id="company-email"
-                    type="email"
-                    value={client.email || ''}
-                    onChange={(e) => updateClient({ email: e.target.value })}
-                    placeholder="email@empresa.com"
-                  />
-                </div>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="company-name">Nome da Empresa</Label>
+                    <Input
+                      id="company-name"
+                      value={client.name}
+                      onChange={(e) => updateClient({ name: e.target.value })}
+                      placeholder="Digite o nome da empresa"
+                    />
+                  </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="company-phone">Telefone</Label>
-                  <Input
-                    id="company-phone"
-                    value={client.phone || ''}
-                    onChange={(e) => updateClient({ phone: e.target.value })}
-                    placeholder="(00) 00000-0000"
-                  />
+                  <div className="space-y-2">
+                    <Label htmlFor="company-email">Email</Label>
+                    <Input
+                      id="company-email"
+                      type="email"
+                      value={client.email || ''}
+                      onChange={(e) => updateClient({ email: e.target.value })}
+                      placeholder="email@empresa.com"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="company-phone">Telefone</Label>
+                    <Input
+                      id="company-phone"
+                      value={client.phone || ''}
+                      onChange={(e) => updateClient({ phone: e.target.value })}
+                      placeholder="(00) 00000-0000"
+                    />
+                  </div>
                 </div>
 
                 <div className="flex justify-end">
