@@ -3,29 +3,30 @@ import { Send, Bot, User, Loader2, LogOut, Bell, Eye, Calendar, History, FileTex
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { cn } from '@/lib/utils';
+import { Separator } from '@/components/ui/separator';
 import { ClientDropdown } from './ClientDropdown';
-import { ThemeToggle } from './ThemeToggle';
 import { FileUpload } from './FileUpload';
+import { AudioRecorder } from './AudioRecorder';
 
 interface Message {
   id: string;
   content: string;
-  sender: 'user' | 'ai' | 'system';
+  sender: 'user' | 'ai';
   timestamp: Date;
-  fileData?: {
-    file: File;
-    type: 'image' | 'audio' | 'document';
-    url?: string;
-  };
-  cardData?: {
-    id: string;
-    title: string;
-    description: string;
-    priority: 'high' | 'medium' | 'low';
-  };
+  audioUrl?: string;
+  fileUrl?: string;
+  fileName?: string;
+}
+
+interface ActionCard {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  priority: string;
+  category: string;
 }
 
 interface Client {
@@ -37,10 +38,10 @@ interface Client {
 
 interface ChatAreaProps {
   onSendMessage?: (message: string, messageData: Message) => void;
-  selectedClient?: Client;
+  selectedClient?: Client | null;
   onExitChat?: () => void;
   onClearHistory?: () => void;
-  onViewCard?: (cardId: string) => void;
+  onViewCard?: (actionId: string) => void;
   onClientSelect?: (client: Client) => void;
   activeNavItem?: string;
   onNavItemClick?: (item: string) => void;
@@ -50,423 +51,294 @@ export const ChatArea = ({
   onSendMessage, 
   selectedClient, 
   onExitChat, 
-  onClearHistory,
-  onViewCard, 
+  onClearHistory, 
+  onViewCard,
   onClientSelect,
   activeNavItem,
   onNavItemClick 
 }: ChatAreaProps) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
-  const [isThinking, setIsThinking] = useState(false);
-  const [viewportHeight, setViewportHeight] = useState(window.innerHeight);
+  const [isLoading, setIsLoading] = useState(false);
+  const [notifications, setNotifications] = useState<ActionCard[]>([]);
 
-  // Initialize with welcome message when client is selected
+  // Make functions available globally for external calls
   useEffect(() => {
-    if (selectedClient) {
-      const welcomeMessage: Message = {
-        id: 'welcome',
-        content: `Olá! Bem-vindo ao atendimento para ${selectedClient.name}. Como posso ajudá-lo hoje?`,
-        sender: 'ai',
-        timestamp: new Date()
-      };
-      setMessages([welcomeMessage]);
-    }
-  }, [selectedClient]);
-
-  // Handle viewport changes for iOS Safari URL bar
-  useEffect(() => {
-    const handleResize = () => {
-      setViewportHeight(window.innerHeight);
-    };
-
-    const handleVisualViewportChange = () => {
-      if (window.visualViewport) {
-        setViewportHeight(window.visualViewport.height);
-      }
-    };
-
-    // Listen to both window resize and visual viewport changes
-    window.addEventListener('resize', handleResize);
-    
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', handleVisualViewportChange);
-    }
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      if (window.visualViewport) {
-        window.visualViewport.removeEventListener('resize', handleVisualViewportChange);
-      }
-    };
-  }, []);
-
-  const handleSend = () => {
-    if (inputValue.trim()) {
+    (window as any).addAIResponse = (content: string, audioUrl?: string) => {
       const newMessage: Message = {
         id: Date.now().toString(),
-        content: inputValue,
-        sender: 'user',
-        timestamp: new Date()
+        content,
+        sender: 'ai',
+        timestamp: new Date(),
+        audioUrl
       };
-      
       setMessages(prev => [...prev, newMessage]);
-      setIsThinking(true);
-      onSendMessage?.(inputValue, newMessage);
+      setIsLoading(false);
+    };
+
+    (window as any).addCardNotification = (card: ActionCard) => {
+      setNotifications(prev => [card, ...prev]);
+    };
+
+    (window as any).setChatHistory = (history: Message[]) => {
+      setMessages(history);
+    };
+
+    (window as any).clearChat = () => {
+      setMessages([]);
       setInputValue('');
-    }
-  };
-
-  const handleFileSelect = (file: File, type: 'image' | 'audio' | 'document') => {
-    const url = URL.createObjectURL(file);
-    const fileMessage: Message = {
-      id: Date.now().toString(),
-      content: `Enviou ${type === 'image' ? 'uma imagem' : type === 'audio' ? 'um áudio' : 'um documento'}: ${file.name}`,
-      sender: 'user',
-      timestamp: new Date(),
-      fileData: {
-        file,
-        type,
-        url
-      }
+      setIsLoading(false);
     };
-    
-    setMessages(prev => [...prev, fileMessage]);
-    setIsThinking(true);
-    onSendMessage?.(fileMessage.content, fileMessage);
-  };
 
-  const handleAudioRecord = (audioBlob: Blob) => {
-    const file = new File([audioBlob], `audio-${Date.now()}.webm`, { 
-      type: 'audio/webm' 
-    });
-    const url = URL.createObjectURL(audioBlob);
-    
-    const audioMessage: Message = {
-      id: Date.now().toString(),
-      content: 'Enviou uma gravação de áudio',
-      sender: 'user',
-      timestamp: new Date(),
-      fileData: {
-        file,
-        type: 'audio',
-        url
-      }
+    return () => {
+      delete (window as any).addAIResponse;
+      delete (window as any).addCardNotification;
+      delete (window as any).setChatHistory;
+      delete (window as any).clearChat;
     };
-    
-    setMessages(prev => [...prev, audioMessage]);
-    setIsThinking(true);
-    onSendMessage?.(audioMessage.content, audioMessage);
-  };
+  }, []);
 
-  // Add function to receive AI response
-  const addAIResponse = (content: string) => {
-    const aiResponse: Message = {
+  // Show client selector if no client is selected
+  if (!selectedClient) {
+    return (
+      <div className="h-full flex items-center justify-center bg-muted/30">
+        <ClientDropdown 
+          selectedClient={null}
+          onClientSelect={onClientSelect || (() => {})} 
+          onExitChat={onExitChat || (() => {})}
+        />
+      </div>
+    );
+  }
+
+  const handleSendMessage = async () => {
+    if (!inputValue.trim() || isLoading) return;
+
+    const messageData: Message = {
       id: Date.now().toString(),
-      content,
-      sender: 'ai',
+      content: inputValue,
+      sender: 'user',
       timestamp: new Date()
     };
-    setMessages(prev => [...prev, aiResponse]);
-    setIsThinking(false);
-  };
 
-  // Add function to add card notification
-  const addCardNotification = (cardData: any) => {
-    console.log('addCardNotification called with:', cardData);
-    
-    const cardNotification: Message = {
-      id: `card-${cardData.id}-${Date.now()}`,
-      content: '',
-      sender: 'system',
-      timestamp: new Date(),
-      cardData: {
-        id: cardData.id,
-        title: cardData.title,
-        description: cardData.description,
-        priority: cardData.priority
-      }
-    };
-    
-    console.log('Adding card notification to messages:', cardNotification);
-    setMessages(prev => {
-      const newMessages = [...prev, cardNotification];
-      console.log('New messages array:', newMessages);
-      return newMessages;
-    });
-  };
+    setMessages(prev => [...prev, messageData]);
+    setIsLoading(true);
 
-  // Functions to manage chat history
-  const setChatHistory = (history: Message[]) => {
-    setMessages(history);
-  };
+    if (onSendMessage) {
+      onSendMessage(inputValue, messageData);
+    }
 
-  const clearChat = () => {
-    setMessages([]);
+    setInputValue('');
   };
-
-  // Expose functions globally
-  useEffect(() => {
-    (window as any).addAIResponse = addAIResponse;
-    (window as any).setChatHistory = setChatHistory;
-    (window as any).clearChat = clearChat;
-    (window as any).addCardNotification = addCardNotification;
-  }, []);
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      handleSend();
+      handleSendMessage();
+    }
+  };
+
+  const dismissNotification = (cardId: string) => {
+    setNotifications(prev => prev.filter(card => card.id !== cardId));
+  };
+
+  const viewCard = (cardId: string) => {
+    if (onViewCard) {
+      onViewCard(cardId);
+    }
+    dismissNotification(cardId);
+  };
+
+  const handleFileUpload = (file: File, type: 'image' | 'audio' | 'document') => {
+    const fileName = file.name;
+    const fileUrl = URL.createObjectURL(file);
+    
+    const messageData: Message = {
+      id: Date.now().toString(),
+      content: `Arquivo enviado: ${fileName}`,
+      sender: 'user',
+      timestamp: new Date(),
+      fileUrl,
+      fileName
+    };
+
+    setMessages(prev => [...prev, messageData]);
+
+    if (onSendMessage) {
+      onSendMessage(`Arquivo enviado: ${fileName}`, messageData);
+    }
+  };
+
+  const handleAudioRecord = (audioBlob: Blob) => {
+    const audioUrl = URL.createObjectURL(audioBlob);
+    
+    const messageData: Message = {
+      id: Date.now().toString(),
+      content: 'Áudio enviado',
+      sender: 'user',
+      timestamp: new Date(),
+      audioUrl
+    };
+
+    setMessages(prev => [...prev, messageData]);
+
+    if (onSendMessage) {
+      onSendMessage('Áudio enviado', messageData);
     }
   };
 
   return (
-    <div 
-      className="bg-chat-background flex flex-col min-w-0 relative"
-      style={{ height: `${viewportHeight}px` }}
-    >
-      {/* Mobile Header with Navigation */}
-      <div className="md:hidden bg-chat-header border-b border-border p-3 flex items-center justify-between flex-shrink-0">
-        <div className="flex items-center space-x-3">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => onNavItemClick?.('actions')}
-            className="h-8 w-8"
-          >
-            <Calendar className="h-4 w-4" />
-          </Button>
-          <ClientDropdown
-            selectedClient={selectedClient}
-            onClientSelect={onClientSelect}
-            onExitChat={onExitChat}
-          />
-        </div>
-        <div className="flex items-center space-x-2">
-          {selectedClient && (
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Limpar histórico</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Esta ação irá apagar permanentemente todo o histórico de conversa com {selectedClient.name}.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                  <AlertDialogAction onClick={onClearHistory}>
-                    Limpar
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          )}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => onNavItemClick?.('history')}
-            className="h-8 w-8"
-          >
-            <History className="h-4 w-4" />
-          </Button>
-          <ThemeToggle />
+    <div className="h-full flex flex-col bg-background">
+      {/* Header */}
+      <div className="bg-card border-b border-border p-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
+              <User className="h-5 w-5 text-primary-foreground" />
+            </div>
+            <div>
+              <h2 className="font-semibold text-foreground">{selectedClient.name}</h2>
+              <p className="text-sm text-muted-foreground">
+                {selectedClient.email || selectedClient.phone || 'Online'}
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center space-x-2">
+            {onClearHistory && (
+              <Button variant="outline" size="sm" onClick={onClearHistory}>
+                <Trash2 className="h-4 w-4 mr-1" />
+                Limpar
+              </Button>
+            )}
+            {onExitChat && (
+              <Button variant="outline" size="sm" onClick={onExitChat}>
+                <LogOut className="h-4 w-4 mr-1" />
+                Sair
+              </Button>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Desktop Header */}
-      <div className="hidden md:block border-b border-border p-4 flex-shrink-0">
-        <div className="flex items-center justify-between">
-          <ClientDropdown
-            selectedClient={selectedClient}
-            onClientSelect={onClientSelect}
-            onExitChat={onExitChat}
-          />
-          {selectedClient && (
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Limpar histórico de conversa</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Esta ação irá apagar permanentemente todo o histórico de conversa com {selectedClient.name}. Esta ação não pode ser desfeita.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                  <AlertDialogAction onClick={onClearHistory}>
-                    Limpar histórico
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          )}
+      {/* Notifications */}
+      {notifications.length > 0 && (
+        <div className="bg-primary/5 border-b border-primary/20 p-3">
+          <div className="space-y-2 max-h-32 overflow-y-auto">
+            {notifications.map((card) => (
+              <div 
+                key={card.id} 
+                className="flex items-center justify-between bg-card p-3 rounded-lg border border-primary/20"
+              >
+                <div className="flex items-center space-x-2">
+                  <Bell className="h-4 w-4 text-primary" />
+                  <div>
+                    <p className="text-sm font-medium">{card.title}</p>
+                    <p className="text-xs text-muted-foreground">Nova ação recomendada</p>
+                  </div>
+                </div>
+                <div className="flex space-x-1">
+                  <Button 
+                    size="sm" 
+                    variant="outline"
+                    onClick={() => viewCard(card.id)}
+                  >
+                    <Eye className="h-3 w-3" />
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    variant="ghost"
+                    onClick={() => dismissNotification(card.id)}
+                  >
+                    ×
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Messages */}
-      <ScrollArea className="flex-1 p-4 min-h-0">
-        <div className="space-y-4">
-          {messages.map((message) => (
-            <div
-              key={message.id}
-              className={cn(
-                "flex items-start space-x-3",
-                message.sender === 'user' && "flex-row-reverse space-x-reverse"
-              )}
-            >
-              <div className={cn(
-                "w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0",
-                message.sender === 'user' 
-                  ? "bg-chat-bubble-user" 
-                  : "bg-chat-bubble-ai"
-              )}>
-                {message.sender === 'user' ? (
-                  <User className="h-4 w-4" />
-                ) : (
-                  <Bot className="h-4 w-4" />
-                )}
-              </div>
-              
-              <div className={cn(
-                "max-w-[70%] p-3 rounded-2xl shadow-sm break-words",
-                message.sender === 'user'
-                  ? "bg-chat-bubble-user text-primary-foreground ml-auto"
-                  : "bg-chat-bubble-ai text-foreground"
-              )}>
-                {message.content && <p className="text-sm leading-relaxed break-words">{message.content}</p>}
-                
-                {/* File attachments */}
-                {message.fileData && (
-                  <div className="mt-2">
-                    {message.fileData.type === 'image' && (
-                      <div className="relative">
-                        <img 
-                          src={message.fileData.url} 
-                          alt={message.fileData.file.name}
-                          className="max-w-full h-auto rounded-lg border border-border max-h-64 object-contain"
-                        />
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => {
-                            const link = document.createElement('a');
-                            link.href = message.fileData!.url!;
-                            link.download = message.fileData!.file.name;
-                            link.click();
-                          }}
-                          className="absolute top-2 right-2 h-7 w-7 p-0"
-                        >
-                          <Download className="h-3 w-3" />
-                        </Button>
+      <ScrollArea className="flex-1 p-4">
+        <div className="space-y-4 max-w-4xl mx-auto">
+          {messages.length === 0 ? (
+            <div className="text-center py-12">
+              <Bot className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+              <h3 className="text-lg font-medium mb-2">Olá! Como posso ajudar?</h3>
+              <p className="text-muted-foreground">
+                Digite sua mensagem, envie um arquivo ou grave um áudio para começar nossa conversa.
+              </p>
+            </div>
+          ) : (
+            messages.map((message) => (
+              <div
+                key={message.id}
+                className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+              >
+                <div className={`flex items-start space-x-2 max-w-[70%] ${
+                  message.sender === 'user' ? 'flex-row-reverse space-x-reverse' : 'flex-row'
+                }`}>
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                    message.sender === 'user' 
+                      ? 'bg-primary text-primary-foreground' 
+                      : 'bg-muted text-muted-foreground'
+                  }`}>
+                    {message.sender === 'user' ? (
+                      <User className="h-4 w-4" />
+                    ) : (
+                      <Bot className="h-4 w-4" />
+                    )}
+                  </div>
+                  <div className={`rounded-lg p-3 ${
+                    message.sender === 'user'
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-muted text-foreground'
+                  }`}>
+                    <div className="text-sm whitespace-pre-wrap">{message.content}</div>
+                    
+                    {/* Audio playback */}
+                    {message.audioUrl && (
+                      <div className="mt-2">
+                        <audio controls className="max-w-full">
+                          <source src={message.audioUrl} type="audio/wav" />
+                        </audio>
                       </div>
                     )}
                     
-                    {message.fileData.type === 'audio' && (
-                      <div className="bg-accent rounded-lg p-3 flex items-center gap-3">
-                        <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                          <Play className="h-4 w-4 text-primary-foreground" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium truncate">{message.fileData.file.name}</p>
-                          <audio controls className="w-full mt-1">
-                            <source src={message.fileData.url} type={message.fileData.file.type} />
-                          </audio>
-                        </div>
-                      </div>
-                    )}
-                    
-                    {message.fileData.type === 'document' && (
-                      <div className="bg-accent rounded-lg p-3 flex items-center gap-3">
-                        <div className="w-8 h-8 bg-secondary rounded-full flex items-center justify-center">
-                          <FileText className="h-4 w-4" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium truncate">{message.fileData.file.name}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {(message.fileData.file.size / 1024 / 1024).toFixed(2)} MB
-                          </p>
-                        </div>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => {
-                            const link = document.createElement('a');
-                            link.href = message.fileData!.url!;
-                            link.download = message.fileData!.file.name;
-                            link.click();
-                          }}
-                          className="h-7 px-2 text-xs"
+                    {/* File download */}
+                    {message.fileUrl && (
+                      <div className="mt-2">
+                        <a 
+                          href={message.fileUrl} 
+                          download={message.fileName}
+                          className="inline-flex items-center text-xs underline hover:no-underline"
                         >
                           <Download className="h-3 w-3 mr-1" />
-                          Baixar
-                        </Button>
+                          {message.fileName}
+                        </a>
                       </div>
                     )}
-                  </div>
-                )}
-                
-                {/* Card notification - single line */}
-                {message.cardData && (
-                  <div className="mt-2 p-2 bg-chat-bubble-ai rounded-lg flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2 min-w-0">
-                      <span className="font-medium text-sm truncate">{message.cardData.title}</span>
-                      <Badge 
-                        variant={message.cardData.priority === 'high' ? 'destructive' : 
-                                message.cardData.priority === 'medium' ? 'default' : 'secondary'} 
-                        className="text-xs flex-shrink-0"
-                      >
-                        {message.cardData.priority}
-                      </Badge>
+                    
+                    <div className="text-xs opacity-70 mt-2">
+                      {message.timestamp.toLocaleTimeString()}
                     </div>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => onViewCard?.(message.cardData!.id)}
-                      className="flex items-center gap-1 h-7 px-2 text-xs flex-shrink-0"
-                    >
-                      <Eye className="h-3 w-3" />
-                      Ver
-                    </Button>
                   </div>
-                )}
-                
-                <span className={cn(
-                  "text-xs mt-2 block opacity-70",
-                  message.sender === 'user' ? "text-primary-foreground" : "text-muted-foreground"
-                )}>
-                  {message.timestamp.toLocaleTimeString()}
-                </span>
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
           
-          {/* Thinking Animation */}
-          {isThinking && (
-            <div className="flex items-start space-x-3 animate-fade-in">
-              <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-chat-bubble-ai">
-                <Bot className="h-4 w-4" />
-              </div>
-              <div className="bg-chat-bubble-ai text-foreground p-3 rounded-2xl shadow-sm">
-                <div className="flex items-center space-x-2">
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  <span className="text-sm text-muted-foreground">Pensando...</span>
+          {isLoading && (
+            <div className="flex justify-start">
+              <div className="flex items-start space-x-2 max-w-[70%]">
+                <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
+                  <Bot className="h-4 w-4 text-muted-foreground" />
+                </div>
+                <div className="bg-muted rounded-lg p-3">
+                  <div className="flex items-center space-x-2">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span className="text-sm text-muted-foreground">Digitando...</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -475,27 +347,28 @@ export const ChatArea = ({
       </ScrollArea>
 
       {/* Input Area */}
-      <div className="border-t border-border p-4 flex-shrink-0 bg-chat-background">
-        <div className="relative max-w-full flex gap-2">
-          <FileUpload onFileSelect={handleFileSelect} onAudioRecord={handleAudioRecord} />
-          <div className="relative flex-1">
-            <Input
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder="Digite sua mensagem..."
-              className="pr-12 w-full bg-chat-input border-border rounded-xl h-10 text-foreground placeholder:text-muted-foreground"
-              style={{ 
-                paddingBottom: 'env(safe-area-inset-bottom)',
-                marginBottom: 'env(safe-area-inset-bottom)'
-              }}
+      <div className="bg-card border-t border-border p-4">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex items-end space-x-2">
+            <FileUpload 
+              onFileSelect={handleFileUpload}
+              onAudioRecord={handleAudioRecord}
             />
-            <Button
-              onClick={handleSend}
-              size="icon"
-              className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 rounded-lg bg-primary hover:bg-primary/90 shadow-glow"
+            <div className="flex-1">
+              <Input
+                placeholder="Digite sua mensagem..."
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyPress={handleKeyPress}
+                disabled={isLoading}
+                className="resize-none"
+              />
+            </div>
+            <Button 
+              onClick={handleSendMessage}
+              disabled={!inputValue.trim() || isLoading}
             >
-              <Send className="h-3 w-3" />
+              <Send className="h-4 w-4" />
             </Button>
           </div>
         </div>

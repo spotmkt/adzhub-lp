@@ -185,15 +185,16 @@ const Content = () => {
   const pendingIdeas = contentIdeas.filter(idea => idea.status === 'pending');
 
   return (
-    <div className="container mx-auto p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Módulo de Conteúdo</h1>
-        {pendingIdeas.length > 0 && (
-          <Badge variant="secondary" className="text-sm">
-            {pendingIdeas.length} ideias pendentes
-          </Badge>
-        )}
-      </div>
+    <div className="h-full p-6 bg-background overflow-y-auto">
+      <div className="max-w-6xl mx-auto">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-bold">Módulo de Conteúdo</h1>
+          {pendingIdeas.length > 0 && (
+            <Badge variant="secondary" className="text-sm">
+              {pendingIdeas.length} ideias pendentes
+            </Badge>
+          )}
+        </div>
 
       <Tabs defaultValue="ideas" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
@@ -356,6 +357,7 @@ const Content = () => {
           </div>
         </TabsContent>
       </Tabs>
+      </div>
     </div>
   );
 };

@@ -214,10 +214,11 @@ const Settings = () => {
   }
 
   return (
-    <div className="container mx-auto p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Configurações</h1>
-      </div>
+    <div className="h-full p-6 bg-background overflow-y-auto">
+      <div className="max-w-6xl mx-auto">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-bold">Configurações</h1>
+        </div>
 
       <Tabs defaultValue="general" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
@@ -356,6 +357,7 @@ const Settings = () => {
           )}
         </TabsContent>
       </Tabs>
+      </div>
     </div>
   );
 };

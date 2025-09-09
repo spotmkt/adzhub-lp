@@ -5,9 +5,10 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
+import { Layout } from "@/components/Layout";
 import Index from "./pages/Index";
 import History from "./pages/History";
-import Content from "./pages/Content";
+import Content from "./pages/Content";  
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
@@ -31,13 +32,15 @@ function App(): React.ReactElement {
           <TooltipProvider>
             <Toaster />
             <Sonner />
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/history" element={<History />} />
-              <Route path="/content" element={<Content />} />
-              <Route path="/settings" element={<Settings />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+            <Layout>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/history" element={<History />} />
+                <Route path="/content" element={<Content />} />
+                <Route path="/settings" element={<Settings />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Layout>
           </TooltipProvider>
         </ThemeProvider>
       </BrowserRouter>
