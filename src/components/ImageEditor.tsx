@@ -41,25 +41,31 @@ export const ImageEditor = ({ imageFile, open, onOpenChange, onSave }: ImageEdit
     try {
       const imageUrl = URL.createObjectURL(file);
       
-      FabricImage.fromURL(imageUrl).then((img) => {
-        // Scale image to fit canvas while maintaining aspect ratio
+      const img = new Image();
+      img.onload = () => {
+        const fabricImg = new FabricImage(img, {
+          // Scale image to fit canvas while maintaining aspect ratio
+          left: 0,
+          top: 0,
+        });
+        
         const canvasWidth = canvas.width || 400;
         const canvasHeight = canvas.height || 400;
-        const imageWidth = img.width || 1;
-        const imageHeight = img.height || 1;
+        const imageWidth = fabricImg.width || 1;
+        const imageHeight = fabricImg.height || 1;
         
         const scaleX = canvasWidth / imageWidth;
         const scaleY = canvasHeight / imageHeight;
         const scale = Math.min(scaleX, scaleY);
         
-        img.scale(scale);
-        img.set({
-          left: canvasWidth / 2 - (imageWidth * scale) / 2,
-          top: canvasHeight / 2 - (imageHeight * scale) / 2
+        fabricImg.scale(scale);
+        fabricImg.set({
+          left: (canvasWidth - imageWidth * scale) / 2,
+          top: (canvasHeight - imageHeight * scale) / 2
         });
         
-        canvas.add(img);
-        setOriginalImage(img);
+        canvas.add(fabricImg);
+        setOriginalImage(fabricImg);
         
         // Add crop area (circular crop for profile photos)
         const cropSize = Math.min(canvasWidth, canvasHeight) * 0.8;
@@ -83,9 +89,21 @@ export const ImageEditor = ({ imageFile, open, onOpenChange, onSave }: ImageEdit
         canvas.renderAll();
         
         URL.revokeObjectURL(imageUrl);
-      });
+      };
+      
+      img.onerror = (error) => {
+        console.error('Error loading image:', error);
+        toast({
+          title: 'Erro',
+          description: 'Erro ao carregar a imagem para edição.',
+          variant: 'destructive',
+        });
+        URL.revokeObjectURL(imageUrl);
+      };
+      
+      img.src = imageUrl;
     } catch (error) {
-      console.error('Error loading image:', error);
+      console.error('Error in loadImageToCanvas:', error);
       toast({
         title: 'Erro',
         description: 'Erro ao carregar a imagem para edição.',
