@@ -61,8 +61,15 @@ const Settings = () => {
   useEffect(() => {
     const clientId = localStorage.getItem('selectedClientId');
     if (clientId) {
-      setSelectedClient(clientId);
-      fetchClientProfile(clientId);
+      // Validate clientId is a valid UUID
+      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+      if (uuidRegex.test(clientId)) {
+        setSelectedClient(clientId);
+        fetchClientProfile(clientId);
+      } else {
+        console.error('Invalid UUID format:', clientId);
+        setLoading(false);
+      }
     } else {
       setLoading(false);
     }

@@ -179,6 +179,10 @@ export const Layout = ({ children }: LayoutProps) => {
         <NavigationBar 
           activeItem={activeNavItem}
           onItemClick={setActiveNavItem}
+          onClientSelect={(client) => {
+            setSelectedClient(client);
+            fetchActions();
+          }}
         />
       </div>
       

@@ -1,27 +1,26 @@
-import { Plus, Star, Settings, MessageSquare, Bookmark, User, History, FileText } from 'lucide-react';
+import { Plus, Settings, MessageSquare, User, History, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Link } from 'react-router-dom';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { ProfileSelector } from '@/components/ProfileSelector';
 import adzHubLogo from '@/assets/adzhub-logo-final.png';
 
 interface NavigationBarProps {
   activeItem?: string;
   onItemClick?: (item: string) => void;
+  onClientSelect?: (client: any) => void;
 }
 
 const navigationItems = [
   { id: 'new', icon: Plus, label: 'New Chat', path: '/' },
   { id: 'chats', icon: MessageSquare, label: 'Chats', path: '/' },
   { id: 'history', icon: History, label: 'Histórico', path: '/history' },
-  { id: 'favorites', icon: Star, label: 'Favorites', path: '/' },
-  { id: 'bookmarks', icon: Bookmark, label: 'Bookmarks', path: '/' },
-  { id: 'profile', icon: User, label: 'Profile', path: '/' },
   { id: 'content', icon: FileText, label: 'Conteúdo', path: '/content' },
   { id: 'settings', icon: Settings, label: 'Settings', path: '/settings' },
 ];
 
-export const NavigationBar = ({ activeItem = 'chats', onItemClick }: NavigationBarProps) => {
+export const NavigationBar = ({ activeItem = 'chats', onItemClick, onClientSelect }: NavigationBarProps) => {
   return (
     <div className="w-16 bg-nav-background border-r border-border flex flex-col items-center py-6 space-y-4">
       {/* Logo */}
@@ -60,6 +59,9 @@ export const NavigationBar = ({ activeItem = 'chats', onItemClick }: NavigationB
           </Link>
         );
       })}
+      
+      {/* Profile Selector */}
+      <ProfileSelector onClientSelect={onClientSelect} />
       
       {/* Theme Toggle */}
       <div className="mt-auto">

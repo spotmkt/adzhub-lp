@@ -64,6 +64,13 @@ const Content = () => {
 
   const fetchContentData = async (clientId: string) => {
     try {
+      // Validate clientId is a valid UUID
+      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+      if (!uuidRegex.test(clientId)) {
+        console.error('Invalid UUID format:', clientId);
+        setLoading(false);
+        return;
+      }
       // Fetch content ideas
       const { data: ideas, error: ideasError } = await supabase
         .from('content_ideas')
