@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CheckCircle, XCircle, Clock, Eye, Calendar, Tag, AlertCircle } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
+import { PostingCalendar } from '@/components/PostingCalendar';
 
 interface ContentIdea {
   id: string;
@@ -206,7 +207,7 @@ const Content = () => {
       <Tabs defaultValue="ideas" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="ideas">Central de Big Ideias</TabsTrigger>
-          <TabsTrigger value="history">Histórico de Conteúdo</TabsTrigger>
+          <TabsTrigger value="history">Calendário de Postagens</TabsTrigger>
         </TabsList>
 
         <TabsContent value="ideas" className="space-y-4">
@@ -307,61 +308,7 @@ const Content = () => {
         </TabsContent>
 
         <TabsContent value="history" className="space-y-4">
-          <div className="grid gap-4">
-            {contentAssets.length === 0 ? (
-              <Card>
-                <CardContent className="flex items-center justify-center py-12">
-                  <div className="text-center">
-                    <Eye className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold mb-2">Nenhum conteúdo gerado</h3>
-                    <p className="text-muted-foreground">
-                      Os conteúdos gerados aparecerão aqui.
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            ) : (
-              contentAssets.map((asset) => (
-                <Card key={asset.id}>
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <CardTitle className="text-lg">{asset.titulo}</CardTitle>
-                        <CardDescription>
-                          Big Idea: {asset.content_ideas?.titulo}
-                        </CardDescription>
-                      </div>
-                      <div className="flex gap-2">
-                        <Badge variant="outline">{asset.canal}</Badge>
-                        <Badge variant="secondary">{asset.tipo_conteudo}</Badge>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      {asset.conteudo && (
-                        <div className="p-4 bg-muted rounded-lg">
-                          <p className="text-sm">{asset.conteudo}</p>
-                        </div>
-                      )}
-                      <div className="flex items-center justify-between text-sm text-muted-foreground">
-                        <div className="flex items-center gap-4">
-                          <div className="flex items-center gap-1">
-                            <Clock className="h-4 w-4" />
-                            Status: {asset.status_publicacao}
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <Calendar className="h-4 w-4" />
-                            {format(new Date(asset.created_at), 'dd/MM/yyyy')}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))
-            )}
-          </div>
+          <PostingCalendar contentAssets={contentAssets} />
         </TabsContent>
       </Tabs>
       </div>
