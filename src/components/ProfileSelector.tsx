@@ -92,13 +92,14 @@ export const ProfileSelector = ({ onClientSelect }: ProfileSelectorProps) => {
             selectedClient && "bg-nav-item-active text-primary-foreground shadow-glow-lg"
           )}
           title={selectedClient ? `Perfil: ${selectedClient.name}` : 'Selecionar Perfil'}
+          key={selectedClient?.id || 'no-client'} // Force re-render when client changes
         >
           {selectedClient?.profile_photo_url ? (
             <img
               src={selectedClient.profile_photo_url}
               alt={selectedClient.name}
               className="w-full h-full object-cover rounded-full"
-              key={selectedClient.id} // Force re-render when client changes
+              key={`${selectedClient.id}-${selectedClient.profile_photo_url}`} // Unique key
               onError={(e) => {
                 console.log('Error loading profile image for:', selectedClient.name);
                 e.currentTarget.style.display = 'none';
