@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'react';
-import { NavigationBar } from './NavigationBar';
 import { ChatArea } from './ChatArea';
 import { ActionPanel } from './ActionPanel';
 import { ActionViewDialog } from './ActionViewDialog';
@@ -442,15 +441,7 @@ export const ChatInterface = () => {
   };
 
   return (
-    <div className="h-screen bg-background flex overflow-hidden">
-      {/* Desktop Navigation */}
-      <div className="hidden md:block">
-        <NavigationBar 
-          activeItem={activeNavItem}
-          onItemClick={setActiveNavItem}
-        />
-      </div>
-      
+    <div className="h-full flex flex-col bg-background">
       <div className="flex-1 min-w-0 flex flex-col md:flex-row">
         <div className="flex-1 min-w-0">
           <ChatArea 
