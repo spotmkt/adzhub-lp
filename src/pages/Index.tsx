@@ -25,13 +25,39 @@ const Index = () => {
     const savedClientId = localStorage.getItem('selectedClientId');
     if (savedClientId) {
       console.log('Restoring client from localStorage:', savedClientId);
-      const restoredClient: Client = {
-        id: savedClientId,
-        name: savedClientId,
-      };
-      setSelectedClient(restoredClient);
+      loadClientFromDatabase(savedClientId);
     }
   }, []);
+
+  const loadClientFromDatabase = async (clientId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('clients')
+        .select('*')
+        .eq('id', clientId)
+        .single();
+
+      if (error) {
+        console.error('Error loading client:', error);
+        localStorage.removeItem('selectedClientId');
+        return;
+      }
+
+      if (data) {
+        const client: Client = {
+          id: data.id,
+          name: data.name,
+          email: data.email,
+          phone: data.phone
+        };
+        setSelectedClient(client);
+        loadChatHistory(client.id);
+      }
+    } catch (error) {
+      console.error('Failed to load client from database:', error);
+      localStorage.removeItem('selectedClientId');
+    }
+  };
 
   const handleSendMessage = async (message: string, messageData: Message) => {
     console.log('Sending message to n8n:', message);
