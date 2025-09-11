@@ -18,7 +18,7 @@ interface ProfileSelectorProps {
   onClientSelect?: (client: Client) => void;
 }
 
-export const ProfileSelector = ({ onClientSelect }: ProfileSelectorProps) => {
+export const ProfileSelector = ({ onClientSelect }: ProfileSelectorProps = {}) => {
   const [open, setOpen] = useState(false);
   const [clients, setClients] = useState<Client[]>([]);
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
@@ -55,7 +55,7 @@ export const ProfileSelector = ({ onClientSelect }: ProfileSelectorProps) => {
 
   useEffect(() => {
     // Load saved client from localStorage after clients are loaded
-    if (clients.length > 0) {
+    if (clients.length > 0 && !selectedClient) {
       const savedClientId = localStorage.getItem('selectedClientId');
       if (savedClientId) {
         const savedClient = clients.find(c => c.id === savedClientId);
@@ -66,7 +66,7 @@ export const ProfileSelector = ({ onClientSelect }: ProfileSelectorProps) => {
         }
       }
     }
-  }, [clients, onClientSelect]);
+  }, [clients]);
 
   const fetchClients = async () => {
     try {

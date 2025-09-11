@@ -9,7 +9,6 @@ import adzHubLogo from '@/assets/adzhub-logo-final.png';
 interface NavigationBarProps {
   activeItem?: string;
   onItemClick?: (item: string) => void;
-  onClientSelect?: (client: any) => void;
 }
 
 const navigationItems = [
@@ -18,7 +17,7 @@ const navigationItems = [
   { id: 'settings', icon: Settings, label: 'Settings', path: '/settings' },
 ];
 
-export const NavigationBar = ({ activeItem = 'chats', onItemClick, onClientSelect }: NavigationBarProps) => {
+export const NavigationBar = ({ activeItem = 'chats', onItemClick }: NavigationBarProps) => {
   return (
     <div className="w-16 h-full bg-nav-background border-r border-border flex flex-col items-center py-6 space-y-4">
       {/* Logo */}
@@ -59,7 +58,7 @@ export const NavigationBar = ({ activeItem = 'chats', onItemClick, onClientSelec
       })}
       
       {/* Profile Selector */}
-      <ProfileSelector onClientSelect={onClientSelect} />
+      <ProfileSelector />
       
       {/* Theme Toggle */}
       <div className="mt-auto">

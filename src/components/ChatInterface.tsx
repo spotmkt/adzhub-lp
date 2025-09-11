@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { NavigationBar } from './NavigationBar';
 import { ChatArea } from './ChatArea';
 import { ActionPanel } from './ActionPanel';
@@ -42,15 +42,57 @@ export const ChatInterface = () => {
   useEffect(() => {
     const savedClientId = localStorage.getItem('selectedClientId');
     if (savedClientId) {
-      console.log('Restoring client from localStorage:', savedClientId);
-      const restoredClient: Client = {
-        id: savedClientId,
-        name: savedClientId,
-      };
-      setSelectedClient(restoredClient);
-      // Load chat history will be called after the client is set
+      console.log('ChatInterface - Restoring client from localStorage:', savedClientId);
+      loadClientFromDatabase(savedClientId);
     }
   }, []);
+
+  // Listen for profile changes from ProfileSelector
+  useEffect(() => {
+    const handleProfileChange = (event: CustomEvent) => {
+      const client = event.detail;
+      console.log('ChatInterface - Profile changed:', client);
+      setSelectedClient(client);
+      loadChatHistory(client.id);
+      fetchActions();
+    };
+
+    window.addEventListener('profileChanged', handleProfileChange as EventListener);
+
+    return () => {
+      window.removeEventListener('profileChanged', handleProfileChange as EventListener);
+    };
+  }, []);
+
+  const loadClientFromDatabase = async (clientId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('clients')
+        .select('*')
+        .eq('id', clientId)
+        .single();
+
+      if (error) {
+        console.error('Error loading client:', error);
+        localStorage.removeItem('selectedClientId');
+        return;
+      }
+
+      if (data) {
+        const client: Client = {
+          id: data.id,
+          name: data.name,
+          email: data.email,
+          phone: data.phone
+        };
+        setSelectedClient(client);
+        loadChatHistory(client.id);
+      }
+    } catch (error) {
+      console.error('Failed to load client from database:', error);
+      localStorage.removeItem('selectedClientId');
+    }
+  };
 
   // Load chat history when selectedClient changes
   useEffect(() => {
@@ -274,12 +316,12 @@ export const ChatInterface = () => {
     }
   };
 
-  const handleClientSelect = (client: Client) => {
+  const handleClientSelect = useCallback((client: Client) => {
     setSelectedClient(client);
     localStorage.setItem('selectedClientId', client.id);
     loadChatHistory(client.id);
     fetchActions(); // Refresh actions and content ideas count
-  };
+  }, []);
 
   const handleExitChat = () => {
     setSelectedClient(null);
