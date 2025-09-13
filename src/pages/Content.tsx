@@ -154,6 +154,13 @@ const Content = () => {
       // Trigger webhook
       if (approvedIdea) {
         try {
+          // Fetch client profile data for channels and platforms
+          const { data: clientProfile } = await supabase
+            .from('client_profiles')
+            .select('canais_habilitados, plataforma, tom_voz, tom_voz_detalhes, frequencia_publicacao')
+            .eq('client_id', selectedClient)
+            .single();
+
           await fetch('https://n8n-n8n.ascl7r.easypanel.host/webhook/40c64e0b-06d3-4817-a08a-7ab8dc545b4d', {
             method: 'POST',
             headers: {
@@ -162,7 +169,8 @@ const Content = () => {
             body: JSON.stringify({
               idea: approvedIdea,
               client_id: selectedClient,
-              action: 'approved'
+              action: 'approved',
+              client_profile: clientProfile || {}
             }),
           });
         } catch (webhookError) {
