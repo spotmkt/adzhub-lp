@@ -377,8 +377,11 @@ export type Database = {
           canais_habilitados: Json | null
           client_id: string
           created_at: string
+          direcionamento: string | null
           frequencia_publicacao: string | null
           id: string
+          plataforma: string | null
+          sitemap: string | null
           tom_voz: string | null
           tom_voz_detalhes: string | null
           updated_at: string
@@ -387,8 +390,11 @@ export type Database = {
           canais_habilitados?: Json | null
           client_id: string
           created_at?: string
+          direcionamento?: string | null
           frequencia_publicacao?: string | null
           id?: string
+          plataforma?: string | null
+          sitemap?: string | null
           tom_voz?: string | null
           tom_voz_detalhes?: string | null
           updated_at?: string
@@ -397,8 +403,11 @@ export type Database = {
           canais_habilitados?: Json | null
           client_id?: string
           created_at?: string
+          direcionamento?: string | null
           frequencia_publicacao?: string | null
           id?: string
+          plataforma?: string | null
+          sitemap?: string | null
           tom_voz?: string | null
           tom_voz_detalhes?: string | null
           updated_at?: string

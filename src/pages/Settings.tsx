@@ -18,6 +18,9 @@ interface ClientProfile {
   tom_voz: string;
   tom_voz_detalhes: string;
   frequencia_publicacao: string;
+  sitemap?: string;
+  direcionamento?: string;
+  plataforma?: string;
   canais_habilitados: {
     linkedin: boolean;
     instagram: boolean;
@@ -25,6 +28,7 @@ interface ClientProfile {
     twitter: boolean;
     youtube: boolean;
     tiktok: boolean;
+    blog: boolean;
   };
 }
 
@@ -67,6 +71,7 @@ const Settings = () => {
     { key: 'twitter', label: 'Twitter/X', icon: '🐦' },
     { key: 'youtube', label: 'YouTube', icon: '📺' },
     { key: 'tiktok', label: 'TikTok', icon: '🎵' },
+    { key: 'blog', label: 'Blog', icon: '📝' },
   ];
 
   useEffect(() => {
@@ -159,13 +164,15 @@ const Settings = () => {
       if (data) {
         const newProfile = {
           ...data,
-          canais_habilitados: data.canais_habilitados as {
-            linkedin: boolean;
-            instagram: boolean;
-            facebook: boolean;
-            twitter: boolean;
-            youtube: boolean;
-            tiktok: boolean;
+          canais_habilitados: {
+            linkedin: false,
+            instagram: false,
+            facebook: false,
+            twitter: false,
+            youtube: false,
+            tiktok: false,
+            blog: false,
+            ...(data.canais_habilitados as any || {})
           }
         } as ClientProfile;
         
@@ -179,6 +186,9 @@ const Settings = () => {
           tom_voz: 'profissional',
           tom_voz_detalhes: '',
           frequencia_publicacao: 'diaria',
+          sitemap: '',
+          direcionamento: '',
+          plataforma: '',
           canais_habilitados: {
             linkedin: false,
             instagram: false,
@@ -186,6 +196,7 @@ const Settings = () => {
             twitter: false,
             youtube: false,
             tiktok: false,
+            blog: false,
           },
         };
 
@@ -198,13 +209,15 @@ const Settings = () => {
         if (createError) throw createError;
         const createdProfile = {
           ...newData,
-          canais_habilitados: newData.canais_habilitados as {
-            linkedin: boolean;
-            instagram: boolean;
-            facebook: boolean;
-            twitter: boolean;
-            youtube: boolean;
-            tiktok: boolean;
+          canais_habilitados: {
+            linkedin: false,
+            instagram: false,
+            facebook: false,
+            twitter: false,
+            youtube: false,
+            tiktok: false,
+            blog: false,
+            ...(newData.canais_habilitados as any || {})
           }
         } as ClientProfile;
         
@@ -234,6 +247,9 @@ const Settings = () => {
           tom_voz: profile.tom_voz,
           tom_voz_detalhes: profile.tom_voz_detalhes,
           frequencia_publicacao: profile.frequencia_publicacao,
+          sitemap: profile.sitemap,
+          direcionamento: profile.direcionamento,
+          plataforma: profile.plataforma,
           canais_habilitados: profile.canais_habilitados,
         })
         .eq('id', profile.id);
@@ -489,6 +505,55 @@ const Settings = () => {
                       </SelectContent>
                     </Select>
                   </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Configurações de Blog</CardTitle>
+                  <CardDescription>
+                    Configure as informações específicas para geração de conteúdo do blog
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="sitemap">Sitemap da Empresa</Label>
+                    <Input
+                      id="sitemap"
+                      placeholder="https://exemplo.com/sitemap.xml"
+                      value={profile.sitemap || ''}
+                      onChange={(e) => updateProfile({ sitemap: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="direcionamento">Direcionamento para Big Ideas</Label>
+                    <Textarea
+                      id="direcionamento"
+                      placeholder="Descreva brevemente como a IA deve direcionar a geração de grandes ideias de conteúdo"
+                      value={profile.direcionamento || ''}
+                      onChange={(e) => updateProfile({ direcionamento: e.target.value })}
+                      className="min-h-[80px]"
+                    />
+                  </div>
+
+                  {profile.canais_habilitados.blog && (
+                    <div className="space-y-2">
+                      <Label htmlFor="plataforma">Plataforma de Publicação</Label>
+                      <Select
+                        value={profile.plataforma || ''}
+                        onValueChange={(value) => updateProfile({ plataforma: value })}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione a plataforma" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="wordpress">WordPress</SelectItem>
+                          <SelectItem value="webflow">Webflow</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
 
