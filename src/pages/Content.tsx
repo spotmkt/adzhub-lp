@@ -53,9 +53,24 @@ interface ContentAsset {
   };
 }
 
+interface PendingPost {
+  id: string;
+  client_id: string;
+  tipo_postagem: string;
+  titulo: string;
+  conteudo: string;
+  canal: string;
+  status: string;
+  metadata: any;
+  scheduled_date?: string;
+  created_at: string;
+  updated_at: string;
+}
+
 const Content = () => {
   const [contentIdeas, setContentIdeas] = useState<ContentIdea[]>([]);
   const [contentAssets, setContentAssets] = useState<ContentAsset[]>([]);
+  const [pendingPosts, setPendingPosts] = useState<PendingPost[]>([]);
   const [selectedClient, setSelectedClient] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [selectedIdea, setSelectedIdea] = useState<ContentIdea | null>(null);
@@ -125,8 +140,18 @@ const Content = () => {
 
       if (assetsError) throw assetsError;
 
+      // Fetch pending posts
+      const { data: posts, error: postsError } = await supabase
+        .from('pending_posts')
+        .select('*')
+        .eq('client_id', clientId)
+        .order('created_at', { ascending: false });
+
+      if (postsError) throw postsError;
+
       setContentIdeas((ideas || []).map(transformIdea));
       setContentAssets(assets || []);
+      setPendingPosts(posts || []);
     } catch (error) {
       console.error('Error fetching content data:', error);
       toast({
@@ -228,6 +253,64 @@ const Content = () => {
     }
   };
 
+  const handleApprovePost = async (postId: string) => {
+    try {
+      const { error } = await supabase
+        .from('pending_posts')
+        .update({ status: 'approved' })
+        .eq('id', postId);
+
+      if (error) throw error;
+
+      setPendingPosts(prev =>
+        prev.map(post =>
+          post.id === postId ? { ...post, status: 'approved' } : post
+        )
+      );
+
+      toast({
+        title: 'Sucesso',
+        description: 'Postagem aprovada com sucesso!',
+      });
+    } catch (error) {
+      console.error('Error approving post:', error);
+      toast({
+        title: 'Erro',
+        description: 'Não foi possível aprovar a postagem.',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const handleRejectPost = async (postId: string) => {
+    try {
+      const { error } = await supabase
+        .from('pending_posts')
+        .update({ status: 'rejected' })
+        .eq('id', postId);
+
+      if (error) throw error;
+
+      setPendingPosts(prev =>
+        prev.map(post =>
+          post.id === postId ? { ...post, status: 'rejected' } : post
+        )
+      );
+
+      toast({
+        title: 'Sucesso',
+        description: 'Postagem rejeitada.',
+      });
+    } catch (error) {
+      console.error('Error rejecting post:', error);
+      toast({
+        title: 'Erro',
+        description: 'Não foi possível rejeitar a postagem.',
+        variant: 'destructive',
+      });
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -254,22 +337,31 @@ const Content = () => {
   }
 
   const pendingIdeas = contentIdeas.filter(idea => idea.status === 'pending');
+  const pendingPostsFiltered = pendingPosts.filter(post => post.status === 'pending');
 
   return (
     <div className="h-full p-6 bg-background overflow-y-auto">
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold">Módulo de Conteúdo</h1>
-          {pendingIdeas.length > 0 && (
-            <Badge variant="secondary" className="text-sm">
-              {pendingIdeas.length} ideias pendentes
-            </Badge>
-          )}
+          <div className="flex gap-2">
+            {pendingIdeas.length > 0 && (
+              <Badge variant="secondary" className="text-sm">
+                {pendingIdeas.length} ideias pendentes
+              </Badge>
+            )}
+            {pendingPostsFiltered.length > 0 && (
+              <Badge variant="default" className="text-sm">
+                {pendingPostsFiltered.length} postagens pendentes
+              </Badge>
+            )}
+          </div>
         </div>
 
       <Tabs defaultValue="ideas" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="ideas">Central de Big Ideias</TabsTrigger>
+          <TabsTrigger value="posts">Postagens Pendentes</TabsTrigger>
           <TabsTrigger value="history">Calendário de Postagens</TabsTrigger>
         </TabsList>
 
@@ -383,6 +475,111 @@ const Content = () => {
                             >
                               <Eye className="h-4 w-4" />
                             </Button>
+                          </div>
+                        </div>
+                      </CardHeader>
+                    </Card>
+                  ))}
+              </div>
+            </div>
+          )}
+        </TabsContent>
+
+        <TabsContent value="posts" className="space-y-4">
+          <div className="grid gap-4">
+            {pendingPostsFiltered.length === 0 ? (
+              <Card>
+                <CardContent className="flex items-center justify-center py-12">
+                  <div className="text-center">
+                    <CheckCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                    <h3 className="text-lg font-semibold mb-2">Nenhuma postagem pendente</h3>
+                    <p className="text-muted-foreground">
+                      Todas as postagens foram aprovadas ou rejeitadas.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            ) : (
+              pendingPostsFiltered.map((post) => (
+                <Card key={post.id} className="w-full hover:shadow-md transition-shadow">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1 min-w-0">
+                        <CardTitle className="text-lg mb-1 line-clamp-2">{post.titulo}</CardTitle>
+                        <CardDescription className="text-sm line-clamp-3">
+                          {post.conteudo}
+                        </CardDescription>
+                      </div>
+                      <div className="flex gap-2 ml-4 shrink-0">
+                        <Badge variant="outline">
+                          {post.tipo_postagem}
+                        </Badge>
+                        <Badge variant="secondary">
+                          {post.canal}
+                        </Badge>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                        <div className="flex items-center gap-1">
+                          <Calendar className="h-4 w-4" />
+                          {format(new Date(post.created_at), 'dd/MM/yyyy')}
+                        </div>
+                        {post.scheduled_date && (
+                          <div className="flex items-center gap-1">
+                            <Clock className="h-4 w-4" />
+                            Agendado: {format(new Date(post.scheduled_date), 'dd/MM/yyyy')}
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleRejectPost(post.id)}
+                          className="text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                        >
+                          <XCircle className="h-4 w-4 mr-1" />
+                          Rejeitar
+                        </Button>
+                        <Button
+                          size="sm"
+                          onClick={() => handleApprovePost(post.id)}
+                        >
+                          <CheckCircle className="h-4 w-4 mr-1" />
+                          Aprovar
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            )}
+          </div>
+
+          {pendingPosts.filter(post => post.status !== 'pending').length > 0 && (
+            <div className="mt-8">
+              <h2 className="text-xl font-semibold mb-4">Postagens Processadas</h2>
+              <div className="grid gap-4">
+                {pendingPosts
+                  .filter(post => post.status !== 'pending')
+                  .map((post) => (
+                    <Card key={post.id} className="opacity-75 hover:shadow-md transition-shadow">
+                      <CardHeader className="pb-3">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <CardTitle className="text-lg">{post.titulo}</CardTitle>
+                            <CardDescription className="text-sm line-clamp-2">{post.conteudo}</CardDescription>
+                          </div>
+                          <div className="flex gap-2 items-center">
+                            <Badge variant={post.status === 'approved' ? 'default' : 'destructive'}>
+                              {post.status === 'approved' ? 'Aprovada' : 'Rejeitada'}
+                            </Badge>
+                            <Badge variant="outline" className="text-xs">
+                              {post.tipo_postagem}
+                            </Badge>
                           </div>
                         </div>
                       </CardHeader>
