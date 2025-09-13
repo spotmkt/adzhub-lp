@@ -293,6 +293,7 @@ export type Database = {
       blog_clients: {
         Row: {
           client: string | null
+          client_id: string | null
           created_at: string
           direcionamento: string | null
           id: number
@@ -303,6 +304,7 @@ export type Database = {
         }
         Insert: {
           client?: string | null
+          client_id?: string | null
           created_at?: string
           direcionamento?: string | null
           id?: number
@@ -313,6 +315,7 @@ export type Database = {
         }
         Update: {
           client?: string | null
+          client_id?: string | null
           created_at?: string
           direcionamento?: string | null
           id?: number
@@ -321,7 +324,15 @@ export type Database = {
           "tom de voz"?: string | null
           último_post?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "blog_clients_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       chat_messages: {
         Row: {
