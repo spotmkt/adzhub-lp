@@ -120,6 +120,108 @@ export type Database = {
           },
         ]
       }
+      benchmarks: {
+        Row: {
+          alcance: number | null
+          ativo: boolean | null
+          cliente: string | null
+          cliques_link: number | null
+          compras: number | null
+          connect_rate: number | null
+          cpc_link: number | null
+          cpl_wpp: number | null
+          cpm: number | null
+          ctr_link: number | null
+          custo_compra: number | null
+          custo_engajamento: number | null
+          custo_lead: number | null
+          custo_page_view: number | null
+          custo_thruplay: number | null
+          data_atualizacao: string | null
+          dias_analisados: number | null
+          engajamento_total: number | null
+          fonte: string | null
+          frequencia: number | null
+          id: number
+          impressoes: number | null
+          leads: number | null
+          leads_whatsapp: number | null
+          nicho: string | null
+          page_view: number | null
+          periodo_referencia: string | null
+          subnicho: string | null
+          tempo_medio_video: number | null
+          thruplays: number | null
+          valor_gasto: number | null
+        }
+        Insert: {
+          alcance?: number | null
+          ativo?: boolean | null
+          cliente?: string | null
+          cliques_link?: number | null
+          compras?: number | null
+          connect_rate?: number | null
+          cpc_link?: number | null
+          cpl_wpp?: number | null
+          cpm?: number | null
+          ctr_link?: number | null
+          custo_compra?: number | null
+          custo_engajamento?: number | null
+          custo_lead?: number | null
+          custo_page_view?: number | null
+          custo_thruplay?: number | null
+          data_atualizacao?: string | null
+          dias_analisados?: number | null
+          engajamento_total?: number | null
+          fonte?: string | null
+          frequencia?: number | null
+          id?: number
+          impressoes?: number | null
+          leads?: number | null
+          leads_whatsapp?: number | null
+          nicho?: string | null
+          page_view?: number | null
+          periodo_referencia?: string | null
+          subnicho?: string | null
+          tempo_medio_video?: number | null
+          thruplays?: number | null
+          valor_gasto?: number | null
+        }
+        Update: {
+          alcance?: number | null
+          ativo?: boolean | null
+          cliente?: string | null
+          cliques_link?: number | null
+          compras?: number | null
+          connect_rate?: number | null
+          cpc_link?: number | null
+          cpl_wpp?: number | null
+          cpm?: number | null
+          ctr_link?: number | null
+          custo_compra?: number | null
+          custo_engajamento?: number | null
+          custo_lead?: number | null
+          custo_page_view?: number | null
+          custo_thruplay?: number | null
+          data_atualizacao?: string | null
+          dias_analisados?: number | null
+          engajamento_total?: number | null
+          fonte?: string | null
+          frequencia?: number | null
+          id?: number
+          impressoes?: number | null
+          leads?: number | null
+          leads_whatsapp?: number | null
+          nicho?: string | null
+          page_view?: number | null
+          periodo_referencia?: string | null
+          subnicho?: string | null
+          tempo_medio_video?: number | null
+          thruplays?: number | null
+          valor_gasto?: number | null
+        }
+        Relationships: []
+      }
       blog_calendar: {
         Row: {}
         Insert: {}
@@ -389,6 +491,149 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      meta_accounts: {
+        Row: {
+          campaign_id: string | null
+          client_id: string | null
+          cliente: string
+          conta_anuncios: string
+          created_at: string | null
+          dna: Json | null
+          dominio: string | null
+          fb_id: string | null
+          folder_id: string | null
+          hash_video: string | null
+          id: number
+          ig_id: string | null
+          ig_username: string | null
+          pixel: string | null
+          updated_at: string | null
+          url_site: string | null
+          whatsapp: string | null
+        }
+        Insert: {
+          campaign_id?: string | null
+          client_id?: string | null
+          cliente: string
+          conta_anuncios: string
+          created_at?: string | null
+          dna?: Json | null
+          dominio?: string | null
+          fb_id?: string | null
+          folder_id?: string | null
+          hash_video?: string | null
+          id?: number
+          ig_id?: string | null
+          ig_username?: string | null
+          pixel?: string | null
+          updated_at?: string | null
+          url_site?: string | null
+          whatsapp?: string | null
+        }
+        Update: {
+          campaign_id?: string | null
+          client_id?: string | null
+          cliente?: string
+          conta_anuncios?: string
+          created_at?: string | null
+          dna?: Json | null
+          dominio?: string | null
+          fb_id?: string | null
+          folder_id?: string | null
+          hash_video?: string | null
+          id?: number
+          ig_id?: string | null
+          ig_username?: string | null
+          pixel?: string | null
+          updated_at?: string | null
+          url_site?: string | null
+          whatsapp?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "meta_accounts_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      startbenchmark: {
+        Row: {
+          ad_id: string | null
+          adset_id: string | null
+          alcance: number | null
+          campaign_id: string | null
+          cliente: string | null
+          cliques_link: number | null
+          compras: number | null
+          connect_rate: number | null
+          cpc_link: number | null
+          cpl_wpp: number | null
+          created_at: string | null
+          ctr_link: number | null
+          dt: string | null
+          engajamento_total: number | null
+          impressoes: number | null
+          leads: number | null
+          leads_whatsapp: number | null
+          objetivo: string | null
+          page_view: number | null
+          tempo_medio_video: number | null
+          thruplays: number | null
+          valor_gasto: number | null
+        }
+        Insert: {
+          ad_id?: string | null
+          adset_id?: string | null
+          alcance?: number | null
+          campaign_id?: string | null
+          cliente?: string | null
+          cliques_link?: number | null
+          compras?: number | null
+          connect_rate?: number | null
+          cpc_link?: number | null
+          cpl_wpp?: number | null
+          created_at?: string | null
+          ctr_link?: number | null
+          dt?: string | null
+          engajamento_total?: number | null
+          impressoes?: number | null
+          leads?: number | null
+          leads_whatsapp?: number | null
+          objetivo?: string | null
+          page_view?: number | null
+          tempo_medio_video?: number | null
+          thruplays?: number | null
+          valor_gasto?: number | null
+        }
+        Update: {
+          ad_id?: string | null
+          adset_id?: string | null
+          alcance?: number | null
+          campaign_id?: string | null
+          cliente?: string | null
+          cliques_link?: number | null
+          compras?: number | null
+          connect_rate?: number | null
+          cpc_link?: number | null
+          cpl_wpp?: number | null
+          created_at?: string | null
+          ctr_link?: number | null
+          dt?: string | null
+          engajamento_total?: number | null
+          impressoes?: number | null
+          leads?: number | null
+          leads_whatsapp?: number | null
+          objetivo?: string | null
+          page_view?: number | null
+          tempo_medio_video?: number | null
+          thruplays?: number | null
+          valor_gasto?: number | null
+        }
+        Relationships: []
       }
     }
     Views: {
