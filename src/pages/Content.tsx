@@ -148,6 +148,29 @@ const Content = () => {
 
       if (error) throw error;
 
+      // Find the approved idea to send to webhook
+      const approvedIdea = contentIdeas.find(idea => idea.id === ideaId);
+      
+      // Trigger webhook
+      if (approvedIdea) {
+        try {
+          await fetch('https://n8n-n8n.ascl7r.easypanel.host/webhook/40c64e0b-06d3-4817-a08a-7ab8dc545b4d', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              idea: approvedIdea,
+              client_id: selectedClient,
+              action: 'approved'
+            }),
+          });
+        } catch (webhookError) {
+          console.error('Webhook error:', webhookError);
+          // Don't block the approval if webhook fails
+        }
+      }
+
       setContentIdeas(prev =>
         prev.map(idea =>
           idea.id === ideaId ? { ...idea, status: 'approved' } : idea
