@@ -241,10 +241,54 @@ export type Database = {
         Relationships: []
       }
       blog_calendar: {
-        Row: {}
-        Insert: {}
-        Update: {}
-        Relationships: []
+        Row: {
+          autor: string | null
+          canal: string | null
+          categoria: string | null
+          client_id: string
+          created_at: string
+          data_publicacao: string
+          descricao: string | null
+          id: string
+          status: string | null
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          autor?: string | null
+          canal?: string | null
+          categoria?: string | null
+          client_id: string
+          created_at?: string
+          data_publicacao: string
+          descricao?: string | null
+          id?: string
+          status?: string | null
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          autor?: string | null
+          canal?: string | null
+          categoria?: string | null
+          client_id?: string
+          created_at?: string
+          data_publicacao?: string
+          descricao?: string | null
+          id?: string
+          status?: string | null
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blog_calendar_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       blog_clients: {
         Row: {
