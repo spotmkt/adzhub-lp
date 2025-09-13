@@ -138,7 +138,6 @@ All colors MUST be HSL.
 /* Ensure proper height calculation on mobile devices */
 html, body {
   height: 100%;
-  overflow: hidden;
 }
 
 /* Fix for iOS Safari viewport units */
