@@ -157,7 +157,7 @@ const Content = () => {
           // Fetch client profile data for channels and platforms
           const { data: clientProfile } = await supabase
             .from('client_profiles')
-            .select('canais_habilitados, plataforma, tom_voz, tom_voz_detalhes, frequencia_publicacao')
+            .select('canais_habilitados, plataforma, tom_voz, tom_voz_detalhes, frequencia_publicacao, sitemap')
             .eq('client_id', selectedClient)
             .single();
 
