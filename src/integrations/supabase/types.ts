@@ -14,6 +14,24 @@ export type Database = {
   }
   public: {
     Tables: {
+      aa_gestoratrafego_chats: {
+        Row: {
+          id: number
+          message: Json
+          session_id: string
+        }
+        Insert: {
+          id?: number
+          message: Json
+          session_id: string
+        }
+        Update: {
+          id?: number
+          message?: Json
+          session_id?: string
+        }
+        Relationships: []
+      }
       action_history: {
         Row: {
           action_date: string
