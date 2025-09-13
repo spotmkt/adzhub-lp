@@ -17,6 +17,15 @@ interface ContentIdea {
   status: 'pending' | 'approved' | 'rejected';
   prioridade: 'low' | 'medium' | 'high';
   created_at: string;
+  slug?: string;
+  primary_keyword?: string;
+  secondary_keywords?: string[];
+  search_intent?: string;
+  reason?: string;
+  alternatives?: string[];
+  excluded_matches?: string[];
+  title_suggestion?: string;
+  proposed_theme?: string;
 }
 
 interface ContentAsset {
@@ -242,40 +251,93 @@ const Content = () => {
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                        {idea.categoria && (
-                          <div className="flex items-center gap-1">
-                            <Tag className="h-4 w-4" />
-                            {idea.categoria}
-                          </div>
-                        )}
-                        <div className="flex items-center gap-1">
-                          <Calendar className="h-4 w-4" />
-                          {format(new Date(idea.created_at), 'dd/MM/yyyy')}
-                        </div>
-                      </div>
-                      <div className="flex gap-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleRejectIdea(idea.id)}
-                          className="text-destructive hover:bg-destructive hover:text-destructive-foreground"
-                        >
-                          <XCircle className="h-4 w-4 mr-1" />
-                          Rejeitar
-                        </Button>
-                        <Button
-                          size="sm"
-                          onClick={() => handleApproveIdea(idea.id)}
-                        >
-                          <CheckCircle className="h-4 w-4 mr-1" />
-                          Aprovar
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
+                   <CardContent>
+                     <div className="space-y-3">
+                       {/* SEO Information */}
+                       {(idea.primary_keyword || idea.secondary_keywords?.length || idea.slug) && (
+                         <div className="p-3 bg-muted rounded-lg space-y-2">
+                           <h4 className="text-sm font-medium text-muted-foreground">SEO & Metadata</h4>
+                           <div className="grid grid-cols-1 gap-2 text-sm">
+                             {idea.slug && (
+                               <div><span className="font-medium">Slug:</span> {idea.slug}</div>
+                             )}
+                             {idea.primary_keyword && (
+                               <div><span className="font-medium">Palavra-chave:</span> {idea.primary_keyword}</div>
+                             )}
+                             {idea.secondary_keywords && idea.secondary_keywords.length > 0 && (
+                               <div>
+                                 <span className="font-medium">Keywords secundárias:</span>
+                                 <div className="flex flex-wrap gap-1 mt-1">
+                                   {idea.secondary_keywords.map((keyword, idx) => (
+                                     <Badge key={idx} variant="outline" className="text-xs">{keyword}</Badge>
+                                   ))}
+                                 </div>
+                               </div>
+                             )}
+                             {idea.search_intent && (
+                               <div><span className="font-medium">Intenção:</span> {idea.search_intent}</div>
+                             )}
+                           </div>
+                         </div>
+                       )}
+
+                       {/* Reason */}
+                       {idea.reason && (
+                         <div className="p-3 bg-accent/50 rounded-lg">
+                           <h4 className="text-sm font-medium mb-1">Justificativa</h4>
+                           <p className="text-sm text-muted-foreground">{idea.reason}</p>
+                         </div>
+                       )}
+
+                       {/* Alternatives */}
+                       {idea.alternatives && idea.alternatives.length > 0 && (
+                         <div>
+                           <h4 className="text-sm font-medium mb-2">Alternativas</h4>
+                           <ul className="text-sm text-muted-foreground space-y-1">
+                             {idea.alternatives.map((alt, idx) => (
+                               <li key={idx} className="flex items-start gap-2">
+                                 <span className="text-muted-foreground mt-1.5">•</span>
+                                 {alt}
+                               </li>
+                             ))}
+                           </ul>
+                         </div>
+                       )}
+
+                       <div className="flex items-center justify-between">
+                         <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                           {idea.categoria && (
+                             <div className="flex items-center gap-1">
+                               <Tag className="h-4 w-4" />
+                               {idea.categoria}
+                             </div>
+                           )}
+                           <div className="flex items-center gap-1">
+                             <Calendar className="h-4 w-4" />
+                             {format(new Date(idea.created_at), 'dd/MM/yyyy')}
+                           </div>
+                         </div>
+                         <div className="flex gap-2">
+                           <Button
+                             size="sm"
+                             variant="outline"
+                             onClick={() => handleRejectIdea(idea.id)}
+                             className="text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                           >
+                             <XCircle className="h-4 w-4 mr-1" />
+                             Rejeitar
+                           </Button>
+                           <Button
+                             size="sm"
+                             onClick={() => handleApproveIdea(idea.id)}
+                           >
+                             <CheckCircle className="h-4 w-4 mr-1" />
+                             Aprovar
+                           </Button>
+                         </div>
+                       </div>
+                     </div>
+                   </CardContent>
                 </Card>
               ))
             )}

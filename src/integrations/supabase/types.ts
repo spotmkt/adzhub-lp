@@ -502,35 +502,62 @@ export type Database = {
       }
       content_ideas: {
         Row: {
+          alternatives: Json | null
           categoria: string | null
           client_id: string
           created_at: string
           descricao: string | null
+          excluded_matches: Json | null
           id: string
+          primary_keyword: string | null
           prioridade: string | null
+          proposed_theme: string | null
+          reason: string | null
+          search_intent: string | null
+          secondary_keywords: Json | null
+          slug: string | null
           status: string | null
+          title_suggestion: string | null
           titulo: string
           updated_at: string
         }
         Insert: {
+          alternatives?: Json | null
           categoria?: string | null
           client_id: string
           created_at?: string
           descricao?: string | null
+          excluded_matches?: Json | null
           id?: string
+          primary_keyword?: string | null
           prioridade?: string | null
+          proposed_theme?: string | null
+          reason?: string | null
+          search_intent?: string | null
+          secondary_keywords?: Json | null
+          slug?: string | null
           status?: string | null
+          title_suggestion?: string | null
           titulo: string
           updated_at?: string
         }
         Update: {
+          alternatives?: Json | null
           categoria?: string | null
           client_id?: string
           created_at?: string
           descricao?: string | null
+          excluded_matches?: Json | null
           id?: string
+          primary_keyword?: string | null
           prioridade?: string | null
+          proposed_theme?: string | null
+          reason?: string | null
+          search_intent?: string | null
+          secondary_keywords?: Json | null
+          slug?: string | null
           status?: string | null
+          title_suggestion?: string | null
           titulo?: string
           updated_at?: string
         }

@@ -8,3 +8,6 @@ verify_jwt = false
 
 [functions.test-postgres]
 verify_jwt = false
+
+[functions.receive-content-ideas]
+verify_jwt = false
