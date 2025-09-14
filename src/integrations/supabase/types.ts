@@ -372,6 +372,132 @@ export type Database = {
           },
         ]
       }
+      cimp_insights: {
+        Row: {
+          ad_id: string
+          ad_name: string | null
+          add_carrinho: number | null
+          adset_id: string
+          adset_name: string | null
+          alcance: number | null
+          buscas: number | null
+          campaign_id: string
+          campaign_name: string | null
+          cliques_link: number | null
+          cliques_link_unicos: number | null
+          cliques_totais: number | null
+          comentarios: number | null
+          compartilhamentos: number | null
+          compras: number | null
+          connect_rate: number | null
+          cpc_link: number | null
+          created_at: string | null
+          ctr_link: number | null
+          curtidas: number | null
+          date_start: string | null
+          date_stop: string | null
+          dt: string
+          engajamento_total: number | null
+          impressoes: number | null
+          inicio_checkout: number | null
+          leads: number | null
+          leads_pixel: number | null
+          objetivo: string | null
+          page_view: number | null
+          play_video: number | null
+          salvamentos: number | null
+          tempo_medio_video: number | null
+          thruplays: number | null
+          updated_at: string | null
+          valor_gasto: number | null
+          video_p75: number | null
+          visitas_perfil: number | null
+          visualizacoes_video: number | null
+        }
+        Insert: {
+          ad_id: string
+          ad_name?: string | null
+          add_carrinho?: number | null
+          adset_id: string
+          adset_name?: string | null
+          alcance?: number | null
+          buscas?: number | null
+          campaign_id: string
+          campaign_name?: string | null
+          cliques_link?: number | null
+          cliques_link_unicos?: number | null
+          cliques_totais?: number | null
+          comentarios?: number | null
+          compartilhamentos?: number | null
+          compras?: number | null
+          connect_rate?: number | null
+          cpc_link?: number | null
+          created_at?: string | null
+          ctr_link?: number | null
+          curtidas?: number | null
+          date_start?: string | null
+          date_stop?: string | null
+          dt: string
+          engajamento_total?: number | null
+          impressoes?: number | null
+          inicio_checkout?: number | null
+          leads?: number | null
+          leads_pixel?: number | null
+          objetivo?: string | null
+          page_view?: number | null
+          play_video?: number | null
+          salvamentos?: number | null
+          tempo_medio_video?: number | null
+          thruplays?: number | null
+          updated_at?: string | null
+          valor_gasto?: number | null
+          video_p75?: number | null
+          visitas_perfil?: number | null
+          visualizacoes_video?: number | null
+        }
+        Update: {
+          ad_id?: string
+          ad_name?: string | null
+          add_carrinho?: number | null
+          adset_id?: string
+          adset_name?: string | null
+          alcance?: number | null
+          buscas?: number | null
+          campaign_id?: string
+          campaign_name?: string | null
+          cliques_link?: number | null
+          cliques_link_unicos?: number | null
+          cliques_totais?: number | null
+          comentarios?: number | null
+          compartilhamentos?: number | null
+          compras?: number | null
+          connect_rate?: number | null
+          cpc_link?: number | null
+          created_at?: string | null
+          ctr_link?: number | null
+          curtidas?: number | null
+          date_start?: string | null
+          date_stop?: string | null
+          dt?: string
+          engajamento_total?: number | null
+          impressoes?: number | null
+          inicio_checkout?: number | null
+          leads?: number | null
+          leads_pixel?: number | null
+          objetivo?: string | null
+          page_view?: number | null
+          play_video?: number | null
+          salvamentos?: number | null
+          tempo_medio_video?: number | null
+          thruplays?: number | null
+          updated_at?: string | null
+          valor_gasto?: number | null
+          video_p75?: number | null
+          visitas_perfil?: number | null
+          visualizacoes_video?: number | null
+        }
+        Relationships: []
+      }
       client_profiles: {
         Row: {
           canais_habilitados: Json | null
