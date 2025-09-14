@@ -529,7 +529,7 @@ const Content = () => {
                           <img 
                             src={post.metadata?.imagem || post.imagem} 
                             alt={post.titulo}
-                            className="w-16 h-16 object-cover rounded-md border"
+                            className="w-24 h-24 object-cover rounded-md border"
                           />
                         </div>
                       )}

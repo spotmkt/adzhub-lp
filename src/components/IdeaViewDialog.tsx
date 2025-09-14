@@ -51,7 +51,7 @@ export const IdeaViewDialog = ({ idea, open, onOpenChange }: IdeaViewDialogProps
           <DialogTitle className="text-xl font-semibold">{idea.title}</DialogTitle>
         </DialogHeader>
         
-        <ScrollArea className="h-full">
+        <ScrollArea className="max-h-[60vh]">
           <div className="space-y-6">
             {/* Header Info */}
             <div className="flex items-center gap-2 flex-wrap">
