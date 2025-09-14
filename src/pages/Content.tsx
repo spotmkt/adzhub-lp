@@ -4,13 +4,18 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { CheckCircle, XCircle, Clock, Eye, Calendar, Tag, AlertCircle, RefreshCw } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, Eye, Calendar, Tag, AlertCircle, RefreshCw, Edit } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 import { PostingCalendar } from '@/components/PostingCalendar';
 import { IdeaViewDialog } from '@/components/IdeaViewDialog';
 import { PostViewDialog } from '@/components/PostViewDialog';
 import { ContentLoadingSkeleton } from '@/components/ui/skeleton-screens';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface ContentIdea {
   id: string;
@@ -82,6 +87,7 @@ const Content = () => {
   const [loading, setLoading] = useState(true);
   const [selectedIdea, setSelectedIdea] = useState<ContentIdea | null>(null);
   const [ideaDialogOpen, setIdeaDialogOpen] = useState(false);
+  const [editIdeaDialogOpen, setEditIdeaDialogOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState<PendingPost | null>(null);
   const [postDialogOpen, setPostDialogOpen] = useState(false);
   const [generatingIdea, setGeneratingIdea] = useState(false);
@@ -376,6 +382,53 @@ const Content = () => {
     }
   };
 
+  const handleEditIdea = async (ideaId: string, updatedData: Partial<ContentIdea>) => {
+    try {
+      const { error } = await supabase
+        .from('content_ideas')
+        .update({
+          titulo: updatedData.title,
+          descricao: updatedData.description,
+          categoria: updatedData.categoria,
+          prioridade: updatedData.priority,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', ideaId);
+
+      if (error) throw error;
+
+      // Update local state
+      setContentIdeas(prev =>
+        prev.map(idea =>
+          idea.id === ideaId 
+            ? { 
+                ...idea, 
+                title: updatedData.title || idea.title,
+                titulo: updatedData.title || idea.titulo,
+                description: updatedData.description || idea.description,
+                descricao: updatedData.description || idea.descricao,
+                categoria: updatedData.categoria || idea.categoria,
+                priority: updatedData.priority || idea.priority,
+                prioridade: updatedData.priority || idea.prioridade
+              } 
+            : idea
+        )
+      );
+
+      toast({
+        title: 'Sucesso',
+        description: 'Big idea editada com sucesso!',
+      });
+    } catch (error) {
+      console.error('Error editing idea:', error);
+      toast({
+        title: 'Erro',
+        description: 'Não foi possível editar a big idea.',
+        variant: 'destructive',
+      });
+    }
+  };
+
   if (loading) {
     return <ContentLoadingSkeleton />;
   }
@@ -492,35 +545,46 @@ const Content = () => {
                           {format(new Date(idea.created_at), 'dd/MM/yyyy')}
                         </div>
                       </div>
-                      <div className="flex gap-2">
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => {
-                            setSelectedIdea(idea);
-                            setIdeaDialogOpen(true);
-                          }}
-                        >
-                          <Eye className="h-4 w-4 mr-1" />
-                          Ver Mais
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleRejectIdea(idea.id)}
-                          className="text-destructive hover:bg-destructive hover:text-destructive-foreground"
-                        >
-                          <XCircle className="h-4 w-4 mr-1" />
-                          Rejeitar
-                        </Button>
-                        <Button
-                          size="sm"
-                          onClick={() => handleApproveIdea(idea.id)}
-                        >
-                          <CheckCircle className="h-4 w-4 mr-1" />
-                          Aprovar
-                        </Button>
-                      </div>
+                       <div className="flex gap-2">
+                         <Button
+                           size="sm"
+                           variant="ghost"
+                           onClick={() => {
+                             setSelectedIdea(idea);
+                             setIdeaDialogOpen(true);
+                           }}
+                         >
+                           <Eye className="h-4 w-4 mr-1" />
+                           Ver Mais
+                         </Button>
+                         <Button
+                           size="sm"
+                           variant="outline"
+                           onClick={() => {
+                             setSelectedIdea(idea);
+                             setEditIdeaDialogOpen(true);
+                           }}
+                         >
+                           <Edit className="h-4 w-4 mr-1" />
+                           Editar
+                         </Button>
+                         <Button
+                           size="sm"
+                           variant="outline"
+                           onClick={() => handleRejectIdea(idea.id)}
+                           className="text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                         >
+                           <XCircle className="h-4 w-4 mr-1" />
+                           Rejeitar
+                         </Button>
+                         <Button
+                           size="sm"
+                           onClick={() => handleApproveIdea(idea.id)}
+                         >
+                           <CheckCircle className="h-4 w-4 mr-1" />
+                           Aprovar
+                         </Button>
+                       </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -763,6 +827,81 @@ const Content = () => {
         open={postDialogOpen}
         onOpenChange={setPostDialogOpen}
       />
+
+      {/* Edit Idea Dialog */}
+      <Dialog open={editIdeaDialogOpen} onOpenChange={setEditIdeaDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Editar Big Idea</DialogTitle>
+          </DialogHeader>
+          {selectedIdea && (
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              const formData = new FormData(e.currentTarget);
+              const updatedData = {
+                title: formData.get('title') as string,
+                description: formData.get('description') as string,
+                categoria: formData.get('categoria') as string,
+                priority: formData.get('priority') as 'low' | 'medium' | 'high'
+              };
+              handleEditIdea(selectedIdea.id, updatedData);
+              setEditIdeaDialogOpen(false);
+            }} className="space-y-4">
+              <div>
+                <Label htmlFor="title">Título</Label>
+                <Input 
+                  id="title" 
+                  name="title" 
+                  defaultValue={selectedIdea.title || selectedIdea.titulo} 
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="description">Descrição</Label>
+                <Textarea 
+                  id="description" 
+                  name="description" 
+                  defaultValue={selectedIdea.description || selectedIdea.descricao}
+                  rows={3}
+                />
+              </div>
+              <div>
+                <Label htmlFor="categoria">Categoria</Label>
+                <Input 
+                  id="categoria" 
+                  name="categoria" 
+                  defaultValue={selectedIdea.categoria || ''}
+                />
+              </div>
+              <div>
+                <Label htmlFor="priority">Prioridade</Label>
+                <Select name="priority" defaultValue={selectedIdea.priority || selectedIdea.prioridade || 'medium'}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="low">Baixa</SelectItem>
+                    <SelectItem value="medium">Média</SelectItem>
+                    <SelectItem value="high">Alta</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex gap-2 justify-end">
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={() => setEditIdeaDialogOpen(false)}
+                >
+                  Cancelar
+                </Button>
+                <Button type="submit">
+                  Salvar
+                </Button>
+              </div>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
       </div>
     </div>
   );
