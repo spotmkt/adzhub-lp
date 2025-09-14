@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Clock, CheckCircle, Zap, Plus, Eye } from 'lucide-react';
+import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Clock, CheckCircle, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { format, isSameDay, startOfMonth, endOfMonth, eachDayOfInterval, isToday, isBefore, startOfDay, isWeekend } from 'date-fns';
+import { format, isSameDay, startOfMonth, endOfMonth, eachDayOfInterval, isToday, isBefore, startOfDay } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { cn } from '@/lib/utils';
 
 interface ContentAsset {
   id: string;
@@ -71,34 +70,13 @@ export const PostingCalendar = ({ contentAssets }: PostingCalendarProps) => {
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case 'publicado':
-      case 'published':
-        return 'bg-emerald-500 text-white';
+        return 'bg-green-500';
       case 'agendado':
-      case 'scheduled':
-      case 'pending':
-        return 'bg-blue-500 text-white';
+        return 'bg-blue-500';
       case 'rascunho':
-      case 'draft':
-        return 'bg-amber-500 text-white';
+        return 'bg-yellow-500';
       default:
-        return 'bg-gray-500 text-white';
-    }
-  };
-
-  const getStatusBgColor = (status: string) => {
-    switch (status.toLowerCase()) {
-      case 'publicado':
-      case 'published':
-        return 'bg-emerald-50 dark:bg-emerald-950 border-emerald-200 dark:border-emerald-800';
-      case 'agendado':
-      case 'scheduled':
-      case 'pending':
-        return 'bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800';
-      case 'rascunho':
-      case 'draft':
-        return 'bg-amber-50 dark:bg-amber-950 border-amber-200 dark:border-amber-800';
-      default:
-        return 'bg-gray-50 dark:bg-gray-950 border-gray-200 dark:border-gray-800';
+        return 'bg-gray-500';
     }
   };
 
@@ -155,58 +133,48 @@ export const PostingCalendar = ({ contentAssets }: PostingCalendarProps) => {
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-4 gap-6">
+      <div className="grid lg:grid-cols-3 gap-6">
         {/* Calendar Grid */}
-        <div className="lg:col-span-3">
-          <Card className="shadow-sm">
-            <CardContent className="p-6">
+        <div className="lg:col-span-2">
+          <Card>
+            <CardContent className="p-4">
               {/* Days of week header */}
-              <div className="grid grid-cols-7 gap-2 mb-4">
-                {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map((day, index) => (
-                  <div key={day} className={cn(
-                    "p-3 text-center text-sm font-semibold",
-                    isWeekend(new Date(2024, 0, index)) ? "text-red-600 dark:text-red-400" : "text-foreground"
-                  )}>
+              <div className="grid grid-cols-7 gap-1 mb-2">
+                {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map(day => (
+                  <div key={day} className="p-2 text-center text-sm font-medium text-muted-foreground">
                     {day}
                   </div>
                 ))}
               </div>
 
               {/* Calendar days */}
-              <div className="grid grid-cols-7 gap-2">
+              <div className="grid grid-cols-7 gap-1">
                 {daysInMonth.map(date => {
                   const postsForDate = getPostsForDate(date);
                   const isSelected = selectedDate && isSameDay(date, selectedDate);
                   const isPast = isBefore(date, startOfDay(new Date()));
-                  const isCurrentDay = isToday(date);
-                  const isWeekendDay = isWeekend(date);
                   
                   return (
                     <button
                       key={date.toISOString()}
                       onClick={() => setSelectedDate(date)}
-                      className={cn(
-                        "group relative p-3 h-20 text-sm rounded-xl transition-all duration-200 border-2",
-                        "hover:shadow-md hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
-                        isSelected 
-                          ? "bg-primary text-primary-foreground border-primary shadow-lg scale-[1.02]" 
-                          : "border-border hover:border-primary/30 hover:bg-accent/50",
-                        isCurrentDay && !isSelected && "ring-2 ring-primary/50 bg-primary/5",
-                        isPast && !isSelected && "opacity-60",
-                        isWeekendDay && !isSelected && "bg-muted/30"
-                      )}
+                      className={`
+                        relative p-2 h-16 text-sm border rounded-lg transition-colors
+                        ${isSelected 
+                          ? 'bg-primary text-primary-foreground border-primary' 
+                          : 'border-border hover:bg-muted'
+                        }
+                        ${isToday(date) ? 'ring-2 ring-primary ring-opacity-50' : ''}
+                        ${isPast ? 'opacity-75' : ''}
+                      `}
                     >
-                      <div className={cn(
-                        "font-semibold text-base mb-1",
-                        isCurrentDay && !isSelected && "text-primary",
-                        isWeekendDay && !isSelected && "text-red-600 dark:text-red-400"
-                      )}>
+                      <div className="font-medium">
                         {format(date, 'd')}
                       </div>
                       
                       {/* Post indicators */}
                       {postsForDate.length > 0 && (
-                        <div className="absolute bottom-1.5 left-1.5 right-1.5">
+                        <div className="absolute bottom-1 left-1 right-1">
                           {/* Status counts */}
                           <div className="flex flex-wrap gap-1 justify-center">
                             {(() => {
@@ -221,26 +189,15 @@ export const PostingCalendar = ({ contentAssets }: PostingCalendarProps) => {
                                 return (
                                   <div
                                     key={status}
-                                    className={cn(
-                                      "flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-bold shadow-sm",
-                                      "transform group-hover:scale-110 transition-transform duration-200",
-                                      getStatusColor(status)
-                                    )}
+                                    className={`flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-white text-[9px] font-medium ${getStatusColor(status)}`}
                                   >
-                                    <StatusIcon className="h-2.5 w-2.5" />
+                                    <StatusIcon className="h-2 w-2" />
                                     <span>{count}</span>
                                   </div>
                                 );
                               });
                             })()}
                           </div>
-                        </div>
-                      )}
-                      
-                      {/* Empty state indicator */}
-                      {postsForDate.length === 0 && !isPast && (
-                        <div className="absolute bottom-1.5 right-1.5 opacity-0 group-hover:opacity-40 transition-opacity">
-                          <Plus className="h-3 w-3 text-muted-foreground" />
                         </div>
                       )}
                     </button>
@@ -254,124 +211,98 @@ export const PostingCalendar = ({ contentAssets }: PostingCalendarProps) => {
         {/* Selected Date Details */}
         <div className="space-y-4">
           {selectedDate ? (
-            <Card className="shadow-sm">
-              <CardHeader className="pb-4">
-                <CardTitle className="flex items-center gap-3">
-                  <div className="text-lg">
-                    {format(selectedDate, "d 'de' MMMM", { locale: ptBR })}
-                  </div>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">
+                  {format(selectedDate, "d 'de' MMMM", { locale: ptBR })}
                   {isToday(selectedDate) && (
-                    <Badge variant="secondary" className="text-xs">Hoje</Badge>
+                    <Badge variant="secondary" className="ml-2">Hoje</Badge>
                   )}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 {selectedDatePosts.length === 0 ? (
-                  <div className="text-center py-8">
-                    <CalendarIcon className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
-                    <p className="text-muted-foreground text-sm">
-                      Nenhuma postagem agendada para esta data.
-                    </p>
-                  </div>
+                  <p className="text-muted-foreground text-sm">
+                    Nenhuma postagem agendada para esta data.
+                  </p>
                 ) : (
-                  <div className="space-y-3">
-                    {selectedDatePosts.map((post) => {
-                      const StatusIcon = getStatusIcon(post.status_publicacao);
-                      return (
-                        <div
-                          key={post.id}
-                          className={cn(
-                            "p-4 rounded-lg border-2 space-y-3 transition-all duration-200",
-                            "hover:shadow-md",
-                            getStatusBgColor(post.status_publicacao)
-                          )}
-                        >
-                          <div className="flex items-start justify-between gap-3">
-                            <h4 className="font-semibold text-sm leading-tight flex-1">
-                              {post.titulo}
-                            </h4>
-                            <Badge 
-                              className={cn(
-                                "text-xs shrink-0 border-0",
-                                getStatusColor(post.status_publicacao)
-                              )}
-                            >
-                              <StatusIcon className="h-3 w-3 mr-1" />
-                              {post.status_publicacao === 'pending' ? 'Agendado' : post.status_publicacao}
-                            </Badge>
-                          </div>
-                          
-                          <div className="flex gap-2">
-                            <Badge variant="secondary" className="text-xs font-medium">
-                              {post.canal}
-                            </Badge>
-                            <Badge variant="outline" className="text-xs">
-                              {post.tipo_conteudo}
-                            </Badge>
-                          </div>
-                          
-                          {post.data_publicacao && (
-                            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                              <Clock className="h-3 w-3" />
-                              {(() => {
-                                try {
-                                  return format(new Date(post.data_publicacao), 'HH:mm');
-                                } catch {
-                                  return 'Horário inválido';
-                                }
-                              })()}
-                            </div>
-                          )}
+                  selectedDatePosts.map((post) => {
+                    const StatusIcon = getStatusIcon(post.status_publicacao);
+                    return (
+                      <div
+                        key={post.id}
+                        className="p-3 border rounded-lg space-y-2"
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <h4 className="font-medium text-sm leading-tight">
+                            {post.titulo}
+                          </h4>
+                          <Badge 
+                            variant="outline" 
+                            className="text-xs shrink-0"
+                          >
+                            <StatusIcon className="h-3 w-3 mr-1" />
+                            {post.status_publicacao}
+                          </Badge>
                         </div>
-                      );
-                    })}
-                  </div>
+                        
+                        <div className="flex gap-2">
+                          <Badge variant="secondary" className="text-xs">
+                            {post.canal}
+                          </Badge>
+                          <Badge variant="outline" className="text-xs">
+                            {post.tipo_conteudo}
+                          </Badge>
+                        </div>
+                        
+                        {post.data_publicacao && (
+                          <p className="text-xs text-muted-foreground">
+                            {(() => {
+                              try {
+                                return format(new Date(post.data_publicacao), 'HH:mm');
+                              } catch {
+                                return 'Horário inválido';
+                              }
+                            })()}
+                          </p>
+                        )}
+                      </div>
+                    );
+                  })
                 )}
               </CardContent>
             </Card>
           ) : (
-            <Card className="shadow-sm">
-              <CardContent className="flex items-center justify-center py-16">
-                <div className="text-center max-w-sm">
-                  <CalendarIcon className="h-16 w-16 text-muted-foreground/50 mx-auto mb-4" />
+            <Card>
+              <CardContent className="flex items-center justify-center py-12">
+                <div className="text-center">
+                  <CalendarIcon className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                   <h3 className="text-lg font-semibold mb-2">Selecione uma data</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
-                    Clique em uma data no calendário para ver as postagens agendadas e detalhes do dia.
+                  <p className="text-muted-foreground text-sm">
+                    Clique em uma data no calendário para ver as postagens agendadas.
                   </p>
                 </div>
               </CardContent>
             </Card>
           )}
 
-          {/* Enhanced Legend */}
-          <Card className="shadow-sm">
+          {/* Legend */}
+          <Card>
             <CardHeader>
-              <CardTitle className="text-sm flex items-center gap-2">
-                <Eye className="h-4 w-4" />
-                Legenda de Status
-              </CardTitle>
+              <CardTitle className="text-sm">Legenda</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-emerald-500 text-white text-xs font-bold">
-                  <CheckCircle className="h-2.5 w-2.5" />
-                  <span>2</span>
-                </div>
-                <span className="text-sm">Publicado</span>
+            <CardContent className="space-y-2">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                <span className="text-xs">Publicado</span>
               </div>
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-blue-500 text-white text-xs font-bold">
-                  <Clock className="h-2.5 w-2.5" />
-                  <span>1</span>
-                </div>
-                <span className="text-sm">Agendado</span>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                <span className="text-xs">Agendado</span>
               </div>
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-amber-500 text-white text-xs font-bold">
-                  <Zap className="h-2.5 w-2.5" />
-                  <span>3</span>
-                </div>
-                <span className="text-sm">Rascunho</span>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                <span className="text-xs">Rascunho</span>
               </div>
             </CardContent>
           </Card>
