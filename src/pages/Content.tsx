@@ -84,6 +84,7 @@ const Content = () => {
   const [ideaDialogOpen, setIdeaDialogOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState<PendingPost | null>(null);
   const [postDialogOpen, setPostDialogOpen] = useState(false);
+  const [generatingIdea, setGeneratingIdea] = useState(false);
 
   // Helper function to transform database idea to ContentIdea
   const transformIdea = (dbIdea: any): ContentIdea => ({
@@ -337,6 +338,53 @@ const Content = () => {
     }
   };
 
+  const handleGenerateNewIdea = async () => {
+    if (!selectedClient) return;
+    
+    setGeneratingIdea(true);
+    try {
+      // Fetch client profile data
+      const { data: clientProfile } = await supabase
+        .from('client_profiles')
+        .select('canais_habilitados, plataforma, tom_voz, tom_voz_detalhes, frequencia_publicacao, sitemap, direcionamento')
+        .eq('client_id', selectedClient)
+        .single();
+
+      // Call the webhook to generate new idea
+      await fetch('https://n8n-n8n.ascl7r.easypanel.host/webhook/6bacb224-943e-4d1b-8819-48122b21fc8d', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          client_id: selectedClient,
+          client_profile: clientProfile || {},
+          action: 'generate_idea'
+        }),
+      });
+
+      toast({
+        title: 'Sucesso',
+        description: 'Nova big idea sendo gerada! Aguarde alguns instantes.',
+      });
+      
+      // Refresh content data after a short delay
+      setTimeout(() => {
+        fetchContentData(selectedClient);
+      }, 3000);
+      
+    } catch (error) {
+      console.error('Error generating new idea:', error);
+      toast({
+        title: 'Erro',
+        description: 'Não foi possível gerar nova big idea.',
+        variant: 'destructive',
+      });
+    } finally {
+      setGeneratingIdea(false);
+    }
+  };
+
   if (loading) {
     return <ContentLoadingSkeleton />;
   }
@@ -363,7 +411,21 @@ const Content = () => {
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold">Módulo de Conteúdo</h1>
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
+            <Button 
+              onClick={handleGenerateNewIdea}
+              disabled={generatingIdea || !selectedClient}
+              className="mr-2"
+            >
+              {generatingIdea ? (
+                <>
+                  <Clock className="h-4 w-4 mr-2 animate-spin" />
+                  Gerando...
+                </>
+              ) : (
+                'Gerar Nova Big Idea'
+              )}
+            </Button>
             {pendingIdeas.length > 0 && (
               <Badge variant="secondary" className="text-sm">
                 {pendingIdeas.length} ideias pendentes
