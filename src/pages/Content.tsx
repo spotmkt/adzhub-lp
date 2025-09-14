@@ -673,7 +673,20 @@ const Content = () => {
         </TabsContent>
 
         <TabsContent value="history" className="space-y-4">
-          <PostingCalendar contentAssets={contentAssets} />
+          <PostingCalendar contentAssets={[...contentAssets, ...pendingPosts.map(post => ({
+            id: post.id,
+            content_idea_id: '',
+            canal: post.canal,
+            tipo_conteudo: post.tipo_postagem,
+            titulo: post.titulo,
+            conteudo: post.conteudo,
+            status_publicacao: post.status,
+            data_publicacao: post.scheduled_date || post.created_at,
+            created_at: post.created_at,
+            content_ideas: {
+              titulo: post.titulo
+            }
+          }))]} />
         </TabsContent>
       </Tabs>
       
