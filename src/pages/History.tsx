@@ -8,6 +8,7 @@ import { Calendar, Clock, AlertCircle } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { HistoryLoadingSkeleton } from '@/components/ui/skeleton-screens';
 
 interface ActionHistoryItem {
   id: string;
@@ -95,14 +96,7 @@ const History = () => {
   };
 
   if (loading) {
-    return (
-      <div className="h-full flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-muted-foreground">Carregando histórico...</p>
-        </div>
-      </div>
-    );
+    return <HistoryLoadingSkeleton />;
   }
 
   if (!selectedClient) {

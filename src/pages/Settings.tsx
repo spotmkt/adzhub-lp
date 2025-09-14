@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { PhotoUpload } from '@/components/PhotoUpload';
 import { toast } from '@/hooks/use-toast';
 import { Settings as SettingsIcon, Zap, AlertCircle } from 'lucide-react';
+import { SettingsLoadingSkeleton } from '@/components/ui/skeleton-screens';
 
 interface ClientProfile {
   id: string;
@@ -329,14 +330,7 @@ const Settings = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-muted-foreground">Carregando configurações...</p>
-        </div>
-      </div>
-    );
+    return <SettingsLoadingSkeleton />;
   }
 
   if (!selectedClient) {

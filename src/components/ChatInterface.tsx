@@ -36,6 +36,7 @@ export const ChatInterface = () => {
   const [chatHistory, setChatHistory] = useState<Message[]>([]);
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [selectedAction, setSelectedAction] = useState<ActionCard | null>(null);
+  const [actionsLoading, setActionsLoading] = useState(false);
 
   // Load client from localStorage on initialization  
   useEffect(() => {
@@ -155,6 +156,7 @@ export const ChatInterface = () => {
       return;
     }
 
+    setActionsLoading(true);
     try {
       const { data, error } = await supabase
         .from('actions')
@@ -192,6 +194,10 @@ export const ChatInterface = () => {
       }
     } catch (error) {
       console.error('Failed to fetch actions:', error);
+      setActions([]);
+      setContentIdeasCount(0);
+    } finally {
+      setActionsLoading(false);
     }
   };
 
@@ -461,6 +467,7 @@ export const ChatInterface = () => {
           <ActionPanel
             actions={actions}
             contentIdeasCount={contentIdeasCount}
+            loading={actionsLoading}
             onExecute={handleExecuteAction}
             onEdit={handleEditAction}
             onIgnore={handleIgnoreAction}
@@ -476,6 +483,7 @@ export const ChatInterface = () => {
             <ActionPanel
               actions={actions}
               contentIdeasCount={contentIdeasCount}
+              loading={actionsLoading}
               onExecute={handleExecuteAction}
               onEdit={handleEditAction}
               onIgnore={handleIgnoreAction}

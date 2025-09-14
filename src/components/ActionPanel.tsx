@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { Link } from 'react-router-dom';
+import { ActionPanelSkeleton } from '@/components/ui/skeleton-screens';
 
 interface ActionCard {
   id: string;
@@ -19,6 +20,7 @@ interface ActionCard {
 interface ActionPanelProps {
   actions?: ActionCard[];
   contentIdeasCount?: number;
+  loading?: boolean;
   onExecute?: (actionId: string) => void;
   onEdit?: (actionId: string) => void;
   onIgnore?: (actionId: string) => void;
@@ -56,6 +58,7 @@ const defaultActions: ActionCard[] = [
 export const ActionPanel = ({ 
   actions = defaultActions, 
   contentIdeasCount = 0,
+  loading = false,
   onExecute, 
   onEdit, 
   onIgnore,
@@ -70,6 +73,10 @@ export const ActionPanel = ({
       default: return 'bg-muted text-muted-foreground';
     }
   };
+
+  if (loading) {
+    return <ActionPanelSkeleton />;
+  }
 
   return (
     <div className="w-full lg:w-80 bg-card border-l border-border flex flex-col h-full">

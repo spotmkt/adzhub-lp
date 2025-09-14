@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { LoadingMessage } from '@/components/ui/skeleton-screens';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { metaAccountsService, MetaAccount } from '@/lib/database';
 
@@ -89,7 +90,13 @@ export const ClientSelector = ({ onClientSelect }: ClientSelectorProps) => {
             disabled={!selectedClientId || loading}
             className="w-full"
           >
-            {loading ? 'Carregando...' : 'Iniciar Atendimento'}
+            {loading ? (
+              <div className="text-center py-2">
+                <LoadingMessage message="Carregando..." />
+              </div>
+            ) : (
+              'Iniciar Atendimento'
+            )}
           </Button>
         </div>
       </div>

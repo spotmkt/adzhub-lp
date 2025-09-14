@@ -9,6 +9,7 @@ import { toast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 import { PostingCalendar } from '@/components/PostingCalendar';
 import { IdeaViewDialog } from '@/components/IdeaViewDialog';
+import { ContentLoadingSkeleton } from '@/components/ui/skeleton-screens';
 
 interface ContentIdea {
   id: string;
@@ -329,14 +330,7 @@ const Content = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-muted-foreground">Carregando conteúdos...</p>
-        </div>
-      </div>
-    );
+    return <ContentLoadingSkeleton />;
   }
 
   if (!selectedClient) {
