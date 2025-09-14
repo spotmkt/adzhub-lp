@@ -11,3 +11,6 @@ verify_jwt = false
 
 [functions.receive-content-ideas]
 verify_jwt = false
+
+[functions.upload-image]
+verify_jwt = false
