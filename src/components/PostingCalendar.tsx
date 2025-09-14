@@ -174,18 +174,30 @@ export const PostingCalendar = ({ contentAssets }: PostingCalendarProps) => {
                       
                       {/* Post indicators */}
                       {postsForDate.length > 0 && (
-                        <div className="absolute bottom-1 left-1 right-1 flex gap-1 justify-center">
-                          {postsForDate.slice(0, 3).map((post, index) => (
-                            <div
-                              key={index}
-                              className={`w-2 h-2 rounded-full ${getStatusColor(post.status_publicacao)}`}
-                            />
-                          ))}
-                          {postsForDate.length > 3 && (
-                            <div className="w-2 h-2 rounded-full bg-muted-foreground">
-                              <span className="text-[8px] text-white">+</span>
-                            </div>
-                          )}
+                        <div className="absolute bottom-1 left-1 right-1">
+                          {/* Status counts */}
+                          <div className="flex flex-wrap gap-1 justify-center">
+                            {(() => {
+                              const statusCounts = postsForDate.reduce((acc, post) => {
+                                const status = post.status_publicacao.toLowerCase();
+                                acc[status] = (acc[status] || 0) + 1;
+                                return acc;
+                              }, {} as Record<string, number>);
+
+                              return Object.entries(statusCounts).map(([status, count]) => {
+                                const StatusIcon = getStatusIcon(status);
+                                return (
+                                  <div
+                                    key={status}
+                                    className={`flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-white text-[9px] font-medium ${getStatusColor(status)}`}
+                                  >
+                                    <StatusIcon className="h-2 w-2" />
+                                    <span>{count}</span>
+                                  </div>
+                                );
+                              });
+                            })()}
+                          </div>
                         </div>
                       )}
                     </button>
