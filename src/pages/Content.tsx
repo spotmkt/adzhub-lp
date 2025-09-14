@@ -66,6 +66,11 @@ interface PendingPost {
   scheduled_date?: string;
   created_at: string;
   updated_at: string;
+  // Blog-specific fields
+  slug?: string;
+  primary_keyword?: string;
+  imagem?: string;
+  plataforma?: string;
 }
 
 const Content = () => {
@@ -520,6 +525,41 @@ const Content = () => {
                         <CardDescription className="text-sm line-clamp-3">
                           {post.conteudo}
                         </CardDescription>
+                        
+                        {/* Blog-specific fields */}
+                        {post.tipo_postagem === 'blog' && (
+                          <div className="mt-3 space-y-2">
+                            {post.slug && (
+                              <div className="text-sm text-muted-foreground">
+                                <strong>Slug:</strong> {post.slug}
+                              </div>
+                            )}
+                            {post.primary_keyword && (
+                              <div className="text-sm text-muted-foreground">
+                                <strong>Palavra-chave principal:</strong> {post.primary_keyword}
+                              </div>
+                            )}
+                            {post.metadata?.tags && (
+                              <div className="flex flex-wrap gap-1 mt-2">
+                                {post.metadata.tags.map((tag: string, index: number) => (
+                                  <Badge key={index} variant="outline" className="text-xs">
+                                    {tag}
+                                  </Badge>
+                                ))}
+                              </div>
+                            )}
+                            {post.metadata?.categoria && (
+                              <div className="text-sm text-muted-foreground">
+                                <strong>Categoria:</strong> {post.metadata.categoria}
+                              </div>
+                            )}
+                            {post.plataforma && (
+                              <div className="text-sm text-muted-foreground">
+                                <strong>Plataforma:</strong> {post.plataforma}
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
                       <div className="flex gap-2 ml-4 shrink-0">
                         <Badge variant="outline">
