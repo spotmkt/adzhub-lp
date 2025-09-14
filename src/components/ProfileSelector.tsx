@@ -5,7 +5,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
-import { LoadingMessage } from '@/components/ui/skeleton-screens';
+import { LoadingMessage, InlineLoadingMessage } from '@/components/ui/skeleton-screens';
 
 interface Client {
   id: string;
@@ -152,7 +152,7 @@ export const ProfileSelector = ({ onClientSelect }: ProfileSelectorProps = {}) =
             className="h-9" 
           />
           <CommandEmpty>
-            {loading ? <LoadingMessage message="Carregando empresas..." /> : 'Nenhuma empresa encontrada.'}
+            {loading ? <InlineLoadingMessage message="Carregando empresas..." /> : 'Nenhuma empresa encontrada.'}
           </CommandEmpty>
           <CommandGroup className="max-h-[300px] overflow-auto">
             {clients.map((client) => (

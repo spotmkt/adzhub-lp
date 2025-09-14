@@ -5,7 +5,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
-import { LoadingMessage } from '@/components/ui/skeleton-screens';
+import { LoadingMessage, InlineLoadingMessage } from '@/components/ui/skeleton-screens';
 
 interface Client {
   id: string;
@@ -89,7 +89,7 @@ export const ClientDropdown = ({ selectedClient, onClientSelect, onExitChat }: C
               className="h-9" 
             />
             <CommandEmpty>
-              {loading ? <LoadingMessage message="Carregando clientes..." /> : 'Nenhum cliente encontrado.'}
+              {loading ? <InlineLoadingMessage message="Carregando clientes..." /> : 'Nenhum cliente encontrado.'}
             </CommandEmpty>
             <CommandGroup className="max-h-[200px] overflow-auto">
               {clients.map((client) => (

@@ -213,3 +213,13 @@ export const LoadingMessage = ({ message = "Carregando..." }: { message?: string
     </div>
   </div>
 );
+
+// Inline loading message for small spaces
+export const InlineLoadingMessage = ({ message = "Carregando..." }: { message?: string }) => (
+  <div className="flex items-center justify-center py-4">
+    <div className="text-center space-y-2">
+      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary mx-auto"></div>
+      <p className="text-sm text-muted-foreground">{message}</p>
+    </div>
+  </div>
+);
