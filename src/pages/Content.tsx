@@ -343,13 +343,6 @@ const Content = () => {
     
     setGeneratingIdea(true);
     try {
-      // Fetch client profile data
-      const { data: clientProfile } = await supabase
-        .from('client_profiles')
-        .select('canais_habilitados, plataforma, tom_voz, tom_voz_detalhes, frequencia_publicacao, sitemap, direcionamento')
-        .eq('client_id', selectedClient)
-        .single();
-
       // Call the webhook to generate new idea
       await fetch('https://n8n-n8n.ascl7r.easypanel.host/webhook/6bacb224-943e-4d1b-8819-48122b21fc8d', {
         method: 'POST',
@@ -357,9 +350,7 @@ const Content = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          client_id: selectedClient,
-          client_profile: clientProfile || {},
-          action: 'generate_idea'
+          client_id: selectedClient
         }),
       });
 
