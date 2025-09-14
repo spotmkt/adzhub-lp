@@ -9,6 +9,7 @@ import { toast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 import { PostingCalendar } from '@/components/PostingCalendar';
 import { IdeaViewDialog } from '@/components/IdeaViewDialog';
+import { PostViewDialog } from '@/components/PostViewDialog';
 import { ContentLoadingSkeleton } from '@/components/ui/skeleton-screens';
 
 interface ContentIdea {
@@ -81,6 +82,8 @@ const Content = () => {
   const [loading, setLoading] = useState(true);
   const [selectedIdea, setSelectedIdea] = useState<ContentIdea | null>(null);
   const [ideaDialogOpen, setIdeaDialogOpen] = useState(false);
+  const [selectedPost, setSelectedPost] = useState<PendingPost | null>(null);
+  const [postDialogOpen, setPostDialogOpen] = useState(false);
 
   // Helper function to transform database idea to ContentIdea
   const transformIdea = (dbIdea: any): ContentIdea => ({
@@ -519,55 +522,72 @@ const Content = () => {
               pendingPostsFiltered.map((post) => (
                 <Card key={post.id} className="w-full hover:shadow-md transition-shadow">
                   <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between">
+                    <div className="flex items-start gap-4">
+                      {/* Imagem (se houver) */}
+                      {post.imagem && (
+                        <div className="shrink-0">
+                          <img 
+                            src={post.imagem} 
+                            alt={post.titulo}
+                            className="w-16 h-16 object-cover rounded-md border"
+                          />
+                        </div>
+                      )}
+                      
                       <div className="flex-1 min-w-0">
-                        <CardTitle className="text-lg mb-1 line-clamp-2">{post.titulo}</CardTitle>
-                        <CardDescription className="text-sm line-clamp-3">
-                          {post.conteudo}
+                        <div className="flex items-start justify-between mb-2">
+                          <CardTitle className="text-lg mb-1 line-clamp-2 flex-1">{post.titulo}</CardTitle>
+                          <div className="flex gap-2 ml-4 shrink-0">
+                            <Badge variant="outline">
+                              {post.tipo_postagem}
+                            </Badge>
+                            <Badge variant="secondary">
+                              {post.canal}
+                            </Badge>
+                          </div>
+                        </div>
+                        
+                        {/* Prévia do conteúdo */}
+                        <CardDescription className="text-sm mb-3">
+                          {post.conteudo.length > 150 
+                            ? `${post.conteudo.substring(0, 150)}...` 
+                            : post.conteudo
+                          }
+                          {post.conteudo.length > 150 && (
+                            <Button
+                              variant="link"
+                              size="sm"
+                              className="h-auto p-0 ml-2 text-primary"
+                              onClick={() => {
+                                setSelectedPost(post);
+                                setPostDialogOpen(true);
+                              }}
+                            >
+                              Ver mais
+                            </Button>
+                          )}
                         </CardDescription>
                         
-                        {/* Blog-specific fields */}
-                        {post.tipo_postagem === 'blog' && (
-                          <div className="mt-3 space-y-2">
+                        {/* Blog-specific fields - condensed */}
+                        {post.tipo_postagem === 'blog' && (post.slug || post.primary_keyword || post.metadata?.categoria) && (
+                          <div className="flex flex-wrap gap-2 mb-3">
                             {post.slug && (
-                              <div className="text-sm text-muted-foreground">
-                                <strong>Slug:</strong> {post.slug}
-                              </div>
+                              <Badge variant="outline" className="text-xs">
+                                {post.slug}
+                              </Badge>
                             )}
                             {post.primary_keyword && (
-                              <div className="text-sm text-muted-foreground">
-                                <strong>Palavra-chave principal:</strong> {post.primary_keyword}
-                              </div>
-                            )}
-                            {post.metadata?.tags && (
-                              <div className="flex flex-wrap gap-1 mt-2">
-                                {post.metadata.tags.map((tag: string, index: number) => (
-                                  <Badge key={index} variant="outline" className="text-xs">
-                                    {tag}
-                                  </Badge>
-                                ))}
-                              </div>
+                              <Badge variant="outline" className="text-xs">
+                                {post.primary_keyword}
+                              </Badge>
                             )}
                             {post.metadata?.categoria && (
-                              <div className="text-sm text-muted-foreground">
-                                <strong>Categoria:</strong> {post.metadata.categoria}
-                              </div>
-                            )}
-                            {post.plataforma && (
-                              <div className="text-sm text-muted-foreground">
-                                <strong>Plataforma:</strong> {post.plataforma}
-                              </div>
+                              <Badge variant="secondary" className="text-xs">
+                                {post.metadata.categoria}
+                              </Badge>
                             )}
                           </div>
                         )}
-                      </div>
-                      <div className="flex gap-2 ml-4 shrink-0">
-                        <Badge variant="outline">
-                          {post.tipo_postagem}
-                        </Badge>
-                        <Badge variant="secondary">
-                          {post.canal}
-                        </Badge>
                       </div>
                     </div>
                   </CardHeader>
@@ -586,6 +606,17 @@ const Content = () => {
                         )}
                       </div>
                       <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => {
+                            setSelectedPost(post);
+                            setPostDialogOpen(true);
+                          }}
+                        >
+                          <Eye className="h-4 w-4 mr-1" />
+                          Ver
+                        </Button>
                         <Button
                           size="sm"
                           variant="outline"
@@ -650,6 +681,12 @@ const Content = () => {
         idea={selectedIdea}
         open={ideaDialogOpen}
         onOpenChange={setIdeaDialogOpen}
+      />
+      
+      <PostViewDialog
+        post={selectedPost}
+        open={postDialogOpen}
+        onOpenChange={setPostDialogOpen}
       />
       </div>
     </div>
