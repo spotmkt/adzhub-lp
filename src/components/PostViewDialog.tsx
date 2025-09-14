@@ -73,7 +73,7 @@ export const PostViewDialog = ({ post, open, onOpenChange }: PostViewDialogProps
             </div>
 
             {/* Imagem */}
-            {post.imagem && (
+            {(post.metadata?.imagem || post.imagem) && (
               <div className="bg-muted/50 p-4 rounded-lg">
                 <h3 className="font-medium mb-3 flex items-center gap-2">
                   <Image className="w-4 h-4" />
@@ -81,7 +81,7 @@ export const PostViewDialog = ({ post, open, onOpenChange }: PostViewDialogProps
                 </h3>
                 <div className="flex justify-center">
                   <img 
-                    src={post.imagem} 
+                    src={post.metadata?.imagem || post.imagem} 
                     alt={post.titulo}
                     className="max-w-full h-auto rounded-lg border"
                     style={{ maxHeight: '300px' }}
@@ -108,7 +108,11 @@ export const PostViewDialog = ({ post, open, onOpenChange }: PostViewDialogProps
             </div>
 
             {/* Blog-specific metadata */}
-            {post.tipo_postagem === 'blog' && (post.slug || post.primary_keyword || post.plataforma) && (
+            {post.tipo_postagem === 'blog' && (
+              (post.metadata?.slug || post.slug) ||
+              (post.metadata?.primary_keyword || post.primary_keyword) ||
+              (post.metadata?.plataforma || post.plataforma)
+            ) && (
               <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
                 <h3 className="font-medium mb-3 flex items-center gap-2">
                   <Globe className="w-4 h-4" />
@@ -116,21 +120,21 @@ export const PostViewDialog = ({ post, open, onOpenChange }: PostViewDialogProps
                 </h3>
                 
                 <div className="space-y-2 text-sm">
-                  {post.slug && (
+                  {(post.metadata?.slug || post.slug) && (
                     <div>
-                      <span className="font-medium">Slug:</span> {post.slug}
+                      <span className="font-medium">Slug:</span> {post.metadata?.slug || post.slug}
                     </div>
                   )}
                   
-                  {post.primary_keyword && (
+                  {(post.metadata?.primary_keyword || post.primary_keyword) && (
                     <div>
-                      <span className="font-medium">Palavra-chave principal:</span> {post.primary_keyword}
+                      <span className="font-medium">Palavra-chave principal:</span> {post.metadata?.primary_keyword || post.primary_keyword}
                     </div>
                   )}
                   
-                  {post.plataforma && (
+                  {(post.metadata?.plataforma || post.plataforma) && (
                     <div>
-                      <span className="font-medium">Plataforma:</span> {post.plataforma}
+                      <span className="font-medium">Plataforma:</span> {post.metadata?.plataforma || post.plataforma}
                     </div>
                   )}
                 </div>

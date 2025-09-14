@@ -524,10 +524,10 @@ const Content = () => {
                   <CardHeader className="pb-3">
                     <div className="flex items-start gap-4">
                       {/* Imagem (se houver) */}
-                      {post.imagem && (
+                      {(post.metadata?.imagem || post.imagem) && (
                         <div className="shrink-0">
                           <img 
-                            src={post.imagem} 
+                            src={post.metadata?.imagem || post.imagem} 
                             alt={post.titulo}
                             className="w-16 h-16 object-cover rounded-md border"
                           />
