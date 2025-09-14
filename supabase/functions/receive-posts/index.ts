@@ -31,16 +31,40 @@ serve(async (req) => {
     console.log('Received post data:', body);
 
     // Validate required fields
-    const { client_id, tipo_postagem, titulo, conteudo, canal, metadata = {}, scheduled_date } = body;
+    const { 
+      client_id, 
+      tipo_postagem, 
+      titulo, 
+      conteudo, 
+      canal,
+      slug,
+      primary_keyword,
+      imagem,
+      plataforma,
+      metadata = {}, 
+      scheduled_date 
+    } = body;
 
-    if (!client_id || !tipo_postagem || !titulo || !conteudo || !canal) {
+    if (!client_id || !tipo_postagem || !titulo || !conteudo) {
       return new Response(JSON.stringify({ 
-        error: 'Missing required fields: client_id, tipo_postagem, titulo, conteudo, canal' 
+        error: 'Missing required fields: client_id, tipo_postagem, titulo, conteudo' 
       }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
+
+    // Derive canal from plataforma or tipo_postagem if not provided
+    const derivedCanal = canal || plataforma || tipo_postagem;
+
+    // Enhance metadata for blog posts
+    const enhancedMetadata = {
+      ...metadata,
+      ...(slug && { slug }),
+      ...(primary_keyword && { primary_keyword }),
+      ...(imagem && { imagem }),
+      ...(plataforma && { plataforma })
+    };
 
     // Insert the post into pending_posts table
     const { data, error } = await supabase
@@ -50,8 +74,8 @@ serve(async (req) => {
         tipo_postagem,
         titulo,
         conteudo,
-        canal,
-        metadata,
+        canal: derivedCanal,
+        metadata: enhancedMetadata,
         scheduled_date: scheduled_date ? new Date(scheduled_date).toISOString() : null,
         status: 'pending'
       })
