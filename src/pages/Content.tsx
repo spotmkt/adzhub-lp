@@ -108,6 +108,23 @@ const Content = () => {
     } else {
       setLoading(false);
     }
+
+    // Listen for profile changes
+    const handleProfileChange = (event: CustomEvent) => {
+      const newClient = event.detail;
+      if (newClient && newClient.id) {
+        console.log('Content - Profile changed, reloading data for client:', newClient.id);
+        setSelectedClient(newClient.id);
+        setLoading(true);
+        fetchContentData(newClient.id);
+      }
+    };
+
+    window.addEventListener('profileChanged', handleProfileChange as EventListener);
+
+    return () => {
+      window.removeEventListener('profileChanged', handleProfileChange as EventListener);
+    };
   }, []);
 
   const fetchContentData = async (clientId: string) => {
