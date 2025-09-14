@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { CheckCircle, XCircle, Clock, Eye, Calendar, Tag, AlertCircle } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, Eye, Calendar, Tag, AlertCircle, RefreshCw } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 import { PostingCalendar } from '@/components/PostingCalendar';
@@ -403,6 +403,15 @@ const Content = () => {
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold">Módulo de Conteúdo</h1>
           <div className="flex gap-2 items-center">
+            <Button 
+              onClick={() => selectedClient && fetchContentData(selectedClient)}
+              disabled={loading || !selectedClient}
+              variant="outline"
+              className="mr-2"
+            >
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Atualizar
+            </Button>
             <Button 
               onClick={handleGenerateNewIdea}
               disabled={generatingIdea || !selectedClient}
