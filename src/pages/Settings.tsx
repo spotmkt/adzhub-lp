@@ -44,6 +44,8 @@ interface Client {
 interface MetaAccount {
   id?: number;
   cliente: string;
+  nicho?: string;
+  subnicho?: string;
   conta_anuncios: string;
   ig_id?: string;
   fb_id?: string;
@@ -52,6 +54,8 @@ interface MetaAccount {
   url_site?: string;
   ig_username?: string;
   dominio?: string;
+  logo_cliente?: string;
+  pdf_cliente?: string;
   client_id?: string;
 }
 
@@ -256,6 +260,8 @@ const Settings = () => {
         const newMetaAccount = {
           id: metaData.id,
           cliente: metaData.cliente,
+          nicho: metaData.nicho,
+          subnicho: metaData.subnicho,
           conta_anuncios: metaData.conta_anuncios,
           ig_id: metaData.ig_id,
           fb_id: metaData.fb_id,
@@ -264,6 +270,8 @@ const Settings = () => {
           url_site: metaData.url_site,
           ig_username: metaData.ig_username,
           dominio: metaData.dominio,
+          logo_cliente: metaData.logo_cliente,
+          pdf_cliente: metaData.pdf_cliente,
           client_id: metaData.client_id
         } as MetaAccount;
         
