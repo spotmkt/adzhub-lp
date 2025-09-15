@@ -10,7 +10,7 @@ import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
 import { PhotoUpload } from '@/components/PhotoUpload';
 import { toast } from '@/hooks/use-toast';
-import { Settings as SettingsIcon, Zap, AlertCircle } from 'lucide-react';
+import { Settings as SettingsIcon, Zap, AlertCircle, Target } from 'lucide-react';
 import { SettingsLoadingSkeleton } from '@/components/ui/skeleton-screens';
 
 interface ClientProfile {
@@ -41,9 +41,24 @@ interface Client {
   profile_photo_url?: string;
 }
 
+interface MetaAccount {
+  id?: number;
+  cliente: string;
+  conta_anuncios: string;
+  ig_id?: string;
+  fb_id?: string;
+  whatsapp?: string;
+  pixel?: string;
+  url_site?: string;
+  ig_username?: string;
+  dominio?: string;
+  client_id?: string;
+}
+
 const Settings = () => {
   const [profile, setProfile] = useState<ClientProfile | null>(null);
   const [client, setClient] = useState<Client | null>(null);
+  const [metaAccount, setMetaAccount] = useState<MetaAccount | null>(null);
   const [selectedClient, setSelectedClient] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -225,6 +240,45 @@ const Settings = () => {
         console.log('Settings - Created profile:', createdProfile);
         setProfile(createdProfile);
       }
+
+      // Fetch meta account data
+      const { data: metaData, error: metaError } = await supabase
+        .from('meta_accounts')
+        .select('*')
+        .eq('client_id', clientId)
+        .maybeSingle();
+
+      if (metaError) {
+        console.error('Error fetching meta account:', metaError);
+      }
+
+      if (metaData) {
+        const newMetaAccount = {
+          id: metaData.id,
+          cliente: metaData.cliente,
+          conta_anuncios: metaData.conta_anuncios,
+          ig_id: metaData.ig_id,
+          fb_id: metaData.fb_id,
+          whatsapp: metaData.whatsapp,
+          pixel: metaData.pixel,
+          url_site: metaData.url_site,
+          ig_username: metaData.ig_username,
+          dominio: metaData.dominio,
+          client_id: metaData.client_id
+        } as MetaAccount;
+        
+        console.log('Settings - Loaded meta account data:', newMetaAccount);
+        setMetaAccount(newMetaAccount);
+      } else {
+        // Create default meta account if doesn't exist
+        const defaultMetaAccount = {
+          cliente: newClient.name,
+          conta_anuncios: '',
+          client_id: clientId
+        } as MetaAccount;
+        
+        setMetaAccount(defaultMetaAccount);
+      }
     } catch (error) {
       console.error('Error fetching client data:', error);
       toast({
@@ -306,6 +360,65 @@ const Settings = () => {
     }
   };
 
+  const handleSaveMeta = async () => {
+    if (!metaAccount || !selectedClient) return;
+
+    setSaving(true);
+    try {
+      if (metaAccount.id) {
+        // Update existing record
+        const { error } = await supabase
+          .from('meta_accounts')
+          .update({
+            cliente: metaAccount.cliente,
+            conta_anuncios: metaAccount.conta_anuncios,
+            ig_id: metaAccount.ig_id,
+            fb_id: metaAccount.fb_id,
+            whatsapp: metaAccount.whatsapp,
+            pixel: metaAccount.pixel,
+            url_site: metaAccount.url_site,
+            ig_username: metaAccount.ig_username,
+            dominio: metaAccount.dominio,
+          })
+          .eq('id', metaAccount.id);
+
+        if (error) throw error;
+      } else {
+        // Insert new record
+        const { error } = await supabase
+          .from('meta_accounts')
+          .insert([{
+            cliente: metaAccount.cliente,
+            conta_anuncios: metaAccount.conta_anuncios,
+            ig_id: metaAccount.ig_id,
+            fb_id: metaAccount.fb_id,
+            whatsapp: metaAccount.whatsapp,
+            pixel: metaAccount.pixel,
+            url_site: metaAccount.url_site,
+            ig_username: metaAccount.ig_username,
+            dominio: metaAccount.dominio,
+            client_id: selectedClient,
+          }]);
+
+        if (error) throw error;
+      }
+
+      toast({
+        title: 'Sucesso',
+        description: 'Configurações do Meta salvas com sucesso!',
+      });
+    } catch (error) {
+      console.error('Error saving meta account:', error);
+      toast({
+        title: 'Erro',
+        description: 'Não foi possível salvar as configurações do Meta.',
+        variant: 'destructive',
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const updateProfile = (updates: Partial<ClientProfile>) => {
     if (profile) {
       setProfile({ ...profile, ...updates });
@@ -315,6 +428,12 @@ const Settings = () => {
   const updateClient = (updates: Partial<Client>) => {
     if (client) {
       setClient({ ...client, ...updates });
+    }
+  };
+
+  const updateMetaAccount = (updates: Partial<MetaAccount>) => {
+    if (metaAccount) {
+      setMetaAccount({ ...metaAccount, ...updates });
     }
   };
 
@@ -355,7 +474,7 @@ const Settings = () => {
         </div>
 
       <Tabs defaultValue="general" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="general">
             <SettingsIcon className="h-4 w-4 mr-2" />
             Geral
@@ -363,6 +482,10 @@ const Settings = () => {
           <TabsTrigger value="automation">
             <Zap className="h-4 w-4 mr-2" />
             Automação de Conteúdo
+          </TabsTrigger>
+          <TabsTrigger value="meta">
+            <Target className="h-4 w-4 mr-2" />
+            Meta
           </TabsTrigger>
         </TabsList>
 
@@ -582,6 +705,121 @@ const Settings = () => {
               <div className="flex justify-end">
                 <Button onClick={handleSaveProfile} disabled={saving}>
                   {saving ? 'Salvando...' : 'Salvar Configurações'}
+                </Button>
+              </div>
+            </>
+          )}
+        </TabsContent>
+
+        <TabsContent value="meta" className="space-y-6">
+          {metaAccount && (
+            <>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Configurações da Conta Meta</CardTitle>
+                  <CardDescription>
+                    Configure as informações da conta Meta para integração com Facebook e Instagram
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="cliente">Cliente</Label>
+                      <Input
+                        id="cliente"
+                        value={metaAccount.cliente}
+                        onChange={(e) => updateMetaAccount({ cliente: e.target.value })}
+                        placeholder="Nome do cliente"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="conta-anuncios">Conta de Anúncios *</Label>
+                      <Input
+                        id="conta-anuncios"
+                        value={metaAccount.conta_anuncios}
+                        onChange={(e) => updateMetaAccount({ conta_anuncios: e.target.value })}
+                        placeholder="ID da conta de anúncios"
+                        required
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="ig-id">Instagram ID</Label>
+                      <Input
+                        id="ig-id"
+                        value={metaAccount.ig_id || ''}
+                        onChange={(e) => updateMetaAccount({ ig_id: e.target.value })}
+                        placeholder="ID da conta do Instagram"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="fb-id">Facebook ID</Label>
+                      <Input
+                        id="fb-id"
+                        value={metaAccount.fb_id || ''}
+                        onChange={(e) => updateMetaAccount({ fb_id: e.target.value })}
+                        placeholder="ID da página do Facebook"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="whatsapp">WhatsApp</Label>
+                      <Input
+                        id="whatsapp"
+                        value={metaAccount.whatsapp || ''}
+                        onChange={(e) => updateMetaAccount({ whatsapp: e.target.value })}
+                        placeholder="Número do WhatsApp"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="pixel">Pixel ID</Label>
+                      <Input
+                        id="pixel"
+                        value={metaAccount.pixel || ''}
+                        onChange={(e) => updateMetaAccount({ pixel: e.target.value })}
+                        placeholder="ID do Pixel do Facebook"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="url-site">URL do Site</Label>
+                      <Input
+                        id="url-site"
+                        value={metaAccount.url_site || ''}
+                        onChange={(e) => updateMetaAccount({ url_site: e.target.value })}
+                        placeholder="https://exemplo.com"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="ig-username">Username do Instagram</Label>
+                      <Input
+                        id="ig-username"
+                        value={metaAccount.ig_username || ''}
+                        onChange={(e) => updateMetaAccount({ ig_username: e.target.value })}
+                        placeholder="@username"
+                      />
+                    </div>
+
+                    <div className="space-y-2 md:col-span-2">
+                      <Label htmlFor="dominio">Domínio</Label>
+                      <Input
+                        id="dominio"
+                        value={metaAccount.dominio || ''}
+                        onChange={(e) => updateMetaAccount({ dominio: e.target.value })}
+                        placeholder="exemplo.com"
+                      />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <div className="flex justify-end">
+                <Button onClick={handleSaveMeta} disabled={saving}>
+                  {saving ? 'Salvando...' : 'Salvar Configurações Meta'}
                 </Button>
               </div>
             </>
