@@ -44,8 +44,6 @@ interface Client {
 interface MetaAccount {
   id?: number;
   cliente: string;
-  nicho?: string;
-  subnicho?: string;
   conta_anuncios: string;
   ig_id?: string;
   fb_id?: string;
@@ -54,8 +52,6 @@ interface MetaAccount {
   url_site?: string;
   ig_username?: string;
   dominio?: string;
-  logo_cliente?: string;
-  pdf_cliente?: string;
   client_id?: string;
 }
 
@@ -260,8 +256,6 @@ const Settings = () => {
         const newMetaAccount = {
           id: metaData.id,
           cliente: metaData.cliente,
-          nicho: '', // Campo não existe na tabela ainda
-          subnicho: '', // Campo não existe na tabela ainda
           conta_anuncios: metaData.conta_anuncios,
           ig_id: metaData.ig_id,
           fb_id: metaData.fb_id,
@@ -270,8 +264,6 @@ const Settings = () => {
           url_site: metaData.url_site,
           ig_username: metaData.ig_username,
           dominio: metaData.dominio,
-          logo_cliente: '', // Campo não existe na tabela ainda
-          pdf_cliente: '', // Campo não existe na tabela ainda
           client_id: metaData.client_id
         } as MetaAccount;
         
@@ -742,26 +734,6 @@ const Settings = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="nicho">Nicho</Label>
-                      <Input
-                        id="nicho"
-                        value={metaAccount.nicho || ''}
-                        onChange={(e) => updateMetaAccount({ nicho: e.target.value })}
-                        placeholder="Nicho do cliente"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="subnicho">Subnicho</Label>
-                      <Input
-                        id="subnicho"
-                        value={metaAccount.subnicho || ''}
-                        onChange={(e) => updateMetaAccount({ subnicho: e.target.value })}
-                        placeholder="Subnicho do cliente"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
                       <Label htmlFor="conta-anuncios">Conta de Anúncios *</Label>
                       <Input
                         id="conta-anuncios"
@@ -839,26 +811,6 @@ const Settings = () => {
                         value={metaAccount.dominio || ''}
                         onChange={(e) => updateMetaAccount({ dominio: e.target.value })}
                         placeholder="exemplo.com"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="logo-cliente">Logo do Cliente</Label>
-                      <Input
-                        id="logo-cliente"
-                        value={metaAccount.logo_cliente || ''}
-                        onChange={(e) => updateMetaAccount({ logo_cliente: e.target.value })}
-                        placeholder="URL do logo"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="pdf-cliente">PDF do Cliente</Label>
-                      <Input
-                        id="pdf-cliente"
-                        value={metaAccount.pdf_cliente || ''}
-                        onChange={(e) => updateMetaAccount({ pdf_cliente: e.target.value })}
-                        placeholder="URL do PDF"
                       />
                     </div>
                   </div>
