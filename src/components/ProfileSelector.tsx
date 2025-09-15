@@ -1,11 +1,15 @@
 import { useState, useEffect } from 'react';
-import { Check, ChevronsUpDown, User } from 'lucide-react';
+import { Check, ChevronsUpDown, User, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandSeparator } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
 import { LoadingMessage, InlineLoadingMessage } from '@/components/ui/skeleton-screens';
+import { toast } from 'sonner';
 
 interface Client {
   id: string;
@@ -24,6 +28,13 @@ export const ProfileSelector = ({ onClientSelect }: ProfileSelectorProps = {}) =
   const [clients, setClients] = useState<Client[]>([]);
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showNewClientDialog, setShowNewClientDialog] = useState(false);
+  const [newClientForm, setNewClientForm] = useState({
+    name: '',
+    email: '',
+    phone: ''
+  });
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     fetchClients();
@@ -108,8 +119,61 @@ export const ProfileSelector = ({ onClientSelect }: ProfileSelectorProps = {}) =
     window.dispatchEvent(new CustomEvent('profileChanged', { detail: client }));
   };
 
+  const handleNewClientClick = () => {
+    setOpen(false);
+    setShowNewClientDialog(true);
+  };
+
+  const handleSaveNewClient = async () => {
+    if (!newClientForm.name.trim()) {
+      toast.error('Nome da empresa é obrigatório');
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const { data, error } = await supabase
+        .from('clients')
+        .insert([{
+          name: newClientForm.name.trim(),
+          email: newClientForm.email.trim() || null,
+          phone: newClientForm.phone.trim() || null
+        }])
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      const newClient: Client = {
+        id: data.id,
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        profile_photo_url: data.profile_photo_url
+      };
+
+      // Add to clients list
+      setClients(prev => [newClient, ...prev]);
+      
+      // Select the new client
+      handleClientSelect(newClient);
+      
+      // Reset form and close dialog
+      setNewClientForm({ name: '', email: '', phone: '' });
+      setShowNewClientDialog(false);
+      
+      toast.success('Nova empresa adicionada com sucesso!');
+    } catch (error) {
+      console.error('Error creating new client:', error);
+      toast.error('Erro ao criar nova empresa');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <>
+      <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           variant="ghost"
@@ -196,9 +260,79 @@ export const ProfileSelector = ({ onClientSelect }: ProfileSelectorProps = {}) =
                 />
               </CommandItem>
             ))}
+            <CommandSeparator />
+            <CommandItem onSelect={handleNewClientClick} className="flex items-center gap-3 cursor-pointer">
+              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                <Plus className="h-4 w-4 text-primary" />
+              </div>
+              <span className="font-medium text-primary">Adicionar Nova Empresa</span>
+            </CommandItem>
           </CommandGroup>
         </Command>
       </PopoverContent>
     </Popover>
+
+    <Dialog open={showNewClientDialog} onOpenChange={setShowNewClientDialog}>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Adicionar Nova Empresa</DialogTitle>
+        </DialogHeader>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="name" className="text-right">
+              Nome *
+            </Label>
+            <Input
+              id="name"
+              value={newClientForm.name}
+              onChange={(e) => setNewClientForm(prev => ({...prev, name: e.target.value}))}
+              className="col-span-3"
+              placeholder="Nome da empresa"
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="email" className="text-right">
+              Email
+            </Label>
+            <Input
+              id="email"
+              type="email"
+              value={newClientForm.email}
+              onChange={(e) => setNewClientForm(prev => ({...prev, email: e.target.value}))}
+              className="col-span-3"
+              placeholder="email@empresa.com"
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="phone" className="text-right">
+              Telefone
+            </Label>
+            <Input
+              id="phone"
+              value={newClientForm.phone}
+              onChange={(e) => setNewClientForm(prev => ({...prev, phone: e.target.value}))}
+              className="col-span-3"
+              placeholder="+55 11 99999-9999"
+            />
+          </div>
+        </div>
+        <div className="flex justify-end gap-3">
+          <Button
+            variant="outline"
+            onClick={() => {
+              setShowNewClientDialog(false);
+              setNewClientForm({ name: '', email: '', phone: '' });
+            }}
+            disabled={saving}
+          >
+            Cancelar
+          </Button>
+          <Button onClick={handleSaveNewClient} disabled={saving || !newClientForm.name.trim()}>
+            {saving ? 'Salvando...' : 'Salvar'}
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+    </>
   );
 };
