@@ -12,6 +12,7 @@ interface Client {
   name: string;
   email?: string;
   phone?: string;
+  profile_photo_url?: string;
 }
 
 interface ClientDropdownProps {
@@ -43,7 +44,8 @@ export const ClientDropdown = ({ selectedClient, onClientSelect, onExitChat }: C
         id: client.id,
         name: client.name,
         email: client.email,
-        phone: client.phone
+        phone: client.phone,
+        profile_photo_url: client.profile_photo_url
       })) || [];
 
       setClients(clients);

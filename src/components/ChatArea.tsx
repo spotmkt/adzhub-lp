@@ -6,6 +6,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { ClientDropdown } from './ClientDropdown';
 import { FileUpload } from './FileUpload';
 import { AudioRecorder } from './AudioRecorder';
@@ -34,6 +35,7 @@ interface Client {
   name: string;
   email?: string;
   phone?: string;
+  profile_photo_url?: string;
 }
 
 interface ChatAreaProps {
@@ -193,9 +195,15 @@ export const ChatArea = ({
       <div className="bg-card border-b border-border p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
-              <User className="h-5 w-5 text-primary-foreground" />
-            </div>
+            <Avatar className="w-10 h-10">
+              <AvatarImage 
+                src={selectedClient.profile_photo_url} 
+                alt={selectedClient.name} 
+              />
+              <AvatarFallback className="bg-primary text-primary-foreground">
+                <User className="h-5 w-5" />
+              </AvatarFallback>
+            </Avatar>
             <div>
               <h2 className="font-semibold text-foreground">{selectedClient.name}</h2>
               <p className="text-sm text-muted-foreground">
@@ -284,7 +292,15 @@ export const ChatArea = ({
                       : 'bg-muted text-muted-foreground'
                   }`}>
                     {message.sender === 'user' ? (
-                      <User className="h-4 w-4" />
+                      <Avatar className="w-8 h-8">
+                        <AvatarImage 
+                          src={selectedClient.profile_photo_url} 
+                          alt={selectedClient.name} 
+                        />
+                        <AvatarFallback className="bg-primary text-primary-foreground">
+                          <User className="h-4 w-4" />
+                        </AvatarFallback>
+                      </Avatar>
                     ) : (
                       <Bot className="h-4 w-4" />
                     )}

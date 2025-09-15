@@ -14,6 +14,7 @@ interface Client {
   name: string;
   email?: string;
   phone?: string;
+  profile_photo_url?: string;
 }
 
 const Index = () => {
@@ -48,7 +49,8 @@ const Index = () => {
           id: data.id,
           name: data.name,
           email: data.email,
-          phone: data.phone
+          phone: data.phone,
+          profile_photo_url: data.profile_photo_url
         };
         setSelectedClient(client);
         loadChatHistory(client.id);
