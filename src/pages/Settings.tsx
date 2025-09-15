@@ -256,7 +256,7 @@ const Settings = () => {
         const newMetaAccount = {
           id: metaData.id,
           cliente: metaData.cliente,
-          conta_anuncios: metaData.conta_anuncios,
+          conta_anuncios: metaData.conta_anuncios?.replace('act_', '') || '',
           ig_id: metaData.ig_id,
           fb_id: metaData.fb_id,
           whatsapp: metaData.whatsapp,
@@ -365,13 +365,18 @@ const Settings = () => {
 
     setSaving(true);
     try {
+      // Prepare the account ID with act_ prefix
+      const contaAnunciosComPrefixo = metaAccount.conta_anuncios.startsWith('act_') 
+        ? metaAccount.conta_anuncios 
+        : `act_${metaAccount.conta_anuncios}`;
+
       if (metaAccount.id) {
         // Update existing record
         const { error } = await supabase
           .from('meta_accounts')
           .update({
             cliente: metaAccount.cliente,
-            conta_anuncios: metaAccount.conta_anuncios,
+            conta_anuncios: contaAnunciosComPrefixo,
             ig_id: metaAccount.ig_id,
             fb_id: metaAccount.fb_id,
             whatsapp: metaAccount.whatsapp,
@@ -389,7 +394,7 @@ const Settings = () => {
           .from('meta_accounts')
           .insert([{
             cliente: metaAccount.cliente,
-            conta_anuncios: metaAccount.conta_anuncios,
+            conta_anuncios: contaAnunciosComPrefixo,
             ig_id: metaAccount.ig_id,
             fb_id: metaAccount.fb_id,
             whatsapp: metaAccount.whatsapp,
@@ -735,13 +740,22 @@ const Settings = () => {
 
                     <div className="space-y-2">
                       <Label htmlFor="conta-anuncios">Conta de Anúncios *</Label>
-                      <Input
-                        id="conta-anuncios"
-                        value={metaAccount.conta_anuncios}
-                        onChange={(e) => updateMetaAccount({ conta_anuncios: e.target.value })}
-                        placeholder="ID da conta de anúncios"
-                        required
-                      />
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <span className="text-muted-foreground text-sm">act_</span>
+                        </div>
+                        <Input
+                          id="conta-anuncios"
+                          value={metaAccount.conta_anuncios.replace('act_', '')}
+                          onChange={(e) => {
+                            const value = e.target.value.replace(/[^0-9]/g, '');
+                            updateMetaAccount({ conta_anuncios: value });
+                          }}
+                          placeholder="1428019817701428"
+                          className="pl-12"
+                          required
+                        />
+                      </div>
                     </div>
 
                     <div className="space-y-2">
