@@ -166,7 +166,9 @@ const Settings = () => {
         phone: clientData.phone,
         profile_photo_url: clientData.profile_photo_url,
         primary_color: clientData.primary_color || '#3B82F6',
-        secondary_colors: clientData.secondary_colors || []
+        secondary_colors: Array.isArray(clientData.secondary_colors) 
+          ? clientData.secondary_colors.filter(color => typeof color === 'string') as string[]
+          : []
       };
       
       console.log('Settings - Loaded client data:', newClient);

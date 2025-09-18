@@ -547,7 +547,9 @@ export type Database = {
           id: string
           name: string
           phone: string | null
+          primary_color: string | null
           profile_photo_url: string | null
+          secondary_colors: Json | null
           updated_at: string
           user_id: string | null
         }
@@ -557,7 +559,9 @@ export type Database = {
           id?: string
           name: string
           phone?: string | null
+          primary_color?: string | null
           profile_photo_url?: string | null
+          secondary_colors?: Json | null
           updated_at?: string
           user_id?: string | null
         }
@@ -567,7 +571,9 @@ export type Database = {
           id?: string
           name?: string
           phone?: string | null
+          primary_color?: string | null
           profile_photo_url?: string | null
+          secondary_colors?: Json | null
           updated_at?: string
           user_id?: string | null
         }
