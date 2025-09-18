@@ -12,6 +12,7 @@ import { PhotoUpload } from '@/components/PhotoUpload';
 import { toast } from '@/hooks/use-toast';
 import { Settings as SettingsIcon, Zap, AlertCircle, Target, Plus, X } from 'lucide-react';
 import { SettingsLoadingSkeleton } from '@/components/ui/skeleton-screens';
+import { ColorPicker } from '@/components/ColorPicker';
 
 interface ClientProfile {
   id: string;
@@ -622,19 +623,18 @@ const Settings = () => {
                   <div className="grid grid-cols-6 gap-4">
                     {/* Cor Principal */}
                     <div className="flex flex-col items-center space-y-3">
-                      <div className="relative group">
-                        <input
-                          type="color"
-                          value={client.primary_color || '#3B82F6'}
-                          onChange={(e) => updateClient({ primary_color: e.target.value })}
-                          className="w-16 h-16 rounded-full border-4 border-background cursor-pointer shadow-lg opacity-0 absolute inset-0"
-                        />
-                        <div 
-                          className="w-16 h-16 rounded-full shadow-lg border-4 border-background cursor-pointer transition-transform group-hover:scale-105"
-                          style={{ backgroundColor: client.primary_color || '#3B82F6' }}
-                        />
-                        <div className="absolute inset-0 rounded-full bg-black/0 group-hover:bg-black/10 transition-colors pointer-events-none" />
-                      </div>
+                      <ColorPicker
+                        color={client.primary_color || '#3B82F6'}
+                        onChange={(color) => updateClient({ primary_color: color })}
+                      >
+                        <div className="relative group cursor-pointer">
+                          <div 
+                            className="w-16 h-16 rounded-full shadow-lg border-4 border-background cursor-pointer transition-transform group-hover:scale-105"
+                            style={{ backgroundColor: client.primary_color || '#3B82F6' }}
+                          />
+                          <div className="absolute inset-0 rounded-full bg-black/0 group-hover:bg-black/10 transition-colors pointer-events-none" />
+                        </div>
+                      </ColorPicker>
                       <div className="text-center">
                         <p className="text-xs font-mono text-muted-foreground">
                           {client.primary_color || '#3B82F6'}
@@ -646,29 +646,31 @@ const Settings = () => {
                     {/* Cores Secundárias */}
                     {client.secondary_colors?.map((color, index) => (
                       <div key={index} className="flex flex-col items-center space-y-3 group/item">
-                        <div className="relative group">
-                          <input
-                            type="color"
-                            value={color}
-                            onChange={(e) => updateSecondaryColor(index, e.target.value)}
-                            className="w-16 h-16 rounded-full border-4 border-background cursor-pointer shadow-lg opacity-0 absolute inset-0"
-                          />
-                          <div 
-                            className="w-16 h-16 rounded-full shadow-lg border-4 border-background cursor-pointer transition-transform group-hover:scale-105"
-                            style={{ backgroundColor: color }}
-                          />
-                          <div className="absolute inset-0 rounded-full bg-black/0 group-hover:bg-black/10 transition-colors pointer-events-none" />
-                          
-                          {/* Botão de remover */}
-                          <Button
-                            variant="destructive"
-                            size="icon"
-                            onClick={() => removeSecondaryColor(index)}
-                            className="absolute -top-2 -right-2 w-6 h-6 rounded-full opacity-0 group-hover/item:opacity-100 transition-opacity shadow-lg"
-                          >
-                            <X className="h-3 w-3" />
-                          </Button>
-                        </div>
+                        <ColorPicker
+                          color={color}
+                          onChange={(newColor) => updateSecondaryColor(index, newColor)}
+                        >
+                          <div className="relative group cursor-pointer">
+                            <div 
+                              className="w-16 h-16 rounded-full shadow-lg border-4 border-background cursor-pointer transition-transform group-hover:scale-105"
+                              style={{ backgroundColor: color }}
+                            />
+                            <div className="absolute inset-0 rounded-full bg-black/0 group-hover:bg-black/10 transition-colors pointer-events-none" />
+                            
+                            {/* Botão de remover */}
+                            <Button
+                              variant="destructive"
+                              size="icon"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                removeSecondaryColor(index);
+                              }}
+                              className="absolute -top-2 -right-2 w-6 h-6 rounded-full opacity-0 group-hover/item:opacity-100 transition-opacity shadow-lg"
+                            >
+                              <X className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        </ColorPicker>
                         <div className="text-center">
                           <p className="text-xs font-mono text-muted-foreground">
                             {color}
@@ -678,17 +680,29 @@ const Settings = () => {
                     ))}
 
                     {/* Botão Adicionar Cor */}
-                    <div className="flex flex-col items-center space-y-3">
-                      <button
-                        onClick={addSecondaryColor}
-                        className="w-16 h-16 rounded-full border-4 border-dashed border-muted-foreground/30 cursor-pointer transition-all hover:border-primary hover:bg-primary/5 flex items-center justify-center group"
-                      >
-                        <Plus className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
-                      </button>
-                      <div className="text-center">
-                        <p className="text-xs text-muted-foreground">Add new</p>
+                    <ColorPicker
+                      color="#64748B"
+                      onChange={(color) => {
+                        if (client && client.secondary_colors) {
+                          updateClient({
+                            secondary_colors: [...client.secondary_colors, color]
+                          });
+                        } else if (client) {
+                          updateClient({
+                            secondary_colors: [color]
+                          });
+                        }
+                      }}
+                    >
+                      <div className="flex flex-col items-center space-y-3">
+                        <button className="w-16 h-16 rounded-full border-4 border-dashed border-muted-foreground/30 cursor-pointer transition-all hover:border-primary hover:bg-primary/5 flex items-center justify-center group">
+                          <Plus className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                        </button>
+                        <div className="text-center">
+                          <p className="text-xs text-muted-foreground">Add new</p>
+                        </div>
                       </div>
-                    </div>
+                    </ColorPicker>
                   </div>
                 </div>
 
