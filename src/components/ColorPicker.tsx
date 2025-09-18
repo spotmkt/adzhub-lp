@@ -114,7 +114,7 @@ export function ColorPicker({ color, onChange, children, mode = 'edit' }: ColorP
       const y = Math.max(0, Math.min(rect.height, e.clientY - rect.top));
       
       const s = (x / rect.width) * 100;
-      const v = (1 - y / rect.height) * 100; // Invertido para corresponder ao novo gradiente
+      const v = 100 - (y / rect.height) * 100;
       
       updateColor({ ...hsv, s, v });
     }
@@ -218,7 +218,7 @@ export function ColorPicker({ color, onChange, children, mode = 'edit' }: ColorP
                   ref={saturationRef}
                   className="w-full h-32 rounded-lg border-2 border-border cursor-crosshair relative overflow-hidden select-none"
                   style={{
-                    background: `linear-gradient(to right, white, ${hueColor}), linear-gradient(to bottom, transparent, black)`
+                    background: `linear-gradient(to right, white, ${hueColor}), linear-gradient(to top, black, transparent)`
                   }}
                   onMouseDown={handleSaturationMouseDown}
                 >
@@ -226,7 +226,7 @@ export function ColorPicker({ color, onChange, children, mode = 'edit' }: ColorP
                     className="absolute w-3 h-3 border-2 border-white rounded-full shadow-lg pointer-events-none transform -translate-x-1/2 -translate-y-1/2"
                     style={{
                       left: `${hsv.s}%`,
-                      top: `${hsv.v}%`,
+                      top: `${100 - hsv.v}%`,
                       backgroundColor: inputColor
                     }}
                   />
