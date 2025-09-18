@@ -601,79 +601,122 @@ const Settings = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
+                {/* Cor Principal */}
                 <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="primary-color">Cor Principal</Label>
-                    <div className="flex items-center space-x-3">
+                  <Label className="text-base font-medium">Cor Principal</Label>
+                  <div className="flex items-center space-x-4 p-4 bg-muted/30 rounded-lg">
+                    <div className="relative">
                       <input
                         id="primary-color"
                         type="color"
                         value={client.primary_color || '#3B82F6'}
                         onChange={(e) => updateClient({ primary_color: e.target.value })}
-                        className="w-12 h-12 rounded-lg border-2 border-border cursor-pointer"
+                        className="w-16 h-16 rounded-xl border-4 border-background cursor-pointer shadow-sm"
                       />
-                      <Input
-                        value={client.primary_color || '#3B82F6'}
-                        onChange={(e) => updateClient({ primary_color: e.target.value })}
-                        placeholder="#3B82F6"
-                        className="flex-1"
-                      />
+                    </div>
+                    <div className="flex-1 space-y-2">
+                      <div className="flex items-center space-x-2">
+                        <Input
+                          value={client.primary_color || '#3B82F6'}
+                          onChange={(e) => updateClient({ primary_color: e.target.value })}
+                          placeholder="#3B82F6"
+                          className="font-mono text-sm bg-background"
+                          maxLength={7}
+                        />
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        Esta será a cor principal da sua marca
+                      </p>
                     </div>
                   </div>
+                </div>
 
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <Label>Cores Secundárias</Label>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={addSecondaryColor}
-                        className="flex items-center space-x-1"
-                      >
-                        <Plus className="h-4 w-4" />
-                        <span>Adicionar Cor</span>
-                      </Button>
-                    </div>
-                    
-                    {client.secondary_colors && client.secondary_colors.length > 0 ? (
-                      <div className="space-y-2">
-                        {client.secondary_colors.map((color, index) => (
-                          <div key={index} className="flex items-center space-x-3">
+                {/* Cores Secundárias */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-base font-medium">Cores Secundárias</Label>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={addSecondaryColor}
+                      className="flex items-center space-x-2 hover:bg-primary/10"
+                    >
+                      <Plus className="h-4 w-4" />
+                      <span>Adicionar Cor</span>
+                    </Button>
+                  </div>
+                  
+                  {client.secondary_colors && client.secondary_colors.length > 0 ? (
+                    <div className="space-y-3">
+                      {client.secondary_colors.map((color, index) => (
+                        <div key={index} className="flex items-center space-x-4 p-3 bg-muted/20 rounded-lg group">
+                          <div className="relative">
                             <input
                               type="color"
                               value={color}
                               onChange={(e) => updateSecondaryColor(index, e.target.value)}
-                              className="w-12 h-12 rounded-lg border-2 border-border cursor-pointer"
+                              className="w-12 h-12 rounded-lg border-3 border-background cursor-pointer shadow-sm"
                             />
+                          </div>
+                          <div className="flex-1">
                             <Input
                               value={color}
                               onChange={(e) => updateSecondaryColor(index, e.target.value)}
                               placeholder="#64748B"
-                              className="flex-1"
+                              className="font-mono text-sm bg-background"
+                              maxLength={7}
                             />
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="icon"
-                              onClick={() => removeSecondaryColor(index)}
-                              className="text-destructive hover:text-destructive"
-                            >
-                              <X className="h-4 w-4" />
-                            </Button>
                           </div>
-                        ))}
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => removeSecondaryColor(index)}
+                            className="opacity-0 group-hover:opacity-100 transition-opacity text-destructive hover:text-destructive hover:bg-destructive/10"
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
+                      
+                      {/* Prévia das Cores */}
+                      <div className="mt-4 p-4 bg-muted/20 rounded-lg">
+                        <Label className="text-sm font-medium mb-3 block">Prévia da Paleta</Label>
+                        <div className="flex items-center space-x-2">
+                          <div 
+                            className="w-8 h-8 rounded-lg shadow-sm border-2 border-background flex-shrink-0"
+                            style={{ backgroundColor: client.primary_color || '#3B82F6' }}
+                            title={`Cor Principal: ${client.primary_color || '#3B82F6'}`}
+                          />
+                          {client.secondary_colors.map((color, index) => (
+                            <div 
+                              key={index}
+                              className="w-6 h-6 rounded-md shadow-sm border border-background/50 flex-shrink-0"
+                              style={{ backgroundColor: color }}
+                              title={`Secundária ${index + 1}: ${color}`}
+                            />
+                          ))}
+                        </div>
                       </div>
-                    ) : (
-                      <p className="text-sm text-muted-foreground">
-                        Nenhuma cor secundária adicionada. Clique em "Adicionar Cor" para começar.
+                    </div>
+                  ) : (
+                    <div className="text-center py-8 px-4 bg-muted/10 rounded-lg border-2 border-dashed border-muted">
+                      <div className="w-12 h-12 rounded-full bg-muted/50 mx-auto mb-3 flex items-center justify-center">
+                        <Plus className="h-5 w-5 text-muted-foreground" />
+                      </div>
+                      <p className="text-sm text-muted-foreground mb-2 font-medium">
+                        Nenhuma cor secundária adicionada
                       </p>
-                    )}
-                  </div>
+                      <p className="text-xs text-muted-foreground">
+                        Clique em "Adicionar Cor" para criar sua paleta completa
+                      </p>
+                    </div>
+                  )}
                 </div>
 
-                <div className="flex justify-end">
-                  <Button onClick={handleSaveClient} disabled={saving}>
+                <div className="flex justify-end pt-4 border-t">
+                  <Button onClick={handleSaveClient} disabled={saving} size="lg">
                     {saving ? 'Salvando...' : 'Salvar Paleta'}
                   </Button>
                 </div>
