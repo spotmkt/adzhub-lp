@@ -595,128 +595,105 @@ const Settings = () => {
           {client && (
             <Card>
               <CardHeader>
-                <CardTitle>Paleta de Cores</CardTitle>
-                <CardDescription>
-                  Configure as cores da marca para uso em conteúdos e materiais
-                </CardDescription>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>Paleta de Cores ({((client.secondary_colors?.length || 0) + 1)})</CardTitle>
+                    <CardDescription>
+                      Configure as cores da marca para uso em conteúdos e materiais
+                    </CardDescription>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={addSecondaryColor}
+                    className="flex items-center space-x-2"
+                  >
+                    <Plus className="h-4 w-4" />
+                    <span>Add new</span>
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent className="space-y-6">
-                {/* Cor Principal */}
-                <div className="space-y-4">
-                  <Label className="text-base font-medium">Cor Principal</Label>
-                  <div className="flex items-center space-x-4 p-4 bg-muted/30 rounded-lg">
-                    <div className="relative">
-                      <input
-                        id="primary-color"
-                        type="color"
-                        value={client.primary_color || '#3B82F6'}
-                        onChange={(e) => updateClient({ primary_color: e.target.value })}
-                        className="w-16 h-16 rounded-xl border-4 border-background cursor-pointer shadow-sm"
-                      />
-                    </div>
-                    <div className="flex-1 space-y-2">
-                      <div className="flex items-center space-x-2">
-                        <Input
+                <div>
+                  <h3 className="text-sm font-medium text-muted-foreground mb-4 uppercase tracking-wide">
+                    Cores da Marca
+                  </h3>
+                  
+                  <div className="grid grid-cols-6 gap-4">
+                    {/* Cor Principal */}
+                    <div className="flex flex-col items-center space-y-3">
+                      <div className="relative group">
+                        <input
+                          type="color"
                           value={client.primary_color || '#3B82F6'}
                           onChange={(e) => updateClient({ primary_color: e.target.value })}
-                          placeholder="#3B82F6"
-                          className="font-mono text-sm bg-background"
-                          maxLength={7}
+                          className="w-16 h-16 rounded-full border-4 border-background cursor-pointer shadow-lg opacity-0 absolute inset-0"
                         />
+                        <div 
+                          className="w-16 h-16 rounded-full shadow-lg border-4 border-background cursor-pointer transition-transform group-hover:scale-105"
+                          style={{ backgroundColor: client.primary_color || '#3B82F6' }}
+                        />
+                        <div className="absolute inset-0 rounded-full bg-black/0 group-hover:bg-black/10 transition-colors pointer-events-none" />
                       </div>
-                      <p className="text-xs text-muted-foreground">
-                        Esta será a cor principal da sua marca
-                      </p>
+                      <div className="text-center">
+                        <p className="text-xs font-mono text-muted-foreground">
+                          {client.primary_color || '#3B82F6'}
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-1">Principal</p>
+                      </div>
                     </div>
-                  </div>
-                </div>
 
-                {/* Cores Secundárias */}
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <Label className="text-base font-medium">Cores Secundárias</Label>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={addSecondaryColor}
-                      className="flex items-center space-x-2 hover:bg-primary/10"
-                    >
-                      <Plus className="h-4 w-4" />
-                      <span>Adicionar Cor</span>
-                    </Button>
-                  </div>
-                  
-                  {client.secondary_colors && client.secondary_colors.length > 0 ? (
-                    <div className="space-y-3">
-                      {client.secondary_colors.map((color, index) => (
-                        <div key={index} className="flex items-center space-x-4 p-3 bg-muted/20 rounded-lg group">
-                          <div className="relative">
-                            <input
-                              type="color"
-                              value={color}
-                              onChange={(e) => updateSecondaryColor(index, e.target.value)}
-                              className="w-12 h-12 rounded-lg border-3 border-background cursor-pointer shadow-sm"
-                            />
-                          </div>
-                          <div className="flex-1">
-                            <Input
-                              value={color}
-                              onChange={(e) => updateSecondaryColor(index, e.target.value)}
-                              placeholder="#64748B"
-                              className="font-mono text-sm bg-background"
-                              maxLength={7}
-                            />
-                          </div>
+                    {/* Cores Secundárias */}
+                    {client.secondary_colors?.map((color, index) => (
+                      <div key={index} className="flex flex-col items-center space-y-3 group/item">
+                        <div className="relative group">
+                          <input
+                            type="color"
+                            value={color}
+                            onChange={(e) => updateSecondaryColor(index, e.target.value)}
+                            className="w-16 h-16 rounded-full border-4 border-background cursor-pointer shadow-lg opacity-0 absolute inset-0"
+                          />
+                          <div 
+                            className="w-16 h-16 rounded-full shadow-lg border-4 border-background cursor-pointer transition-transform group-hover:scale-105"
+                            style={{ backgroundColor: color }}
+                          />
+                          <div className="absolute inset-0 rounded-full bg-black/0 group-hover:bg-black/10 transition-colors pointer-events-none" />
+                          
+                          {/* Botão de remover */}
                           <Button
-                            type="button"
-                            variant="ghost"
+                            variant="destructive"
                             size="icon"
                             onClick={() => removeSecondaryColor(index)}
-                            className="opacity-0 group-hover:opacity-100 transition-opacity text-destructive hover:text-destructive hover:bg-destructive/10"
+                            className="absolute -top-2 -right-2 w-6 h-6 rounded-full opacity-0 group-hover/item:opacity-100 transition-opacity shadow-lg"
                           >
-                            <X className="h-4 w-4" />
+                            <X className="h-3 w-3" />
                           </Button>
                         </div>
-                      ))}
-                      
-                      {/* Prévia das Cores */}
-                      <div className="mt-4 p-4 bg-muted/20 rounded-lg">
-                        <Label className="text-sm font-medium mb-3 block">Prévia da Paleta</Label>
-                        <div className="flex items-center space-x-2">
-                          <div 
-                            className="w-8 h-8 rounded-lg shadow-sm border-2 border-background flex-shrink-0"
-                            style={{ backgroundColor: client.primary_color || '#3B82F6' }}
-                            title={`Cor Principal: ${client.primary_color || '#3B82F6'}`}
-                          />
-                          {client.secondary_colors.map((color, index) => (
-                            <div 
-                              key={index}
-                              className="w-6 h-6 rounded-md shadow-sm border border-background/50 flex-shrink-0"
-                              style={{ backgroundColor: color }}
-                              title={`Secundária ${index + 1}: ${color}`}
-                            />
-                          ))}
+                        <div className="text-center">
+                          <p className="text-xs font-mono text-muted-foreground">
+                            {color}
+                          </p>
                         </div>
                       </div>
-                    </div>
-                  ) : (
-                    <div className="text-center py-8 px-4 bg-muted/10 rounded-lg border-2 border-dashed border-muted">
-                      <div className="w-12 h-12 rounded-full bg-muted/50 mx-auto mb-3 flex items-center justify-center">
-                        <Plus className="h-5 w-5 text-muted-foreground" />
+                    ))}
+
+                    {/* Botão Adicionar Cor */}
+                    <div className="flex flex-col items-center space-y-3">
+                      <button
+                        onClick={addSecondaryColor}
+                        className="w-16 h-16 rounded-full border-4 border-dashed border-muted-foreground/30 cursor-pointer transition-all hover:border-primary hover:bg-primary/5 flex items-center justify-center group"
+                      >
+                        <Plus className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                      </button>
+                      <div className="text-center">
+                        <p className="text-xs text-muted-foreground">Add new</p>
                       </div>
-                      <p className="text-sm text-muted-foreground mb-2 font-medium">
-                        Nenhuma cor secundária adicionada
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        Clique em "Adicionar Cor" para criar sua paleta completa
-                      </p>
                     </div>
-                  )}
+                  </div>
                 </div>
 
                 <div className="flex justify-end pt-4 border-t">
-                  <Button onClick={handleSaveClient} disabled={saving} size="lg">
+                  <Button onClick={handleSaveClient} disabled={saving}>
                     {saving ? 'Salvando...' : 'Salvar Paleta'}
                   </Button>
                 </div>
