@@ -623,10 +623,11 @@ const Settings = () => {
                   <div className="grid grid-cols-6 gap-4">
                     {/* Cor Principal */}
                     <div className="flex flex-col items-center space-y-3">
-                      <ColorPicker
-                        color={client.primary_color || '#3B82F6'}
-                        onChange={(color) => updateClient({ primary_color: color })}
-                      >
+                       <ColorPicker
+                         color={client.primary_color || '#3B82F6'}
+                         mode="edit"
+                         onChange={(color) => updateClient({ primary_color: color })}
+                       >
                         <div className="relative group cursor-pointer">
                           <div 
                             className="w-16 h-16 rounded-full shadow-lg border-4 border-background cursor-pointer transition-transform group-hover:scale-105"
@@ -646,10 +647,11 @@ const Settings = () => {
                     {/* Cores Secundárias */}
                     {client.secondary_colors?.map((color, index) => (
                       <div key={index} className="flex flex-col items-center space-y-3 group/item">
-                        <ColorPicker
-                          color={color}
-                          onChange={(newColor) => updateSecondaryColor(index, newColor)}
-                        >
+                         <ColorPicker
+                           color={color}
+                           mode="edit"
+                           onChange={(newColor) => updateSecondaryColor(index, newColor)}
+                         >
                           <div className="relative group cursor-pointer">
                             <div 
                               className="w-16 h-16 rounded-full shadow-lg border-4 border-background cursor-pointer transition-transform group-hover:scale-105"
@@ -682,6 +684,7 @@ const Settings = () => {
                     {/* Botão Adicionar Cor */}
                     <ColorPicker
                       color="#64748B"
+                      mode="add"
                       onChange={(color) => {
                         if (client && client.secondary_colors) {
                           updateClient({

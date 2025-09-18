@@ -10,6 +10,7 @@ interface ColorPickerProps {
   color: string;
   onChange: (color: string) => void;
   children: React.ReactNode;
+  mode?: 'edit' | 'add'; // Novo prop para controlar comportamento
 }
 
 const presetColors = [
@@ -72,10 +73,11 @@ function hsvToHex(h: number, s: number, v: number) {
   return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
 }
 
-export function ColorPicker({ color, onChange, children }: ColorPickerProps) {
+export function ColorPicker({ color, onChange, children, mode = 'edit' }: ColorPickerProps) {
   const [inputColor, setInputColor] = useState(color);
   const [isOpen, setIsOpen] = useState(false);
   const [hsv, setHsv] = useState(() => hexToHsv(color));
+  const [tempColor, setTempColor] = useState(color); // Cor temporária para modo 'add'
   const saturationRef = useRef<HTMLDivElement>(null);
   const hueRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState<'saturation' | 'hue' | null>(null);
@@ -83,6 +85,7 @@ export function ColorPicker({ color, onChange, children }: ColorPickerProps) {
   useEffect(() => {
     if (color !== inputColor) {
       setInputColor(color);
+      setTempColor(color);
       setHsv(hexToHsv(color));
     }
   }, [color]);
@@ -90,8 +93,13 @@ export function ColorPicker({ color, onChange, children }: ColorPickerProps) {
   const updateColor = (newHsv: { h: number; s: number; v: number }) => {
     const newHex = hsvToHex(newHsv.h, newHsv.s, newHsv.v);
     setInputColor(newHex);
+    setTempColor(newHex);
     setHsv(newHsv);
-    onChange(newHex);
+    
+    // Só chama onChange imediatamente no modo 'edit'
+    if (mode === 'edit') {
+      onChange(newHex);
+    }
   };
 
   const handleSaturationMouseDown = (e: React.MouseEvent) => {
@@ -153,11 +161,34 @@ export function ColorPicker({ color, onChange, children }: ColorPickerProps) {
 
   const handleInputChange = (value: string) => {
     setInputColor(value);
+    setTempColor(value);
     if (value.match(/^#[0-9A-Fa-f]{6}$/)) {
       const newHsv = hexToHsv(value);
       setHsv(newHsv);
-      onChange(value);
+      if (mode === 'edit') {
+        onChange(value);
+      }
     }
+  };
+
+  const handleConfirm = () => {
+    onChange(tempColor);
+    setIsOpen(false);
+  };
+
+  const handlePresetSelect = (presetColor: string) => {
+    setInputColor(presetColor);
+    setTempColor(presetColor);
+    const newHsv = hexToHsv(presetColor);
+    setHsv(newHsv);
+    
+    if (mode === 'edit') {
+      onChange(presetColor);
+    } else {
+      // Para modo 'add', confirma imediatamente
+      onChange(presetColor);
+    }
+    setIsOpen(false);
   };
 
   const hueColor = hsvToHex(hsv.h, 100, 100);
@@ -237,7 +268,7 @@ export function ColorPicker({ color, onChange, children }: ColorPickerProps) {
                 />
                 <Button
                   size="sm"
-                  onClick={() => setIsOpen(false)}
+                  onClick={mode === 'add' ? handleConfirm : () => setIsOpen(false)}
                   className="flex-shrink-0 bg-primary hover:bg-primary/90"
                 >
                   <Check className="h-4 w-4" />
@@ -257,10 +288,7 @@ export function ColorPicker({ color, onChange, children }: ColorPickerProps) {
                         key={index}
                         className="w-7 h-7 rounded-lg border-2 border-border hover:scale-110 transition-all duration-200 shadow-sm hover:shadow-md"
                         style={{ backgroundColor: presetColor }}
-                        onClick={() => {
-                          handleInputChange(presetColor);
-                          setIsOpen(false);
-                        }}
+                        onClick={() => handlePresetSelect(presetColor)}
                       />
                     ))}
                   </div>
@@ -276,10 +304,7 @@ export function ColorPicker({ color, onChange, children }: ColorPickerProps) {
                         key={index}
                         className="w-7 h-7 rounded-lg border-2 border-border hover:scale-110 transition-all duration-200 shadow-sm hover:shadow-md"
                         style={{ backgroundColor: recentColor }}
-                        onClick={() => {
-                          handleInputChange(recentColor);
-                          setIsOpen(false);
-                        }}
+                        onClick={() => handlePresetSelect(recentColor)}
                       />
                     ))}
                   </div>
