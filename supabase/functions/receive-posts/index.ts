@@ -57,13 +57,29 @@ serve(async (req) => {
     // Derive canal from plataforma or tipo_postagem if not provided
     const derivedCanal = canal || plataforma || tipo_postagem;
 
-    // Enhance metadata for blog posts
+    // Fetch client color palette
+    const { data: clientData, error: clientError } = await supabase
+      .from('clients')
+      .select('primary_color, secondary_colors')
+      .eq('id', client_id)
+      .single();
+
+    if (clientError) {
+      console.error('Error fetching client data:', clientError);
+    }
+
+    // Enhance metadata for blog posts including color palette
     const enhancedMetadata = {
       ...metadata,
       ...(slug && { slug }),
       ...(primary_keyword && { primary_keyword }),
       ...(imagem && { imagem }),
-      ...(plataforma && { plataforma })
+      ...(plataforma && { plataforma }),
+      // Add client color palette
+      ...(clientData && {
+        primary_color: clientData.primary_color,
+        secondary_colors: clientData.secondary_colors
+      })
     };
 
     // Insert the post into pending_posts table
