@@ -218,7 +218,7 @@ export function ColorPicker({ color, onChange, children, mode = 'edit' }: ColorP
                   ref={saturationRef}
                   className="w-full h-32 rounded-lg border-2 border-border cursor-crosshair relative overflow-hidden select-none"
                   style={{
-                    background: `linear-gradient(to right, white, ${hueColor}), linear-gradient(to top, black, transparent)`
+                    background: `linear-gradient(to right, white, ${hueColor}), linear-gradient(to bottom, transparent, black)`
                   }}
                   onMouseDown={handleSaturationMouseDown}
                 >
