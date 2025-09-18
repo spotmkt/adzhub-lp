@@ -219,6 +219,13 @@ const Content = () => {
             .eq('client_id', selectedClient)
             .single();
 
+          // Fetch client color palette
+          const { data: clientData } = await supabase
+            .from('clients')
+            .select('primary_color, secondary_colors')
+            .eq('id', selectedClient)
+            .single();
+
           await fetch('https://n8n-n8n.ascl7r.easypanel.host/webhook/40c64e0b-06d3-4817-a08a-7ab8dc545b4d', {
             method: 'POST',
             headers: {
@@ -228,7 +235,11 @@ const Content = () => {
               idea: approvedIdea,
               client_id: selectedClient,
               action: 'approved',
-              client_profile: clientProfile || {}
+              client_profile: {
+                ...clientProfile,
+                primary_color: clientData?.primary_color,
+                secondary_colors: clientData?.secondary_colors
+              }
             }),
           });
         } catch (webhookError) {
