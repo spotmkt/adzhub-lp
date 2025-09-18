@@ -231,7 +231,7 @@ export function ColorPicker({ color, onChange, children, mode = 'edit' }: ColorP
                     style={{
                       left: `${hsv.s}%`,
                       top: `${100 - hsv.v}%`,
-                      backgroundColor: inputColor
+                      backgroundColor: hsvToHex(hsv.h, hsv.s, hsv.v)
                     }}
                   />
                 </div>
