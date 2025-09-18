@@ -10,7 +10,7 @@ import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
 import { PhotoUpload } from '@/components/PhotoUpload';
 import { toast } from '@/hooks/use-toast';
-import { Settings as SettingsIcon, Zap, AlertCircle, Target } from 'lucide-react';
+import { Settings as SettingsIcon, Zap, AlertCircle, Target, Plus, X } from 'lucide-react';
 import { SettingsLoadingSkeleton } from '@/components/ui/skeleton-screens';
 
 interface ClientProfile {
@@ -39,6 +39,8 @@ interface Client {
   email?: string;
   phone?: string;
   profile_photo_url?: string;
+  primary_color?: string;
+  secondary_colors?: string[];
 }
 
 interface MetaAccount {
@@ -157,12 +159,14 @@ const Settings = () => {
 
       if (clientError) throw clientError;
       
-      const newClient = {
+        const newClient = {
         id: clientData.id,
         name: clientData.name,
         email: clientData.email,
         phone: clientData.phone,
-        profile_photo_url: clientData.profile_photo_url
+        profile_photo_url: clientData.profile_photo_url,
+        primary_color: clientData.primary_color || '#3B82F6',
+        secondary_colors: clientData.secondary_colors || []
       };
       
       console.log('Settings - Loaded client data:', newClient);
@@ -339,6 +343,8 @@ const Settings = () => {
           email: client.email,
           phone: client.phone,
           profile_photo_url: client.profile_photo_url,
+          primary_color: client.primary_color,
+          secondary_colors: client.secondary_colors,
         })
         .eq('id', client.id);
 
@@ -433,6 +439,33 @@ const Settings = () => {
   const updateClient = (updates: Partial<Client>) => {
     if (client) {
       setClient({ ...client, ...updates });
+    }
+  };
+
+  const addSecondaryColor = () => {
+    if (client && client.secondary_colors) {
+      updateClient({
+        secondary_colors: [...client.secondary_colors, '#64748B']
+      });
+    } else if (client) {
+      updateClient({
+        secondary_colors: ['#64748B']
+      });
+    }
+  };
+
+  const removeSecondaryColor = (index: number) => {
+    if (client && client.secondary_colors) {
+      const newColors = client.secondary_colors.filter((_, i) => i !== index);
+      updateClient({ secondary_colors: newColors });
+    }
+  };
+
+  const updateSecondaryColor = (index: number, color: string) => {
+    if (client && client.secondary_colors) {
+      const newColors = [...client.secondary_colors];
+      newColors[index] = color;
+      updateClient({ secondary_colors: newColors });
     }
   };
 
@@ -551,6 +584,95 @@ const Settings = () => {
                 <div className="flex justify-end">
                   <Button onClick={handleSaveClient} disabled={saving}>
                     {saving ? 'Salvando...' : 'Salvar Dados'}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {client && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Paleta de Cores</CardTitle>
+                <CardDescription>
+                  Configure as cores da marca para uso em conteúdos e materiais
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="primary-color">Cor Principal</Label>
+                    <div className="flex items-center space-x-3">
+                      <input
+                        id="primary-color"
+                        type="color"
+                        value={client.primary_color || '#3B82F6'}
+                        onChange={(e) => updateClient({ primary_color: e.target.value })}
+                        className="w-12 h-12 rounded-lg border-2 border-border cursor-pointer"
+                      />
+                      <Input
+                        value={client.primary_color || '#3B82F6'}
+                        onChange={(e) => updateClient({ primary_color: e.target.value })}
+                        placeholder="#3B82F6"
+                        className="flex-1"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <Label>Cores Secundárias</Label>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={addSecondaryColor}
+                        className="flex items-center space-x-1"
+                      >
+                        <Plus className="h-4 w-4" />
+                        <span>Adicionar Cor</span>
+                      </Button>
+                    </div>
+                    
+                    {client.secondary_colors && client.secondary_colors.length > 0 ? (
+                      <div className="space-y-2">
+                        {client.secondary_colors.map((color, index) => (
+                          <div key={index} className="flex items-center space-x-3">
+                            <input
+                              type="color"
+                              value={color}
+                              onChange={(e) => updateSecondaryColor(index, e.target.value)}
+                              className="w-12 h-12 rounded-lg border-2 border-border cursor-pointer"
+                            />
+                            <Input
+                              value={color}
+                              onChange={(e) => updateSecondaryColor(index, e.target.value)}
+                              placeholder="#64748B"
+                              className="flex-1"
+                            />
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="icon"
+                              onClick={() => removeSecondaryColor(index)}
+                              className="text-destructive hover:text-destructive"
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-muted-foreground">
+                        Nenhuma cor secundária adicionada. Clique em "Adicionar Cor" para começar.
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex justify-end">
+                  <Button onClick={handleSaveClient} disabled={saving}>
+                    {saving ? 'Salvando...' : 'Salvar Paleta'}
                   </Button>
                 </div>
               </CardContent>
