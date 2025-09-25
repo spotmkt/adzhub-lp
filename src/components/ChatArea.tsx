@@ -266,6 +266,8 @@ export const ChatArea = ({
   const removeSelectedVideo = () => {
     setSelectedVideo(null);
   };
+
+  const handleAudioRecord = (audioBlob: Blob) => {
     const audioUrl = URL.createObjectURL(audioBlob);
     
     const messageData: Message = {
