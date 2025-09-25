@@ -371,7 +371,7 @@ export const ChatArea = ({
       )}
 
       {/* Messages */}
-      <ScrollArea className="flex-1 p-4">
+      <ScrollArea className="flex-1 p-4 h-0">
         <div className="space-y-4 max-w-4xl mx-auto">
           {messages.length === 0 ? (
             <div className="text-center py-12">
