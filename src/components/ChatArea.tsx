@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ClientDropdown } from './ClientDropdown';
 import { FileUpload } from './FileUpload';
 import { AudioRecorder } from './AudioRecorder';
@@ -64,6 +65,8 @@ export const ChatArea = ({
   const [isLoading, setIsLoading] = useState(false);
   const [notifications, setNotifications] = useState<ActionCard[]>([]);
   const [isVideoAnalyzerActive, setIsVideoAnalyzerActive] = useState(false);
+  const [driveUrl, setDriveUrl] = useState('');
+  const [isToolsMenuOpen, setIsToolsMenuOpen] = useState(false);
 
   // Make functions available globally for external calls
   useEffect(() => {
@@ -137,6 +140,7 @@ export const ChatArea = ({
           },
           body: JSON.stringify({
             message: inputValue,
+            drive_url: driveUrl,
             client_id: selectedClient?.id,
             timestamp: new Date().toISOString(),
           }),
@@ -412,15 +416,47 @@ export const ChatArea = ({
               onFileSelect={handleFileUpload}
               onAudioRecord={handleAudioRecord}
             />
-            <Button
-              variant={isVideoAnalyzerActive ? "default" : "outline"}
-              size="icon"
-              onClick={() => setIsVideoAnalyzerActive(!isVideoAnalyzerActive)}
-              title={isVideoAnalyzerActive ? "Analisador de Vídeo Ativo" : "Ativar Analisador de Vídeo"}
-            >
-              <Settings className="h-4 w-4" />
-            </Button>
-            <div className="flex-1">
+            <Popover open={isToolsMenuOpen} onOpenChange={setIsToolsMenuOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant={isVideoAnalyzerActive ? "default" : "outline"}
+                  size="icon"
+                  title="Ferramentas"
+                >
+                  <Settings className="h-4 w-4" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-56 p-2 bg-background border border-border shadow-lg" align="start" side="top">
+                <div className="space-y-1">
+                  <div className="px-2 py-1.5 text-sm font-medium text-foreground">Ferramentas</div>
+                  <Separator />
+                  <button
+                    onClick={() => {
+                      setIsVideoAnalyzerActive(!isVideoAnalyzerActive);
+                      setIsToolsMenuOpen(false);
+                    }}
+                    className={`w-full flex items-center px-2 py-2 text-sm rounded-md hover:bg-accent hover:text-accent-foreground transition-colors ${
+                      isVideoAnalyzerActive ? 'bg-primary/10 text-primary' : 'text-foreground'
+                    }`}
+                  >
+                    <Settings className="h-4 w-4 mr-2" />
+                    Analisador de Vídeo
+                    {isVideoAnalyzerActive && (
+                      <Badge variant="secondary" className="ml-auto text-xs">Ativo</Badge>
+                    )}
+                  </button>
+                </div>
+              </PopoverContent>
+            </Popover>
+            <div className="flex-1 space-y-2">
+              {isVideoAnalyzerActive && (
+                <Input
+                  placeholder="URL do Google Drive..."
+                  value={driveUrl}
+                  onChange={(e) => setDriveUrl(e.target.value)}
+                  className="text-sm"
+                />
+              )}
               <Input
                 placeholder={isVideoAnalyzerActive ? "Digite sua mensagem para análise de vídeo..." : "Digite sua mensagem..."}
                 value={inputValue}
