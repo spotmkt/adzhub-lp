@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Send, Bot, User, Loader2, LogOut, Bell, Eye, Calendar, History, FileText, Download, Play, Pause, Trash2 } from 'lucide-react';
+import { Send, Bot, User, Loader2, LogOut, Bell, Eye, Calendar, History, FileText, Download, Play, Pause, Trash2, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -63,6 +63,7 @@ export const ChatArea = ({
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [notifications, setNotifications] = useState<ActionCard[]>([]);
+  const [isVideoAnalyzerActive, setIsVideoAnalyzerActive] = useState(false);
 
   // Make functions available globally for external calls
   useEffect(() => {
@@ -126,8 +127,41 @@ export const ChatArea = ({
     setMessages(prev => [...prev, messageData]);
     setIsLoading(true);
 
-    if (onSendMessage) {
-      onSendMessage(inputValue, messageData);
+    // If video analyzer is active, send to video analyzer webhook
+    if (isVideoAnalyzerActive) {
+      try {
+        await fetch('https://n8n-n8n.ascl7r.easypanel.host/webhook/analisador_video', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            message: inputValue,
+            client_id: selectedClient?.id,
+            timestamp: new Date().toISOString(),
+          }),
+        });
+        
+        // Add a response indicating the message was sent to video analyzer
+        setTimeout(() => {
+          const aiResponse: Message = {
+            id: Date.now().toString(),
+            content: 'Mensagem enviada para o analisador de vídeo. Aguarde o processamento...',
+            sender: 'ai',
+            timestamp: new Date()
+          };
+          setMessages(prev => [...prev, aiResponse]);
+          setIsLoading(false);
+        }, 1000);
+      } catch (error) {
+        console.error('Error sending to video analyzer:', error);
+        setIsLoading(false);
+      }
+    } else {
+      // Normal message handling
+      if (onSendMessage) {
+        onSendMessage(inputValue, messageData);
+      }
     }
 
     setInputValue('');
@@ -205,7 +239,15 @@ export const ChatArea = ({
               </AvatarFallback>
             </Avatar>
             <div>
-              <h2 className="font-semibold text-foreground">{selectedClient.name}</h2>
+              <h2 className="font-semibold text-foreground flex items-center space-x-2">
+                <span>{selectedClient.name}</span>
+                {isVideoAnalyzerActive && (
+                  <Badge variant="secondary" className="text-xs">
+                    <Settings className="h-3 w-3 mr-1" />
+                    Analisador de Vídeo
+                  </Badge>
+                )}
+              </h2>
               <p className="text-sm text-muted-foreground">
                 {selectedClient.email || selectedClient.phone || 'Online'}
               </p>
@@ -370,14 +412,22 @@ export const ChatArea = ({
               onFileSelect={handleFileUpload}
               onAudioRecord={handleAudioRecord}
             />
+            <Button
+              variant={isVideoAnalyzerActive ? "default" : "outline"}
+              size="icon"
+              onClick={() => setIsVideoAnalyzerActive(!isVideoAnalyzerActive)}
+              title={isVideoAnalyzerActive ? "Analisador de Vídeo Ativo" : "Ativar Analisador de Vídeo"}
+            >
+              <Settings className="h-4 w-4" />
+            </Button>
             <div className="flex-1">
               <Input
-                placeholder="Digite sua mensagem..."
+                placeholder={isVideoAnalyzerActive ? "Digite sua mensagem para análise de vídeo..." : "Digite sua mensagem..."}
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyPress={handleKeyPress}
                 disabled={isLoading}
-                className="resize-none"
+                className={`resize-none ${isVideoAnalyzerActive ? 'border-primary ring-1 ring-primary/20' : ''}`}
               />
             </div>
             <Button 
