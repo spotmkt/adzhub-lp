@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Send, Bot, User, Loader2, LogOut, Bell, Eye, Calendar, History, FileText, Download, Play, Pause, Trash2, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -65,8 +65,9 @@ export const ChatArea = ({
   const [isLoading, setIsLoading] = useState(false);
   const [notifications, setNotifications] = useState<ActionCard[]>([]);
   const [isVideoAnalyzerActive, setIsVideoAnalyzerActive] = useState(false);
-  const [driveUrl, setDriveUrl] = useState('');
+  const [selectedVideo, setSelectedVideo] = useState<File | null>(null);
   const [isToolsMenuOpen, setIsToolsMenuOpen] = useState(false);
+  const videoInputRef = useRef<HTMLInputElement>(null);
 
   // Make functions available globally for external calls
   useEffect(() => {
@@ -132,18 +133,27 @@ export const ChatArea = ({
 
     // If video analyzer is active, send to video analyzer webhook
     if (isVideoAnalyzerActive) {
+      if (!selectedVideo) {
+        setMessages(prev => [...prev, {
+          id: Date.now().toString(),
+          content: '❌ Por favor, selecione um vídeo antes de enviar a mensagem.',
+          sender: 'ai',
+          timestamp: new Date()
+        }]);
+        setIsLoading(false);
+        return;
+      }
+
       try {
+        const formData = new FormData();
+        formData.append('message', inputValue);
+        formData.append('video', selectedVideo);
+        formData.append('client_id', selectedClient?.id || '');
+        formData.append('timestamp', new Date().toISOString());
+
         const response = await fetch('https://n8n-n8n.ascl7r.easypanel.host/webhook/analisador_video', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            message: inputValue,
-            drive_url: driveUrl,
-            client_id: selectedClient?.id,
-            timestamp: new Date().toISOString(),
-          }),
+          body: formData,
         });
         
         if (!response.ok) {
@@ -244,7 +254,18 @@ export const ChatArea = ({
     }
   };
 
-  const handleAudioRecord = (audioBlob: Blob) => {
+  const handleVideoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setSelectedVideo(file);
+      // Reset input
+      event.target.value = '';
+    }
+  };
+
+  const removeSelectedVideo = () => {
+    setSelectedVideo(null);
+  };
     const audioUrl = URL.createObjectURL(audioBlob);
     
     const messageData: Message = {
@@ -485,12 +506,38 @@ export const ChatArea = ({
             </Popover>
             <div className="flex-1 space-y-2">
               {isVideoAnalyzerActive && (
-                <Input
-                  placeholder="URL do Google Drive..."
-                  value={driveUrl}
-                  onChange={(e) => setDriveUrl(e.target.value)}
-                  className="text-sm"
-                />
+                <div className="flex items-center space-x-2">
+                  <input
+                    ref={videoInputRef}
+                    type="file"
+                    accept="video/*"
+                    onChange={handleVideoUpload}
+                    className="hidden"
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => videoInputRef.current?.click()}
+                    className="text-sm"
+                  >
+                    Selecionar Vídeo
+                  </Button>
+                  {selectedVideo && (
+                    <>
+                      <span className="text-sm text-muted-foreground">
+                        {selectedVideo.name}
+                      </span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={removeSelectedVideo}
+                        className="h-6 w-6 p-0"
+                      >
+                        ×
+                      </Button>
+                    </>
+                  )}
+                </div>
               )}
               <Input
                 placeholder={isVideoAnalyzerActive ? "Digite sua mensagem para análise de vídeo..." : "Digite sua mensagem..."}
