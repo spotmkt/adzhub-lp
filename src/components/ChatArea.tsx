@@ -153,17 +153,34 @@ export const ChatArea = ({
         const result = await response.text();
         console.log('Video analyzer response:', result);
         
-        // Add a response indicating the message was sent to video analyzer
-        setTimeout(() => {
-          const aiResponse: Message = {
-            id: Date.now().toString(),
-            content: `✅ Mensagem enviada para análise de vídeo.\n\n**Prompt:** ${inputValue}\n**URL:** ${driveUrl}\n\nAguarde o processamento...`,
-            sender: 'ai',
-            timestamp: new Date()
-          };
-          setMessages(prev => [...prev, aiResponse]);
-          setIsLoading(false);
-        }, 1000);
+        // Parse the response and show the actual result
+        try {
+          const parsedResult = JSON.parse(result);
+          
+          // Show the actual response from n8n
+          setTimeout(() => {
+            const aiResponse: Message = {
+              id: Date.now().toString(),
+              content: parsedResult.output || result,
+              sender: 'ai',
+              timestamp: new Date()
+            };
+            setMessages(prev => [...prev, aiResponse]);
+            setIsLoading(false);
+          }, 1000);
+        } catch (parseError) {
+          // If JSON parsing fails, show the raw response
+          setTimeout(() => {
+            const aiResponse: Message = {
+              id: Date.now().toString(),
+              content: result || '✅ Processamento concluído com sucesso!',
+              sender: 'ai',
+              timestamp: new Date()
+            };
+            setMessages(prev => [...prev, aiResponse]);
+            setIsLoading(false);
+          }, 1000);
+        }
       } catch (error) {
         console.error('Error sending to video analyzer:', error);
         
