@@ -133,7 +133,7 @@ export const ChatArea = ({
     // If video analyzer is active, send to video analyzer webhook
     if (isVideoAnalyzerActive) {
       try {
-        await fetch('https://n8n-n8n.ascl7r.easypanel.host/webhook/analisador_video', {
+        const response = await fetch('https://n8n-n8n.ascl7r.easypanel.host/webhook/analisador_video', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -146,11 +146,18 @@ export const ChatArea = ({
           }),
         });
         
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const result = await response.text();
+        console.log('Video analyzer response:', result);
+        
         // Add a response indicating the message was sent to video analyzer
         setTimeout(() => {
           const aiResponse: Message = {
             id: Date.now().toString(),
-            content: 'Mensagem enviada para o analisador de vídeo. Aguarde o processamento...',
+            content: `✅ Mensagem enviada para análise de vídeo.\n\n**Prompt:** ${inputValue}\n**URL:** ${driveUrl}\n\nAguarde o processamento...`,
             sender: 'ai',
             timestamp: new Date()
           };
@@ -159,7 +166,18 @@ export const ChatArea = ({
         }, 1000);
       } catch (error) {
         console.error('Error sending to video analyzer:', error);
-        setIsLoading(false);
+        
+        // Show detailed error message
+        setTimeout(() => {
+          const errorResponse: Message = {
+            id: Date.now().toString(),
+            content: `❌ Erro ao enviar para o analisador de vídeo:\n\n${error instanceof Error ? error.message : 'Erro desconhecido'}\n\nVerifique se o webhook está funcionando: https://n8n-n8n.ascl7r.easypanel.host/webhook/analisador_video`,
+            sender: 'ai',
+            timestamp: new Date()
+          };
+          setMessages(prev => [...prev, errorResponse]);
+          setIsLoading(false);
+        }, 1000);
       }
     } else {
       // Normal message handling
