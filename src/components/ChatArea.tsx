@@ -286,7 +286,7 @@ export const ChatArea = ({
   };
 
   return (
-    <div className="h-full flex flex-col bg-background">
+    <div className="h-full flex flex-col bg-background overflow-hidden">
       {/* Header */}
       <div className="bg-card border-b border-border p-4">
         <div className="flex items-center justify-between">

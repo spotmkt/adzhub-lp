@@ -17,7 +17,7 @@ export const Layout = ({ children }: LayoutProps) => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background flex">
+    <div className="h-screen bg-background flex overflow-hidden">
       {/* Desktop Navigation */}
       <div className="hidden md:block">
         <NavigationBar 
@@ -26,7 +26,7 @@ export const Layout = ({ children }: LayoutProps) => {
         />
       </div>
       
-      <div className="flex-1 min-w-0">
+      <div className="flex-1 min-w-0 h-full overflow-hidden">
         {children}
       </div>
     </div>

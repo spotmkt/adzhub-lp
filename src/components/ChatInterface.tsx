@@ -448,9 +448,9 @@ export const ChatInterface = () => {
   };
 
   return (
-    <div className="h-full flex flex-col bg-background">
-      <div className="flex-1 min-w-0 flex flex-col md:flex-row">
-        <div className="flex-1 min-w-0">
+    <div className="h-screen flex flex-col bg-background overflow-hidden">
+      <div className="flex-1 min-w-0 flex flex-col md:flex-row overflow-hidden">
+        <div className="flex-1 min-w-0 h-full overflow-hidden">
           <ChatArea 
             onSendMessage={handleSendMessage}
             selectedClient={selectedClient}
@@ -464,7 +464,7 @@ export const ChatInterface = () => {
         </div>
         
         {/* Desktop Action Panel */}
-        <div className="hidden lg:block w-80 flex-shrink-0 h-screen overflow-hidden">
+        <div className="hidden lg:block w-80 flex-shrink-0 h-full overflow-hidden">
           <ActionPanel
             actions={actions}
             contentIdeasCount={contentIdeasCount}
