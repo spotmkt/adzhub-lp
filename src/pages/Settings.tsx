@@ -10,9 +10,10 @@ import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
 import { PhotoUpload } from '@/components/PhotoUpload';
 import { toast } from '@/hooks/use-toast';
-import { Settings as SettingsIcon, Zap, AlertCircle, Target, Plus, X } from 'lucide-react';
+import { Settings as SettingsIcon, Zap, AlertCircle, Target, Plus, X, Sparkles } from 'lucide-react';
 import { SettingsLoadingSkeleton } from '@/components/ui/skeleton-screens';
 import { ColorPicker } from '@/components/ColorPicker';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 interface ClientProfile {
   id: string;
@@ -65,6 +66,9 @@ const Settings = () => {
   const [selectedClient, setSelectedClient] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [showAiDialog, setShowAiDialog] = useState(false);
+  const [websiteUrl, setWebsiteUrl] = useState('');
+  const [generatingAi, setGeneratingAi] = useState(false);
 
   const tomVozOptions = [
     { value: 'profissional', label: 'Profissional' },
@@ -489,6 +493,45 @@ const Settings = () => {
     }
   };
 
+  const handleGenerateFromWebsite = async () => {
+    if (!websiteUrl) {
+      toast({
+        title: 'Erro',
+        description: 'Por favor, insira uma URL válida.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setGeneratingAi(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('analyze-website-for-content', {
+        body: { url: websiteUrl }
+      });
+
+      if (error) throw error;
+
+      if (data?.text) {
+        updateProfile({ direcionamento: data.text });
+        toast({
+          title: 'Sucesso',
+          description: 'Direcionamento gerado com sucesso!',
+        });
+        setShowAiDialog(false);
+        setWebsiteUrl('');
+      }
+    } catch (error) {
+      console.error('Error generating from website:', error);
+      toast({
+        title: 'Erro',
+        description: 'Não foi possível gerar o direcionamento. Verifique a URL e tente novamente.',
+        variant: 'destructive',
+      });
+    } finally {
+      setGeneratingAi(false);
+    }
+  };
+
   if (loading) {
     return <SettingsLoadingSkeleton />;
   }
@@ -810,7 +853,19 @@ const Settings = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="direcionamento">Direcionamento para Big Ideas</Label>
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="direcionamento">Direcionamento para Big Ideas</Label>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setShowAiDialog(true)}
+                        className="flex items-center gap-2"
+                      >
+                        <Sparkles className="h-4 w-4" />
+                        Gerar a partir do site
+                      </Button>
+                    </div>
                     <Textarea
                       id="direcionamento"
                       placeholder="Descreva brevemente como a IA deve direcionar a geração de grandes ideias de conteúdo"
@@ -1001,6 +1056,59 @@ const Settings = () => {
           )}
         </TabsContent>
       </Tabs>
+
+      {/* AI Generation Dialog */}
+      <Dialog open={showAiDialog} onOpenChange={setShowAiDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Gerar Direcionamento com IA</DialogTitle>
+            <DialogDescription>
+              Insira a URL do site da empresa para que a IA analise e gere um direcionamento personalizado para a produção de conteúdo.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="website-url">URL do Site</Label>
+              <Input
+                id="website-url"
+                type="url"
+                placeholder="https://exemplo.com"
+                value={websiteUrl}
+                onChange={(e) => setWebsiteUrl(e.target.value)}
+                disabled={generatingAi}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowAiDialog(false);
+                setWebsiteUrl('');
+              }}
+              disabled={generatingAi}
+            >
+              Cancelar
+            </Button>
+            <Button
+              onClick={handleGenerateFromWebsite}
+              disabled={generatingAi || !websiteUrl}
+            >
+              {generatingAi ? (
+                <>
+                  <Sparkles className="h-4 w-4 mr-2 animate-spin" />
+                  Gerando...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="h-4 w-4 mr-2" />
+                  Gerar
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       </div>
     </div>
   );
