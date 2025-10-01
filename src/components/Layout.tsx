@@ -13,6 +13,7 @@ export const Layout = ({ children }: LayoutProps) => {
     const path = window.location.pathname;
     if (path === '/') setActiveNavItem('chats');
     else if (path === '/content') setActiveNavItem('content');
+    else if (path === '/apps') setActiveNavItem('apps');
     else if (path === '/settings') setActiveNavItem('settings');
   }, []);
 

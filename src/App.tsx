@@ -8,7 +8,8 @@ import { ThemeProvider } from "next-themes";
 import { Layout } from "@/components/Layout";
 import { ChatInterface } from "@/components/ChatInterface";
 import History from "./pages/History";
-import Content from "./pages/Content";  
+import Content from "./pages/Content";
+import Apps from "./pages/Apps";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
@@ -37,6 +38,7 @@ function App(): React.ReactElement {
                 <Route path="/" element={<ChatInterface />} />
                 <Route path="/history" element={<History />} />
                 <Route path="/content" element={<Content />} />
+                <Route path="/apps" element={<Apps />} />
                 <Route path="/settings" element={<Settings />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
