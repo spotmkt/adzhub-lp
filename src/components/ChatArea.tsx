@@ -148,15 +148,32 @@ export const ChatArea = ({
       }
 
       try {
-        const formData = new FormData();
-        formData.append('message', inputValue);
-        formData.append('audio', selectedAudio);
-        formData.append('client_id', selectedClient?.id || '');
-        formData.append('timestamp', new Date().toISOString());
+        // Convert audio to base64
+        const reader = new FileReader();
+        const audioBase64 = await new Promise<string>((resolve, reject) => {
+          reader.onload = () => {
+            const base64 = reader.result as string;
+            resolve(base64.split(',')[1]); // Remove data:audio/...;base64, prefix
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(selectedAudio);
+        });
+
+        const payload = {
+          message: inputValue,
+          audio: audioBase64,
+          audioFileName: selectedAudio.name,
+          audioMimeType: selectedAudio.type,
+          client_id: selectedClient?.id || '',
+          timestamp: new Date().toISOString()
+        };
 
         const response = await fetch('https://n8n-n8n.ascl7r.easypanel.host/webhook/analisador-audio', {
           method: 'POST',
-          body: formData,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
         });
         
         if (!response.ok) {
