@@ -6,7 +6,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { Layout } from "@/components/Layout";
-import { ChatInterface } from "@/components/ChatInterface";
+import Index from "./pages/Index";
+import Chat from "./pages/Chat";
 import History from "./pages/History";
 import Content from "./pages/Content";
 import Apps from "./pages/Apps";
@@ -35,7 +36,8 @@ function App(): React.ReactElement {
             <Sonner />
             <Layout>
               <Routes>
-                <Route path="/" element={<ChatInterface />} />
+                <Route path="/" element={<Index />} />
+                <Route path="/chat" element={<Chat />} />
                 <Route path="/history" element={<History />} />
                 <Route path="/content" element={<Content />} />
                 <Route path="/apps" element={<Apps />} />

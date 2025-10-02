@@ -1,215 +1,155 @@
-import { ChatArea } from '@/components/ChatArea';
-import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-
-interface Message {
-  id: string;
-  content: string;
-  sender: 'user' | 'ai';
-  timestamp: Date;
-}
-
-interface Client {
-  id: string;
-  name: string;
-  email?: string;
-  phone?: string;
-  profile_photo_url?: string;
-}
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Calendar } from '@/components/ui/calendar';
+import { Link } from 'react-router-dom';
+import { MessageSquare, BarChart3, FileText, Image, Video, Calendar as CalendarIcon } from 'lucide-react';
+import { useState } from 'react';
 
 const Index = () => {
-  const [selectedClient, setSelectedClient] = useState<Client | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [date, setDate] = useState<Date | undefined>(new Date());
 
-  // Load client from localStorage on initialization
-  useEffect(() => {
-    const savedClientId = localStorage.getItem('selectedClientId');
-    if (savedClientId) {
-      console.log('Restoring client from localStorage:', savedClientId);
-      loadClientFromDatabase(savedClientId);
-    }
-  }, []);
+  const categories = [
+    { icon: BarChart3, label: 'Analytics', color: 'text-blue-500' },
+    { icon: FileText, label: 'Conteúdo', color: 'text-green-500' },
+    { icon: Image, label: 'Imagens', color: 'text-purple-500' },
+    { icon: Video, label: 'Vídeos', color: 'text-red-500' },
+  ];
 
-  const loadClientFromDatabase = async (clientId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from('clients')
-        .select('*')
-        .eq('id', clientId)
-        .single();
-
-      if (error) {
-        console.error('Error loading client:', error);
-        localStorage.removeItem('selectedClientId');
-        return;
-      }
-
-      if (data) {
-        const client: Client = {
-          id: data.id,
-          name: data.name,
-          email: data.email,
-          phone: data.phone,
-          profile_photo_url: data.profile_photo_url
-        };
-        setSelectedClient(client);
-        loadChatHistory(client.id);
-      }
-    } catch (error) {
-      console.error('Failed to load client from database:', error);
-      localStorage.removeItem('selectedClientId');
-    }
-  };
-
-  const handleSendMessage = async (message: string, messageData: Message) => {
-    console.log('Sending message to n8n:', message);
-    
-    // Save user message to database
-    if (selectedClient) {
-      await saveMessageToHistory(selectedClient.id, message, 'user');
-    }
-    
-    try {
-      const response = await fetch('https://n8n-n8n.ascl7r.easypanel.host/webhook/7d06f022-1e56-4dad-ba4c-3684d9ee5562', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          message,
-          clientName: selectedClient?.name || 'Cliente não selecionado',
-          clientId: selectedClient?.id || null,
-          timestamp: new Date().toISOString(),
-          userId: 'user-' + Date.now()
-        })
-      });
-      
-      if (response.ok) {
-        const responseText = await response.text();
-        console.log('Response from n8n:', responseText);
-        
-        if (responseText) {
-          try {
-            const data = JSON.parse(responseText);
-            console.log('Parsed response:', data);
-            
-            // Add AI response to chat
-            if (data.response) {
-              (window as any).addAIResponse?.(data.response, data.audioUrl);
-              
-              // Save AI response to database
-              if (selectedClient) {
-                await saveMessageToHistory(selectedClient.id, data.response, 'ai');
-              }
-            }
-            
-          } catch (parseError) {
-            console.error('Failed to parse n8n response as JSON:', parseError);
-            (window as any).addAIResponse?.('Recebi sua mensagem, mas houve um erro no formato da resposta.');
-          }
-        } else {
-          console.warn('Empty response from n8n');
-          (window as any).addAIResponse?.('Mensagem recebida, mas sem resposta do servidor.');
-        }
-      } else {
-        console.error('Error from n8n:', response.status, response.statusText);
-        (window as any).addAIResponse?.('Erro ao processar sua solicitação. Tente novamente.');
-      }
-    } catch (error) {
-      console.error('Failed to send message to n8n:', error);
-      (window as any).addAIResponse?.('Erro de conexão com o servidor. Verifique sua conexão.');
-    }
-  };
-
-  const saveMessageToHistory = async (clientId: string, content: string, sender: 'user' | 'ai') => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      const { error } = await supabase
-        .from('chat_messages')
-        .insert({
-          client_id: clientId,
-          content,
-          sender,
-          user_id: user?.id
-        });
-
-      if (error) {
-        console.error('Error saving message:', error);
-      }
-    } catch (error) {
-      console.error('Failed to save message:', error);
-    }
-  };
-
-  const loadChatHistory = async (clientId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from('chat_messages')
-        .select('*')
-        .eq('client_id', clientId)
-        .order('timestamp', { ascending: true });
-
-      if (error) {
-        console.error('Error loading chat history:', error);
-        return;
-      }
-
-      const messages: Message[] = data.map(msg => ({
-        id: msg.id,
-        content: msg.content,
-        sender: msg.sender as 'user' | 'ai',
-        timestamp: new Date(msg.timestamp)
-      }));
-
-      setMessages(messages);
-      (window as any).setChatHistory?.(messages);
-    } catch (error) {
-      console.error('Failed to load chat history:', error);
-    }
-  };
-
-  const handleClientSelect = (client: Client) => {
-    setSelectedClient(client);
-    localStorage.setItem('selectedClientId', client.id);
-    loadChatHistory(client.id);
-  };
-
-  const handleExitChat = () => {
-    setSelectedClient(null);
-    localStorage.removeItem('selectedClientId');
-    setMessages([]);
-    (window as any).clearChat?.();
-  };
-
-  const handleClearChatHistory = async () => {
-    if (!selectedClient) return;
-    
-    try {
-      const { error } = await supabase
-        .from('chat_messages')
-        .delete()
-        .eq('client_id', selectedClient.id);
-
-      if (error) {
-        console.error('Error clearing chat history:', error);
-        return;
-      }
-
-      setMessages([]);
-      (window as any).clearChat?.();
-      console.log('Chat history cleared for client:', selectedClient.id);
-    } catch (error) {
-      console.error('Failed to clear chat history:', error);
-    }
-  };
+  const quickAccess = [
+    { name: 'Instagram', icon: '📱', bgColor: 'bg-gradient-to-br from-purple-500 to-pink-500' },
+    { name: 'Facebook', icon: '👍', bgColor: 'bg-gradient-to-br from-blue-500 to-blue-600' },
+    { name: 'LinkedIn', icon: '💼', bgColor: 'bg-gradient-to-br from-blue-700 to-blue-800' },
+    { name: 'TikTok', icon: '🎵', bgColor: 'bg-gradient-to-br from-black to-gray-800' },
+  ];
 
   return (
-    <ChatArea 
-      onSendMessage={handleSendMessage}
-      selectedClient={selectedClient}
-      onExitChat={handleExitChat}
-      onClearHistory={handleClearChatHistory}
-      onClientSelect={handleClientSelect}
-    />
+    <div className="h-full bg-background overflow-auto">
+      <div className="max-w-7xl mx-auto p-6 lg:p-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Main Content - Left Side */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Welcome Section */}
+            <div className="space-y-4">
+              <div>
+                <h1 className="text-4xl font-bold text-foreground mb-2">
+                  Bem-vindo ao AdzHub
+                </h1>
+                <p className="text-muted-foreground text-lg">
+                  Sua plataforma completa de gestão de conteúdo e automação
+                </p>
+              </div>
+              
+              <Link to="/chat">
+                <Button size="lg" className="w-full sm:w-auto">
+                  <MessageSquare className="mr-2 h-5 w-5" />
+                  Ir para o Chat
+                </Button>
+              </Link>
+            </div>
+
+            {/* Categories Section */}
+            <div>
+              <h2 className="text-2xl font-semibold mb-4 text-foreground">Categorias</h2>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                {categories.map((category, index) => {
+                  const Icon = category.icon;
+                  return (
+                    <Card 
+                      key={index}
+                      className="cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-105"
+                    >
+                      <CardContent className="flex flex-col items-center justify-center p-6 space-y-2">
+                        <Icon className={`h-8 w-8 ${category.color}`} />
+                        <span className="text-sm font-medium text-foreground">{category.label}</span>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Quick Access Section */}
+            <div>
+              <h2 className="text-2xl font-semibold mb-4 text-foreground">Acesso Rápido</h2>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                {quickAccess.map((app, index) => (
+                  <Card 
+                    key={index}
+                    className="cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-105 overflow-hidden"
+                  >
+                    <CardContent className={`flex flex-col items-center justify-center p-6 space-y-2 ${app.bgColor} text-white`}>
+                      <span className="text-4xl">{app.icon}</span>
+                      <span className="text-sm font-medium">{app.name}</span>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Right Sidebar */}
+          <div className="space-y-6">
+            {/* Stats Card */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Desempenho Geral</CardTitle>
+              </CardHeader>
+              <CardContent className="flex flex-col items-center justify-center py-8">
+                <div className="relative w-32 h-32 mb-4">
+                  <svg className="transform -rotate-90 w-32 h-32">
+                    <circle
+                      cx="64"
+                      cy="64"
+                      r="56"
+                      stroke="currentColor"
+                      strokeWidth="8"
+                      fill="transparent"
+                      className="text-muted"
+                    />
+                    <circle
+                      cx="64"
+                      cy="64"
+                      r="56"
+                      stroke="currentColor"
+                      strokeWidth="8"
+                      fill="transparent"
+                      strokeDasharray={`${2 * Math.PI * 56}`}
+                      strokeDashoffset={`${2 * Math.PI * 56 * (1 - 0.82)}`}
+                      className="text-primary"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-3xl font-bold text-foreground">82%</span>
+                  </div>
+                </div>
+                <p className="text-sm text-muted-foreground text-center">
+                  Taxa de engajamento mensal
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* Calendar Card */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <CalendarIcon className="h-5 w-5" />
+                  Calendário
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="flex justify-center">
+                <Calendar
+                  mode="single"
+                  selected={date}
+                  onSelect={setDate}
+                  className="rounded-md"
+                />
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

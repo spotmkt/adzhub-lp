@@ -1,4 +1,4 @@
-import { Settings, MessageSquare, FileText, LayoutGrid } from 'lucide-react';
+import { Settings, MessageSquare, FileText, LayoutGrid, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Link } from 'react-router-dom';
@@ -12,13 +12,14 @@ interface NavigationBarProps {
 }
 
 const navigationItems = [
-  { id: 'chats', icon: MessageSquare, label: 'Chats', path: '/' },
+  { id: 'home', icon: Home, label: 'Home', path: '/' },
+  { id: 'chats', icon: MessageSquare, label: 'Chats', path: '/chat' },
   { id: 'content', icon: FileText, label: 'Conteúdo', path: '/content' },
   { id: 'apps', icon: LayoutGrid, label: 'Apps', path: '/apps' },
   { id: 'settings', icon: Settings, label: 'Settings', path: '/settings' },
 ];
 
-export const NavigationBar = ({ activeItem = 'chats', onItemClick }: NavigationBarProps) => {
+export const NavigationBar = ({ activeItem = 'home', onItemClick }: NavigationBarProps) => {
   return (
     <div className="w-16 h-full bg-nav-background border-r border-border flex flex-col items-center py-6 space-y-4">
       {/* Logo */}
