@@ -59,30 +59,30 @@ const Index = () => {
       <div className="max-w-7xl mx-auto p-6 lg:p-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Content - Left Side */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2 space-y-10">
             {/* Welcome Section */}
-            <div className="space-y-6">
-              <div className="space-y-3">
-                <h1 className="text-4xl lg:text-5xl font-bold text-foreground">
+            <div className="space-y-8">
+              <div className="space-y-4">
+                <h1 className="text-4xl lg:text-5xl font-bold text-foreground leading-tight">
                   Bem-vindo ao AdzHub
                 </h1>
-                <p className="text-muted-foreground text-lg lg:text-xl max-w-2xl">
+                <p className="text-muted-foreground text-lg lg:text-xl max-w-2xl leading-relaxed">
                   Sua plataforma completa de gestão de conteúdo e automação com inteligência artificial
                 </p>
               </div>
               
               <Link to="/chat">
-                <Button size="lg" className="w-full sm:w-auto shadow-lg hover:shadow-xl transition-shadow">
+                <Button size="lg" className="w-full sm:w-auto shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                   <MessageSquare className="mr-2 h-5 w-5" />
-                  Ir para o Chat
+                  Abrir o Chat
                 </Button>
               </Link>
             </div>
 
             {/* Apps Section */}
             <div>
-              <h2 className="text-2xl font-semibold mb-6 text-foreground">Aplicativos</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <h2 className="text-2xl lg:text-3xl font-semibold mb-6 text-foreground">Aplicativos</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {apps.map((app) => {
                   const Icon = app.icon;
                   return (
