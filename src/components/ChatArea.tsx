@@ -371,8 +371,15 @@ export const ChatArea = ({
       )}
 
       {/* Messages */}
-      <ScrollArea className="flex-1 p-4 overflow-auto">
-        <div className="space-y-4 max-w-4xl mx-auto">
+      <div className="flex-1 relative overflow-hidden">
+        {/* Top fade overlay */}
+        <div className="absolute top-0 left-0 right-0 h-8 bg-gradient-to-b from-background to-transparent z-10 pointer-events-none" />
+        
+        {/* Bottom fade overlay */}
+        <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-background to-transparent z-10 pointer-events-none" />
+        
+        <ScrollArea className="h-full p-4">
+          <div className="space-y-4 max-w-4xl mx-auto">
           {messages.length === 0 ? (
             <div className="text-center py-12">
               <Bot className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
@@ -464,7 +471,8 @@ export const ChatArea = ({
             </div>
           )}
         </div>
-      </ScrollArea>
+        </ScrollArea>
+      </div>
 
       {/* Input Area */}
       <div className="bg-card border-t border-border p-4">
