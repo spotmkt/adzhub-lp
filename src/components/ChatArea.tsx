@@ -373,7 +373,7 @@ export const ChatArea = ({
       {/* Messages */}
       <div className="flex-1 relative overflow-hidden">
         {/* Bottom fade overlay */}
-        <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-background via-background/50 to-transparent z-10 pointer-events-none" />
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background via-background/80 via-background/40 to-transparent z-10 pointer-events-none" />
         
         <ScrollArea className="h-full px-4 py-0">
           <div className="space-y-4 max-w-4xl mx-auto py-4">
