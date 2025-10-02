@@ -61,7 +61,7 @@ const Index = () => {
           {/* Main Content - Left Side */}
           <div className="lg:col-span-2 space-y-10">
             {/* Welcome Section */}
-            <div className="space-y-8">
+            <div className="space-y-6">
               <div className="space-y-4">
                 <h1 className="text-4xl lg:text-5xl font-bold text-foreground leading-tight">
                   Bem-vindo ao AdzHub
@@ -71,7 +71,7 @@ const Index = () => {
                 </p>
               </div>
               
-              <Link to="/chat" className="mt-4">
+              <Link to="/chat" className="block mt-8">
                 <Button size="lg" className="w-full sm:w-auto shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                   <MessageSquare className="mr-2 h-5 w-5" />
                   Abrir o Chat
