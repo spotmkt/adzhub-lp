@@ -378,8 +378,8 @@ export const ChatArea = ({
         {/* Bottom fade overlay */}
         <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-background to-transparent z-10 pointer-events-none" />
         
-        <ScrollArea className="h-full p-4">
-          <div className="space-y-4 max-w-4xl mx-auto">
+        <ScrollArea className="h-full px-4 py-0">
+          <div className="space-y-4 max-w-4xl mx-auto py-4">
           {messages.length === 0 ? (
             <div className="text-center py-12">
               <Bot className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
