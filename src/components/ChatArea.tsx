@@ -66,8 +66,11 @@ export const ChatArea = ({
   const [notifications, setNotifications] = useState<ActionCard[]>([]);
   const [isVideoAnalyzerActive, setIsVideoAnalyzerActive] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState<File | null>(null);
+  const [isAudioAnalyzerActive, setIsAudioAnalyzerActive] = useState(false);
+  const [selectedAudio, setSelectedAudio] = useState<File | null>(null);
   const [isToolsMenuOpen, setIsToolsMenuOpen] = useState(false);
   const videoInputRef = useRef<HTMLInputElement>(null);
+  const audioInputRef = useRef<HTMLInputElement>(null);
 
   // Make functions available globally for external calls
   useEffect(() => {
@@ -131,8 +134,79 @@ export const ChatArea = ({
     setMessages(prev => [...prev, messageData]);
     setIsLoading(true);
 
-    // If video analyzer is active, send to video analyzer webhook
-    if (isVideoAnalyzerActive) {
+    // If audio analyzer is active, send to audio analyzer webhook
+    if (isAudioAnalyzerActive) {
+      if (!selectedAudio) {
+        setMessages(prev => [...prev, {
+          id: Date.now().toString(),
+          content: '❌ Por favor, selecione um áudio antes de enviar a mensagem.',
+          sender: 'ai',
+          timestamp: new Date()
+        }]);
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        const formData = new FormData();
+        formData.append('message', inputValue);
+        formData.append('audio', selectedAudio);
+        formData.append('audioUrl', URL.createObjectURL(selectedAudio));
+        formData.append('client_id', selectedClient?.id || '');
+        formData.append('timestamp', new Date().toISOString());
+
+        const response = await fetch('https://n8n-n8n.ascl7r.easypanel.host/webhook/analisador-audio', {
+          method: 'POST',
+          body: formData,
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const result = await response.text();
+        console.log('Audio analyzer response:', result);
+        
+        try {
+          const parsedResult = JSON.parse(result);
+          
+          setTimeout(() => {
+            const aiResponse: Message = {
+              id: Date.now().toString(),
+              content: parsedResult.output || result,
+              sender: 'ai',
+              timestamp: new Date()
+            };
+            setMessages(prev => [...prev, aiResponse]);
+            setIsLoading(false);
+          }, 1000);
+        } catch (parseError) {
+          setTimeout(() => {
+            const aiResponse: Message = {
+              id: Date.now().toString(),
+              content: result || '✅ Processamento concluído com sucesso!',
+              sender: 'ai',
+              timestamp: new Date()
+            };
+            setMessages(prev => [...prev, aiResponse]);
+            setIsLoading(false);
+          }, 1000);
+        }
+      } catch (error) {
+        console.error('Error sending to audio analyzer:', error);
+        
+        setTimeout(() => {
+          const errorResponse: Message = {
+            id: Date.now().toString(),
+            content: `❌ Erro ao enviar para o analisador de áudio:\n\n${error instanceof Error ? error.message : 'Erro desconhecido'}\n\nVerifique se o webhook está funcionando: https://n8n-n8n.ascl7r.easypanel.host/webhook/analisador-audio`,
+            sender: 'ai',
+            timestamp: new Date()
+          };
+          setMessages(prev => [...prev, errorResponse]);
+          setIsLoading(false);
+        }, 1000);
+      }
+    } else if (isVideoAnalyzerActive) {
       if (!selectedVideo) {
         setMessages(prev => [...prev, {
           id: Date.now().toString(),
@@ -163,11 +237,9 @@ export const ChatArea = ({
         const result = await response.text();
         console.log('Video analyzer response:', result);
         
-        // Parse the response and show the actual result
         try {
           const parsedResult = JSON.parse(result);
           
-          // Show the actual response from n8n
           setTimeout(() => {
             const aiResponse: Message = {
               id: Date.now().toString(),
@@ -179,7 +251,6 @@ export const ChatArea = ({
             setIsLoading(false);
           }, 1000);
         } catch (parseError) {
-          // If JSON parsing fails, show the raw response
           setTimeout(() => {
             const aiResponse: Message = {
               id: Date.now().toString(),
@@ -194,7 +265,6 @@ export const ChatArea = ({
       } catch (error) {
         console.error('Error sending to video analyzer:', error);
         
-        // Show detailed error message
         setTimeout(() => {
           const errorResponse: Message = {
             id: Date.now().toString(),
@@ -258,13 +328,24 @@ export const ChatArea = ({
     const file = event.target.files?.[0];
     if (file) {
       setSelectedVideo(file);
-      // Reset input
       event.target.value = '';
     }
   };
 
   const removeSelectedVideo = () => {
     setSelectedVideo(null);
+  };
+
+  const handleAudioUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setSelectedAudio(file);
+      event.target.value = '';
+    }
+  };
+
+  const removeSelectedAudio = () => {
+    setSelectedAudio(null);
   };
 
   const handleAudioRecord = (audioBlob: Blob) => {
@@ -303,6 +384,12 @@ export const ChatArea = ({
             <div>
               <h2 className="font-semibold text-foreground flex items-center space-x-2">
                 <span>{selectedClient.name}</span>
+                {isAudioAnalyzerActive && (
+                  <Badge variant="secondary" className="text-xs">
+                    <Settings className="h-3 w-3 mr-1" />
+                    Analisador de Áudio
+                  </Badge>
+                )}
                 {isVideoAnalyzerActive && (
                   <Badge variant="secondary" className="text-xs">
                     <Settings className="h-3 w-3 mr-1" />
@@ -482,7 +569,7 @@ export const ChatArea = ({
             <Popover open={isToolsMenuOpen} onOpenChange={setIsToolsMenuOpen}>
               <PopoverTrigger asChild>
                 <Button
-                  variant={isVideoAnalyzerActive ? "default" : "outline"}
+                  variant={isVideoAnalyzerActive || isAudioAnalyzerActive ? "default" : "outline"}
                   size="icon"
                   title="Ferramentas"
                 >
@@ -496,6 +583,9 @@ export const ChatArea = ({
                   <button
                     onClick={() => {
                       setIsVideoAnalyzerActive(!isVideoAnalyzerActive);
+                      if (!isVideoAnalyzerActive) {
+                        setIsAudioAnalyzerActive(false);
+                      }
                       setIsToolsMenuOpen(false);
                     }}
                     className={`w-full flex items-center px-2 py-2 text-sm rounded-md hover:bg-accent hover:text-accent-foreground transition-colors ${
@@ -505,6 +595,24 @@ export const ChatArea = ({
                     <Settings className="h-4 w-4 mr-2" />
                     Analisador de Vídeo
                     {isVideoAnalyzerActive && (
+                      <Badge variant="secondary" className="ml-auto text-xs">Ativo</Badge>
+                    )}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setIsAudioAnalyzerActive(!isAudioAnalyzerActive);
+                      if (!isAudioAnalyzerActive) {
+                        setIsVideoAnalyzerActive(false);
+                      }
+                      setIsToolsMenuOpen(false);
+                    }}
+                    className={`w-full flex items-center px-2 py-2 text-sm rounded-md hover:bg-accent hover:text-accent-foreground transition-colors ${
+                      isAudioAnalyzerActive ? 'bg-primary/10 text-primary' : 'text-foreground'
+                    }`}
+                  >
+                    <Settings className="h-4 w-4 mr-2" />
+                    Analisador de Áudio
+                    {isAudioAnalyzerActive && (
                       <Badge variant="secondary" className="ml-auto text-xs">Ativo</Badge>
                     )}
                   </button>
@@ -546,13 +654,53 @@ export const ChatArea = ({
                   )}
                 </div>
               )}
+              {isAudioAnalyzerActive && (
+                <div className="flex items-center space-x-2">
+                  <input
+                    ref={audioInputRef}
+                    type="file"
+                    accept="audio/*"
+                    onChange={handleAudioUpload}
+                    className="hidden"
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => audioInputRef.current?.click()}
+                    className="text-sm"
+                  >
+                    Selecionar Áudio
+                  </Button>
+                  {selectedAudio && (
+                    <>
+                      <span className="text-sm text-muted-foreground">
+                        {selectedAudio.name}
+                      </span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={removeSelectedAudio}
+                        className="h-6 w-6 p-0"
+                      >
+                        ×
+                      </Button>
+                    </>
+                  )}
+                </div>
+              )}
               <Input
-                placeholder={isVideoAnalyzerActive ? "Digite sua mensagem para análise de vídeo..." : "Digite sua mensagem..."}
+                placeholder={
+                  isAudioAnalyzerActive 
+                    ? "Digite sua mensagem para análise de áudio..." 
+                    : isVideoAnalyzerActive 
+                    ? "Digite sua mensagem para análise de vídeo..." 
+                    : "Digite sua mensagem..."
+                }
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyPress={handleKeyPress}
                 disabled={isLoading}
-                className={`resize-none ${isVideoAnalyzerActive ? 'border-primary ring-1 ring-primary/20' : ''}`}
+                className={`resize-none ${isAudioAnalyzerActive || isVideoAnalyzerActive ? 'border-primary ring-1 ring-primary/20' : ''}`}
               />
             </div>
             <Button 
