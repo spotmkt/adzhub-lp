@@ -71,7 +71,7 @@ const Index = () => {
                 </p>
               </div>
               
-              <Link to="/chat">
+              <Link to="/chat" className="mt-4">
                 <Button size="lg" className="w-full sm:w-auto shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                   <MessageSquare className="mr-2 h-5 w-5" />
                   Abrir o Chat
