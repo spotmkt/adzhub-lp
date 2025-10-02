@@ -148,10 +148,31 @@ export const ChatArea = ({
       }
 
       try {
+        // Upload audio to Supabase Storage first
+        const { supabase } = await import('@/integrations/supabase/client');
+        const fileExt = selectedAudio.name.split('.').pop();
+        const fileName = `${selectedClient?.id}/${Date.now()}.${fileExt}`;
+        
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('audio-files')
+          .upload(fileName, selectedAudio, {
+            cacheControl: '3600',
+            upsert: false
+          });
+
+        if (uploadError) {
+          throw new Error(`Erro ao fazer upload do áudio: ${uploadError.message}`);
+        }
+
+        // Get public URL
+        const { data: { publicUrl } } = supabase.storage
+          .from('audio-files')
+          .getPublicUrl(fileName);
+
         const formData = new FormData();
         formData.append('message', inputValue);
         formData.append('audio', selectedAudio);
-        formData.append('audioUrl', URL.createObjectURL(selectedAudio));
+        formData.append('audioUrl', publicUrl);
         formData.append('client_id', selectedClient?.id || '');
         formData.append('timestamp', new Date().toISOString());
 
