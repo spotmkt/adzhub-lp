@@ -1,25 +1,57 @@
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { Calendar } from '@/components/ui/calendar';
 import { Link } from 'react-router-dom';
-import { MessageSquare, BarChart3, FileText, Image, Video, Calendar as CalendarIcon } from 'lucide-react';
+import { MessageSquare, Bot, Calendar as CalendarIcon, FileText, Palette, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 
 const Index = () => {
   const [date, setDate] = useState<Date | undefined>(new Date());
 
-  const categories = [
-    { icon: BarChart3, label: 'Analytics', color: 'text-blue-500' },
-    { icon: FileText, label: 'Conteúdo', color: 'text-green-500' },
-    { icon: Image, label: 'Imagens', color: 'text-purple-500' },
-    { icon: Video, label: 'Vídeos', color: 'text-red-500' },
-  ];
-
-  const quickAccess = [
-    { name: 'Instagram', icon: '📱', bgColor: 'bg-gradient-to-br from-purple-500 to-pink-500' },
-    { name: 'Facebook', icon: '👍', bgColor: 'bg-gradient-to-br from-blue-500 to-blue-600' },
-    { name: 'LinkedIn', icon: '💼', bgColor: 'bg-gradient-to-br from-blue-700 to-blue-800' },
-    { name: 'TikTok', icon: '🎵', bgColor: 'bg-gradient-to-br from-black to-gray-800' },
+  const apps = [
+    {
+      id: 1,
+      name: 'Chat AI',
+      description: 'Converse com IA para gerar ideias e conteúdos',
+      icon: MessageSquare,
+      status: 'Ativo'
+    },
+    {
+      id: 2,
+      name: 'Gerador de Conteúdo',
+      description: 'Crie posts e artigos automaticamente',
+      icon: FileText,
+      status: 'Ativo'
+    },
+    {
+      id: 3,
+      name: 'Agendador',
+      description: 'Agende suas publicações',
+      icon: CalendarIcon,
+      status: 'Em breve'
+    },
+    {
+      id: 4,
+      name: 'Editor Visual',
+      description: 'Edite imagens para redes sociais',
+      icon: Palette,
+      status: 'Ativo'
+    },
+    {
+      id: 5,
+      name: 'Assistente AI',
+      description: 'Automações inteligentes',
+      icon: Bot,
+      status: 'Ativo'
+    },
+    {
+      id: 6,
+      name: 'Análises',
+      description: 'Métricas e insights',
+      icon: Sparkles,
+      status: 'Em breve'
+    }
   ];
 
   return (
@@ -27,62 +59,57 @@ const Index = () => {
       <div className="max-w-7xl mx-auto p-6 lg:p-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Content - Left Side */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-8">
             {/* Welcome Section */}
-            <div className="space-y-4">
-              <div>
-                <h1 className="text-4xl font-bold text-foreground mb-2">
+            <div className="space-y-6">
+              <div className="space-y-3">
+                <h1 className="text-4xl lg:text-5xl font-bold text-foreground">
                   Bem-vindo ao AdzHub
                 </h1>
-                <p className="text-muted-foreground text-lg">
-                  Sua plataforma completa de gestão de conteúdo e automação
+                <p className="text-muted-foreground text-lg lg:text-xl max-w-2xl">
+                  Sua plataforma completa de gestão de conteúdo e automação com inteligência artificial
                 </p>
               </div>
               
               <Link to="/chat">
-                <Button size="lg" className="w-full sm:w-auto">
+                <Button size="lg" className="w-full sm:w-auto shadow-lg hover:shadow-xl transition-shadow">
                   <MessageSquare className="mr-2 h-5 w-5" />
                   Ir para o Chat
                 </Button>
               </Link>
             </div>
 
-            {/* Categories Section */}
+            {/* Apps Section */}
             <div>
-              <h2 className="text-2xl font-semibold mb-4 text-foreground">Categorias</h2>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                {categories.map((category, index) => {
-                  const Icon = category.icon;
+              <h2 className="text-2xl font-semibold mb-6 text-foreground">Aplicativos</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {apps.map((app) => {
+                  const Icon = app.icon;
                   return (
                     <Card 
-                      key={index}
-                      className="cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-105"
+                      key={app.id}
+                      className="group hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer bg-card hover:bg-action-card-hover"
                     >
-                      <CardContent className="flex flex-col items-center justify-center p-6 space-y-2">
-                        <Icon className={`h-8 w-8 ${category.color}`} />
-                        <span className="text-sm font-medium text-foreground">{category.label}</span>
-                      </CardContent>
+                      <CardHeader className="pb-4">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="p-2.5 rounded-xl bg-muted group-hover:bg-primary/10 transition-colors duration-300">
+                            <Icon className="h-5 w-5 text-primary" />
+                          </div>
+                          <Badge 
+                            variant={app.status === 'Ativo' ? 'default' : 'secondary'}
+                            className="text-xs"
+                          >
+                            {app.status}
+                          </Badge>
+                        </div>
+                        <CardTitle className="text-base">{app.name}</CardTitle>
+                        <CardDescription className="text-sm line-clamp-2">
+                          {app.description}
+                        </CardDescription>
+                      </CardHeader>
                     </Card>
                   );
                 })}
-              </div>
-            </div>
-
-            {/* Quick Access Section */}
-            <div>
-              <h2 className="text-2xl font-semibold mb-4 text-foreground">Acesso Rápido</h2>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                {quickAccess.map((app, index) => (
-                  <Card 
-                    key={index}
-                    className="cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-105 overflow-hidden"
-                  >
-                    <CardContent className={`flex flex-col items-center justify-center p-6 space-y-2 ${app.bgColor} text-white`}>
-                      <span className="text-4xl">{app.icon}</span>
-                      <span className="text-sm font-medium">{app.name}</span>
-                    </CardContent>
-                  </Card>
-                ))}
               </div>
             </div>
           </div>
@@ -90,54 +117,54 @@ const Index = () => {
           {/* Right Sidebar */}
           <div className="space-y-6">
             {/* Stats Card */}
-            <Card>
+            <Card className="shadow-md">
               <CardHeader>
                 <CardTitle className="text-lg">Desempenho Geral</CardTitle>
               </CardHeader>
               <CardContent className="flex flex-col items-center justify-center py-8">
-                <div className="relative w-32 h-32 mb-4">
-                  <svg className="transform -rotate-90 w-32 h-32">
+                <div className="relative w-36 h-36 mb-6">
+                  <svg className="transform -rotate-90 w-36 h-36">
                     <circle
-                      cx="64"
-                      cy="64"
-                      r="56"
+                      cx="72"
+                      cy="72"
+                      r="64"
                       stroke="currentColor"
-                      strokeWidth="8"
+                      strokeWidth="10"
                       fill="transparent"
-                      className="text-muted"
+                      className="text-muted opacity-30"
                     />
                     <circle
-                      cx="64"
-                      cy="64"
-                      r="56"
+                      cx="72"
+                      cy="72"
+                      r="64"
                       stroke="currentColor"
-                      strokeWidth="8"
+                      strokeWidth="10"
                       fill="transparent"
-                      strokeDasharray={`${2 * Math.PI * 56}`}
-                      strokeDashoffset={`${2 * Math.PI * 56 * (1 - 0.82)}`}
-                      className="text-primary"
+                      strokeDasharray={`${2 * Math.PI * 64}`}
+                      strokeDashoffset={`${2 * Math.PI * 64 * (1 - 0.82)}`}
+                      className="text-primary transition-all duration-1000"
                       strokeLinecap="round"
                     />
                   </svg>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-3xl font-bold text-foreground">82%</span>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <span className="text-4xl font-bold text-foreground">82%</span>
                   </div>
                 </div>
-                <p className="text-sm text-muted-foreground text-center">
+                <p className="text-sm text-muted-foreground text-center font-medium">
                   Taxa de engajamento mensal
                 </p>
               </CardContent>
             </Card>
 
             {/* Calendar Card */}
-            <Card>
+            <Card className="shadow-md">
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
-                  <CalendarIcon className="h-5 w-5" />
+                  <CalendarIcon className="h-5 w-5 text-primary" />
                   Calendário
                 </CardTitle>
               </CardHeader>
-              <CardContent className="flex justify-center">
+              <CardContent className="flex justify-center pb-4">
                 <Calendar
                   mode="single"
                   selected={date}
