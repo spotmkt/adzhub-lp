@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { AppWindow, Bot, Calendar, FileText, MessageSquare, Palette, Settings, Sparkles } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const apps = [
   {
@@ -70,6 +71,14 @@ const apps = [
 ];
 
 const Apps = () => {
+  const navigate = useNavigate();
+
+  const handleAppClick = (appId: number) => {
+    if (appId === 2) {
+      navigate('/content');
+    }
+  };
+
   return (
     <div className="h-full p-6 bg-background overflow-y-auto">
       <div className="max-w-7xl mx-auto">
@@ -89,6 +98,7 @@ const Apps = () => {
               <Card 
                 key={app.id}
                 className="group hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer bg-card hover:bg-action-card-hover"
+                onClick={() => handleAppClick(app.id)}
               >
                 <CardHeader className="pb-3">
                   <div className="flex items-start justify-between mb-3">

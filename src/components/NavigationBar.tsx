@@ -1,4 +1,4 @@
-import { Settings, MessageSquare, FileText, LayoutGrid, Home } from 'lucide-react';
+import { Settings, MessageSquare, LayoutGrid, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Link } from 'react-router-dom';
@@ -14,7 +14,6 @@ interface NavigationBarProps {
 const navigationItems = [
   { id: 'home', icon: Home, label: 'Home', path: '/' },
   { id: 'chats', icon: MessageSquare, label: 'Chats', path: '/chat' },
-  { id: 'content', icon: FileText, label: 'Conteúdo', path: '/content' },
   { id: 'apps', icon: LayoutGrid, label: 'Apps', path: '/apps' },
   { id: 'settings', icon: Settings, label: 'Settings', path: '/settings' },
 ];
