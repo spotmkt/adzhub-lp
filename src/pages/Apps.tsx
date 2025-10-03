@@ -1,5 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { AppWindow, Bot, Calendar, FileText, MessageSquare, Palette, Settings, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -79,6 +80,13 @@ const Apps = () => {
     }
   };
 
+  const handleSettingsClick = (e: React.MouseEvent, appId: number) => {
+    e.stopPropagation();
+    if (appId === 2) {
+      navigate('/content-generator-settings');
+    }
+  };
+
   return (
     <div className="h-full p-6 bg-background overflow-y-auto">
       <div className="max-w-7xl mx-auto">
@@ -105,12 +113,24 @@ const Apps = () => {
                     <div className="p-3 rounded-xl bg-muted group-hover:bg-primary/10 transition-colors duration-300">
                       <Icon className="h-6 w-6 text-primary" />
                     </div>
-                    <Badge 
-                      variant={app.status === 'Ativo' ? 'default' : 'secondary'}
-                      className="text-xs"
-                    >
-                      {app.status}
-                    </Badge>
+                    <div className="flex items-center gap-2">
+                      {app.status === 'Ativo' && app.id === 2 && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={(e) => handleSettingsClick(e, app.id)}
+                        >
+                          <Settings className="h-4 w-4" />
+                        </Button>
+                      )}
+                      <Badge 
+                        variant={app.status === 'Ativo' ? 'default' : 'secondary'}
+                        className="text-xs"
+                      >
+                        {app.status}
+                      </Badge>
+                    </div>
                   </div>
                   <CardTitle className="text-lg">{app.name}</CardTitle>
                   <CardDescription className="text-sm line-clamp-2">

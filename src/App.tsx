@@ -12,6 +12,7 @@ import History from "./pages/History";
 import Content from "./pages/Content";
 import Apps from "./pages/Apps";
 import Settings from "./pages/Settings";
+import ContentGeneratorSettings from "./pages/ContentGeneratorSettings";
 import NotFound from "./pages/NotFound";
 
 // Create QueryClient outside of component to avoid recreation on each render
@@ -42,6 +43,7 @@ function App(): React.ReactElement {
                 <Route path="/content" element={<Content />} />
                 <Route path="/apps" element={<Apps />} />
                 <Route path="/settings" element={<Settings />} />
+                <Route path="/content-generator-settings" element={<ContentGeneratorSettings />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Layout>
