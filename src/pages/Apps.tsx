@@ -10,7 +10,7 @@ const apps = [
     description: 'Converse com IA para gerar ideias e conteúdos',
     icon: MessageSquare,
     color: 'primary',
-    status: 'Ativo'
+    status: 'Em breve'
   },
   {
     id: 2,
@@ -34,7 +34,7 @@ const apps = [
     description: 'Edite imagens e designs para suas redes sociais',
     icon: Palette,
     color: 'primary',
-    status: 'Ativo'
+    status: 'Em breve'
   },
   {
     id: 5,
@@ -42,7 +42,7 @@ const apps = [
     description: 'Automações inteligentes para seu marketing',
     icon: Bot,
     color: 'accent',
-    status: 'Ativo'
+    status: 'Em breve'
   },
   {
     id: 6,
@@ -58,7 +58,7 @@ const apps = [
     description: 'Personalize sua experiência',
     icon: Settings,
     color: 'muted',
-    status: 'Ativo'
+    status: 'Em breve'
   },
   {
     id: 8,
