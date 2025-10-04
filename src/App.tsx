@@ -18,6 +18,7 @@ import Landing from "./pages/Landing";
 import BlogList from "./pages/BlogList";
 import BlogPost from "./pages/BlogPost";
 import Contact from "./pages/Contact";
+import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
 // Create QueryClient outside of component to avoid recreation on each render
@@ -47,6 +48,7 @@ function App(): React.ReactElement {
                 <Route path="/blog" element={<BlogList />} />
                 <Route path="/blog/:slug" element={<BlogPost />} />
                 <Route path="/contact" element={<Contact />} />
+                <Route path="/auth" element={<Auth />} />
                 
                 {/* App routes with Layout */}
                 <Route path="/" element={<Layout><Index /></Layout>} />
