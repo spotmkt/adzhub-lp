@@ -334,6 +334,102 @@ export type Database = {
           },
         ]
       }
+      blog_posts: {
+        Row: {
+          author_avatar: string | null
+          author_name: string | null
+          canonical_url: string | null
+          category: string | null
+          content: string
+          created_at: string
+          excerpt: string | null
+          featured_image: string | null
+          h1_heading: string | null
+          id: string
+          is_featured: boolean | null
+          meta_description: string | null
+          meta_keywords: string[] | null
+          meta_title: string | null
+          og_description: string | null
+          og_image: string | null
+          og_title: string | null
+          published_at: string | null
+          reading_time: number | null
+          schema_data: Json | null
+          schema_type: string | null
+          slug: string
+          status: string | null
+          tags: string[] | null
+          title: string
+          twitter_description: string | null
+          twitter_image: string | null
+          twitter_title: string | null
+          updated_at: string
+        }
+        Insert: {
+          author_avatar?: string | null
+          author_name?: string | null
+          canonical_url?: string | null
+          category?: string | null
+          content: string
+          created_at?: string
+          excerpt?: string | null
+          featured_image?: string | null
+          h1_heading?: string | null
+          id?: string
+          is_featured?: boolean | null
+          meta_description?: string | null
+          meta_keywords?: string[] | null
+          meta_title?: string | null
+          og_description?: string | null
+          og_image?: string | null
+          og_title?: string | null
+          published_at?: string | null
+          reading_time?: number | null
+          schema_data?: Json | null
+          schema_type?: string | null
+          slug: string
+          status?: string | null
+          tags?: string[] | null
+          title: string
+          twitter_description?: string | null
+          twitter_image?: string | null
+          twitter_title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          author_avatar?: string | null
+          author_name?: string | null
+          canonical_url?: string | null
+          category?: string | null
+          content?: string
+          created_at?: string
+          excerpt?: string | null
+          featured_image?: string | null
+          h1_heading?: string | null
+          id?: string
+          is_featured?: boolean | null
+          meta_description?: string | null
+          meta_keywords?: string[] | null
+          meta_title?: string | null
+          og_description?: string | null
+          og_image?: string | null
+          og_title?: string | null
+          published_at?: string | null
+          reading_time?: number | null
+          schema_data?: Json | null
+          schema_type?: string | null
+          slug?: string
+          status?: string | null
+          tags?: string[] | null
+          title?: string
+          twitter_description?: string | null
+          twitter_image?: string | null
+          twitter_title?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       chat_messages: {
         Row: {
           client_id: string
