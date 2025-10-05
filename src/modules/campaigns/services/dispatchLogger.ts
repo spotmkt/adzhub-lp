@@ -10,7 +10,7 @@ export const logDispatch = async (
   instanceId?: string,
   mappingMode?: string
 ): Promise<string> => {
-  const { data, error } = await supabase
+  const { data, error } = await (supabase as any)
     .from('campaigns')
     .insert({
       user_id: userId,

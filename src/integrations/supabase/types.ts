@@ -430,6 +430,151 @@ export type Database = {
         }
         Relationships: []
       }
+      campaign_recipients: {
+        Row: {
+          campaign_id: string
+          created_at: string
+          id: string
+          metadata: Json | null
+          name: string | null
+          phone: string
+          scheduler: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          campaign_id: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          name?: string | null
+          phone: string
+          scheduler?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          campaign_id?: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          name?: string | null
+          phone?: string
+          scheduler?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "campaign_recipients_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      campaign_responses: {
+        Row: {
+          created_at: string
+          id: string
+          is_valid_response: boolean | null
+          message_content: string | null
+          phone: string
+          received_at: string
+          recipient_id: string
+          response_time: number | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_valid_response?: boolean | null
+          message_content?: string | null
+          phone: string
+          received_at: string
+          recipient_id: string
+          response_time?: number | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_valid_response?: boolean | null
+          message_content?: string | null
+          phone?: string
+          received_at?: string
+          recipient_id?: string
+          response_time?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "campaign_responses_recipient_id_fkey"
+            columns: ["recipient_id"]
+            isOneToOne: false
+            referencedRelation: "campaign_recipients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      campaigns: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          has_image: boolean | null
+          id: string
+          image_template_id: string | null
+          image_url: string | null
+          instance_id: string | null
+          instance_label: string
+          mapping_mode: string | null
+          message_content: string
+          name: string
+          scheduled_for: string | null
+          started_at: string | null
+          status: string
+          template_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          has_image?: boolean | null
+          id?: string
+          image_template_id?: string | null
+          image_url?: string | null
+          instance_id?: string | null
+          instance_label: string
+          mapping_mode?: string | null
+          message_content: string
+          name: string
+          scheduled_for?: string | null
+          started_at?: string | null
+          status?: string
+          template_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          has_image?: boolean | null
+          id?: string
+          image_template_id?: string | null
+          image_url?: string | null
+          instance_id?: string | null
+          instance_label?: string
+          mapping_mode?: string | null
+          message_content?: string
+          name?: string
+          scheduled_for?: string | null
+          started_at?: string | null
+          status?: string
+          template_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       chat_messages: {
         Row: {
           client_id: string

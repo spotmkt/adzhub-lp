@@ -60,7 +60,7 @@ const SummaryScreen = ({ formData, onBack }: SummaryScreenProps) => {
       if (isEditing && (formData as any).editingCampaignId) {
         // Atualizar campanha existente
         const hasImage = !!(formData.imageUrl && formData.imageUrl.trim());
-        const { error: updateError } = await supabase
+        const { error: updateError } = await (supabase as any)
           .from('campaigns')
           .update({
             instance_label: formData.instanceName,
@@ -78,7 +78,7 @@ const SummaryScreen = ({ formData, onBack }: SummaryScreenProps) => {
         campaignId = (formData as any).editingCampaignId;
         
         // Limpar recipients antigos antes de inserir novos
-        await supabase
+        await (supabase as any)
           .from('campaign_recipients')
           .delete()
           .eq('campaign_id', campaignId);
@@ -112,7 +112,7 @@ const SummaryScreen = ({ formData, onBack }: SummaryScreenProps) => {
             metadata: item.metadata || {}
           }));
 
-          const { data: insertedRecipients, error: recipientsError } = await supabase
+          const { data: insertedRecipients, error: recipientsError } = await (supabase as any)
             .from('campaign_recipients')
             .insert(recipients)
             .select('id, phone');
@@ -126,7 +126,7 @@ const SummaryScreen = ({ formData, onBack }: SummaryScreenProps) => {
 
           // Criar as linhas de resposta vazias para todos os tipos de disparo
           if (insertedRecipients) {
-            const responseEntries = insertedRecipients.map(recipient => ({
+            const responseEntries = insertedRecipients.map((recipient: any) => ({
               recipient_id: recipient.id,
               phone: recipient.phone,
               message_content: '', // Inicialmente vazio, será preenchido quando receber resposta
@@ -135,7 +135,7 @@ const SummaryScreen = ({ formData, onBack }: SummaryScreenProps) => {
               is_valid_response: false
             }));
 
-            const { error: responsesError } = await supabase
+            const { error: responsesError } = await (supabase as any)
               .from('campaign_responses')
               .insert(responseEntries);
 
