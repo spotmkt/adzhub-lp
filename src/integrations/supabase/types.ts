@@ -791,6 +791,53 @@ export type Database = {
         }
         Relationships: []
       }
+      instances: {
+        Row: {
+          created_at: string
+          id: string
+          instance_id: string
+          instance_label: string
+          phone_number: string
+          profile_image_url: string | null
+          status: string
+          token: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          instance_id: string
+          instance_label: string
+          phone_number: string
+          profile_image_url?: string | null
+          status?: string
+          token?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          instance_id?: string
+          instance_label?: string
+          phone_number?: string
+          profile_image_url?: string | null
+          status?: string
+          token?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "instances_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       mapa_solucao: {
         Row: {
           client_id: string
