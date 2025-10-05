@@ -21,6 +21,8 @@ import Contact from "./pages/Contact";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import CampaignsModule from "@/modules/campaigns/CampaignsModule";
+import AgendaModule from "@/modules/agenda/AgendaModule";
+import AgendaSettings from "@/modules/agenda/pages/AgendaSettings";
 
 // Create QueryClient outside of component to avoid recreation on each render
 // Updated to fix caching issue
@@ -59,6 +61,8 @@ function App(): React.ReactElement {
                 <Route path="/chat" element={<Layout><Chat /></Layout>} />
                 <Route path="/history" element={<Layout><History /></Layout>} />
                 <Route path="/content" element={<Layout><Content /></Layout>} />
+                <Route path="/agenda" element={<Layout><AgendaModule /></Layout>} />
+                <Route path="/agenda/settings" element={<Layout><AgendaSettings /></Layout>} />
                 <Route path="/apps" element={<Layout><Apps /></Layout>} />
                 <Route path="/settings" element={<Layout><Settings /></Layout>} />
                 <Route path="/content-generator-settings" element={<Layout><ContentGeneratorSettings /></Layout>} />

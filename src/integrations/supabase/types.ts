@@ -138,6 +138,99 @@ export type Database = {
           },
         ]
       }
+      agenda_events: {
+        Row: {
+          agenda_type: Database["public"]["Enums"]["agenda_type"]
+          all_day: boolean | null
+          client_id: string | null
+          color: string | null
+          created_at: string
+          description: string | null
+          end_date: string | null
+          id: string
+          is_recurring: boolean | null
+          linked_resource_id: string | null
+          linked_resource_type: string | null
+          metadata: Json | null
+          parent_event_id: string | null
+          recurrence_end_date: string | null
+          recurrence_frequency:
+            | Database["public"]["Enums"]["recurrence_frequency"]
+            | null
+          recurrence_interval: number | null
+          start_date: string
+          status: Database["public"]["Enums"]["event_status"]
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          agenda_type?: Database["public"]["Enums"]["agenda_type"]
+          all_day?: boolean | null
+          client_id?: string | null
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          is_recurring?: boolean | null
+          linked_resource_id?: string | null
+          linked_resource_type?: string | null
+          metadata?: Json | null
+          parent_event_id?: string | null
+          recurrence_end_date?: string | null
+          recurrence_frequency?:
+            | Database["public"]["Enums"]["recurrence_frequency"]
+            | null
+          recurrence_interval?: number | null
+          start_date: string
+          status?: Database["public"]["Enums"]["event_status"]
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          agenda_type?: Database["public"]["Enums"]["agenda_type"]
+          all_day?: boolean | null
+          client_id?: string | null
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          is_recurring?: boolean | null
+          linked_resource_id?: string | null
+          linked_resource_type?: string | null
+          metadata?: Json | null
+          parent_event_id?: string | null
+          recurrence_end_date?: string | null
+          recurrence_frequency?:
+            | Database["public"]["Enums"]["recurrence_frequency"]
+            | null
+          recurrence_interval?: number | null
+          start_date?: string
+          status?: Database["public"]["Enums"]["event_status"]
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agenda_events_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agenda_events_parent_event_id_fkey"
+            columns: ["parent_event_id"]
+            isOneToOne: false
+            referencedRelation: "agenda_events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       benchmarks: {
         Row: {
           alcance: number | null
@@ -1585,7 +1678,14 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      agenda_type: "personal" | "automation"
+      event_status: "pending" | "completed" | "cancelled"
+      recurrence_frequency:
+        | "daily"
+        | "weekly"
+        | "biweekly"
+        | "monthly"
+        | "yearly"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1712,6 +1812,16 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      agenda_type: ["personal", "automation"],
+      event_status: ["pending", "completed", "cancelled"],
+      recurrence_frequency: [
+        "daily",
+        "weekly",
+        "biweekly",
+        "monthly",
+        "yearly",
+      ],
+    },
   },
 } as const

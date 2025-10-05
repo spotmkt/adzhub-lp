@@ -31,11 +31,11 @@ const apps = [
   },
   {
     id: 3,
-    name: 'Agendador',
-    description: 'Agende suas publicações em múltiplas plataformas',
+    name: 'Agenda',
+    description: 'Gerencie compromissos pessoais e automações',
     icon: Calendar,
     color: 'secondary',
-    status: 'Em breve'
+    status: 'Ativo'
   },
   {
     id: 4,
@@ -85,6 +85,8 @@ const Apps = () => {
   const handleAppClick = (appId: number) => {
     if (appId === 2) {
       navigate('/content');
+    } else if (appId === 3) {
+      navigate('/agenda');
     } else if (appId === 9) {
       navigate('/campaigns');
     }
@@ -94,6 +96,8 @@ const Apps = () => {
     e.stopPropagation();
     if (appId === 2) {
       navigate('/content-generator-settings');
+    } else if (appId === 3) {
+      navigate('/agenda/settings');
     }
   };
 
@@ -124,7 +128,7 @@ const Apps = () => {
                       <Icon className="h-6 w-6 text-primary" />
                     </div>
                     <div className="flex items-center gap-2">
-                      {app.status === 'Ativo' && app.id === 2 && (
+                      {app.status === 'Ativo' && (app.id === 2 || app.id === 3) && (
                         <Button
                           variant="ghost"
                           size="icon"
