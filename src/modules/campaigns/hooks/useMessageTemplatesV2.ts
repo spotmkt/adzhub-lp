@@ -2,14 +2,18 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useCampaignsAuth } from '../contexts/CampaignsAuthContext';
 
-interface MessageTemplate {
+export interface MessageTemplate {
   id: string;
   name: string;
   content: string;
   user_id: string;
   created_at: string;
   updated_at: string;
+  usage_count: number;
+  response_count: number;
 }
+
+export type MessageTemplateV2 = MessageTemplate;
 
 export const useMessageTemplatesV2 = () => {
   const { user } = useCampaignsAuth();
@@ -30,7 +34,12 @@ export const useMessageTemplatesV2 = () => {
         return [];
       }
 
-      return data || [];
+      // Add default values for usage_count and response_count
+      return (data || []).map(template => ({
+        ...template,
+        usage_count: 0,
+        response_count: 0
+      }));
     },
     enabled: !!user?.id,
   });
