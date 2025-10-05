@@ -15,6 +15,7 @@ import RichTextEditor from '../components/RichTextEditor';
 import ColumnMappingModal from '../components/ColumnMappingModal';
 import SummaryScreen from '../components/SummaryScreen';
 import UserHeader from '../components/UserHeader';
+import ProfileEditScreen from '../components/ProfileEditScreen';
 import { readFile, extractMappedData } from '../utils/fileReader';
 import { format } from 'date-fns';
 
@@ -39,6 +40,7 @@ const CampaignsIndex = () => {
   const { user, isAuthenticated } = useCampaignsAuth();
   const { toast } = useToast();
   const [showSummary, setShowSummary] = useState(false);
+  const [showProfileEdit, setShowProfileEdit] = useState(false);
 
   // Form state
   const [instances, setInstances] = useState<any[]>([]);
@@ -250,6 +252,10 @@ const CampaignsIndex = () => {
   //   );
   // }
 
+  if (showProfileEdit) {
+    return <ProfileEditScreen onBack={() => setShowProfileEdit(false)} />;
+  }
+
   if (showSummary) {
     return <SummaryScreen formData={getFormData()} onBack={() => setShowSummary(false)} />;
   }
@@ -260,6 +266,7 @@ const CampaignsIndex = () => {
       <UserHeader 
         userName="SPOT MKT"
         instanceCount={instances.length}
+        onEditProfile={() => setShowProfileEdit(true)}
       />
 
       <div className="p-4 md:p-8">
