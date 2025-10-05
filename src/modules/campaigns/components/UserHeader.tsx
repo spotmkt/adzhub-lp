@@ -57,7 +57,7 @@ const UserHeader = ({ userName = 'Usuário', userAvatar, instanceCount = 0, onEd
           )}
           
           <Button
-            onClick={() => navigate('/campaigns')}
+            onClick={() => navigate('/')}
             variant="outline"
             size="sm"
             className="flex items-center gap-2 border-destructive/30 text-destructive hover:bg-destructive/10"
