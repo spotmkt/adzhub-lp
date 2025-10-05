@@ -97,13 +97,10 @@ export const PostViewDialog = ({ post, open, onOpenChange }: PostViewDialogProps
                 Conteúdo
               </h3>
               <div className="bg-muted/30 p-4 rounded-lg">
-                <div className="prose prose-sm max-w-none dark:prose-invert">
-                  {post.conteudo.split('\n').map((paragraph, index) => (
-                    <p key={index} className="mb-3 last:mb-0 text-sm leading-relaxed">
-                      {paragraph}
-                    </p>
-                  ))}
-                </div>
+                <div 
+                  className="prose prose-sm max-w-none dark:prose-invert prose-headings:font-semibold prose-h1:text-2xl prose-h1:mb-4 prose-h2:text-xl prose-h2:mb-3 prose-h3:text-lg prose-h3:mb-2 prose-p:mb-3 prose-p:leading-relaxed prose-strong:font-semibold prose-em:italic prose-ul:list-disc prose-ul:pl-5 prose-ol:list-decimal prose-ol:pl-5 prose-li:mb-1"
+                  dangerouslySetInnerHTML={{ __html: post.conteudo }}
+                />
               </div>
             </div>
 
