@@ -2,6 +2,22 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 
+export interface FormData {
+  instanceName: string;
+  csvFile: File | null;
+  csvLines: number;
+  imageFile: File | null;
+  imageUrl: string;
+  message: string;
+  data_agendamento: Date;
+  dispatchType: 'instant' | 'scheduled';
+  campaignName?: string;
+  selectedImageTemplate?: any;
+  columnMapping?: { nameColumn: string; phoneColumn: string; mode: 'simple' | 'advanced'; selectedColumns?: string[] };
+  mappedData?: any[];
+  isScheduled?: boolean;
+}
+
 const CampaignsIndex = () => {
   const navigate = useNavigate();
 
