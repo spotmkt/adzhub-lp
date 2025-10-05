@@ -1,10 +1,12 @@
-import { Settings, MessageSquare, LayoutGrid, Home } from 'lucide-react';
+import { Settings, MessageSquare, LayoutGrid, Home, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { ProfileSelector } from '@/components/ProfileSelector';
 import adzHubLogo from '@/assets/adzhub-logo-final.png';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 interface NavigationBarProps {
   activeItem?: string;
@@ -19,6 +21,29 @@ const navigationItems = [
 ];
 
 export const NavigationBar = ({ activeItem = 'home', onItemClick }: NavigationBarProps) => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleLogout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      
+      toast({
+        title: 'Logout realizado',
+        description: 'Você foi desconectado com sucesso.',
+      });
+      
+      navigate('/auth');
+    } catch (error: any) {
+      toast({
+        title: 'Erro ao deslogar',
+        description: error.message || 'Tente novamente.',
+        variant: 'destructive',
+      });
+    }
+  };
+
   return (
     <div className="w-16 h-full bg-nav-background border-r border-border flex flex-col items-center py-6 space-y-4">
       {/* Logo */}
@@ -60,6 +85,17 @@ export const NavigationBar = ({ activeItem = 'home', onItemClick }: NavigationBa
       
       {/* Profile Selector */}
       <ProfileSelector />
+      
+      {/* Logout Button */}
+      <Button
+        variant="ghost"
+        size="icon"
+        className="w-12 h-12 rounded-full transition-all duration-300 hover:bg-destructive/10 hover:text-destructive"
+        onClick={handleLogout}
+        title="Sair"
+      >
+        <LogOut className="h-5 w-5" />
+      </Button>
       
       {/* Theme Toggle */}
       <div className="mt-auto">
