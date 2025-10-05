@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Calendar, Target, Tag, Hash, Globe, Sparkles, RefreshCw } from "lucide-react";
+import { Calendar, Target, Tag, Hash, Globe, Lightbulb, RefreshCw } from "lucide-react";
 
 interface ContentIdea {
   id: string;
@@ -139,25 +139,25 @@ export const IdeaViewDialog = ({
             {idea.alternatives && idea.alternatives.length > 0 && (
               <div>
                 <h3 className="font-medium mb-3">Alternativas</h3>
-                <div className="space-y-3">
+                <div className="space-y-2">
                   {idea.alternatives.map((alternative, index) => (
-                    <div key={index} className="flex items-start gap-3 p-3 border rounded-lg bg-card hover:bg-accent/50 transition-colors">
-                      <div className="flex-1 text-sm">{alternative}</div>
-                      <div className="flex gap-2 shrink-0">
+                    <div key={index} className="flex items-start gap-3 p-2 rounded-md hover:bg-muted/50 transition-colors group">
+                      <div className="flex-1 text-sm text-muted-foreground">{alternative}</div>
+                      <div className="flex gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
                         <Button
                           size="sm"
-                          variant="outline"
+                          variant="ghost"
                           onClick={() => onGenerateFromAlternative?.(alternative, idea.id)}
-                          className="gap-2"
+                          className="h-7 px-2 gap-1.5 text-xs"
                         >
-                          <Sparkles className="w-3 h-3" />
-                          Gerar
+                          <Lightbulb className="w-3 h-3" />
+                          Criar Big Idea
                         </Button>
                         <Button
                           size="sm"
-                          variant="default"
+                          variant="ghost"
                           onClick={() => onReplaceWithAlternative?.(alternative, idea.id)}
-                          className="gap-2"
+                          className="h-7 px-2 gap-1.5 text-xs"
                         >
                           <RefreshCw className="w-3 h-3" />
                           Substituir
