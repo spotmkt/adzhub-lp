@@ -98,7 +98,19 @@ export const PostViewDialog = ({ post, open, onOpenChange }: PostViewDialogProps
               </h3>
               <div className="bg-muted/30 p-4 rounded-lg">
                 <div 
-                  className="prose prose-sm max-w-none dark:prose-invert prose-headings:font-semibold prose-h1:text-2xl prose-h1:mb-4 prose-h2:text-xl prose-h2:mb-3 prose-h3:text-lg prose-h3:mb-2 prose-p:mb-3 prose-p:leading-relaxed prose-strong:font-semibold prose-em:italic prose-ul:list-disc prose-ul:pl-5 prose-ol:list-decimal prose-ol:pl-5 prose-li:mb-1"
+                  className="prose prose-sm max-w-none dark:prose-invert 
+                    prose-headings:font-bold prose-headings:text-foreground
+                    prose-h1:text-3xl prose-h1:mb-6 prose-h1:mt-8 prose-h1:leading-tight
+                    prose-h2:text-2xl prose-h2:mb-4 prose-h2:mt-6 prose-h2:leading-snug
+                    prose-h3:text-xl prose-h3:mb-3 prose-h3:mt-5 prose-h3:leading-snug
+                    prose-p:text-base prose-p:mb-4 prose-p:leading-7 prose-p:text-foreground/90
+                    prose-strong:font-bold prose-strong:text-foreground
+                    prose-em:italic prose-em:text-foreground/80
+                    prose-a:text-primary prose-a:underline prose-a:font-medium hover:prose-a:text-primary/80
+                    prose-ul:list-disc prose-ul:pl-6 prose-ul:mb-4
+                    prose-ol:list-decimal prose-ol:pl-6 prose-ol:mb-4
+                    prose-li:mb-2 prose-li:leading-7
+                    first:prose-h1:mt-0 first:prose-h2:mt-0 first:prose-h3:mt-0"
                   dangerouslySetInnerHTML={{ __html: post.conteudo }}
                 />
               </div>
