@@ -166,7 +166,7 @@ const Content = () => {
         .from('content_assets')
         .select(`
           *,
-          content_ideas (titulo)
+          content_ideas!content_assets_content_idea_id_fkey (titulo)
         `)
         .eq('client_id', clientId)
         .order('created_at', { ascending: false });
