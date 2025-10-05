@@ -45,7 +45,35 @@ export const EventDialog = ({ open, onOpenChange, event, onSave, agendaType }: E
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(formData);
+    
+    // Validação
+    if (!formData.title?.trim()) {
+      return;
+    }
+
+    // Garantir que todos os campos obrigatórios estejam presentes
+    const eventToSave: Partial<AgendaEvent> = {
+      ...formData,
+      title: formData.title.trim(),
+      start_date: formData.start_date || new Date().toISOString(),
+      all_day: formData.all_day ?? false,
+      is_recurring: formData.is_recurring ?? false,
+      status: formData.status || 'pending',
+      agenda_type: formData.agenda_type || agendaType,
+    };
+
+    // Se for recorrente, garantir que os campos de recorrência estejam presentes
+    if (eventToSave.is_recurring) {
+      eventToSave.recurrence_frequency = formData.recurrence_frequency || 'weekly';
+      eventToSave.recurrence_interval = formData.recurrence_interval || 1;
+    } else {
+      // Limpar campos de recorrência se não for recorrente
+      eventToSave.recurrence_frequency = undefined;
+      eventToSave.recurrence_interval = undefined;
+      eventToSave.recurrence_end_date = undefined;
+    }
+
+    onSave(eventToSave);
   };
 
   const formatDateTimeLocal = (dateString: string) => {

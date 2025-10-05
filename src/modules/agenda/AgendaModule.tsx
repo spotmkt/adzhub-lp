@@ -161,15 +161,28 @@ const AgendaModule = () => {
   const handleSaveEvent = async (eventData: Partial<AgendaEvent>) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('User not authenticated');
+      if (!user) throw new Error('Usuário não autenticado');
+
+      // Validar campos obrigatórios
+      if (!eventData.title?.trim()) {
+        throw new Error('O título é obrigatório');
+      }
+
+      if (!eventData.start_date) {
+        throw new Error('A data de início é obrigatória');
+      }
 
       if (selectedEvent) {
+        // Atualizar evento existente
         const { error } = await supabase
           .from('agenda_events')
           .update(eventData)
           .eq('id', selectedEvent.id);
 
-        if (error) throw error;
+        if (error) {
+          console.error('Supabase error:', error);
+          throw new Error(error.message || 'Erro ao atualizar evento');
+        }
 
         setEvents(prev =>
           prev.map(e =>
@@ -182,18 +195,36 @@ const AgendaModule = () => {
           description: 'Evento atualizado com sucesso.',
         });
       } else {
-        const { data, error } = await (supabase
-          .from('agenda_events') as any)
-          .insert({
-            ...eventData,
-            user_id: user.id,
-            client_id: selectedClient || null,
-            agenda_type: activeTab,
-          })
+        // Criar novo evento
+        const insertData = {
+          user_id: user.id,
+          client_id: selectedClient || null,
+          agenda_type: activeTab,
+          title: eventData.title.trim(),
+          description: eventData.description || null,
+          start_date: eventData.start_date,
+          end_date: eventData.end_date || null,
+          all_day: eventData.all_day ?? false,
+          is_recurring: eventData.is_recurring ?? false,
+          recurrence_frequency: eventData.is_recurring ? eventData.recurrence_frequency : null,
+          recurrence_interval: eventData.is_recurring ? eventData.recurrence_interval : null,
+          recurrence_end_date: eventData.is_recurring ? eventData.recurrence_end_date : null,
+          status: eventData.status || 'pending',
+          color: eventData.color || null,
+          metadata: eventData.metadata || null,
+        };
+
+        const { data, error } = await supabase
+          .from('agenda_events')
+          .insert(insertData)
           .select()
           .single();
 
-        if (error) throw error;
+        if (error) {
+          console.error('Supabase error:', error);
+          throw new Error(error.message || 'Erro ao criar evento');
+        }
+
         if (data) setEvents(prev => [...prev, data]);
 
         toast({
@@ -203,11 +234,11 @@ const AgendaModule = () => {
       }
 
       setEventDialogOpen(false);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving event:', error);
       toast({
-        title: 'Erro',
-        description: 'Não foi possível salvar o evento.',
+        title: 'Erro ao salvar evento',
+        description: error.message || 'Não foi possível salvar o evento.',
         variant: 'destructive',
       });
     }
