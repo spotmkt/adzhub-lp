@@ -939,6 +939,36 @@ export type Database = {
         }
         Relationships: []
       }
+      profiles: {
+        Row: {
+          allowed_instances: string[] | null
+          created_at: string
+          display_name: string
+          profile_image_url: string | null
+          updated_at: string
+          user_id: string
+          username: string
+        }
+        Insert: {
+          allowed_instances?: string[] | null
+          created_at?: string
+          display_name: string
+          profile_image_url?: string | null
+          updated_at?: string
+          user_id: string
+          username: string
+        }
+        Update: {
+          allowed_instances?: string[] | null
+          created_at?: string
+          display_name?: string
+          profile_image_url?: string | null
+          updated_at?: string
+          user_id?: string
+          username?: string
+        }
+        Relationships: []
+      }
       startbenchmark: {
         Row: {
           ad_id: string | null
