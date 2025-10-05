@@ -141,7 +141,7 @@ export const IdeaViewDialog = ({
                 <h3 className="font-medium mb-3">Alternativas</h3>
                 <div className="space-y-2">
                   {idea.alternatives.map((alternative, index) => (
-                    <div key={index} className="flex items-start gap-3 p-2 rounded-md hover:bg-muted/50 transition-colors group">
+                    <div key={index} className="flex items-start gap-3 p-2 rounded-md hover:bg-muted/50 transition-colors group w-1/2">
                       <div className="flex-1 text-sm text-muted-foreground">{alternative}</div>
                       <div className="flex gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
                         <Button
