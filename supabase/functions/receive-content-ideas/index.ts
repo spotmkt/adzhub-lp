@@ -25,7 +25,7 @@ serve(async (req) => {
     
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    const { client_id, ideas } = await req.json();
+    const { client_id, user_id, ideas } = await req.json();
 
     if (!client_id || !ideas || !Array.isArray(ideas)) {
       return new Response(
@@ -34,11 +34,12 @@ serve(async (req) => {
       );
     }
 
-    console.log(`Processing ${ideas.length} content ideas for client ${client_id}`);
+    console.log(`Processing ${ideas.length} content ideas for client ${client_id} and user ${user_id}`);
 
     // Transform idea generator output to content_ideas format
     const transformedIdeas = ideas.map((idea: any) => ({
       client_id: client_id,
+      user_id: user_id || null,
       titulo: idea.output?.title_suggestion || idea.output?.proposed_theme || 'Sem título',
       descricao: idea.output?.direction || 'Sem descrição',
       categoria: idea.output?.proposed_theme || 'Geral',
