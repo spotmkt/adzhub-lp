@@ -62,11 +62,10 @@ const CampaignsIndex = () => {
   // Fetch instances
   useEffect(() => {
     const fetchInstances = async () => {
-      // Temporariamente sem verificação de usuário
       const { data, error } = await (supabase as any)
         .from('instances')
         .select('*')
-        .eq('status', 'connected');
+        .order('created_at', { ascending: false });
 
       if (error) {
         console.error('Erro ao buscar instâncias:', error);
@@ -78,6 +77,7 @@ const CampaignsIndex = () => {
         return;
       }
 
+      console.log('Instâncias carregadas:', data);
       setInstances(data || []);
     };
 
@@ -297,16 +297,31 @@ const CampaignsIndex = () => {
               </Label>
               <Select value={selectedInstance} onValueChange={setSelectedInstance}>
                 <SelectTrigger className="h-12">
-                  <SelectValue placeholder="Escolha uma instância conectada" />
+                  <SelectValue placeholder="Escolha uma instância" />
                 </SelectTrigger>
                 <SelectContent>
-                  {instances.map((instance) => (
-                    <SelectItem key={instance.id} value={instance.instance_label}>
-                      {instance.instance_label} - {instance.phone_number}
-                    </SelectItem>
-                  ))}
+                  {instances.length === 0 ? (
+                    <div className="p-2 text-sm text-muted-foreground text-center">
+                      Nenhuma instância encontrada
+                    </div>
+                  ) : (
+                    instances.map((instance) => (
+                      <SelectItem key={instance.id} value={instance.instance_label}>
+                        <div className="flex items-center gap-2">
+                          <span className={`w-2 h-2 rounded-full ${instance.status === 'connected' ? 'bg-green-500' : 'bg-gray-400'}`} />
+                          {instance.instance_label} - {instance.phone_number}
+                          <span className="text-xs text-muted-foreground">({instance.status})</span>
+                        </div>
+                      </SelectItem>
+                    ))
+                  )}
                 </SelectContent>
               </Select>
+              {instances.length > 0 && (
+                <p className="text-xs text-muted-foreground">
+                  {instances.filter(i => i.status === 'connected').length} de {instances.length} instância(s) conectada(s)
+                </p>
+              )}
             </div>
 
             {/* CSV Upload / Paste */}
