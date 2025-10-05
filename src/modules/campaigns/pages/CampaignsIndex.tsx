@@ -14,6 +14,7 @@ import { MessageTemplateSelectorV2 } from '../components/MessageTemplateSelector
 import RichTextEditor from '../components/RichTextEditor';
 import ColumnMappingModal from '../components/ColumnMappingModal';
 import SummaryScreen from '../components/SummaryScreen';
+import UserHeader from '../components/UserHeader';
 import { readFile, extractMappedData } from '../utils/fileReader';
 import { format } from 'date-fns';
 
@@ -254,24 +255,39 @@ const CampaignsIndex = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-8">
-      <div className="max-w-4xl mx-auto space-y-6">
-        {/* Header */}
-        <div className="text-center space-y-2">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <img 
-              src="/lovable-uploads/acd49d0d-27bb-409a-a755-9e6bb75616fa.png" 
-              alt="Adz Hub Logo" 
-              className="w-10 h-10 object-contain"
-            />
-            <h1 className="text-3xl font-bold text-foreground">Nova Campanha WhatsApp</h1>
+    <div className="min-h-screen bg-background">
+      {/* User Header */}
+      <UserHeader 
+        userName="SPOT MKT"
+        instanceCount={instances.length}
+      />
+
+      <div className="p-4 md:p-8">
+        <div className="max-w-4xl mx-auto space-y-6">
+          {/* Page Title */}
+          <div className="text-center space-y-2">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                <img 
+                  src="/lovable-uploads/acd49d0d-27bb-409a-a755-9e6bb75616fa.png" 
+                  alt="Adz Hub Logo" 
+                  className="w-8 h-8 object-contain"
+                />
+              </div>
+            </div>
+            <h1 className="text-2xl font-bold text-foreground">Adz Hub</h1>
+            <p className="text-muted-foreground">
+              Plataforma de Campanhas WhatsApp
+            </p>
           </div>
-          <p className="text-muted-foreground">
-            Configure todos os detalhes da sua campanha de disparo em massa
-          </p>
-        </div>
 
         <Card className="shadow-lg">
+          <CardHeader className="bg-primary text-primary-foreground p-6 rounded-t-lg">
+            <CardTitle className="flex items-center justify-center gap-2 text-xl font-bold">
+              <MessageSquare className="h-6 w-6" />
+              Nova Campanha
+            </CardTitle>
+          </CardHeader>
           <CardContent className="p-6 space-y-6">
             {/* Instance Selection */}
             <div className="space-y-2">
@@ -452,6 +468,7 @@ const CampaignsIndex = () => {
             </Button>
           </CardContent>
         </Card>
+        </div>
       </div>
 
       {/* Column Mapping Modal */}
