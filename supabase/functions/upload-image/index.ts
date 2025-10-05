@@ -74,12 +74,22 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Generate unique filename
-    const timestamp = Date.now();
-    const randomId = crypto.randomUUID().substring(0, 8);
+    // Generate filename
+    let fileName: string;
     const fileExtension = file.name.split('.').pop();
-    const baseName = customFileName || file.name.split('.')[0];
-    const fileName = `${timestamp}-${randomId}-${baseName}.${fileExtension}`;
+    
+    if (customFileName) {
+      // Sanitize custom filename to prevent path traversal attacks
+      const sanitizedName = customFileName.replace(/[^a-zA-Z0-9-_]/g, '_');
+      fileName = `${sanitizedName}.${fileExtension}`;
+    } else {
+      // Use timestamp and random ID for unique filename
+      const timestamp = Date.now();
+      const randomId = crypto.randomUUID().substring(0, 8);
+      fileName = `${timestamp}-${randomId}.${fileExtension}`;
+    }
+    
+    console.log('Generated filename:', fileName);
     
     // Organize by client_id if provided
     const filePath = clientId ? `${clientId}/${fileName}` : fileName;
