@@ -138,8 +138,31 @@ const Content = () => {
 
     window.addEventListener('profileChanged', handleProfileChange as EventListener);
 
+    // Setup realtime subscription for content_ideas
+    const channel = supabase
+      .channel('content-ideas-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'content_ideas'
+        },
+        (payload) => {
+          console.log('New content idea received:', payload);
+          const newIdea = transformIdea(payload.new as any);
+          setContentIdeas(prev => [newIdea, ...prev]);
+          toast({
+            title: 'Nova Big Idea!',
+            description: 'Uma nova big idea foi criada.',
+          });
+        }
+      )
+      .subscribe();
+
     return () => {
       window.removeEventListener('profileChanged', handleProfileChange as EventListener);
+      supabase.removeChannel(channel);
     };
   }, []);
 
