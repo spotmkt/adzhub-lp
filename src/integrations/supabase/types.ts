@@ -101,6 +101,7 @@ export type Database = {
           status: string | null
           title: string
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           briefing?: string | null
@@ -114,6 +115,7 @@ export type Database = {
           status?: string | null
           title: string
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           briefing?: string | null
@@ -127,10 +129,18 @@ export type Database = {
           status?: string | null
           title?: string
           updated_at?: string
+          user_id?: string | null
         }
         Relationships: [
           {
             foreignKeyName: "actions_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_actions_client"
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "clients"
@@ -458,6 +468,7 @@ export type Database = {
           twitter_image: string | null
           twitter_title: string | null
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           author_avatar?: string | null
@@ -489,6 +500,7 @@ export type Database = {
           twitter_image?: string | null
           twitter_title?: string | null
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           author_avatar?: string | null
@@ -520,6 +532,7 @@ export type Database = {
           twitter_image?: string | null
           twitter_title?: string | null
           updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -927,6 +940,7 @@ export type Database = {
           titulo: string | null
           updated_at: string
           url_asset: string | null
+          user_id: string | null
         }
         Insert: {
           canal: string
@@ -941,6 +955,7 @@ export type Database = {
           titulo?: string | null
           updated_at?: string
           url_asset?: string | null
+          user_id?: string | null
         }
         Update: {
           canal?: string
@@ -955,10 +970,25 @@ export type Database = {
           titulo?: string | null
           updated_at?: string
           url_asset?: string | null
+          user_id?: string | null
         }
         Relationships: [
           {
             foreignKeyName: "content_assets_content_idea_id_fkey"
+            columns: ["content_idea_id"]
+            isOneToOne: false
+            referencedRelation: "content_ideas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_content_assets_client"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_content_assets_idea"
             columns: ["content_idea_id"]
             isOneToOne: false
             referencedRelation: "content_ideas"
@@ -986,6 +1016,7 @@ export type Database = {
           title_suggestion: string | null
           titulo: string
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           alternatives?: Json | null
@@ -1006,6 +1037,7 @@ export type Database = {
           title_suggestion?: string | null
           titulo: string
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           alternatives?: Json | null
@@ -1026,8 +1058,17 @@ export type Database = {
           title_suggestion?: string | null
           titulo?: string
           updated_at?: string
+          user_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "fk_content_ideas_client"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       image_templates: {
         Row: {
@@ -1265,6 +1306,7 @@ export type Database = {
           tipo_postagem: string
           titulo: string
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           canal: string
@@ -1278,6 +1320,7 @@ export type Database = {
           tipo_postagem: string
           titulo: string
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           canal?: string
@@ -1291,8 +1334,17 @@ export type Database = {
           tipo_postagem?: string
           titulo?: string
           updated_at?: string
+          user_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "fk_pending_posts_client"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -1579,6 +1631,27 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -1603,6 +1676,13 @@ export type Database = {
       halfvec_typmod_in: {
         Args: { "": unknown[] }
         Returns: number
+      }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
       }
       hnsw_bit_support: {
         Args: { "": unknown }
@@ -1679,6 +1759,7 @@ export type Database = {
     }
     Enums: {
       agenda_type: "personal" | "automation"
+      app_role: "admin" | "editor" | "viewer"
       event_status: "pending" | "completed" | "cancelled"
       recurrence_frequency:
         | "daily"
@@ -1814,6 +1895,7 @@ export const Constants = {
   public: {
     Enums: {
       agenda_type: ["personal", "automation"],
+      app_role: ["admin", "editor", "viewer"],
       event_status: ["pending", "completed", "cancelled"],
       recurrence_frequency: [
         "daily",
