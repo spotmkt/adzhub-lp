@@ -20,6 +20,7 @@ import BlogPost from "./pages/BlogPost";
 import Contact from "./pages/Contact";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import ImageEditor from "./pages/ImageEditor";
 import CampaignsModule from "@/modules/campaigns/CampaignsModule";
 import AgendaModule from "@/modules/agenda/AgendaModule";
 import AgendaSettings from "@/modules/agenda/pages/AgendaSettings";
@@ -64,6 +65,7 @@ function App(): React.ReactElement {
                 <Route path="/agenda" element={<Layout><AgendaModule /></Layout>} />
                 <Route path="/agenda/settings" element={<Layout><AgendaSettings /></Layout>} />
                 <Route path="/apps" element={<Layout><Apps /></Layout>} />
+                <Route path="/image-editor" element={<Layout><ImageEditor /></Layout>} />
                 <Route path="/settings" element={<Layout><Settings /></Layout>} />
                 <Route path="/content-generator-settings" element={<Layout><ContentGeneratorSettings /></Layout>} />
                 <Route path="*" element={<NotFound />} />

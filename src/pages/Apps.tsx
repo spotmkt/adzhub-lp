@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { AppWindow, Bot, Calendar, FileText, MessageSquare, Palette, Settings, Sparkles, MessageCircle } from 'lucide-react';
+import { AppWindow, Bot, Calendar, FileText, MessageSquare, Palette, Settings, Sparkles, MessageCircle, Wand2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const apps = [
@@ -35,6 +35,14 @@ const apps = [
     description: 'Gerencie compromissos pessoais e automações',
     icon: Calendar,
     color: 'secondary',
+    status: 'Ativo'
+  },
+  {
+    id: 10,
+    name: 'Editor de Imagens',
+    description: 'Edite imagens com IA usando prompts',
+    icon: Wand2,
+    color: 'primary',
     status: 'Ativo'
   },
   {
@@ -89,6 +97,8 @@ const Apps = () => {
       navigate('/agenda');
     } else if (appId === 9) {
       navigate('/campaigns');
+    } else if (appId === 10) {
+      navigate('/image-editor');
     }
   };
 
