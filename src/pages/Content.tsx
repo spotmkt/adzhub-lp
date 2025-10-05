@@ -440,6 +440,84 @@ const Content = () => {
     }
   };
 
+  const handleGenerateFromAlternative = async (alternative: string, ideaId: string) => {
+    if (!selectedClient) return;
+    
+    setGeneratingIdea(true);
+    try {
+      await fetch('https://n8n-n8n.ascl7r.easypanel.host/webhook/6bacb224-943e-4d1b-8819-48122b21fc8d', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          client_id: selectedClient,
+          alternative_idea: alternative,
+          source_idea_id: ideaId
+        }),
+      });
+
+      toast({
+        title: 'Sucesso',
+        description: 'Nova big idea sendo gerada a partir da alternativa!',
+      });
+      
+      setIdeaDialogOpen(false);
+      
+      setTimeout(() => {
+        fetchContentData(selectedClient);
+      }, 3000);
+      
+    } catch (error) {
+      console.error('Error generating from alternative:', error);
+      toast({
+        title: 'Erro',
+        description: 'Não foi possível gerar nova big idea.',
+        variant: 'destructive',
+      });
+    } finally {
+      setGeneratingIdea(false);
+    }
+  };
+
+  const handleReplaceWithAlternative = async (alternative: string, ideaId: string) => {
+    try {
+      const { error } = await supabase
+        .from('content_ideas')
+        .update({
+          titulo: alternative,
+          title: alternative,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', ideaId);
+
+      if (error) throw error;
+
+      setContentIdeas(prev =>
+        prev.map(idea =>
+          idea.id === ideaId 
+            ? { ...idea, title: alternative, titulo: alternative } 
+            : idea
+        )
+      );
+
+      toast({
+        title: 'Sucesso',
+        description: 'Big idea substituída pela alternativa!',
+      });
+
+      setIdeaDialogOpen(false);
+      
+    } catch (error) {
+      console.error('Error replacing with alternative:', error);
+      toast({
+        title: 'Erro',
+        description: 'Não foi possível substituir a big idea.',
+        variant: 'destructive',
+      });
+    }
+  };
+
   if (loading) {
     return <ContentLoadingSkeleton />;
   }
@@ -831,6 +909,8 @@ const Content = () => {
         idea={selectedIdea}
         open={ideaDialogOpen}
         onOpenChange={setIdeaDialogOpen}
+        onGenerateFromAlternative={handleGenerateFromAlternative}
+        onReplaceWithAlternative={handleReplaceWithAlternative}
       />
       
       <PostViewDialog

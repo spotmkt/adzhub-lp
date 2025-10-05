@@ -1,8 +1,9 @@
 import React from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Calendar, Target, Tag, Hash, Globe } from "lucide-react";
+import { Calendar, Target, Tag, Hash, Globe, Sparkles, RefreshCw } from "lucide-react";
 
 interface ContentIdea {
   id: string;
@@ -26,6 +27,8 @@ interface IdeaViewDialogProps {
   idea: ContentIdea | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onGenerateFromAlternative?: (alternative: string, ideaId: string) => void;
+  onReplaceWithAlternative?: (alternative: string, ideaId: string) => void;
 }
 
 const getPriorityColor = (priority: string) => {
@@ -41,7 +44,13 @@ const getPriorityColor = (priority: string) => {
   }
 };
 
-export const IdeaViewDialog = ({ idea, open, onOpenChange }: IdeaViewDialogProps) => {
+export const IdeaViewDialog = ({ 
+  idea, 
+  open, 
+  onOpenChange,
+  onGenerateFromAlternative,
+  onReplaceWithAlternative 
+}: IdeaViewDialogProps) => {
   if (!idea) return null;
 
   return (
@@ -129,14 +138,34 @@ export const IdeaViewDialog = ({ idea, open, onOpenChange }: IdeaViewDialogProps
             {/* Alternatives */}
             {idea.alternatives && idea.alternatives.length > 0 && (
               <div>
-                <h3 className="font-medium mb-2">Alternativas</h3>
-                <ul className="list-disc list-inside space-y-1">
+                <h3 className="font-medium mb-3">Alternativas</h3>
+                <div className="space-y-3">
                   {idea.alternatives.map((alternative, index) => (
-                    <li key={index} className="text-sm text-muted-foreground">
-                      {alternative}
-                    </li>
+                    <div key={index} className="flex items-start gap-3 p-3 border rounded-lg bg-card hover:bg-accent/50 transition-colors">
+                      <div className="flex-1 text-sm">{alternative}</div>
+                      <div className="flex gap-2 shrink-0">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => onGenerateFromAlternative?.(alternative, idea.id)}
+                          className="gap-2"
+                        >
+                          <Sparkles className="w-3 h-3" />
+                          Gerar
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="default"
+                          onClick={() => onReplaceWithAlternative?.(alternative, idea.id)}
+                          className="gap-2"
+                        >
+                          <RefreshCw className="w-3 h-3" />
+                          Substituir
+                        </Button>
+                      </div>
+                    </div>
                   ))}
-                </ul>
+                </div>
               </div>
             )}
 
