@@ -8,18 +8,28 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { User, Upload, Save, ArrowLeft, Plus, Wifi, WifiOff, Edit, Trash2, Check, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
 import { useCampaignsAuth } from '../contexts/CampaignsAuthContext';
 import { uploadProfileImage } from '../services/supabaseStorage';
 import { supabase } from '@/integrations/supabase/client';
 import ImageCropModal from './ImageCropModal';
 
 interface ProfileEditScreenProps {
-  onBack: () => void;
+  onBack?: () => void;
 }
 
 const ProfileEditScreen = ({ onBack }: ProfileEditScreenProps) => {
+  const navigate = useNavigate();
   const { user, updateUser } = useCampaignsAuth();
   const { toast } = useToast();
+  
+  const handleBack = () => {
+    if (onBack) {
+      onBack();
+    } else {
+      navigate('/campaigns');
+    }
+  };
   
   const [displayName, setDisplayName] = useState(user?.displayName || '');
   const [username, setUsername] = useState(user?.username || '');
@@ -559,7 +569,7 @@ const ProfileEditScreen = ({ onBack }: ProfileEditScreenProps) => {
         <div className="max-w-2xl mx-auto">
           <div className="flex items-center gap-4 mb-6">
             <Button
-              onClick={onBack}
+              onClick={handleBack}
               variant="outline"
               size="sm"
               className="flex items-center gap-2"
@@ -895,7 +905,7 @@ const ProfileEditScreen = ({ onBack }: ProfileEditScreenProps) => {
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={onBack}
+                    onClick={handleBack}
                     className="flex-1"
                   >
                     Cancelar

@@ -5,6 +5,7 @@ import { CampaignsAuthProvider } from "./contexts/CampaignsAuthContext";
 import CampaignsIndex from "./pages/CampaignsIndex";
 import CampaignsDashboard from "./pages/CampaignsDashboard";
 import CampaignDetails from "./pages/CampaignDetails";
+import ProfileEditScreen from "./components/ProfileEditScreen";
 import NotFound from "./pages/NotFound";
 
 /**
@@ -27,6 +28,7 @@ const CampaignsModule = () => {
         <Routes>
           <Route path="/" element={<CampaignsIndex />} />
           <Route path="/dashboard" element={<CampaignsDashboard />} />
+          <Route path="/profile" element={<ProfileEditScreen />} />
           <Route path="/campaign/:id" element={<CampaignDetails />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

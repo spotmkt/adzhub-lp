@@ -7,10 +7,9 @@ interface UserHeaderProps {
   userName?: string;
   userAvatar?: string;
   instanceCount?: number;
-  onEditProfile?: () => void;
 }
 
-const UserHeader = ({ userName = 'Usuário', userAvatar, instanceCount = 0, onEditProfile }: UserHeaderProps) => {
+const UserHeader = ({ userName = 'Usuário', userAvatar, instanceCount = 0 }: UserHeaderProps) => {
   const navigate = useNavigate();
 
   return (
@@ -44,17 +43,15 @@ const UserHeader = ({ userName = 'Usuário', userAvatar, instanceCount = 0, onEd
             <span className="hidden sm:inline">Dashboard</span>
           </Button>
           
-          {onEditProfile && (
-            <Button
-              onClick={onEditProfile}
-              variant="outline"
-              size="sm"
-              className="flex items-center gap-2"
-            >
-              <Settings className="h-4 w-4" />
-              <span className="hidden sm:inline">Editar Perfil</span>
-            </Button>
-          )}
+          <Button
+            onClick={() => navigate('/campaigns/profile')}
+            variant="outline"
+            size="sm"
+            className="flex items-center gap-2"
+          >
+            <Settings className="h-4 w-4" />
+            <span className="hidden sm:inline">Editar Perfil</span>
+          </Button>
           
           <Button
             onClick={() => navigate('/')}
