@@ -40,3 +40,13 @@ export const deleteImage = async (imageUrl: string): Promise<void> => {
     throw new Error('Erro ao excluir a imagem');
   }
 };
+
+export const truncateFileName = (fileName: string, maxLength: number = 30): string => {
+  if (fileName.length <= maxLength) return fileName;
+  
+  const ext = fileName.split('.').pop();
+  const nameWithoutExt = fileName.substring(0, fileName.lastIndexOf('.'));
+  const truncated = nameWithoutExt.substring(0, maxLength - (ext?.length || 0) - 4);
+  
+  return `${truncated}...${ext}`;
+};
