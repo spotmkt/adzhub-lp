@@ -61,12 +61,10 @@ const CampaignsIndex = () => {
   // Fetch instances
   useEffect(() => {
     const fetchInstances = async () => {
-      if (!user?.id) return;
-
+      // Temporariamente sem verificação de usuário
       const { data, error } = await (supabase as any)
         .from('instances')
         .select('*')
-        .eq('user_id', user.id)
         .eq('status', 'connected');
 
       if (error) {
@@ -83,7 +81,7 @@ const CampaignsIndex = () => {
     };
 
     fetchInstances();
-  }, [user, toast]);
+  }, [toast]);
 
   // Handle file upload
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -236,19 +234,20 @@ const CampaignsIndex = () => {
     };
   };
 
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
-        <Card className="w-full max-w-md">
-          <CardContent className="pt-6">
-            <p className="text-center text-muted-foreground">
-              Por favor, faça login para acessar as campanhas.
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
+  // Verificação de autenticação temporariamente desabilitada
+  // if (!isAuthenticated) {
+  //   return (
+  //     <div className="min-h-screen bg-background flex items-center justify-center p-4">
+  //       <Card className="w-full max-w-md">
+  //         <CardContent className="pt-6">
+  //           <p className="text-center text-muted-foreground">
+  //             Por favor, faça login para acessar as campanhas.
+  //           </p>
+  //         </CardContent>
+  //       </Card>
+  //     </div>
+  //   );
+  // }
 
   if (showSummary) {
     return <SummaryScreen formData={getFormData()} onBack={() => setShowSummary(false)} />;
