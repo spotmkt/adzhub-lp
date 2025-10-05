@@ -486,7 +486,6 @@ const Content = () => {
         .from('content_ideas')
         .update({
           titulo: alternative,
-          title: alternative,
           updated_at: new Date().toISOString()
         })
         .eq('id', ideaId);
