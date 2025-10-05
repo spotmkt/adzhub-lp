@@ -42,7 +42,8 @@ serve(async (req) => {
       imagem,
       plataforma,
       metadata = {}, 
-      scheduled_date 
+      scheduled_date,
+      user_id 
     } = body;
 
     if (!client_id || !tipo_postagem || !titulo || !conteudo) {
@@ -87,6 +88,7 @@ serve(async (req) => {
       .from('pending_posts')
       .insert({
         client_id,
+        user_id,
         tipo_postagem,
         titulo,
         conteudo,

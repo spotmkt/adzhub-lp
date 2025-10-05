@@ -139,7 +139,7 @@ const Content = () => {
     window.addEventListener('profileChanged', handleProfileChange as EventListener);
 
     // Setup realtime subscription for content_ideas
-    const channel = supabase
+    const ideasChannel = supabase
       .channel('content-ideas-changes')
       .on(
         'postgres_changes',
@@ -160,9 +160,32 @@ const Content = () => {
       )
       .subscribe();
 
+    // Setup realtime subscription for pending_posts
+    const postsChannel = supabase
+      .channel('pending-posts-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'pending_posts'
+        },
+        (payload) => {
+          console.log('New pending post received:', payload);
+          const newPost = payload.new as any;
+          setPendingPosts(prev => [newPost, ...prev]);
+          toast({
+            title: 'Nova Postagem!',
+            description: 'Uma nova postagem foi criada.',
+          });
+        }
+      )
+      .subscribe();
+
     return () => {
       window.removeEventListener('profileChanged', handleProfileChange as EventListener);
-      supabase.removeChannel(channel);
+      supabase.removeChannel(ideasChannel);
+      supabase.removeChannel(postsChannel);
     };
   }, []);
 
