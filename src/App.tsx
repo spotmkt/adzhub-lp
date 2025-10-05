@@ -20,6 +20,7 @@ import BlogPost from "./pages/BlogPost";
 import Contact from "./pages/Contact";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import CampaignsModule from "@/modules/campaigns/CampaignsModule";
 
 // Create QueryClient outside of component to avoid recreation on each render
 // Updated to fix caching issue
@@ -49,6 +50,9 @@ function App(): React.ReactElement {
                 <Route path="/blog/:slug" element={<BlogPost />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/auth" element={<Auth />} />
+                
+                {/* Campaigns Module - Independent WhatsApp campaigns manager */}
+                <Route path="/campaigns/*" element={<CampaignsModule />} />
                 
                 {/* App routes with Layout */}
                 <Route path="/" element={<Layout><Index /></Layout>} />
