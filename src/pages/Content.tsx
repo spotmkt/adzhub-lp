@@ -445,28 +445,28 @@ const Content = () => {
     
     setGeneratingIdea(true);
     try {
-      await fetch('https://n8n-n8n.ascl7r.easypanel.host/webhook/6bacb224-943e-4d1b-8819-48122b21fc8d', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      const { data, error } = await supabase.functions.invoke('generate-idea-from-alternative', {
+        body: {
           client_id: selectedClient,
-          alternative_idea: alternative,
+          alternative: alternative,
           source_idea_id: ideaId
-        }),
+        }
       });
+
+      if (error) throw error;
+
+      if (data?.idea) {
+        // Add the new idea to the local state immediately
+        const newIdea = transformIdea(data.idea);
+        setContentIdeas(prev => [newIdea, ...prev]);
+      }
 
       toast({
         title: 'Sucesso',
-        description: 'Nova big idea sendo gerada a partir da alternativa!',
+        description: 'Nova big idea criada a partir da alternativa!',
       });
       
       setIdeaDialogOpen(false);
-      
-      setTimeout(() => {
-        fetchContentData(selectedClient);
-      }, 3000);
       
     } catch (error) {
       console.error('Error generating from alternative:', error);
