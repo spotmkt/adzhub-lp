@@ -43,8 +43,41 @@ const AgendaModule = () => {
   const [selectedEvent, setSelectedEvent] = useState<AgendaEvent | null>(null);
   const [selectedClient, setSelectedClient] = useState<string>('');
   const [activeTab, setActiveTab] = useState<'personal' | 'automation'>('personal');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Check authentication on mount
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast({
+          title: 'Autenticação necessária',
+          description: 'Você precisa fazer login para acessar a agenda.',
+          variant: 'destructive',
+        });
+        navigate('/auth?redirect=/agenda');
+        return;
+      }
+      setIsAuthenticated(true);
+    };
+
+    checkAuth();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!session) {
+        setIsAuthenticated(false);
+        navigate('/auth?redirect=/agenda');
+      } else {
+        setIsAuthenticated(true);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
 
   useEffect(() => {
+    if (!isAuthenticated) return;
+
     const clientId = localStorage.getItem('selectedClientId');
     if (clientId) {
       setSelectedClient(clientId);
@@ -66,7 +99,7 @@ const AgendaModule = () => {
     return () => {
       window.removeEventListener('profileChanged', handleProfileChange as EventListener);
     };
-  }, []);
+  }, [isAuthenticated]);
 
   const fetchEvents = async (clientId: string) => {
     try {
@@ -244,7 +277,7 @@ const AgendaModule = () => {
     }
   };
 
-  if (loading) {
+  if (!isAuthenticated || loading) {
     return <ContentLoadingSkeleton />;
   }
 
