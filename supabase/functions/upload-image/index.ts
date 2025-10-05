@@ -33,6 +33,7 @@ Deno.serve(async (req) => {
     const formData = await req.formData();
     const file = formData.get('file') as File;
     const clientId = formData.get('client_id') as string;
+    const customFileName = formData.get('fileName') as string;
 
     if (!file) {
       console.log('No file provided in request');
@@ -77,7 +78,8 @@ Deno.serve(async (req) => {
     const timestamp = Date.now();
     const randomId = crypto.randomUUID().substring(0, 8);
     const fileExtension = file.name.split('.').pop();
-    const fileName = `${timestamp}-${randomId}.${fileExtension}`;
+    const baseName = customFileName || file.name.split('.')[0];
+    const fileName = `${timestamp}-${randomId}-${baseName}.${fileExtension}`;
     
     // Organize by client_id if provided
     const filePath = clientId ? `${clientId}/${fileName}` : fileName;
