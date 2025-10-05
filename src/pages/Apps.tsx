@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { AppWindow, Bot, Calendar, FileText, MessageSquare, Palette, Settings, Sparkles } from 'lucide-react';
+import { AppWindow, Bot, Calendar, FileText, MessageSquare, Palette, Settings, Sparkles, MessageCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const apps = [
@@ -19,6 +19,14 @@ const apps = [
     description: 'Crie posts e artigos automaticamente',
     icon: FileText,
     color: 'accent',
+    status: 'Ativo'
+  },
+  {
+    id: 9,
+    name: 'Campanhas de WhatsApp',
+    description: 'Crie e gerencie campanhas de disparo em massa',
+    icon: MessageCircle,
+    color: 'primary',
     status: 'Ativo'
   },
   {
@@ -77,6 +85,8 @@ const Apps = () => {
   const handleAppClick = (appId: number) => {
     if (appId === 2) {
       navigate('/content');
+    } else if (appId === 9) {
+      navigate('/campaigns');
     }
   };
 
