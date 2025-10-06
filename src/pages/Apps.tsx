@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { AppWindow, Bot, Calendar, FileText, MessageSquare, Palette, Settings, Sparkles, MessageCircle, Wand2 } from 'lucide-react';
+import { AppWindow, Bot, Calendar, FileText, MessageSquare, Palette, Settings, Sparkles, MessageCircle, Wand2, ClipboardEdit } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { AppConfigDialog } from '@/components/AppConfigDialog';
 
@@ -157,7 +157,7 @@ const Apps = () => {
                             onClick={(e) => handleConfigClick(e, { id: app.id, name: app.name })}
                             title="Configurar formulário"
                           >
-                            <Settings className="h-4 w-4" />
+                            <ClipboardEdit className="h-4 w-4" />
                           </Button>
                           {(app.id === 2 || app.id === 3) && (
                             <Button
