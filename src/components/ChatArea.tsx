@@ -152,31 +152,43 @@ export const ChatArea = ({
 
       try {
         const formData = new FormData();
-        formData.append('message', inputValue);
         formData.append('image', selectedImage);
         formData.append('prompt', inputValue);
-        formData.append('client_id', selectedClient?.id || '');
-        formData.append('timestamp', new Date().toISOString());
+
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 120000); // 2 minutos timeout
 
         const response = await fetch('https://n8n-n8n.ascl7r.easypanel.host/webhook/c340cac2-ac07-43aa-b1c5-70e2fd0e64c5', {
           method: 'POST',
           body: formData,
+          signal: controller.signal
         });
+
+        clearTimeout(timeoutId);
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         
         const contentType = response.headers.get('content-type');
+        console.log('Content-Type:', contentType);
         
-        if (contentType?.includes('image/')) {
-          const blob = await response.blob();
+        // Tenta processar como blob primeiro
+        const blob = await response.blob();
+        console.log('Blob type:', blob.type, 'size:', blob.size);
+        
+        if (blob.size === 0) {
+          throw new Error('Webhook retornou resposta vazia. Verifique se o workflow n8n está configurado para retornar a imagem.');
+        }
+        
+        // Se é uma imagem, cria URL e exibe
+        if (blob.type.startsWith('image/')) {
           const imageUrl = URL.createObjectURL(blob);
           
           setTimeout(() => {
             const aiResponse: Message = {
               id: Date.now().toString(),
-              content: '✅ Imagem editada com sucesso!',
+              content: '✅ Imagem editada com sucesso! Clique para baixar:',
               sender: 'ai',
               timestamp: new Date(),
               fileUrl: imageUrl,
@@ -185,38 +197,36 @@ export const ChatArea = ({
             setMessages(prev => [...prev, aiResponse]);
             setIsLoading(false);
           }, 1000);
-        } else {
-          const result = await response.text();
-          console.log('Image editor response:', result);
+        } else if (blob.type.includes('json')) {
+          // Se é JSON, tenta extrair a imagem
+          const text = await blob.text();
+          console.log('JSON response:', text);
           
           try {
-            const parsedResult = JSON.parse(result);
-            const imageData = parsedResult.editedImage || parsedResult.image || parsedResult.data || parsedResult.url || parsedResult.imageUrl;
+            const parsedResult = JSON.parse(text);
+            const imageData = parsedResult.editedImage || parsedResult.image || parsedResult.data || parsedResult.url || parsedResult.imageUrl || parsedResult.base64;
             
-            setTimeout(() => {
-              const aiResponse: Message = {
-                id: Date.now().toString(),
-                content: parsedResult.output || '✅ Imagem editada com sucesso!',
-                sender: 'ai',
-                timestamp: new Date(),
-                fileUrl: imageData,
-                fileName: `edited-${selectedImage.name}`
-              };
-              setMessages(prev => [...prev, aiResponse]);
-              setIsLoading(false);
-            }, 1000);
+            if (imageData) {
+              setTimeout(() => {
+                const aiResponse: Message = {
+                  id: Date.now().toString(),
+                  content: '✅ Imagem editada com sucesso! Clique para baixar:',
+                  sender: 'ai',
+                  timestamp: new Date(),
+                  fileUrl: imageData,
+                  fileName: `edited-${selectedImage.name}`
+                };
+                setMessages(prev => [...prev, aiResponse]);
+                setIsLoading(false);
+              }, 1000);
+            } else {
+              throw new Error('JSON não contém dados de imagem. Resposta: ' + text);
+            }
           } catch (parseError) {
-            setTimeout(() => {
-              const aiResponse: Message = {
-                id: Date.now().toString(),
-                content: result || '✅ Processamento concluído!',
-                sender: 'ai',
-                timestamp: new Date()
-              };
-              setMessages(prev => [...prev, aiResponse]);
-              setIsLoading(false);
-            }, 1000);
+            throw new Error('Erro ao processar JSON: ' + text);
           }
+        } else {
+          throw new Error(`Tipo de resposta inesperado: ${blob.type}. O webhook deve retornar uma imagem ou JSON com dados da imagem.`);
         }
       } catch (error) {
         console.error('Error sending to image editor:', error);
@@ -224,7 +234,9 @@ export const ChatArea = ({
         setTimeout(() => {
           const errorResponse: Message = {
             id: Date.now().toString(),
-            content: `❌ Erro ao enviar para o editor de imagem:\n\n${error instanceof Error ? error.message : 'Erro desconhecido'}\n\nVerifique se o webhook está funcionando.`,
+            content: error instanceof Error && error.name === 'AbortError'
+              ? '❌ Timeout: A edição da imagem demorou mais de 2 minutos. Tente novamente ou use uma imagem menor.'
+              : `❌ Erro ao editar imagem:\n\n${error instanceof Error ? error.message : 'Erro desconhecido'}\n\n**Certifique-se de que:**\n- O webhook n8n está configurado para retornar "Binary Data" no node "Respond to Webhook"\n- O workflow está processando e retornando a imagem editada\n- A imagem selecionada é válida`,
             sender: 'ai',
             timestamp: new Date()
           };
