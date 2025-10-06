@@ -24,6 +24,7 @@ import ImageEditor from "./pages/ImageEditor";
 import CampaignsModule from "@/modules/campaigns/CampaignsModule";
 import AgendaModule from "@/modules/agenda/AgendaModule";
 import AgendaSettings from "@/modules/agenda/pages/AgendaSettings";
+import TasksModule from "@/modules/tasks/TasksModule";
 
 // Create QueryClient outside of component to avoid recreation on each render
 // Updated to fix caching issue
@@ -64,6 +65,7 @@ function App(): React.ReactElement {
                 <Route path="/content" element={<Layout><Content /></Layout>} />
                 <Route path="/agenda" element={<Layout><AgendaModule /></Layout>} />
                 <Route path="/agenda/settings" element={<Layout><AgendaSettings /></Layout>} />
+                <Route path="/tasks/*" element={<Layout><TasksModule /></Layout>} />
                 <Route path="/apps" element={<Layout><Apps /></Layout>} />
                 <Route path="/image-editor" element={<Layout><ImageEditor /></Layout>} />
                 <Route path="/settings" element={<Layout><Settings /></Layout>} />

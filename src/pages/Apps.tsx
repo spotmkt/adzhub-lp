@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { AppWindow, Bot, Calendar, FileText, MessageSquare, Palette, Settings, Sparkles, MessageCircle, Wand2, ClipboardEdit } from 'lucide-react';
+import { AppWindow, Bot, Calendar, FileText, MessageSquare, Palette, Settings, Sparkles, MessageCircle, Wand2, ClipboardEdit, CheckSquare } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { AppConfigDialog } from '@/components/AppConfigDialog';
 
@@ -45,6 +45,14 @@ const apps = [
     description: 'Edite imagens com IA usando prompts',
     icon: Wand2,
     color: 'primary',
+    status: 'Ativo'
+  },
+  {
+    id: 11,
+    name: 'Gerador de Tarefas',
+    description: 'Crie tarefas com prazos de entrega definidos',
+    icon: CheckSquare,
+    color: 'accent',
     status: 'Ativo'
   },
   {
@@ -103,6 +111,8 @@ const Apps = () => {
       navigate('/campaigns');
     } else if (appId === 10) {
       navigate('/image-editor');
+    } else if (appId === 11) {
+      navigate('/tasks');
     }
   };
 
