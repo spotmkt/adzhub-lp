@@ -72,18 +72,23 @@ const ImageEditor = () => {
 
       const contentType = response.headers.get('content-type');
       console.log('Content-Type:', contentType);
+      console.log('Response headers:', Object.fromEntries(response.headers.entries()));
 
-      // Se a resposta é uma imagem (blob), converte para URL
-      if (contentType?.includes('image/')) {
-        const blob = await response.blob();
+      // Tenta processar como blob primeiro (pode ser binário direto)
+      const blob = await response.blob();
+      console.log('Blob type:', blob.type, 'Blob size:', blob.size);
+
+      // Se é uma imagem, converte para URL
+      if (blob.type.startsWith('image/')) {
         const imageUrl = URL.createObjectURL(blob);
         setEditedImage(imageUrl);
         toast.success('Imagem editada com sucesso!');
-      } else {
-        // Tenta processar como JSON
-        const result = await response.json();
-        console.log('Resposta do webhook:', result);
-
+      } else if (contentType?.includes('json') || blob.type.includes('json')) {
+        // Se for JSON, tenta ler o texto e parsear
+        const text = await blob.text();
+        console.log('JSON response:', text);
+        const result = JSON.parse(text);
+        
         // Verifica diferentes campos possíveis na resposta
         const imageData = result.editedImage || result.image || result.data || result.url || result.imageUrl || result.base64;
         
@@ -92,8 +97,11 @@ const ImageEditor = () => {
           toast.success('Imagem editada com sucesso!');
         } else {
           console.error('Resposta do webhook não contém imagem:', result);
-          toast.error('Webhook não retornou imagem editada');
+          toast.error('Configure o n8n para retornar o binário da imagem no "Respond to Webhook"');
         }
+      } else {
+        console.error('Tipo de resposta desconhecido:', blob.type);
+        toast.error('Formato de resposta não reconhecido');
       }
     } catch (error) {
       console.error('Error:', error);
