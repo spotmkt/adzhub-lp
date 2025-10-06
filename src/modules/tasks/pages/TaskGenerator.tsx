@@ -90,7 +90,7 @@ const TaskGenerator = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Calendar className="h-5 w-5 text-primary" />
-              Nova Tarefa
+              Novo Ticket
             </CardTitle>
             <CardDescription>
               Descreva a tarefa e defina a data limite de entrega
