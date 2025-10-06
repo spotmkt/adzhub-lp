@@ -394,6 +394,24 @@ export const ChatArea = ({
     };
     setMessages(prev => [...prev, resultMessage]);
     setShowImageEditorWidget(false);
+    setIsLoading(false);
+  };
+
+  const handleImageEditorSubmit = (image: File, prompt: string) => {
+    // Create image preview URL
+    const imageUrl = URL.createObjectURL(image);
+    
+    // Add user message with image and prompt
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      content: prompt,
+      sender: 'user',
+      timestamp: new Date(),
+      fileUrl: imageUrl,
+      fileName: image.name
+    };
+    setMessages(prev => [...prev, userMessage]);
+    setIsLoading(true);
   };
 
   const handleAudioRecord = (audioBlob: Blob) => {
@@ -784,6 +802,7 @@ export const ChatArea = ({
                 <div className="mb-4">
                   <ImageEditorChatWidget 
                     onComplete={handleImageEditorComplete}
+                    onSubmit={handleImageEditorSubmit}
                   />
                 </div>
               )}

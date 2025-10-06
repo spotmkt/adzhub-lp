@@ -10,12 +10,14 @@ import { useImageEditor } from '@/hooks/useImageEditor';
 
 interface ImageEditorChatWidgetProps {
   onComplete?: (result: any) => void;
+  onSubmit?: (image: File, prompt: string) => void;
   initialImage?: File;
   initialPrompt?: string;
 }
 
 export const ImageEditorChatWidget = ({ 
-  onComplete, 
+  onComplete,
+  onSubmit,
   initialImage, 
   initialPrompt 
 }: ImageEditorChatWidgetProps) => {
@@ -35,6 +37,9 @@ export const ImageEditorChatWidget = ({
     if (!image || !prompt.trim()) {
       return;
     }
+
+    // Notify parent about submission
+    onSubmit?.(image, prompt);
 
     try {
       const editResult = await editImage(image, prompt);
