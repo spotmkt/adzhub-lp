@@ -47,7 +47,7 @@ export default function Landing() {
 
             {/* Main Heading */}
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight">
-              Maximize a produtividade
+              Gere ROI através do Whatsapp
               <br />
               <span className="text-primary">do seu marketing</span>
             </h1>
