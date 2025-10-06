@@ -70,11 +70,10 @@ export const ChatArea = ({
   const [isAudioAnalyzerActive, setIsAudioAnalyzerActive] = useState(false);
   const [selectedAudio, setSelectedAudio] = useState<File | null>(null);
   const [isImageEditorActive, setIsImageEditorActive] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [showImageEditorWidget, setShowImageEditorWidget] = useState(false);
   const [isToolsMenuOpen, setIsToolsMenuOpen] = useState(false);
   const videoInputRef = useRef<HTMLInputElement>(null);
   const audioInputRef = useRef<HTMLInputElement>(null);
-  const imageInputRef = useRef<HTMLInputElement>(null);
 
   // Make functions available globally for external calls
   useEffect(() => {
@@ -138,114 +137,8 @@ export const ChatArea = ({
     setMessages(prev => [...prev, messageData]);
     setIsLoading(true);
 
-    // If image editor is active, send to image editor webhook
-    if (isImageEditorActive) {
-      if (!selectedImage) {
-        setMessages(prev => [...prev, {
-          id: Date.now().toString(),
-          content: '❌ Por favor, selecione uma imagem antes de enviar a mensagem.',
-          sender: 'ai',
-          timestamp: new Date()
-        }]);
-        setIsLoading(false);
-        return;
-      }
-
-      try {
-        const formData = new FormData();
-        formData.append('image', selectedImage);
-        formData.append('prompt', inputValue);
-
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 120000); // 2 minutos timeout
-
-        const response = await fetch('https://n8n-n8n.ascl7r.easypanel.host/webhook/c340cac2-ac07-43aa-b1c5-70e2fd0e64c5', {
-          method: 'POST',
-          body: formData,
-          signal: controller.signal
-        });
-
-        clearTimeout(timeoutId);
-        
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const contentType = response.headers.get('content-type');
-        console.log('Content-Type:', contentType);
-        
-        // Tenta processar como blob primeiro
-        const blob = await response.blob();
-        console.log('Blob type:', blob.type, 'size:', blob.size);
-        
-        if (blob.size === 0) {
-          throw new Error('Webhook retornou resposta vazia. Verifique se o workflow n8n está configurado para retornar a imagem.');
-        }
-        
-        // Se é uma imagem, cria URL e exibe
-        if (blob.type.startsWith('image/')) {
-          const imageUrl = URL.createObjectURL(blob);
-          
-          setTimeout(() => {
-            const aiResponse: Message = {
-              id: Date.now().toString(),
-              content: '✅ Imagem editada com sucesso! Clique para baixar:',
-              sender: 'ai',
-              timestamp: new Date(),
-              fileUrl: imageUrl,
-              fileName: `edited-${selectedImage.name}`
-            };
-            setMessages(prev => [...prev, aiResponse]);
-            setIsLoading(false);
-          }, 1000);
-        } else if (blob.type.includes('json')) {
-          // Se é JSON, tenta extrair a imagem
-          const text = await blob.text();
-          console.log('JSON response:', text);
-          
-          try {
-            const parsedResult = JSON.parse(text);
-            const imageData = parsedResult.editedImage || parsedResult.image || parsedResult.data || parsedResult.url || parsedResult.imageUrl || parsedResult.base64;
-            
-            if (imageData) {
-              setTimeout(() => {
-                const aiResponse: Message = {
-                  id: Date.now().toString(),
-                  content: '✅ Imagem editada com sucesso! Clique para baixar:',
-                  sender: 'ai',
-                  timestamp: new Date(),
-                  fileUrl: imageData,
-                  fileName: `edited-${selectedImage.name}`
-                };
-                setMessages(prev => [...prev, aiResponse]);
-                setIsLoading(false);
-              }, 1000);
-            } else {
-              throw new Error('JSON não contém dados de imagem. Resposta: ' + text);
-            }
-          } catch (parseError) {
-            throw new Error('Erro ao processar JSON: ' + text);
-          }
-        } else {
-          throw new Error(`Tipo de resposta inesperado: ${blob.type}. O webhook deve retornar uma imagem ou JSON com dados da imagem.`);
-        }
-      } catch (error) {
-        console.error('Error sending to image editor:', error);
-        
-        setTimeout(() => {
-          const errorResponse: Message = {
-            id: Date.now().toString(),
-            content: error instanceof Error && error.name === 'AbortError'
-              ? '❌ Timeout: A edição da imagem demorou mais de 2 minutos. Tente novamente ou use uma imagem menor.'
-              : `❌ Erro ao editar imagem:\n\n${error instanceof Error ? error.message : 'Erro desconhecido'}\n\n**Certifique-se de que:**\n- O webhook n8n está configurado para retornar "Binary Data" no node "Respond to Webhook"\n- O workflow está processando e retornando a imagem editada\n- A imagem selecionada é válida`,
-            sender: 'ai',
-            timestamp: new Date()
-          };
-          setMessages(prev => [...prev, errorResponse]);
-          setIsLoading(false);
-        }, 1000);
-      }
-    } else if (isAudioAnalyzerActive) {
+    // If audio analyzer is active, send to audio analyzer webhook
+    if (isAudioAnalyzerActive) {
       if (!selectedAudio) {
         setMessages(prev => [...prev, {
           id: Date.now().toString(),
@@ -474,16 +367,18 @@ export const ChatArea = ({
     setSelectedAudio(null);
   };
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setSelectedImage(file);
-      event.target.value = '';
-    }
-  };
-
-  const removeSelectedImage = () => {
-    setSelectedImage(null);
+  const handleImageEditorComplete = (result: any) => {
+    // Add result message to chat
+    const resultMessage: Message = {
+      id: Date.now().toString(),
+      content: '✅ Imagem editada com sucesso!',
+      sender: 'ai',
+      timestamp: new Date(),
+      fileUrl: result.editedImage,
+      fileName: 'edited-image.png'
+    };
+    setMessages(prev => [...prev, resultMessage]);
+    setShowImageEditorWidget(false);
   };
 
   const handleAudioRecord = (audioBlob: Blob) => {
@@ -713,7 +608,7 @@ export const ChatArea = ({
             <Popover open={isToolsMenuOpen} onOpenChange={setIsToolsMenuOpen}>
               <PopoverTrigger asChild>
                 <Button
-                  variant={isVideoAnalyzerActive || isAudioAnalyzerActive || isImageEditorActive ? "default" : "outline"}
+                  variant={isVideoAnalyzerActive || isAudioAnalyzerActive || showImageEditorWidget ? "default" : "outline"}
                   size="icon"
                   title="Ferramentas"
                 >
@@ -764,20 +659,19 @@ export const ChatArea = ({
                   </button>
                   <button
                     onClick={() => {
-                      setIsImageEditorActive(!isImageEditorActive);
-                      if (!isImageEditorActive) {
-                        setIsVideoAnalyzerActive(false);
-                        setIsAudioAnalyzerActive(false);
-                      }
+                      setIsImageEditorActive(false);
+                      setShowImageEditorWidget(true);
+                      setIsVideoAnalyzerActive(false);
+                      setIsAudioAnalyzerActive(false);
                       setIsToolsMenuOpen(false);
                     }}
                     className={`w-full flex items-center px-2 py-2 text-sm rounded-md hover:bg-accent hover:text-accent-foreground transition-colors ${
-                      isImageEditorActive ? 'bg-primary/10 text-primary' : 'text-foreground'
+                      showImageEditorWidget ? 'bg-primary/10 text-primary' : 'text-foreground'
                     }`}
                   >
                     <Wand2 className="h-4 w-4 mr-2" />
                     Editor de Imagem
-                    {isImageEditorActive && (
+                    {showImageEditorWidget && (
                       <Badge variant="secondary" className="ml-auto text-xs">Ativo</Badge>
                     )}
                   </button>
@@ -853,44 +747,17 @@ export const ChatArea = ({
                   )}
                 </div>
               )}
-              {isImageEditorActive && (
-                <div className="flex items-center space-x-2">
-                  <input
-                    ref={imageInputRef}
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    className="hidden"
+              {showImageEditorWidget && (
+                <div className="mb-4">
+                  <ImageEditorChatWidget 
+                    onComplete={handleImageEditorComplete}
                   />
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => imageInputRef.current?.click()}
-                    className="text-sm"
-                  >
-                    Selecionar Imagem
-                  </Button>
-                  {selectedImage && (
-                    <>
-                      <span className="text-sm text-muted-foreground">
-                        {selectedImage.name}
-                      </span>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={removeSelectedImage}
-                        className="h-6 w-6 p-0"
-                      >
-                        ×
-                      </Button>
-                    </>
-                  )}
                 </div>
               )}
               <Input
                 placeholder={
-                  isImageEditorActive
-                    ? "Descreva como deseja editar a imagem..."
+                  showImageEditorWidget
+                    ? "Use o formulário acima para editar a imagem..."
                     : isAudioAnalyzerActive 
                     ? "Digite sua mensagem para análise de áudio..." 
                     : isVideoAnalyzerActive 
@@ -900,8 +767,8 @@ export const ChatArea = ({
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyPress={handleKeyPress}
-                disabled={isLoading}
-                className={`resize-none ${isAudioAnalyzerActive || isVideoAnalyzerActive || isImageEditorActive ? 'border-primary ring-1 ring-primary/20' : ''}`}
+                disabled={isLoading || showImageEditorWidget}
+                className={`resize-none ${isAudioAnalyzerActive || isVideoAnalyzerActive ? 'border-primary ring-1 ring-primary/20' : ''}`}
               />
             </div>
             <Button 
