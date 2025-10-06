@@ -64,32 +64,17 @@ const ImageEditor = () => {
       }
 
       const result = await response.json();
-      console.log('Resposta completa do webhook:', result);
-      console.log('Propriedades disponíveis:', Object.keys(result));
+      console.log('Resposta do webhook:', result);
 
-      // Tenta encontrar a imagem em diferentes formatos possíveis
-      const possibleImageFields = ['editedImage', 'image', 'data', 'url', 'imageUrl', 'base64', 'output'];
-      let foundImage = null;
-
-      for (const field of possibleImageFields) {
-        if (result[field]) {
-          console.log(`Imagem encontrada no campo: ${field}`);
-          foundImage = result[field];
-          break;
-        }
-      }
-
-      if (foundImage) {
-        // Se for base64 sem prefixo, adiciona
-        if (!foundImage.startsWith('data:') && !foundImage.startsWith('http')) {
-          foundImage = `data:image/png;base64,${foundImage}`;
-        }
-        setEditedImage(foundImage);
+      // Verifica se há uma imagem editada na resposta
+      if (result.editedImage) {
+        setEditedImage(result.editedImage);
+        toast.success('Imagem editada com sucesso!');
+      } else if (result.image) {
+        setEditedImage(result.image);
         toast.success('Imagem editada com sucesso!');
       } else {
-        console.warn('⚠️ A imagem editada não foi encontrada na resposta do webhook.');
-        console.warn('O webhook precisa retornar a imagem como base64 ou URL em um destes campos:', possibleImageFields.join(', '));
-        toast.error('O webhook não retornou a imagem editada. Verifique a configuração do n8n.');
+        toast.success('Imagem enviada para edição!');
       }
     } catch (error) {
       console.error('Error:', error);
