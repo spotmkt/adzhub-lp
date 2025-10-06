@@ -47,7 +47,7 @@ export default function Landing() {
 
             {/* Main Heading */}
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight">
-              Gere ROI através do Whatsapp
+              A melhor plataforma de campanhas no whatsapp do mundo
               <br />
               <span className="text-primary">do seu marketing</span>
             </h1>
