@@ -241,6 +241,39 @@ export type Database = {
           },
         ]
       }
+      app_configurations: {
+        Row: {
+          app_id: number
+          app_name: string
+          created_at: string | null
+          id: string
+          input_form: Json | null
+          output_template: Json | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          app_id: number
+          app_name: string
+          created_at?: string | null
+          id?: string
+          input_form?: Json | null
+          output_template?: Json | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          app_id?: number
+          app_name?: string
+          created_at?: string | null
+          id?: string
+          input_form?: Json | null
+          output_template?: Json | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       benchmarks: {
         Row: {
           alcance: number | null

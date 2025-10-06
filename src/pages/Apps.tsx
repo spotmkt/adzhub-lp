@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { AppWindow, Bot, Calendar, FileText, MessageSquare, Palette, Settings, Sparkles, MessageCircle, Wand2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { AppConfigDialog } from '@/components/AppConfigDialog';
 
 const apps = [
   {
@@ -89,6 +91,8 @@ const apps = [
 
 const Apps = () => {
   const navigate = useNavigate();
+  const [configDialogOpen, setConfigDialogOpen] = useState(false);
+  const [selectedApp, setSelectedApp] = useState<{ id: number; name: string } | null>(null);
 
   const handleAppClick = (appId: number) => {
     if (appId === 2) {
@@ -109,6 +113,12 @@ const Apps = () => {
     } else if (appId === 3) {
       navigate('/agenda/settings');
     }
+  };
+
+  const handleConfigClick = (e: React.MouseEvent, app: { id: number; name: string }) => {
+    e.stopPropagation();
+    setSelectedApp(app);
+    setConfigDialogOpen(true);
   };
 
   return (
@@ -138,15 +148,29 @@ const Apps = () => {
                       <Icon className="h-6 w-6 text-primary" />
                     </div>
                     <div className="flex items-center gap-2">
-                      {app.status === 'Ativo' && (app.id === 2 || app.id === 3) && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
-                          onClick={(e) => handleSettingsClick(e, app.id)}
-                        >
-                          <Settings className="h-4 w-4" />
-                        </Button>
+                      {app.status === 'Ativo' && (
+                        <>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                            onClick={(e) => handleConfigClick(e, { id: app.id, name: app.name })}
+                            title="Configurar formulário"
+                          >
+                            <Settings className="h-4 w-4" />
+                          </Button>
+                          {(app.id === 2 || app.id === 3) && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                              onClick={(e) => handleSettingsClick(e, app.id)}
+                              title="Configurações avançadas"
+                            >
+                              <Settings className="h-4 w-4" />
+                            </Button>
+                          )}
+                        </>
                       )}
                       <Badge 
                         variant={app.status === 'Ativo' ? 'default' : 'secondary'}
@@ -181,6 +205,15 @@ const Apps = () => {
             </div>
           </div>
         </div>
+
+        {selectedApp && (
+          <AppConfigDialog
+            open={configDialogOpen}
+            onOpenChange={setConfigDialogOpen}
+            appId={selectedApp.id}
+            appName={selectedApp.name}
+          />
+        )}
       </div>
     </div>
   );
