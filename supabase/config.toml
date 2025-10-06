@@ -17,3 +17,6 @@ verify_jwt = false
 
 [functions.generate-idea-from-alternative]
 verify_jwt = false
+
+[functions.edit-image-ai]
+verify_jwt = true

@@ -11,6 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { ClientDropdown } from './ClientDropdown';
 import { FileUpload } from './FileUpload';
 import { AudioRecorder } from './AudioRecorder';
+import { ImageEditorChatWidget } from './ImageEditorChatWidget';
 
 interface Message {
   id: string;
