@@ -63,18 +63,30 @@ const ImageEditor = () => {
         throw new Error(`Erro ao enviar imagem: ${response.status}`);
       }
 
-      const result = await response.json();
-      console.log('Resposta do webhook:', result);
+      const contentType = response.headers.get('content-type');
+      console.log('Content-Type:', contentType);
 
-      // Verifica se há uma imagem editada na resposta
-      if (result.editedImage) {
-        setEditedImage(result.editedImage);
-        toast.success('Imagem editada com sucesso!');
-      } else if (result.image) {
-        setEditedImage(result.image);
+      // Se a resposta é uma imagem (blob), converte para URL
+      if (contentType?.includes('image/')) {
+        const blob = await response.blob();
+        const imageUrl = URL.createObjectURL(blob);
+        setEditedImage(imageUrl);
         toast.success('Imagem editada com sucesso!');
       } else {
-        toast.success('Imagem enviada para edição!');
+        // Tenta processar como JSON
+        const result = await response.json();
+        console.log('Resposta do webhook:', result);
+
+        // Verifica diferentes campos possíveis na resposta
+        const imageData = result.editedImage || result.image || result.data || result.url || result.imageUrl || result.base64;
+        
+        if (imageData) {
+          setEditedImage(imageData);
+          toast.success('Imagem editada com sucesso!');
+        } else {
+          console.error('Resposta do webhook não contém imagem:', result);
+          toast.error('Webhook não retornou imagem editada');
+        }
       }
     } catch (error) {
       console.error('Error:', error);
