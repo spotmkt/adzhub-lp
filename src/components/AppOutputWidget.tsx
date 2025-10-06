@@ -16,21 +16,23 @@ export const AppOutputWidget = ({ appId, appName, data, onAction }: AppOutputWid
     switch (appId) {
       case 10: // Editor de Imagens
         return (
-          <Card className="w-full max-w-2xl">
-            <CardContent className="p-4 space-y-4">
+          <Card className="w-full max-w-lg">
+            <CardContent className="p-3 space-y-3">
               {data.beforeImage && data.afterImage && (
-                <div className="relative w-full aspect-video rounded-lg overflow-hidden">
+                <div className="relative w-full max-h-[300px] rounded-lg overflow-hidden">
                   <ReactCompareSlider
                     itemOne={
                       <ReactCompareSliderImage
                         src={data.beforeImage}
                         alt="Imagem original"
+                        style={{ objectFit: 'contain', maxHeight: '300px' }}
                       />
                     }
                     itemTwo={
                       <ReactCompareSliderImage
                         src={data.afterImage}
                         alt="Imagem editada"
+                        style={{ objectFit: 'contain', maxHeight: '300px' }}
                       />
                     }
                   />
@@ -38,11 +40,11 @@ export const AppOutputWidget = ({ appId, appName, data, onAction }: AppOutputWid
               )}
 
               {data.result && !data.beforeImage && (
-                <div className="w-full">
+                <div className="w-full max-h-[300px] flex items-center justify-center">
                   <img 
                     src={data.result} 
                     alt="Resultado" 
-                    className="w-full rounded-lg"
+                    className="max-w-full max-h-[300px] object-contain rounded-lg"
                   />
                 </div>
               )}
