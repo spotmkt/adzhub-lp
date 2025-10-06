@@ -102,7 +102,7 @@ const TaskGenerator = () => {
             client_id: "cliente",
             user_id: "Usuário",
           },
-          callback_url: `https://lovable.yourapp.com/api/callback/${requestId}`,
+          callback_url: `https://xciubsogktecqcgafwaa.supabase.co/functions/v1/receive-task-proposals`,
         }),
       });
 
@@ -110,15 +110,49 @@ const TaskGenerator = () => {
         throw new Error('Falha ao enviar tarefa');
       }
 
-      toast({
-        title: 'Tarefa enviada!',
-        description: 'Aguardando geração das tarefas...',
-      });
+      // Process response directly from webhook
+      const responseData = await response.json();
+      console.log('Webhook response:', responseData);
+
+      // Check if response contains the task proposal in "output" field
+      if (responseData.output) {
+        const { output } = responseData;
+        
+        // Save to database
+        const { data: savedProposal, error: dbError } = await supabase
+          .from('task_proposals')
+          .insert({
+            request_id: output.request_id || requestId,
+            card_type: output.card_type,
+            parent_task: output.parent_task,
+            subtasks: output.subtasks,
+          })
+          .select()
+          .single();
+
+        if (dbError) {
+          console.error('Error saving task proposal:', dbError);
+          throw new Error('Falha ao salvar tarefas geradas');
+        }
+
+        // Add to list immediately
+        setTaskProposals(prev => [savedProposal, ...prev]);
+
+        toast({
+          title: 'Tarefas geradas!',
+          description: 'Suas tarefas foram criadas com sucesso.',
+        });
+      } else {
+        toast({
+          title: 'Tarefa enviada!',
+          description: 'Aguardando geração das tarefas...',
+        });
+      }
 
       // Clear form
       setTaskText('');
       setDeadline('');
-      setIsSubmitting(false);
+      setCurrentRequestId(null);
     } catch (error) {
       if (error instanceof z.ZodError) {
         toast({
