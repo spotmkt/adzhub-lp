@@ -65,8 +65,8 @@ function App(): React.ReactElement {
                 <Route path="/content" element={<Layout><Content /></Layout>} />
                 <Route path="/agenda" element={<Layout><AgendaModule /></Layout>} />
                 <Route path="/agenda/settings" element={<Layout><AgendaSettings /></Layout>} />
-                <Route path="/tasks/*" element={<Layout><TasksModule /></Layout>} />
                 <Route path="/apps" element={<Layout><Apps /></Layout>} />
+                <Route path="/apps/tasks/*" element={<Layout><TasksModule /></Layout>} />
                 <Route path="/image-editor" element={<Layout><ImageEditor /></Layout>} />
                 <Route path="/settings" element={<Layout><Settings /></Layout>} />
                 <Route path="/content-generator-settings" element={<Layout><ContentGeneratorSettings /></Layout>} />
