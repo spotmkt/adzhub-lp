@@ -4,12 +4,13 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { Upload, Wand2, Loader2 } from 'lucide-react';
+import { Upload, Wand2, Loader2, Download, RotateCcw } from 'lucide-react';
 import { toast } from 'sonner';
 
 const ImageEditor = () => {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>('');
+  const [editedImage, setEditedImage] = useState<string>('');
   const [prompt, setPrompt] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -57,21 +58,49 @@ const ImageEditor = () => {
       );
 
       if (!response.ok) {
-        throw new Error('Erro ao enviar imagem');
+        const errorText = await response.text();
+        console.error('Response error:', errorText);
+        throw new Error(`Erro ao enviar imagem: ${response.status}`);
       }
 
-      toast.success('Imagem enviada para edição!');
-      
-      // Reset form
-      setSelectedImage(null);
-      setImagePreview('');
-      setPrompt('');
+      const result = await response.json();
+      console.log('Resposta do webhook:', result);
+
+      // Verifica se há uma imagem editada na resposta
+      if (result.editedImage) {
+        setEditedImage(result.editedImage);
+        toast.success('Imagem editada com sucesso!');
+      } else if (result.image) {
+        setEditedImage(result.image);
+        toast.success('Imagem editada com sucesso!');
+      } else {
+        toast.success('Imagem enviada para edição!');
+      }
     } catch (error) {
       console.error('Error:', error);
       toast.error('Erro ao enviar imagem. Verifique o console para mais detalhes.');
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleDownload = () => {
+    if (!editedImage) return;
+    
+    const link = document.createElement('a');
+    link.href = editedImage;
+    link.download = `edited-image-${Date.now()}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast.success('Imagem baixada com sucesso!');
+  };
+
+  const handleReset = () => {
+    setSelectedImage(null);
+    setImagePreview('');
+    setEditedImage('');
+    setPrompt('');
   };
 
   return (
@@ -163,6 +192,40 @@ const ImageEditor = () => {
                 </>
               )}
             </Button>
+
+            {/* Edited Image Result */}
+            {editedImage && (
+              <div className="space-y-4 pt-6 border-t border-border">
+                <div className="flex items-center justify-between">
+                  <Label>Imagem Editada</Label>
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={handleDownload}
+                      variant="outline"
+                      size="sm"
+                    >
+                      <Download className="mr-2 h-4 w-4" />
+                      Baixar
+                    </Button>
+                    <Button
+                      onClick={handleReset}
+                      variant="outline"
+                      size="sm"
+                    >
+                      <RotateCcw className="mr-2 h-4 w-4" />
+                      Nova Edição
+                    </Button>
+                  </div>
+                </div>
+                <div className="relative w-full aspect-video rounded-lg overflow-hidden border border-border bg-muted">
+                  <img
+                    src={editedImage}
+                    alt="Imagem editada"
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
