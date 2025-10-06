@@ -44,46 +44,23 @@ const ImageEditor = () => {
     setIsSubmitting(true);
 
     try {
-      // Convert image to base64
-      const reader = new FileReader();
-      const base64Promise = new Promise<string>((resolve, reject) => {
-        reader.onload = () => {
-          const base64 = reader.result as string;
-          resolve(base64);
-        };
-        reader.onerror = reject;
-        reader.readAsDataURL(selectedImage);
-      });
+      const formData = new FormData();
+      formData.append('image', selectedImage);
+      formData.append('prompt', prompt);
 
-      const base64Image = await base64Promise;
-
-      // Send as JSON
       const response = await fetch(
         'https://n8n-n8n.ascl7r.easypanel.host/webhook/c340cac2-ac07-43aa-b1c5-70e2fd0e64c5',
         {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            image: base64Image,
-            prompt: prompt,
-            fileName: selectedImage.name,
-            fileType: selectedImage.type,
-          }),
+          body: formData,
         }
       );
 
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Response error:', errorText);
-        throw new Error(`Erro ao enviar imagem: ${response.status}`);
+        throw new Error('Erro ao enviar imagem');
       }
 
-      const result = await response.json();
-      console.log('Success:', result);
-
-      toast.success('Imagem enviada para edição com sucesso!');
+      toast.success('Imagem enviada para edição!');
       
       // Reset form
       setSelectedImage(null);
