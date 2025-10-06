@@ -99,7 +99,7 @@ const TaskGenerator = () => {
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="task-text">Descrição da Tarefa</Label>
+                <Label htmlFor="task-text">Descrição da Tarefa / Pauta da Reunião</Label>
                 <Textarea
                   id="task-text"
                   placeholder="Descreva a tarefa que precisa ser realizada..."
