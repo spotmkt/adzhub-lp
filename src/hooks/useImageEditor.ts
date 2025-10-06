@@ -26,12 +26,18 @@ export const useImageEditor = () => {
       });
 
       if (error) {
-        console.error('Error editing image:', error);
-        throw error;
+        console.error('Error calling edge function:', error);
+        throw new Error(error.message || 'Erro ao chamar a função de edição');
+      }
+
+      if (data?.error) {
+        console.error('Error from edge function:', data.error);
+        throw new Error(data.error);
       }
 
       if (!data?.success || !data?.editedImage) {
-        throw new Error('Failed to edit image');
+        console.error('Invalid response from edge function:', data);
+        throw new Error('Resposta inválida da função de edição');
       }
 
       return {
