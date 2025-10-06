@@ -12,6 +12,7 @@ import { ClientDropdown } from './ClientDropdown';
 import { FileUpload } from './FileUpload';
 import { AudioRecorder } from './AudioRecorder';
 import { ImageEditorChatWidget } from './ImageEditorChatWidget';
+import { AppOutputWidget } from './AppOutputWidget';
 
 interface Message {
   id: string;
@@ -21,6 +22,11 @@ interface Message {
   audioUrl?: string;
   fileUrl?: string;
   fileName?: string;
+  appWidget?: {
+    appId: number;
+    appName: string;
+    data: any;
+  };
 }
 
 interface ActionCard {
@@ -368,14 +374,23 @@ export const ChatArea = ({
   };
 
   const handleImageEditorComplete = (result: any) => {
-    // Add result message to chat
+    // Add result message with AppOutputWidget
     const resultMessage: Message = {
       id: Date.now().toString(),
-      content: '✅ Imagem editada com sucesso!',
+      content: '',
       sender: 'ai',
       timestamp: new Date(),
-      fileUrl: result.editedImage,
-      fileName: 'edited-image.png'
+      appWidget: {
+        appId: 10,
+        appName: 'Editor de Imagens',
+        data: {
+          beforeImage: result.originalImage,
+          afterImage: result.editedImage,
+          downloadUrl: result.editedImage,
+          fileName: 'edited-image.png',
+          result: result.editedImage
+        }
+      }
     };
     setMessages(prev => [...prev, resultMessage]);
     setShowImageEditorWidget(false);
@@ -544,29 +559,47 @@ export const ChatArea = ({
                       ? 'bg-primary text-primary-foreground'
                       : 'bg-muted text-foreground'
                   }`}>
-                    <div className="text-sm whitespace-pre-wrap">{message.content}</div>
-                    
-                    {/* Audio playback */}
-                    {message.audioUrl && (
+                    {/* App Widget Output */}
+                    {message.appWidget ? (
                       <div className="mt-2">
-                        <audio controls className="max-w-full">
-                          <source src={message.audioUrl} type="audio/wav" />
-                        </audio>
+                        <AppOutputWidget
+                          appId={message.appWidget.appId}
+                          appName={message.appWidget.appName}
+                          data={message.appWidget.data}
+                          onAction={(action) => {
+                            if (action === 'regenerate') {
+                              setShowImageEditorWidget(true);
+                            }
+                          }}
+                        />
                       </div>
-                    )}
-                    
-                    {/* File download */}
-                    {message.fileUrl && (
-                      <div className="mt-2">
-                        <a 
-                          href={message.fileUrl} 
-                          download={message.fileName}
-                          className="inline-flex items-center text-xs underline hover:no-underline"
-                        >
-                          <Download className="h-3 w-3 mr-1" />
-                          {message.fileName}
-                        </a>
-                      </div>
+                    ) : (
+                      <>
+                        <div className="text-sm whitespace-pre-wrap">{message.content}</div>
+                        
+                        {/* Audio playback */}
+                        {message.audioUrl && (
+                          <div className="mt-2">
+                            <audio controls className="max-w-full">
+                              <source src={message.audioUrl} type="audio/wav" />
+                            </audio>
+                          </div>
+                        )}
+                        
+                        {/* File download */}
+                        {message.fileUrl && (
+                          <div className="mt-2">
+                            <a 
+                              href={message.fileUrl} 
+                              download={message.fileName}
+                              className="inline-flex items-center text-xs underline hover:no-underline"
+                            >
+                              <Download className="h-3 w-3 mr-1" />
+                              {message.fileName}
+                            </a>
+                          </div>
+                        )}
+                      </>
                     )}
                     
                     <div className="text-xs opacity-70 mt-2">
