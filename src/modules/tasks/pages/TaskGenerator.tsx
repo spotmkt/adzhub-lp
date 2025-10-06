@@ -31,16 +31,24 @@ const TaskGenerator = () => {
 
       setIsSubmitting(true);
 
-      // Send to webhook
+      // Generate unique request ID
+      const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+      // Send to webhook with new payload structure
       const response = await fetch('https://n8n-n8n.ascl7r.easypanel.host/webhook/79a9821d-8376-4738-9539-af11dba620b8', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          task: validatedData.text,
+          request_id: requestId,
+          user_message: validatedData.text,
           deadline: validatedData.deadline,
-          created_at: new Date().toISOString(),
+          user_metadata: {
+            client_id: "cliente",
+            user_id: "Usuário",
+          },
+          callback_url: `https://lovable.yourapp.com/api/callback/${requestId}`,
         }),
       });
 
