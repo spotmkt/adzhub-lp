@@ -1514,6 +1514,87 @@ export type Database = {
         }
         Relationships: []
       }
+      tasks: {
+        Row: {
+          assignees: Json | null
+          category: string | null
+          client_id: string | null
+          completed_at: string | null
+          content: string | null
+          created_at: string
+          description: string | null
+          due_date: string | null
+          id: string
+          is_subtask: boolean | null
+          metadata: Json | null
+          parent_task_id: string | null
+          priority: string | null
+          start_date: string | null
+          status: string
+          tags: Json | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          assignees?: Json | null
+          category?: string | null
+          client_id?: string | null
+          completed_at?: string | null
+          content?: string | null
+          created_at?: string
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          is_subtask?: boolean | null
+          metadata?: Json | null
+          parent_task_id?: string | null
+          priority?: string | null
+          start_date?: string | null
+          status?: string
+          tags?: Json | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          assignees?: Json | null
+          category?: string | null
+          client_id?: string | null
+          completed_at?: string | null
+          content?: string | null
+          created_at?: string
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          is_subtask?: boolean | null
+          metadata?: Json | null
+          parent_task_id?: string | null
+          priority?: string | null
+          start_date?: string | null
+          status?: string
+          tags?: Json | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tasks_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tasks_parent_task_id_fkey"
+            columns: ["parent_task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       telcoweb_insights: {
         Row: {
           ad_id: string

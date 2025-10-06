@@ -1,4 +1,4 @@
-import { Settings, MessageSquare, LayoutGrid, Home, LogOut } from 'lucide-react';
+import { Settings, MessageSquare, LayoutGrid, Home, LogOut, CheckSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Link, useNavigate } from 'react-router-dom';
@@ -16,6 +16,7 @@ interface NavigationBarProps {
 const navigationItems = [
   { id: 'home', icon: Home, label: 'Home', path: '/' },
   { id: 'chats', icon: MessageSquare, label: 'Chats', path: '/chat' },
+  { id: 'tasks', icon: CheckSquare, label: 'Tarefas', path: '/tasks' },
   { id: 'apps', icon: LayoutGrid, label: 'Apps', path: '/apps' },
   { id: 'settings', icon: Settings, label: 'Settings', path: '/settings' },
 ];
