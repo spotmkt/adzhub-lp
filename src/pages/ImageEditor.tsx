@@ -49,20 +49,13 @@ const ImageEditor = () => {
       formData.append('image', selectedImage);
       formData.append('prompt', prompt);
 
-      // Adiciona timeout de 2 minutos para aguardar a edição
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 120000); // 2 minutos
-
       const response = await fetch(
-        'https://n8n-n8n.easypanel.host/webhook/c340cac2-ac07-43aa-b1c5-70e2fd0e64c5',
+        'https://n8n-n8n.ascl7r.easypanel.host/webhook/c340cac2-ac07-43aa-b1c5-70e2fd0e64c5',
         {
           method: 'POST',
           body: formData,
-          signal: controller.signal,
         }
       );
-
-      clearTimeout(timeoutId);
 
       if (!response.ok) {
         const errorText = await response.text();
@@ -97,11 +90,7 @@ const ImageEditor = () => {
       }
     } catch (error) {
       console.error('Error:', error);
-      if (error instanceof Error && error.name === 'AbortError') {
-        toast.error('Timeout: A edição demorou mais de 2 minutos. Tente novamente.');
-      } else {
-        toast.error('Erro ao enviar imagem. Verifique o console para mais detalhes.');
-      }
+      toast.error('Erro ao enviar imagem. Verifique o console para mais detalhes.');
     } finally {
       setIsSubmitting(false);
     }
