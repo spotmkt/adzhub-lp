@@ -20,3 +20,6 @@ verify_jwt = false
 
 [functions.edit-image-ai]
 verify_jwt = true
+
+[functions.receive-task-proposals]
+verify_jwt = false

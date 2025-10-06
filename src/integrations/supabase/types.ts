@@ -1484,6 +1484,36 @@ export type Database = {
         }
         Relationships: []
       }
+      task_proposals: {
+        Row: {
+          card_type: string
+          created_at: string
+          id: string
+          parent_task: Json
+          request_id: string
+          subtasks: Json
+          updated_at: string
+        }
+        Insert: {
+          card_type: string
+          created_at?: string
+          id?: string
+          parent_task: Json
+          request_id: string
+          subtasks: Json
+          updated_at?: string
+        }
+        Update: {
+          card_type?: string
+          created_at?: string
+          id?: string
+          parent_task?: Json
+          request_id?: string
+          subtasks?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
       telcoweb_insights: {
         Row: {
           ad_id: string
