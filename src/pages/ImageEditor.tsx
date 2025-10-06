@@ -6,6 +6,10 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Upload, Wand2, Loader2, Download, RotateCcw } from 'lucide-react';
 import { toast } from 'sonner';
+import {
+  ReactCompareSlider,
+  ReactCompareSliderImage
+} from 'react-compare-slider';
 
 const ImageEditor = () => {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -151,11 +155,31 @@ const ImageEditor = () => {
                 
                 {imagePreview && (
                   <div className="relative w-full aspect-video rounded-lg overflow-hidden border border-border bg-muted">
-                    <img
-                      src={imagePreview}
-                      alt="Preview"
-                      className="w-full h-full object-contain"
-                    />
+                    {editedImage ? (
+                      <ReactCompareSlider
+                        itemOne={
+                          <ReactCompareSliderImage
+                            src={imagePreview}
+                            alt="Imagem original"
+                            className="w-full h-full object-contain"
+                          />
+                        }
+                        itemTwo={
+                          <ReactCompareSliderImage
+                            src={editedImage}
+                            alt="Imagem editada"
+                            className="w-full h-full object-contain"
+                          />
+                        }
+                        className="w-full h-full"
+                      />
+                    ) : (
+                      <img
+                        src={imagePreview}
+                        alt="Preview"
+                        className="w-full h-full object-contain"
+                      />
+                    )}
                   </div>
                 )}
 
@@ -205,37 +229,27 @@ const ImageEditor = () => {
               )}
             </Button>
 
-            {/* Edited Image Result */}
+            {/* Action Buttons */}
             {editedImage && (
-              <div className="space-y-4 pt-6 border-t border-border">
-                <div className="flex items-center justify-between">
-                  <Label>Imagem Editada</Label>
-                  <div className="flex gap-2">
-                    <Button
-                      onClick={handleDownload}
-                      variant="outline"
-                      size="sm"
-                    >
-                      <Download className="mr-2 h-4 w-4" />
-                      Baixar
-                    </Button>
-                    <Button
-                      onClick={handleReset}
-                      variant="outline"
-                      size="sm"
-                    >
-                      <RotateCcw className="mr-2 h-4 w-4" />
-                      Nova Edição
-                    </Button>
-                  </div>
-                </div>
-                <div className="relative w-full aspect-video rounded-lg overflow-hidden border border-border bg-muted">
-                  <img
-                    src={editedImage}
-                    alt="Imagem editada"
-                    className="w-full h-full object-contain"
-                  />
-                </div>
+              <div className="flex gap-2 pt-4 border-t border-border">
+                <Button
+                  onClick={handleDownload}
+                  variant="outline"
+                  size="sm"
+                  className="flex-1"
+                >
+                  <Download className="mr-2 h-4 w-4" />
+                  Baixar
+                </Button>
+                <Button
+                  onClick={handleReset}
+                  variant="outline"
+                  size="sm"
+                  className="flex-1"
+                >
+                  <RotateCcw className="mr-2 h-4 w-4" />
+                  Nova Edição
+                </Button>
               </div>
             )}
           </CardContent>
