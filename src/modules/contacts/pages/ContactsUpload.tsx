@@ -6,11 +6,15 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Upload, Shield, Lock, FileText, AlertTriangle, Info } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { ContactMappingDialog } from '../components/ContactMappingDialog';
+import { readFile } from '@/modules/campaigns/utils/fileReader';
 
 const ContactsUpload = () => {
   const [file, setFile] = useState<File | null>(null);
   const [lgpdConsent, setLgpdConsent] = useState(false);
   const [dataUsageConsent, setDataUsageConsent] = useState(false);
+  const [showMappingDialog, setShowMappingDialog] = useState(false);
+  const [fileData, setFileData] = useState<{ headers: string[]; data: string[][] } | null>(null);
   const { toast } = useToast();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,20 +77,83 @@ const ContactsUpload = () => {
       return;
     }
 
+    // Ler o arquivo para extrair as colunas
+    try {
+      toast({
+        title: 'Lendo arquivo...',
+        description: 'Analisando estrutura do arquivo',
+      });
+
+      const parsedData = await readFile(file);
+      setFileData({
+        headers: parsedData.headers,
+        data: parsedData.data,
+      });
+      setShowMappingDialog(true);
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Erro ao ler arquivo',
+        description: 'Não foi possível ler o arquivo. Verifique se está no formato correto.',
+      });
+    }
+  };
+
+  const handleMappingConfirm = async (mapping: {
+    identifierColumn: string;
+    identifierType: 'phone' | 'email';
+    metadataColumns: string[];
+  }) => {
+    setShowMappingDialog(false);
+
+    if (!file || !fileData) return;
+
     toast({
       title: 'Processamento iniciado',
       description: 'Enviando base de contatos para processamento...',
     });
 
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('lgpdConsent', String(lgpdConsent));
-      formData.append('dataUsageConsent', String(dataUsageConsent));
+      // Preparar os dados mapeados
+      const identifierIndex = fileData.headers.indexOf(mapping.identifierColumn);
+      const metadataIndexes = mapping.metadataColumns.map(col => 
+        fileData.headers.indexOf(col)
+      );
+
+      const mappedContacts = fileData.data.map(row => {
+        const contact: any = {
+          identifier: row[identifierIndex],
+          identifierType: mapping.identifierType,
+          metadata: {},
+        };
+
+        // Adicionar metadados
+        mapping.metadataColumns.forEach((colName, idx) => {
+          const value = row[metadataIndexes[idx]];
+          if (value) {
+            contact.metadata[colName] = value;
+          }
+        });
+
+        return contact;
+      });
+
+      // Enviar para o webhook
+      const payload = {
+        fileName: file.name,
+        totalContacts: mappedContacts.length,
+        identifierType: mapping.identifierType,
+        lgpdConsent,
+        dataUsageConsent,
+        contacts: mappedContacts,
+      };
 
       const response = await fetch('https://n8n-n8n.ascl7r.easypanel.host/webhook/62ce4693-eb7a-4911-8de2-0da9e0273cbe', {
         method: 'POST',
-        body: formData,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
@@ -100,6 +167,7 @@ const ContactsUpload = () => {
 
       // Limpar formulário
       setFile(null);
+      setFileData(null);
       setLgpdConsent(false);
       setDataUsageConsent(false);
       const fileInput = document.getElementById('file-upload') as HTMLInputElement;
@@ -265,6 +333,21 @@ const ContactsUpload = () => {
             </Button>
           </CardContent>
         </Card>
+
+        {/* Mapping Dialog */}
+        {fileData && (
+          <ContactMappingDialog
+            open={showMappingDialog}
+            onClose={() => {
+              setShowMappingDialog(false);
+              setFileData(null);
+            }}
+            onConfirm={handleMappingConfirm}
+            columns={fileData.headers}
+            previewData={fileData.data}
+            fileName={file?.name || ''}
+          />
+        )}
 
         {/* Footer Information */}
         <Card className="border-muted">
