@@ -52,90 +52,110 @@ export const ContactMappingDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Mapeamento de Colunas</DialogTitle>
-          <DialogDescription>
-            Configure como os dados do arquivo <span className="font-semibold">{fileName}</span> devem ser interpretados
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+        <DialogHeader className="pb-4 border-b">
+          <DialogTitle className="text-2xl font-semibold">Mapeamento de Colunas</DialogTitle>
+          <DialogDescription className="text-base mt-2">
+            Configure como os dados do arquivo <span className="font-semibold text-foreground">{fileName}</span> devem ser interpretados
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-6 py-4">
+        <div className="flex-1 overflow-y-auto py-6 space-y-6">
           {/* Alert informativo */}
-          <Alert>
-            <Info className="h-4 w-4" />
-            <AlertDescription className="text-sm">
+          <Alert className="bg-muted/50 border-muted-foreground/20">
+            <Info className="h-5 w-5 text-muted-foreground" />
+            <AlertDescription className="text-sm ml-2 leading-relaxed">
               Selecione qual coluna contém o identificador principal (telefone ou e-mail). 
               As demais colunas serão enviadas como metadados adicionais.
             </AlertDescription>
           </Alert>
 
-          {/* Tipo de Identificador */}
-          <div className="space-y-2">
-            <Label htmlFor="identifier-type">Tipo de Identificador *</Label>
-            <Select value={identifierType} onValueChange={(value: 'phone' | 'email') => setIdentifierType(value)}>
-              <SelectTrigger id="identifier-type">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="phone">Telefone</SelectItem>
-                <SelectItem value="email">E-mail</SelectItem>
-              </SelectContent>
-            </Select>
+          {/* Campos de configuração */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Tipo de Identificador */}
+            <div className="space-y-3">
+              <Label htmlFor="identifier-type" className="text-base font-medium">
+                Tipo de Identificador *
+              </Label>
+              <Select value={identifierType} onValueChange={(value: 'phone' | 'email') => setIdentifierType(value)}>
+                <SelectTrigger id="identifier-type" className="h-11">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="phone">Telefone</SelectItem>
+                  <SelectItem value="email">E-mail</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Coluna Identificadora */}
+            <div className="space-y-3">
+              <Label htmlFor="identifier-column" className="text-base font-medium">
+                Coluna do Identificador ({identifierType === 'phone' ? 'Telefone' : 'E-mail'}) *
+              </Label>
+              <Select value={identifierColumn} onValueChange={setIdentifierColumn}>
+                <SelectTrigger id="identifier-column" className="h-11">
+                  <SelectValue placeholder="Selecione a coluna" />
+                </SelectTrigger>
+                <SelectContent>
+                  {columns.map((column) => (
+                    <SelectItem key={column} value={column}>
+                      {column}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
-          {/* Coluna Identificadora */}
-          <div className="space-y-2">
-            <Label htmlFor="identifier-column">
-              Coluna do Identificador ({identifierType === 'phone' ? 'Telefone' : 'E-mail'}) *
-            </Label>
-            <Select value={identifierColumn} onValueChange={setIdentifierColumn}>
-              <SelectTrigger id="identifier-column">
-                <SelectValue placeholder="Selecione a coluna" />
-              </SelectTrigger>
-              <SelectContent>
-                {columns.map((column) => (
-                  <SelectItem key={column} value={column}>
-                    {column}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          {/* Informação sobre metadados */}
+          {identifierColumn && (
+            <Alert className="bg-primary/5 border-primary/30">
+              <Info className="h-5 w-5 text-primary" />
+              <AlertDescription className="ml-2">
+                <p className="font-semibold text-sm mb-1 text-foreground">Colunas que serão enviadas como metadados:</p>
+                <p className="text-sm text-muted-foreground">
+                  {columns.filter(col => col !== identifierColumn).join(', ') || 'Nenhuma'}
+                </p>
+              </AlertDescription>
+            </Alert>
+          )}
 
           {/* Preview dos dados */}
           {previewData.length > 0 && (
-            <div className="space-y-2">
-              <Label>Preview dos Dados (primeiras 5 linhas)</Label>
-              <div className="border rounded-lg overflow-hidden">
-                <div className="overflow-x-auto max-h-64">
+            <div className="space-y-3">
+              <Label className="text-base font-medium">Preview dos Dados (primeiras 5 linhas)</Label>
+              <div className="border rounded-lg overflow-hidden bg-card shadow-sm">
+                <div className="overflow-x-auto max-h-80">
                   <table className="w-full text-sm">
-                    <thead className="bg-muted sticky top-0">
+                    <thead className="bg-muted/70 sticky top-0 z-10">
                       <tr>
                         {columns.map((column) => (
                           <th
                             key={column}
-                            className="px-4 py-2 text-left font-semibold border-b"
+                            className="px-4 py-3 text-left font-semibold text-foreground border-b whitespace-nowrap"
                           >
-                            {column}
-                            {column === identifierColumn && (
-                              <span className="ml-2 text-xs text-primary">
-                                (ID)
-                              </span>
-                            )}
+                            <div className="flex items-center gap-2">
+                              {column}
+                              {column === identifierColumn && (
+                                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20">
+                                  ID
+                                </span>
+                              )}
+                            </div>
                           </th>
                         ))}
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody className="divide-y divide-border">
                       {previewData.slice(0, 5).map((row, rowIndex) => (
-                        <tr key={rowIndex} className="border-b last:border-b-0">
+                        <tr key={rowIndex} className="hover:bg-muted/30 transition-colors">
                           {row.map((cell, cellIndex) => (
                             <td
                               key={cellIndex}
-                              className="px-4 py-2 border-r last:border-r-0"
+                              className="px-4 py-3 text-muted-foreground whitespace-nowrap"
                             >
-                              {cell || '-'}
+                              {cell || <span className="text-muted-foreground/50">-</span>}
                             </td>
                           ))}
                         </tr>
@@ -146,26 +166,13 @@ export const ContactMappingDialog = ({
               </div>
             </div>
           )}
-
-          {/* Informação sobre metadados */}
-          {identifierColumn && (
-            <Alert className="bg-primary/5 border-primary/20">
-              <Info className="h-4 w-4 text-primary" />
-              <AlertDescription className="text-sm">
-                <p className="font-semibold mb-1">Colunas que serão enviadas como metadados:</p>
-                <p className="text-xs">
-                  {columns.filter(col => col !== identifierColumn).join(', ') || 'Nenhuma'}
-                </p>
-              </AlertDescription>
-            </Alert>
-          )}
         </div>
 
-        <DialogFooter>
-          <Button variant="outline" onClick={handleClose}>
+        <DialogFooter className="pt-4 border-t">
+          <Button variant="outline" onClick={handleClose} className="min-w-[100px]">
             Cancelar
           </Button>
-          <Button onClick={handleConfirm} disabled={!identifierColumn}>
+          <Button onClick={handleConfirm} disabled={!identifierColumn} className="min-w-[180px]">
             Confirmar Mapeamento
           </Button>
         </DialogFooter>
