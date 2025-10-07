@@ -3,8 +3,9 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Info } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface ContactMappingDialogProps {
   open: boolean;
@@ -29,13 +30,35 @@ export const ContactMappingDialog = ({
 }: ContactMappingDialogProps) => {
   const [identifierColumn, setIdentifierColumn] = useState<string>('');
   const [identifierType, setIdentifierType] = useState<'phone' | 'email'>('phone');
+  const [selectedColumns, setSelectedColumns] = useState<Set<string>>(new Set());
+
+  // Initialize all columns as selected when dialog opens
+  useEffect(() => {
+    if (open && columns.length > 0) {
+      setSelectedColumns(new Set(columns));
+    }
+  }, [open, columns]);
+
+  const toggleColumn = (column: string) => {
+    const newSelected = new Set(selectedColumns);
+    if (newSelected.has(column)) {
+      newSelected.delete(column);
+    } else {
+      newSelected.add(column);
+    }
+    setSelectedColumns(newSelected);
+  };
+
+  const availableMetadataColumns = columns.filter(col => col !== identifierColumn);
 
   const handleConfirm = () => {
     if (!identifierColumn) {
       return;
     }
 
-    const metadataColumns = columns.filter(col => col !== identifierColumn);
+    const metadataColumns = columns.filter(col => 
+      col !== identifierColumn && selectedColumns.has(col)
+    );
 
     onConfirm({
       identifierColumn,
@@ -47,6 +70,7 @@ export const ContactMappingDialog = ({
   const handleClose = () => {
     setIdentifierColumn('');
     setIdentifierType('phone');
+    setSelectedColumns(new Set());
     onClose();
   };
 
@@ -108,17 +132,38 @@ export const ContactMappingDialog = ({
             </div>
           </div>
 
-          {/* Informação sobre metadados */}
-          {identifierColumn && (
-            <Alert className="bg-primary/5 border-primary/30">
-              <Info className="h-5 w-5 text-primary" />
-              <AlertDescription className="ml-2">
-                <p className="font-semibold text-sm mb-1 text-foreground">Colunas que serão enviadas como metadados:</p>
-                <p className="text-sm text-muted-foreground">
-                  {columns.filter(col => col !== identifierColumn).join(', ') || 'Nenhuma'}
-                </p>
-              </AlertDescription>
-            </Alert>
+          {/* Seleção de colunas para metadados */}
+          {identifierColumn && availableMetadataColumns.length > 0 && (
+            <div className="space-y-3">
+              <Label className="text-base font-medium">
+                Selecione as colunas que deseja processar como metadados
+              </Label>
+              <div className="border rounded-lg p-4 bg-muted/30 space-y-3 max-h-48 overflow-y-auto">
+                {availableMetadataColumns.map((column) => (
+                  <div key={column} className="flex items-center space-x-3">
+                    <Checkbox
+                      id={`col-${column}`}
+                      checked={selectedColumns.has(column)}
+                      onCheckedChange={() => toggleColumn(column)}
+                    />
+                    <label
+                      htmlFor={`col-${column}`}
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                    >
+                      {column}
+                    </label>
+                  </div>
+                ))}
+              </div>
+              <Alert className="bg-primary/5 border-primary/30">
+                <Info className="h-5 w-5 text-primary" />
+                <AlertDescription className="ml-2">
+                  <p className="text-sm text-muted-foreground">
+                    <span className="font-semibold text-foreground">{availableMetadataColumns.filter(col => selectedColumns.has(col)).length}</span> de <span className="font-semibold text-foreground">{availableMetadataColumns.length}</span> colunas selecionadas
+                  </p>
+                </AlertDescription>
+              </Alert>
+            </div>
           )}
 
           {/* Preview dos dados */}
