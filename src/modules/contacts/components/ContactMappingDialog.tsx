@@ -4,7 +4,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Info } from 'lucide-react';
+import { Info, CheckSquare, Square } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 interface ContactMappingDialogProps {
@@ -32,13 +32,6 @@ export const ContactMappingDialog = ({
   const [identifierType, setIdentifierType] = useState<'phone' | 'email'>('phone');
   const [selectedColumns, setSelectedColumns] = useState<Set<string>>(new Set());
 
-  // Initialize all columns as selected when dialog opens
-  useEffect(() => {
-    if (open && columns.length > 0) {
-      setSelectedColumns(new Set(columns));
-    }
-  }, [open, columns]);
-
   const toggleColumn = (column: string) => {
     const newSelected = new Set(selectedColumns);
     if (newSelected.has(column)) {
@@ -47,6 +40,14 @@ export const ContactMappingDialog = ({
       newSelected.add(column);
     }
     setSelectedColumns(newSelected);
+  };
+
+  const selectAllColumns = () => {
+    setSelectedColumns(new Set(availableMetadataColumns));
+  };
+
+  const clearAllColumns = () => {
+    setSelectedColumns(new Set());
   };
 
   const availableMetadataColumns = columns.filter(col => col !== identifierColumn);
@@ -135,9 +136,33 @@ export const ContactMappingDialog = ({
           {/* Seleção de colunas para metadados */}
           {identifierColumn && availableMetadataColumns.length > 0 && (
             <div className="space-y-3">
-              <Label className="text-base font-medium">
-                Selecione as colunas que deseja processar como metadados
-              </Label>
+              <div className="flex items-center justify-between">
+                <Label className="text-base font-medium">
+                  Selecione as colunas que deseja processar como metadados
+                </Label>
+                <div className="flex gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={selectAllColumns}
+                    className="h-8"
+                  >
+                    <CheckSquare className="h-4 w-4 mr-1" />
+                    Selecionar Tudo
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={clearAllColumns}
+                    className="h-8"
+                  >
+                    <Square className="h-4 w-4 mr-1" />
+                    Limpar Tudo
+                  </Button>
+                </div>
+              </div>
               <div className="border rounded-lg p-4 bg-muted/30 space-y-3 max-h-48 overflow-y-auto">
                 {availableMetadataColumns.map((column) => (
                   <div key={column} className="flex items-center space-x-3">
