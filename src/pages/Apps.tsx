@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { AppWindow, Bot, Calendar, FileText, MessageSquare, Palette, Settings, Sparkles, MessageCircle, Wand2, ClipboardEdit, CheckSquare, Inbox } from 'lucide-react';
+import { AppWindow, Bot, Calendar, FileText, MessageSquare, Palette, Settings, Sparkles, MessageCircle, Wand2, ClipboardEdit, CheckSquare, Inbox, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { AppConfigDialog } from '@/components/AppConfigDialog';
 
@@ -61,6 +61,14 @@ const apps = [
     description: 'Gerencie e acompanhe suas tarefas',
     icon: Inbox,
     color: 'secondary',
+    status: 'Ativo'
+  },
+  {
+    id: 13,
+    name: 'Bases de Contatos',
+    description: 'Processe e gerencie bases de contatos com segurança LGPD',
+    icon: Users,
+    color: 'primary',
     status: 'Ativo'
   },
   {
@@ -123,6 +131,8 @@ const Apps = () => {
       navigate('/apps/tasks/generator');
     } else if (appId === 12) {
       navigate('/apps/tasks');
+    } else if (appId === 13) {
+      navigate('/apps/contacts');
     }
   };
 
