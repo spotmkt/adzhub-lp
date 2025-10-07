@@ -7,7 +7,7 @@ export interface FileData {
   totalLines: number;
 }
 
-export const readFile = async (file: File): Promise<FileData> => {
+export const readFile = async (file: File, hasHeader: boolean = true): Promise<FileData> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     
@@ -38,11 +38,24 @@ export const readFile = async (file: File): Promise<FileData> => {
           throw new Error('O arquivo está vazio');
         }
 
-        const headers = jsonData[0].map((h: any) => String(h).trim());
-        const totalLines = jsonData.length - 1; // -1 para excluir cabeçalho
+        let headers: string[];
+        let dataRows: any[][];
+        
+        if (hasHeader) {
+          // Usar primeira linha como cabeçalho
+          headers = jsonData[0].map((h: any) => String(h).trim());
+          dataRows = jsonData.slice(1);
+        } else {
+          // Gerar cabeçalhos automáticos
+          const columnCount = jsonData[0].length;
+          headers = Array.from({ length: columnCount }, (_, i) => `Coluna ${i + 1}`);
+          dataRows = jsonData;
+        }
+
+        const totalLines = dataRows.length;
 
         resolve({
-          data: jsonData,
+          data: dataRows,
           headers,
           totalLines
         });

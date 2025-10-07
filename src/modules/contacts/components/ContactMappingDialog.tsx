@@ -15,18 +15,22 @@ interface ContactMappingDialogProps {
     identifierType: 'phone' | 'email';
     metadataColumns: string[];
   }) => void;
+  onReparse?: (hasHeader: boolean) => void;
   columns: string[];
   previewData: string[][];
   fileName: string;
+  hasHeader: boolean;
 }
 
 export const ContactMappingDialog = ({
   open,
   onClose,
   onConfirm,
+  onReparse,
   columns,
   previewData,
   fileName,
+  hasHeader,
 }: ContactMappingDialogProps) => {
   const [identifierColumn, setIdentifierColumn] = useState<string>('');
   const [identifierType, setIdentifierType] = useState<'phone' | 'email'>('phone');
@@ -86,6 +90,26 @@ export const ContactMappingDialog = ({
         </DialogHeader>
 
         <div className="flex-1 overflow-y-auto py-6 space-y-6">
+          {/* Checkbox para cabeçalho */}
+          <div className="flex items-start space-x-3 p-4 border rounded-lg bg-muted/30">
+            <Checkbox
+              id="has-header"
+              checked={hasHeader}
+              onCheckedChange={(checked) => onReparse?.(checked as boolean)}
+            />
+            <div className="space-y-1">
+              <Label
+                htmlFor="has-header"
+                className="text-sm font-medium cursor-pointer leading-tight"
+              >
+                A primeira linha do arquivo contém cabeçalhos
+              </Label>
+              <p className="text-xs text-muted-foreground">
+                Desmarque esta opção se a primeira linha contiver dados em vez de nomes de colunas
+              </p>
+            </div>
+          </div>
+
           {/* Alert informativo */}
           <Alert className="bg-muted/50 border-muted-foreground/20">
             <Info className="h-5 w-5 text-muted-foreground" />

@@ -15,6 +15,7 @@ const ContactsUpload = () => {
   const [dataUsageConsent, setDataUsageConsent] = useState(false);
   const [showMappingDialog, setShowMappingDialog] = useState(false);
   const [fileData, setFileData] = useState<{ headers: string[]; data: string[][] } | null>(null);
+  const [hasHeader, setHasHeader] = useState(true);
   const { toast } = useToast();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,7 +85,7 @@ const ContactsUpload = () => {
         description: 'Analisando estrutura do arquivo',
       });
 
-      const parsedData = await readFile(file);
+      const parsedData = await readFile(file, hasHeader);
       setFileData({
         headers: parsedData.headers,
         data: parsedData.data,
@@ -95,6 +96,26 @@ const ContactsUpload = () => {
         variant: 'destructive',
         title: 'Erro ao ler arquivo',
         description: 'Não foi possível ler o arquivo. Verifique se está no formato correto.',
+      });
+    }
+  };
+
+  const handleReparse = async (newHasHeader: boolean) => {
+    if (!file) return;
+    
+    setHasHeader(newHasHeader);
+    
+    try {
+      const parsedData = await readFile(file, newHasHeader);
+      setFileData({
+        headers: parsedData.headers,
+        data: parsedData.data,
+      });
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Erro ao reprocessar arquivo',
+        description: 'Não foi possível reprocessar o arquivo.',
       });
     }
   };
@@ -343,9 +364,11 @@ const ContactsUpload = () => {
               setFileData(null);
             }}
             onConfirm={handleMappingConfirm}
+            onReparse={handleReparse}
             columns={fileData.headers}
             previewData={fileData.data}
             fileName={file?.name || ''}
+            hasHeader={hasHeader}
           />
         )}
 
