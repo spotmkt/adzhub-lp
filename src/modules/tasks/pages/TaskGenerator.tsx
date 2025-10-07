@@ -114,6 +114,18 @@ const TaskGenerator = () => {
       if (responseData.output) {
         const { output } = responseData;
         
+        // Check if there's an error in the response
+        if (output.error) {
+          toast({
+            title: 'Erro ao gerar tarefas',
+            description: output.error,
+            variant: 'destructive',
+          });
+          setIsSubmitting(false);
+          setCurrentRequestId(null);
+          return;
+        }
+        
         // Save to database
         const { data: savedProposal, error: dbError } = await supabase
           .from('task_proposals')
