@@ -12,12 +12,10 @@ import { TaskProposalCard } from '../components/TaskProposalCard';
 
 const taskSchema = z.object({
   text: z.string().trim().min(1, 'O texto da tarefa é obrigatório').max(2000, 'Texto muito longo (máximo 2000 caracteres)'),
-  deadline: z.string().min(1, 'A data limite é obrigatória'),
 });
 
 const TaskGenerator = () => {
   const [taskText, setTaskText] = useState('');
-  const [deadline, setDeadline] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [taskProposals, setTaskProposals] = useState<any[]>([]);
   const [currentRequestId, setCurrentRequestId] = useState<string | null>(null);
@@ -79,7 +77,6 @@ const TaskGenerator = () => {
       // Validate input
       const validatedData = taskSchema.parse({
         text: taskText,
-        deadline: deadline,
       });
 
       setIsSubmitting(true);
@@ -97,7 +94,6 @@ const TaskGenerator = () => {
         body: JSON.stringify({
           request_id: requestId,
           user_message: validatedData.text,
-          deadline: validatedData.deadline,
           user_metadata: {
             client_id: "cliente",
             user_id: "Usuário",
@@ -151,7 +147,6 @@ const TaskGenerator = () => {
 
       // Clear form
       setTaskText('');
-      setDeadline('');
       setCurrentRequestId(null);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -189,7 +184,7 @@ const TaskGenerator = () => {
               Novo Ticket
             </CardTitle>
             <CardDescription>
-              Descreva a tarefa e defina a data limite de entrega
+              Descreva a tarefa que precisa ser realizada
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -208,17 +203,6 @@ const TaskGenerator = () => {
                 <p className="text-xs text-muted-foreground">
                   {taskText.length}/2000 caracteres
                 </p>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="deadline">Data Limite de Entrega</Label>
-                <Input
-                  id="deadline"
-                  type="datetime-local"
-                  value={deadline}
-                  onChange={(e) => setDeadline(e.target.value)}
-                  required
-                />
               </div>
 
               <Button
