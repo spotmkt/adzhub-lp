@@ -54,7 +54,7 @@ const ContactsUpload = () => {
     }
   };
 
-  const handleUpload = () => {
+  const handleUpload = async () => {
     if (!file) {
       toast({
         variant: 'destructive',
@@ -73,11 +73,45 @@ const ContactsUpload = () => {
       return;
     }
 
-    // Aqui será implementado o processamento
     toast({
       title: 'Processamento iniciado',
-      description: 'Sua base de contatos está sendo processada...',
+      description: 'Enviando base de contatos para processamento...',
     });
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('lgpdConsent', String(lgpdConsent));
+      formData.append('dataUsageConsent', String(dataUsageConsent));
+
+      const response = await fetch('https://n8n-n8n.ascl7r.easypanel.host/webhook/62ce4693-eb7a-4911-8de2-0da9e0273cbe', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao processar arquivo');
+      }
+
+      toast({
+        title: 'Sucesso!',
+        description: 'Base de contatos processada com sucesso',
+      });
+
+      // Limpar formulário
+      setFile(null);
+      setLgpdConsent(false);
+      setDataUsageConsent(false);
+      const fileInput = document.getElementById('file-upload') as HTMLInputElement;
+      if (fileInput) fileInput.value = '';
+      
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Erro no processamento',
+        description: 'Não foi possível processar a base de contatos. Tente novamente.',
+      });
+    }
   };
 
   return (
