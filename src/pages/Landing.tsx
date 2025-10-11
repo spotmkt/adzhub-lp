@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Check, Zap, Target, BarChart3, Users, Clock, Shield, Sparkles } from 'lucide-react';
+import { Check, Zap, Target, BarChart3, Users, Clock, Shield, Sparkles, Star, Play } from 'lucide-react';
 import adzhubLogo from '@/assets/adzhub-logo-final.png';
 
 export default function Landing() {
@@ -36,51 +36,80 @@ export default function Landing() {
       </nav>
 
       {/* Hero Section */}
-      <main className="pt-32 pb-20">
+      <main className="relative pt-32 pb-20 overflow-hidden bg-gradient-to-br from-[hsl(var(--hero-gradient-start))] via-[hsl(var(--hero-gradient-mid))] to-[hsl(var(--hero-gradient-end))]">
         <div className="container mx-auto px-6">
-          <div className="max-w-5xl mx-auto text-center space-y-8">
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/20 rounded-full">
-              <Sparkles className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium text-primary">Powered by AI</span>
+          <div className="max-w-5xl mx-auto text-center space-y-8 relative">
+            {/* Floating Tags */}
+            <div className="absolute -left-12 top-0 hidden lg:flex items-center gap-2 px-4 py-2 bg-yellow-100 text-yellow-900 rounded-full text-sm font-medium shadow-lg transform -rotate-6">
+              <span>📊</span>
+              <span>Finance</span>
+            </div>
+            <div className="absolute -right-12 top-8 hidden lg:flex items-center gap-2 px-4 py-2 bg-rose-100 text-rose-900 rounded-full text-sm font-medium shadow-lg transform rotate-6">
+              <span>💼</span>
+              <span>Business</span>
             </div>
 
             {/* Main Heading */}
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight">
-              TOP 1 no mundo em Campanhas de Whatsapp
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-foreground">
+              Make Your Money
               <br />
-              <span className="text-primary">do seu marketing</span>
+              Work Harder
             </h1>
 
             {/* Subheading */}
-            <p className="text-xl sm:text-2xl text-muted-foreground max-w-3xl mx-auto">
-              Substitua mais de 20 ferramentas com uma plataforma convergente de gestão criativa e automação.
+            <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto">
+              Initiating a business venture may appear overwhelming, yet our forte lies in simplifying the entire process for you.
             </p>
 
-            {/* CTA Button */}
-            <div className="flex flex-col items-center gap-4 pt-4">
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
               <Button 
                 size="lg" 
                 asChild
-                className="h-14 px-8 text-lg bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all"
+                className="h-12 px-8 bg-foreground text-background hover:bg-foreground/90 rounded-full font-medium"
               >
                 <Link to="/auth">
-                  Começar Agora. É GRÁTIS →
+                  Get Started Free
                 </Link>
               </Button>
-              <p className="text-sm text-muted-foreground">
-                Gratuito para sempre. Sem cartão de crédito.
-              </p>
+              <Button 
+                size="lg" 
+                variant="outline"
+                asChild
+                className="h-12 px-8 bg-transparent border-2 border-foreground text-foreground hover:bg-foreground/5 rounded-full font-medium"
+              >
+                <Link to="/auth" className="flex items-center gap-2">
+                  <Play className="w-4 h-4" />
+                  Watch A Demo
+                </Link>
+              </Button>
+            </div>
+
+            {/* Trustpilot Badge */}
+            <div className="flex items-center justify-center gap-2 pt-2">
+              <Star className="w-5 h-5 fill-red-500 text-red-500" />
+              <span className="font-semibold text-foreground">Trustpilot</span>
+              <div className="flex gap-0.5">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-4 h-4 fill-red-500 text-red-500" />
+                ))}
+              </div>
+              <span className="text-sm text-muted-foreground font-medium">3800+ 5 Stars</span>
             </div>
           </div>
-        </div>
 
-        {/* Trust Section */}
-        <div className="mt-32">
-          <div className="container mx-auto px-6">
-            <p className="text-center text-muted-foreground mb-12">
-              Confiado por agências e empresas inovadoras
-            </p>
+          {/* Dashboard Mockup */}
+          <div className="max-w-6xl mx-auto mt-16">
+            <div className="relative">
+              <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl p-8 border border-white/50">
+                <div className="aspect-[16/10] bg-gradient-to-br from-purple-100 to-blue-100 rounded-2xl flex items-center justify-center">
+                  <div className="text-center space-y-4">
+                    <BarChart3 className="w-24 h-24 mx-auto text-primary/40" />
+                    <p className="text-lg text-muted-foreground font-medium">Dashboard Preview</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </main>
