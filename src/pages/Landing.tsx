@@ -114,6 +114,44 @@ export default function Landing() {
         </div>
       </main>
 
+      {/* Social Proof Section */}
+      <section className="py-16 bg-background">
+        <div className="container mx-auto px-6">
+          <div className="max-w-6xl mx-auto">
+            <p className="text-center text-sm font-medium text-muted-foreground mb-12">
+              Loved by 25 million+ users
+            </p>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 items-center justify-items-center opacity-50">
+              {/* Logo Placeholders */}
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-muted"></div>
+                <span className="text-lg font-semibold text-muted-foreground">Circooles</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-muted"></div>
+                <span className="text-lg font-semibold text-muted-foreground">Quotient</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-muted transform rotate-45"></div>
+                <span className="text-lg font-semibold text-muted-foreground">Hourglass</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded bg-muted"></div>
+                <span className="text-lg font-semibold text-muted-foreground">Command+R</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-muted"></div>
+                <span className="text-lg font-semibold text-muted-foreground">Catalog</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-muted"></div>
+                <span className="text-lg font-semibold text-muted-foreground">Layers</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Features Grid */}
       <section className="py-20 bg-muted/30">
         <div className="container mx-auto px-6">
