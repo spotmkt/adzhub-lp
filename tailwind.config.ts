@@ -77,7 +77,8 @@ export default {
 			boxShadow: {
 				'glow': '0 0 20px hsl(var(--shadow-glow))',
 				'glow-lg': '0 0 40px hsl(var(--shadow-glow))',
-				'inner-glass': 'inset 0 1px 0 hsl(var(--glass-border))'
+				'inner-glass': 'inset 0 1px 0 hsl(var(--glass-border))',
+				'2xl': '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
 			},
 			backdropBlur: {
 				'glass': '12px'

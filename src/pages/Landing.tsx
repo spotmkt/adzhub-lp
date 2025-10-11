@@ -1,36 +1,50 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Check, Zap, Target, BarChart3, Users, Clock, Shield, Sparkles } from 'lucide-react';
+import { Check, Zap, Target, BarChart3, Users, Clock, Shield, Sparkles, Home } from 'lucide-react';
 import adzhubLogo from '@/assets/adzhub-logo-final.png';
 
 export default function Landing() {
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            {/* Logo */}
-            <Link to="/" className="flex items-center gap-3">
-              <img src={adzhubLogo} alt="AdzHub" className="h-8 w-auto" />
-            </Link>
+      <nav className="border-b border-border/50 bg-background">
+        <div className="container mx-auto flex h-20 items-center justify-between px-6">
+          {/* Logo */}
+          <Link to="/" className="flex items-center gap-3">
+            <img src={adzhubLogo} alt="AdzHub" className="h-10 w-10" />
+            <span className="text-2xl font-medium">AdzHub</span>
+          </Link>
 
-            {/* Navigation Buttons */}
-            <div className="flex items-center gap-3">
-              <Button variant="ghost" asChild>
-                <Link to="/blog">Blog</Link>
-              </Button>
-              <Button variant="ghost" asChild>
-                <Link to="/contact">Contato</Link>
-              </Button>
-              <Button variant="outline" asChild>
-                <Link to="/auth">Login</Link>
-              </Button>
-              <Button asChild className="bg-primary hover:bg-primary/90">
-                <Link to="/auth">Criar Conta</Link>
-              </Button>
+          {/* Navigation Buttons */}
+          <div className="flex items-center gap-8 rounded-full border border-border bg-card px-6 py-2">
+            <Link 
+              to="/" 
+              className="flex items-center gap-2 rounded-full bg-primary px-6 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            >
+              <Home className="h-4 w-4" />
+              Home
+            </Link>
+            <Link to="/blog" className="text-sm text-foreground/90 transition-colors hover:text-foreground">
+              Blog
+            </Link>
+            <Link to="/contact" className="text-sm text-foreground/90 transition-colors hover:text-foreground">
+              Contato
+            </Link>
+            <Link to="/auth" className="text-sm text-foreground/90 transition-colors hover:text-foreground">
+              Login
+            </Link>
+          </div>
+
+          {/* Right Side Actions */}
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 rounded-full border border-border px-3 py-1">
+              <div className="h-4 w-4 rounded-full bg-primary" />
+              <span className="text-xs">PRO</span>
             </div>
+            <Button size="lg" asChild className="rounded-full">
+              <Link to="/auth">Criar Conta</Link>
+            </Button>
           </div>
         </div>
       </nav>
@@ -62,7 +76,7 @@ export default function Landing() {
               <Button 
                 size="lg" 
                 asChild
-                className="h-14 px-8 text-lg bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all"
+                className="h-14 px-8 text-lg rounded-full shadow-lg hover:shadow-xl transition-all"
               >
                 <Link to="/auth">
                   Começar Agora. É GRÁTIS →
@@ -86,85 +100,85 @@ export default function Landing() {
       </main>
 
       {/* Features Grid */}
-      <section className="py-20 bg-muted/30">
+      <section className="py-32 border-t border-border/50">
         <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+          <div className="text-center mb-20">
+            <h2 className="text-4xl sm:text-5xl font-bold mb-6">
               Tudo que você precisa em um só lugar
             </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Ferramentas poderosas para otimizar cada etapa do seu processo de marketing
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            <Card className="border-border hover:border-primary/50 transition-colors">
+            <Card className="group border-border/50 bg-card/50 backdrop-blur transition-all hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/10">
               <CardContent className="p-6">
-                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                  <Zap className="w-6 h-6 text-primary" />
+                <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mb-4 transition-transform group-hover:scale-110">
+                  <Zap className="w-7 h-7 text-primary" />
                 </div>
                 <h3 className="text-xl font-semibold mb-3">Geração de Conteúdo com IA</h3>
-                <p className="text-muted-foreground">
+                <p className="text-base text-muted-foreground">
                   Crie posts, ideias e estratégias de conteúdo automaticamente com IA avançada.
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="border-border hover:border-primary/50 transition-colors">
+            <Card className="group border-border/50 bg-card/50 backdrop-blur transition-all hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/10">
               <CardContent className="p-6">
-                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                  <Users className="w-6 h-6 text-primary" />
+                <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mb-4 transition-transform group-hover:scale-110">
+                  <Users className="w-7 h-7 text-primary" />
                 </div>
                 <h3 className="text-xl font-semibold mb-3">Gestão de Clientes</h3>
-                <p className="text-muted-foreground">
+                <p className="text-base text-muted-foreground">
                   Centralize todos os seus clientes e projetos em um único lugar organizado.
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="border-border hover:border-primary/50 transition-colors">
+            <Card className="group border-border/50 bg-card/50 backdrop-blur transition-all hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/10">
               <CardContent className="p-6">
-                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                  <BarChart3 className="w-6 h-6 text-primary" />
+                <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mb-4 transition-transform group-hover:scale-110">
+                  <BarChart3 className="w-7 h-7 text-primary" />
                 </div>
                 <h3 className="text-xl font-semibold mb-3">Analytics Integrado</h3>
-                <p className="text-muted-foreground">
+                <p className="text-base text-muted-foreground">
                   Dados em tempo real sobre performance de campanhas e conteúdos.
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="border-border hover:border-primary/50 transition-colors">
+            <Card className="group border-border/50 bg-card/50 backdrop-blur transition-all hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/10">
               <CardContent className="p-6">
-                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                  <Target className="w-6 h-6 text-primary" />
+                <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mb-4 transition-transform group-hover:scale-110">
+                  <Target className="w-7 h-7 text-primary" />
                 </div>
                 <h3 className="text-xl font-semibold mb-3">Calendário Editorial</h3>
-                <p className="text-muted-foreground">
+                <p className="text-base text-muted-foreground">
                   Planeje e organize suas publicações com visão completa do calendário.
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="border-border hover:border-primary/50 transition-colors">
+            <Card className="group border-border/50 bg-card/50 backdrop-blur transition-all hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/10">
               <CardContent className="p-6">
-                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                  <Clock className="w-6 h-6 text-primary" />
+                <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mb-4 transition-transform group-hover:scale-110">
+                  <Clock className="w-7 h-7 text-primary" />
                 </div>
                 <h3 className="text-xl font-semibold mb-3">Automação de Tarefas</h3>
-                <p className="text-muted-foreground">
+                <p className="text-base text-muted-foreground">
                   Automatize processos repetitivos e foque no que realmente importa.
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="border-border hover:border-primary/50 transition-colors">
+            <Card className="group border-border/50 bg-card/50 backdrop-blur transition-all hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/10">
               <CardContent className="p-6">
-                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                  <Shield className="w-6 h-6 text-primary" />
+                <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mb-4 transition-transform group-hover:scale-110">
+                  <Shield className="w-7 h-7 text-primary" />
                 </div>
                 <h3 className="text-xl font-semibold mb-3">Segurança e Privacidade</h3>
-                <p className="text-muted-foreground">
+                <p className="text-base text-muted-foreground">
                   Seus dados protegidos com criptografia de nível empresarial.
                 </p>
               </CardContent>
@@ -174,19 +188,19 @@ export default function Landing() {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-20">
+      <section className="py-32 border-t border-border/50 bg-muted/30">
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+              <h2 className="text-4xl sm:text-5xl font-bold mb-6">
                 Por que escolher a AdzHub?
               </h2>
-              <p className="text-lg text-muted-foreground">
+              <p className="text-xl text-muted-foreground">
                 Recursos que fazem a diferença no seu dia a dia
               </p>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-8">
               {[
                 'Economize até 80% do tempo em criação de conteúdo',
                 'Gerencie múltiplos clientes de forma eficiente',
@@ -195,11 +209,13 @@ export default function Landing() {
                 'Suporte prioritário em português',
                 'Atualizações constantes e novas funcionalidades',
               ].map((benefit, index) => (
-                <div key={index} className="flex items-start gap-4 p-4 rounded-lg hover:bg-muted/50 transition-colors">
-                  <div className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <Check className="w-4 h-4 text-primary" />
+                <div key={index} className="flex items-start gap-6">
+                  <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                    <Check className="w-6 h-6 text-primary-foreground" />
                   </div>
-                  <p className="text-lg">{benefit}</p>
+                  <div>
+                    <p className="text-xl">{benefit}</p>
+                  </div>
                 </div>
               ))}
             </div>
@@ -208,10 +224,10 @@ export default function Landing() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-primary/5">
+      <section className="py-32">
         <div className="container mx-auto px-6">
           <div className="max-w-3xl mx-auto text-center space-y-8">
-            <h2 className="text-3xl sm:text-4xl font-bold">
+            <h2 className="text-4xl sm:text-5xl font-bold">
               Pronto para transformar seu marketing?
             </h2>
             <p className="text-xl text-muted-foreground">
@@ -220,7 +236,7 @@ export default function Landing() {
             <Button 
               size="lg" 
               asChild
-              className="h-14 px-8 text-lg bg-primary hover:bg-primary/90"
+              className="h-14 px-8 text-lg rounded-full"
             >
               <Link to="/auth">
                 Começar gratuitamente →
@@ -231,37 +247,40 @@ export default function Landing() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border py-12 bg-background">
+      <footer className="border-t border-border/50 py-16 bg-muted/30">
         <div className="container mx-auto px-6">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
+          <div className="grid md:grid-cols-4 gap-12 mb-12">
             <div>
-              <img src={adzhubLogo} alt="AdzHub" className="h-8 w-auto mb-4" />
-              <p className="text-sm text-muted-foreground">
+              <div className="flex items-center gap-3 mb-6">
+                <img src={adzhubLogo} alt="AdzHub" className="h-8 w-8" />
+                <span className="text-xl font-medium">AdzHub</span>
+              </div>
+              <p className="text-base text-muted-foreground">
                 A plataforma completa para gestão de marketing digital
               </p>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">Produto</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><Link to="/chat" className="hover:text-foreground">Recursos</Link></li>
-                <li><Link to="/blog" className="hover:text-foreground">Blog</Link></li>
+              <h4 className="text-lg font-semibold mb-6">Produto</h4>
+              <ul className="space-y-3 text-base text-muted-foreground">
+                <li><Link to="/chat" className="hover:text-foreground transition-colors">Recursos</Link></li>
+                <li><Link to="/blog" className="hover:text-foreground transition-colors">Blog</Link></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">Empresa</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><Link to="/contact" className="hover:text-foreground">Contato</Link></li>
+              <h4 className="text-lg font-semibold mb-6">Empresa</h4>
+              <ul className="space-y-3 text-base text-muted-foreground">
+                <li><Link to="/contact" className="hover:text-foreground transition-colors">Contato</Link></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">Legal</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><Link to="/contact" className="hover:text-foreground">Privacidade</Link></li>
-                <li><Link to="/contact" className="hover:text-foreground">Termos</Link></li>
+              <h4 className="text-lg font-semibold mb-6">Legal</h4>
+              <ul className="space-y-3 text-base text-muted-foreground">
+                <li><Link to="/contact" className="hover:text-foreground transition-colors">Privacidade</Link></li>
+                <li><Link to="/contact" className="hover:text-foreground transition-colors">Termos</Link></li>
               </ul>
             </div>
           </div>
-          <div className="border-t border-border pt-8 text-center text-sm text-muted-foreground">
+          <div className="border-t border-border/50 pt-8 text-center text-base text-muted-foreground">
             <p>© 2025 AdzHub. Todos os direitos reservados.</p>
           </div>
         </div>
