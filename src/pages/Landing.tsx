@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Check, Zap, Target, BarChart3, Users, Clock, Shield, Sparkles, Star, Play } from 'lucide-react';
+import { Check, Zap, Target, BarChart3, Users, Clock, Shield, Sparkles, Star, Play, Plus, ChevronRight, ArrowRight } from 'lucide-react';
 import adzhubLogo from '@/assets/adzhub-logo-final.png';
 
 export default function Landing() {
@@ -147,6 +147,174 @@ export default function Landing() {
                 <div className="w-8 h-8 bg-muted"></div>
                 <span className="text-lg font-semibold text-muted-foreground">Layers</span>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Manage Money Wisely Section */}
+      <section className="py-20 bg-background">
+        <div className="container mx-auto px-6">
+          <div className="max-w-7xl mx-auto">
+            {/* Header */}
+            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-16 gap-6">
+              <div className="max-w-2xl">
+                <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-4">
+                  Manage
+                  <br />
+                  Money Wisely
+                </h2>
+                <p className="text-base text-muted-foreground">
+                  Master the Art of Financial Management: Strategies and Tools to Optimize Your Budget, Build Wealth, and Secure a Stable Financial Future
+                </p>
+              </div>
+              <div className="flex flex-col gap-3">
+                <Button 
+                  size="lg"
+                  className="h-12 px-8 bg-foreground text-background hover:bg-foreground/90 rounded-full"
+                  asChild
+                >
+                  <Link to="/auth">Get Started Free</Link>
+                </Button>
+                <button className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  Explore More About Us
+                </button>
+              </div>
+            </div>
+
+            {/* Cards Grid */}
+            <div className="grid lg:grid-cols-2 gap-8">
+              {/* Expanse Statistic Card */}
+              <Card className="border-border bg-card overflow-hidden">
+                <CardContent className="p-8">
+                  <div className="flex items-start justify-between mb-8">
+                    <Button 
+                      variant="outline" 
+                      className="rounded-full border-2 border-primary text-primary hover:bg-primary/10"
+                    >
+                      Learn More
+                    </Button>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium">Bar chart</span>
+                      <BarChart3 className="w-4 h-4" />
+                    </div>
+                  </div>
+
+                  <div className="mb-8">
+                    <h3 className="text-2xl font-bold mb-4">Expanse Statistic</h3>
+                    <div className="flex gap-2 mb-8">
+                      {/* Chart Circles - representing Jan to May */}
+                      <div className="flex-1 flex flex-col items-center gap-2">
+                        <div className="flex flex-col gap-2">
+                          <div className="w-12 h-12 rounded-full bg-orange-200"></div>
+                          <div className="w-12 h-12 rounded-full bg-orange-400"></div>
+                        </div>
+                        <span className="text-xs text-muted-foreground">Jan</span>
+                      </div>
+                      <div className="flex-1 flex flex-col items-center gap-2">
+                        <div className="flex flex-col gap-2">
+                          <div className="w-12 h-12 rounded-full bg-orange-200"></div>
+                          <div className="w-12 h-12 rounded-full bg-orange-400"></div>
+                        </div>
+                        <span className="text-xs text-muted-foreground">Feb</span>
+                      </div>
+                      <div className="flex-1 flex flex-col items-center gap-2">
+                        <div className="relative">
+                          <div className="flex flex-col gap-2">
+                            <div className="w-12 h-12 rounded-full bg-orange-200"></div>
+                            <div className="w-16 h-16 rounded-full bg-orange-400"></div>
+                          </div>
+                          {/* Tooltip */}
+                          <div className="absolute -top-20 left-1/2 -translate-x-1/2 bg-orange-100 rounded-2xl p-3 shadow-lg whitespace-nowrap z-10">
+                            <div className="text-xs mb-1 flex items-center gap-1">
+                              <div className="w-2 h-2 rounded-full bg-orange-400"></div>
+                              Current Income
+                            </div>
+                            <div className="text-lg font-bold">73,901</div>
+                            <div className="text-xs mt-1 flex items-center gap-1">
+                              <div className="w-2 h-2 rounded-full bg-orange-600"></div>
+                              Current Expences
+                            </div>
+                            <div className="text-lg font-bold">98,032</div>
+                          </div>
+                        </div>
+                        <span className="text-xs text-muted-foreground">Mar</span>
+                      </div>
+                      <div className="flex-1 flex flex-col items-center gap-2">
+                        <div className="flex flex-col gap-2">
+                          <div className="w-12 h-12 rounded-full bg-orange-200"></div>
+                          <div className="w-14 h-14 rounded-full bg-orange-400"></div>
+                        </div>
+                        <span className="text-xs text-muted-foreground">Apr</span>
+                      </div>
+                      <div className="flex-1 flex flex-col items-center gap-2">
+                        <div className="flex flex-col gap-2">
+                          <div className="w-12 h-12 rounded-full bg-orange-200"></div>
+                          <div className="w-14 h-14 rounded-full bg-orange-400"></div>
+                        </div>
+                        <span className="text-xs text-muted-foreground">May</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="border-t border-border pt-6">
+                    <h4 className="text-xl font-bold mb-2">Manage Your Money Wisely</h4>
+                    <p className="text-sm text-muted-foreground">Master the Art of Financial Management</p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Quick Transfer Card */}
+              <Card className="border-border bg-card">
+                <CardContent className="p-8">
+                  <div className="mb-6">
+                    <h3 className="text-2xl font-bold mb-4">Quick Transfer</h3>
+                    <div className="flex gap-2 mb-6">
+                      <button className="px-4 py-2 rounded-full bg-foreground text-background text-sm font-medium">
+                        All
+                      </button>
+                      <button className="px-4 py-2 rounded-full text-foreground text-sm font-medium hover:bg-muted">
+                        Contacts
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="mb-8">
+                    <div className="flex items-center gap-4 mb-8">
+                      <button className="flex flex-col items-center gap-2 group">
+                        <div className="w-16 h-16 rounded-full border-2 border-dashed border-muted-foreground/30 flex items-center justify-center group-hover:border-primary transition-colors">
+                          <Plus className="w-6 h-6 text-muted-foreground group-hover:text-primary" />
+                        </div>
+                        <span className="text-xs text-muted-foreground">Add New</span>
+                      </button>
+                      <button className="flex flex-col items-center gap-2">
+                        <div className="w-16 h-16 rounded-full bg-muted"></div>
+                        <span className="text-xs text-muted-foreground">Albert Sky</span>
+                      </button>
+                      <button className="flex flex-col items-center gap-2">
+                        <div className="w-16 h-16 rounded-full bg-muted"></div>
+                        <span className="text-xs text-muted-foreground">Edwer San</span>
+                      </button>
+                      <button className="flex flex-col items-center gap-2">
+                        <div className="w-16 h-16 rounded-full bg-muted"></div>
+                        <span className="text-xs text-muted-foreground">Erwan Why</span>
+                      </button>
+                      <button className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-muted/80">
+                        <ChevronRight className="w-5 h-5" />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between p-6 bg-muted/30 rounded-2xl">
+                    <div className="text-4xl font-bold">$349<span className="text-muted-foreground">.00</span></div>
+                    <Button 
+                      className="h-12 px-8 bg-red-400 hover:bg-red-500 text-white rounded-full"
+                    >
+                      Send
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </div>
