@@ -130,7 +130,28 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    font-family: 'Inter', sans-serif;
   }
+}
+
+.main-container {
+  background-color: #FEF9FB;
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(255, 204, 232, 0.4), transparent 30%),
+    radial-gradient(circle at 90% 80%, rgba(255, 213, 232, 0.4), transparent 40%);
+  min-height: 100vh;
+}
+
+.glass-nav {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.phone-mockup {
+  transform: perspective(1500px) rotateX(5deg) rotateY(-10deg) rotateZ(-3deg);
+  box-shadow: -20px 20px 40px rgba(0, 0, 0, 0.1), -10px 10px 20px rgba(0, 0, 0, 0.05);
 }
 
 /* Mobile viewport fix for iOS Safari */

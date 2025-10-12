@@ -1,506 +1,167 @@
-import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Check, Zap, Target, BarChart3, Users, Clock, Shield, Sparkles, Star, Play, Plus, ChevronRight, ArrowRight } from 'lucide-react';
-import adzhubLogo from '@/assets/adzhub-logo-final.png';
+import { Play, Bell, User, ChevronLeft, Grid3x3, ChevronDown, Plus, MoreVertical } from "lucide-react";
 
-export default function Landing() {
+const Landing = () => {
   return (
-    <div className="min-h-screen bg-background">
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-        <div className="container mx-auto px-6 py-4">
+    <div className="main-container text-gray-800 overflow-x-hidden">
+      <div className="container mx-auto px-4 py-6">
+        {/* Navigation Bar */}
+        <header className="glass-nav rounded-full p-2 sticky top-4 z-50">
           <div className="flex items-center justify-between">
-            {/* Logo */}
-            <Link to="/" className="flex items-center gap-3">
-              <img src={adzhubLogo} alt="AdzHub" className="h-8 w-auto" />
-            </Link>
-
-            {/* Navigation Buttons */}
-            <div className="flex items-center gap-3">
-              <Button variant="ghost" asChild>
-                <Link to="/blog">Blog</Link>
-              </Button>
-              <Button variant="ghost" asChild>
-                <Link to="/contact">Contato</Link>
-              </Button>
-              <Button variant="outline" asChild>
-                <Link to="/auth">Login</Link>
-              </Button>
-              <Button asChild className="bg-primary hover:bg-primary/90">
-                <Link to="/auth">Criar Conta</Link>
-              </Button>
+            <div className="flex items-center gap-8">
+              <a href="#" className="flex items-center gap-2 pl-4">
+                <div className="bg-[#F85166] w-8 h-8 rounded-full flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                  </svg>
+                </div>
+                <span className="font-bold text-2xl text-gray-900">Finestra</span>
+              </a>
+              <nav className="hidden lg:flex items-center bg-gray-100 rounded-full">
+                <a href="#" className="py-2 px-5 bg-[#F85166] text-white rounded-full font-semibold">Home</a>
+                <a href="#" className="py-2 px-5 text-gray-600 hover:text-gray-900 font-medium">About Us</a>
+                <a href="#" className="py-2 px-5 text-gray-600 hover:text-gray-900 font-medium">Reviews</a>
+                <a href="#" className="py-2 px-5 text-gray-600 hover:text-gray-900 font-medium">Procedures</a>
+                <a href="#" className="py-2 px-5 text-gray-600 hover:text-gray-900 font-medium">Blog</a>
+              </nav>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="relative hidden md:block">
+                <div className="w-3 h-3 bg-red-500 rounded-full absolute -top-1 -right-1 border-2 border-white"></div>
+                <Bell className="text-gray-500 w-6 h-6" />
+              </div>
+              <div className="bg-gray-200 w-12 h-6 rounded-full relative cursor-pointer hidden md:flex items-center">
+                <div className="w-5 h-5 bg-white rounded-full absolute left-0.5 shadow"></div>
+              </div>
+              <a href="#" className="hidden md:flex items-center gap-2 bg-gray-100 py-2 px-4 rounded-full font-semibold text-sm">
+                <User className="text-gray-500 w-4 h-4" />
+                +pro
+              </a>
+              <a href="#" className="py-2.5 px-6 bg-white border border-gray-300 rounded-full font-semibold hover:bg-gray-50">Sign In</a>
             </div>
           </div>
-        </div>
-      </nav>
+        </header>
 
-      {/* Hero Section */}
-      <main className="relative pt-32 pb-20 overflow-hidden bg-gradient-to-br from-[hsl(var(--hero-gradient-start))] via-[hsl(var(--hero-gradient-mid))] to-[hsl(var(--hero-gradient-end))]">
-        <div className="container mx-auto px-6">
-          <div className="max-w-5xl mx-auto text-center space-y-8 relative">
-            {/* Floating Tags */}
-            <div className="absolute -left-12 top-0 hidden lg:flex items-center gap-2 px-4 py-2 bg-yellow-100 text-yellow-900 rounded-full text-sm font-medium shadow-lg transform -rotate-6">
-              <span>📊</span>
-              <span>Finance</span>
+        {/* Main Content */}
+        <main className="text-center pt-24 pb-16 relative">
+          {/* Floating Tag: Finance */}
+          <div className="absolute top-28 left-4 sm:left-12 md:left-24 lg:left-36 transform -rotate-12">
+            <div className="bg-yellow-100 text-yellow-800 font-semibold px-4 py-1 rounded-full shadow-md">
+              Finance
             </div>
-            <div className="absolute -right-12 top-8 hidden lg:flex items-center gap-2 px-4 py-2 bg-rose-100 text-rose-900 rounded-full text-sm font-medium shadow-lg transform rotate-6">
-              <span>💼</span>
-              <span>Business</span>
-            </div>
+            <svg width="40" height="40" viewBox="0 0 100 100" className="absolute -top-6 -right-8 text-gray-800 transform -rotate-45">
+              <path d="M 10 50 L 50 10 L 90 50 L 50 90 Z" fill="currentColor" stroke="none" transform="scale(0.3) translate(80, 80)"></path>
+              <path d="M 50 50 L 90 90" stroke="currentColor" strokeWidth="5" fill="none"></path>
+            </svg>
+          </div>
 
-            {/* Main Heading */}
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-foreground">
-              Make Your Money
-              <br />
-              Work Harder
-            </h1>
-
-            {/* Subheading */}
-            <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto">
-              Initiating a business venture may appear overwhelming, yet our forte lies in simplifying the entire process for you.
-            </p>
-
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-              <Button 
-                size="lg" 
-                asChild
-                className="h-12 px-8 bg-foreground text-background hover:bg-foreground/90 rounded-full font-medium"
-              >
-                <Link to="/auth">
-                  Get Started Free
-                </Link>
-              </Button>
-              <Button 
-                size="lg" 
-                variant="outline"
-                asChild
-                className="h-12 px-8 bg-transparent border-2 border-foreground text-foreground hover:bg-foreground/5 rounded-full font-medium"
-              >
-                <Link to="/auth" className="flex items-center gap-2">
-                  <Play className="w-4 h-4" />
-                  Watch A Demo
-                </Link>
-              </Button>
-            </div>
-
-            {/* Trustpilot Badge */}
-            <div className="flex items-center justify-center gap-2 pt-2">
-              <Star className="w-5 h-5 fill-red-500 text-red-500" />
-              <span className="font-semibold text-foreground">Trustpilot</span>
-              <div className="flex gap-0.5">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-red-500 text-red-500" />
-                ))}
-              </div>
-              <span className="text-sm text-muted-foreground font-medium">3800+ 5 Stars</span>
+          {/* Floating Tag: Business */}
+          <div className="absolute top-16 right-4 sm:right-12 md:right-24 lg:right-36 transform rotate-12">
+            <svg width="40" height="40" viewBox="0 0 100 100" className="absolute -bottom-6 -left-8 text-gray-800 transform rotate-45 scale-x-[-1]">
+              <path d="M 10 50 L 50 10 L 90 50 L 50 90 Z" fill="currentColor" stroke="none" transform="scale(0.3) translate(80, 80)"></path>
+              <path d="M 50 50 L 90 90" stroke="currentColor" strokeWidth="5" fill="none"></path>
+            </svg>
+            <div className="bg-pink-100 text-pink-800 font-semibold px-4 py-1 rounded-full shadow-md">
+              Business
             </div>
           </div>
 
-          {/* Dashboard Mockup */}
-          <div className="max-w-6xl mx-auto mt-16">
-            <div className="relative">
-              <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl p-8 border border-white/50">
-                <div className="aspect-[16/10] bg-gradient-to-br from-purple-100 to-blue-100 rounded-2xl flex items-center justify-center">
-                  <div className="text-center space-y-4">
-                    <BarChart3 className="w-24 h-24 mx-auto text-primary/40" />
-                    <p className="text-lg text-muted-foreground font-medium">Dashboard Preview</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tighter text-gray-900 max-w-4xl mx-auto">
+            Make Your Money Work Harder
+          </h1>
+          <p className="max-w-xl mx-auto text-gray-600 text-lg mt-8 mb-10">
+            Initiating a business venture may appear overwhelming, yet our forte lies in simplifying the entire process for you.
+          </p>
+          <div className="flex justify-center items-center gap-4 flex-wrap">
+            <a href="#" className="bg-gray-900 text-white font-semibold py-3 px-6 rounded-full hover:bg-gray-800 transition duration-300">
+              Get Started Free
+            </a>
+            <a href="#" className="bg-white text-gray-900 font-semibold py-3 px-6 rounded-full border border-gray-300 hover:bg-gray-50 flex items-center gap-2 transition duration-300">
+              <Play className="w-5 h-5 fill-current" />
+              Watch A Demo
+            </a>
           </div>
-        </div>
-      </main>
-
-      {/* Social Proof Section */}
-      <section className="py-16 bg-background">
-        <div className="container mx-auto px-6">
-          <div className="max-w-6xl mx-auto">
-            <p className="text-center text-sm font-medium text-muted-foreground mb-12">
-              Loved by 25 million+ users
-            </p>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 items-center justify-items-center opacity-50">
-              {/* Logo Placeholders */}
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-muted"></div>
-                <span className="text-lg font-semibold text-muted-foreground">Circooles</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-muted"></div>
-                <span className="text-lg font-semibold text-muted-foreground">Quotient</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-muted transform rotate-45"></div>
-                <span className="text-lg font-semibold text-muted-foreground">Hourglass</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded bg-muted"></div>
-                <span className="text-lg font-semibold text-muted-foreground">Command+R</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-muted"></div>
-                <span className="text-lg font-semibold text-muted-foreground">Catalog</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-muted"></div>
-                <span className="text-lg font-semibold text-muted-foreground">Layers</span>
-              </div>
+          <div className="flex justify-center items-center gap-4 mt-8">
+            <div className="flex items-center gap-1.5">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#F85166]" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
+              <span className="font-bold text-gray-800">Trustpilot</span>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Manage Money Wisely Section */}
-      <section className="py-20 bg-background">
-        <div className="container mx-auto px-6">
-          <div className="max-w-7xl mx-auto">
-            {/* Header */}
-            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-16 gap-6">
-              <div className="max-w-2xl">
-                <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-4">
-                  Manage
-                  <br />
-                  Money Wisely
-                </h2>
-                <p className="text-base text-muted-foreground">
-                  Master the Art of Financial Management: Strategies and Tools to Optimize Your Budget, Build Wealth, and Secure a Stable Financial Future
-                </p>
-              </div>
-              <div className="flex flex-col gap-3">
-                <Button 
-                  size="lg"
-                  className="h-12 px-8 bg-foreground text-background hover:bg-foreground/90 rounded-full"
-                  asChild
-                >
-                  <Link to="/auth">Get Started Free</Link>
-                </Button>
-                <button className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  Explore More About Us
-                </button>
-              </div>
-            </div>
-
-            {/* Cards Grid */}
-            <div className="grid lg:grid-cols-2 gap-8">
-              {/* Expanse Statistic Card */}
-              <Card className="border-border bg-card overflow-hidden">
-                <CardContent className="p-8">
-                  <div className="flex items-start justify-between mb-8">
-                    <Button 
-                      variant="outline" 
-                      className="rounded-full border-2 border-primary text-primary hover:bg-primary/10"
-                    >
-                      Learn More
-                    </Button>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium">Bar chart</span>
-                      <BarChart3 className="w-4 h-4" />
-                    </div>
-                  </div>
-
-                  <div className="mb-8">
-                    <h3 className="text-2xl font-bold mb-4">Expanse Statistic</h3>
-                    <div className="flex gap-2 mb-8">
-                      {/* Chart Circles - representing Jan to May */}
-                      <div className="flex-1 flex flex-col items-center gap-2">
-                        <div className="flex flex-col gap-2">
-                          <div className="w-12 h-12 rounded-full bg-orange-200"></div>
-                          <div className="w-12 h-12 rounded-full bg-orange-400"></div>
-                        </div>
-                        <span className="text-xs text-muted-foreground">Jan</span>
-                      </div>
-                      <div className="flex-1 flex flex-col items-center gap-2">
-                        <div className="flex flex-col gap-2">
-                          <div className="w-12 h-12 rounded-full bg-orange-200"></div>
-                          <div className="w-12 h-12 rounded-full bg-orange-400"></div>
-                        </div>
-                        <span className="text-xs text-muted-foreground">Feb</span>
-                      </div>
-                      <div className="flex-1 flex flex-col items-center gap-2">
-                        <div className="relative">
-                          <div className="flex flex-col gap-2">
-                            <div className="w-12 h-12 rounded-full bg-orange-200"></div>
-                            <div className="w-16 h-16 rounded-full bg-orange-400"></div>
-                          </div>
-                          {/* Tooltip */}
-                          <div className="absolute -top-20 left-1/2 -translate-x-1/2 bg-orange-100 rounded-2xl p-3 shadow-lg whitespace-nowrap z-10">
-                            <div className="text-xs mb-1 flex items-center gap-1">
-                              <div className="w-2 h-2 rounded-full bg-orange-400"></div>
-                              Current Income
-                            </div>
-                            <div className="text-lg font-bold">73,901</div>
-                            <div className="text-xs mt-1 flex items-center gap-1">
-                              <div className="w-2 h-2 rounded-full bg-orange-600"></div>
-                              Current Expences
-                            </div>
-                            <div className="text-lg font-bold">98,032</div>
-                          </div>
-                        </div>
-                        <span className="text-xs text-muted-foreground">Mar</span>
-                      </div>
-                      <div className="flex-1 flex flex-col items-center gap-2">
-                        <div className="flex flex-col gap-2">
-                          <div className="w-12 h-12 rounded-full bg-orange-200"></div>
-                          <div className="w-14 h-14 rounded-full bg-orange-400"></div>
-                        </div>
-                        <span className="text-xs text-muted-foreground">Apr</span>
-                      </div>
-                      <div className="flex-1 flex flex-col items-center gap-2">
-                        <div className="flex flex-col gap-2">
-                          <div className="w-12 h-12 rounded-full bg-orange-200"></div>
-                          <div className="w-14 h-14 rounded-full bg-orange-400"></div>
-                        </div>
-                        <span className="text-xs text-muted-foreground">May</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="border-t border-border pt-6">
-                    <h4 className="text-xl font-bold mb-2">Manage Your Money Wisely</h4>
-                    <p className="text-sm text-muted-foreground">Master the Art of Financial Management</p>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Quick Transfer Card */}
-              <Card className="border-border bg-card">
-                <CardContent className="p-8">
-                  <div className="mb-6">
-                    <h3 className="text-2xl font-bold mb-4">Quick Transfer</h3>
-                    <div className="flex gap-2 mb-6">
-                      <button className="px-4 py-2 rounded-full bg-foreground text-background text-sm font-medium">
-                        All
-                      </button>
-                      <button className="px-4 py-2 rounded-full text-foreground text-sm font-medium hover:bg-muted">
-                        Contacts
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="mb-8">
-                    <div className="flex items-center gap-4 mb-8">
-                      <button className="flex flex-col items-center gap-2 group">
-                        <div className="w-16 h-16 rounded-full border-2 border-dashed border-muted-foreground/30 flex items-center justify-center group-hover:border-primary transition-colors">
-                          <Plus className="w-6 h-6 text-muted-foreground group-hover:text-primary" />
-                        </div>
-                        <span className="text-xs text-muted-foreground">Add New</span>
-                      </button>
-                      <button className="flex flex-col items-center gap-2">
-                        <div className="w-16 h-16 rounded-full bg-muted"></div>
-                        <span className="text-xs text-muted-foreground">Albert Sky</span>
-                      </button>
-                      <button className="flex flex-col items-center gap-2">
-                        <div className="w-16 h-16 rounded-full bg-muted"></div>
-                        <span className="text-xs text-muted-foreground">Edwer San</span>
-                      </button>
-                      <button className="flex flex-col items-center gap-2">
-                        <div className="w-16 h-16 rounded-full bg-muted"></div>
-                        <span className="text-xs text-muted-foreground">Erwan Why</span>
-                      </button>
-                      <button className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-muted/80">
-                        <ChevronRight className="w-5 h-5" />
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between p-6 bg-muted/30 rounded-2xl">
-                    <div className="text-4xl font-bold">$349<span className="text-muted-foreground">.00</span></div>
-                    <Button 
-                      className="h-12 px-8 bg-red-400 hover:bg-red-500 text-white rounded-full"
-                    >
-                      Send
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Grid */}
-      <section className="py-20 bg-muted/30">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-              Tudo que você precisa em um só lugar
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Ferramentas poderosas para otimizar cada etapa do seu processo de marketing
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            <Card className="border-border hover:border-primary/50 transition-colors">
-              <CardContent className="p-6">
-                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                  <Zap className="w-6 h-6 text-primary" />
-                </div>
-                <h3 className="text-xl font-semibold mb-3">Geração de Conteúdo com IA</h3>
-                <p className="text-muted-foreground">
-                  Crie posts, ideias e estratégias de conteúdo automaticamente com IA avançada.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-border hover:border-primary/50 transition-colors">
-              <CardContent className="p-6">
-                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                  <Users className="w-6 h-6 text-primary" />
-                </div>
-                <h3 className="text-xl font-semibold mb-3">Gestão de Clientes</h3>
-                <p className="text-muted-foreground">
-                  Centralize todos os seus clientes e projetos em um único lugar organizado.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-border hover:border-primary/50 transition-colors">
-              <CardContent className="p-6">
-                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                  <BarChart3 className="w-6 h-6 text-primary" />
-                </div>
-                <h3 className="text-xl font-semibold mb-3">Analytics Integrado</h3>
-                <p className="text-muted-foreground">
-                  Dados em tempo real sobre performance de campanhas e conteúdos.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-border hover:border-primary/50 transition-colors">
-              <CardContent className="p-6">
-                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                  <Target className="w-6 h-6 text-primary" />
-                </div>
-                <h3 className="text-xl font-semibold mb-3">Calendário Editorial</h3>
-                <p className="text-muted-foreground">
-                  Planeje e organize suas publicações com visão completa do calendário.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-border hover:border-primary/50 transition-colors">
-              <CardContent className="p-6">
-                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                  <Clock className="w-6 h-6 text-primary" />
-                </div>
-                <h3 className="text-xl font-semibold mb-3">Automação de Tarefas</h3>
-                <p className="text-muted-foreground">
-                  Automatize processos repetitivos e foque no que realmente importa.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-border hover:border-primary/50 transition-colors">
-              <CardContent className="p-6">
-                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                  <Shield className="w-6 h-6 text-primary" />
-                </div>
-                <h3 className="text-xl font-semibold mb-3">Segurança e Privacidade</h3>
-                <p className="text-muted-foreground">
-                  Seus dados protegidos com criptografia de nível empresarial.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Benefits Section */}
-      <section className="py-20">
-        <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-                Por que escolher a AdzHub?
-              </h2>
-              <p className="text-lg text-muted-foreground">
-                Recursos que fazem a diferença no seu dia a dia
-              </p>
-            </div>
-
-            <div className="space-y-6">
-              {[
-                'Economize até 80% do tempo em criação de conteúdo',
-                'Gerencie múltiplos clientes de forma eficiente',
-                'Acesso a insights e analytics em tempo real',
-                'Interface intuitiva e fácil de usar',
-                'Suporte prioritário em português',
-                'Atualizações constantes e novas funcionalidades',
-              ].map((benefit, index) => (
-                <div key={index} className="flex items-start gap-4 p-4 rounded-lg hover:bg-muted/50 transition-colors">
-                  <div className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <Check className="w-4 h-4 text-primary" />
-                  </div>
-                  <p className="text-lg">{benefit}</p>
-                </div>
+            <div className="flex items-center">
+              {[...Array(5)].map((_, i) => (
+                <svg key={i} xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[#F85166]" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
               ))}
             </div>
+            <div className="text-gray-600 font-medium">3800+ 5 Stars</div>
           </div>
-        </div>
-      </section>
+        </main>
 
-      {/* CTA Section */}
-      <section className="py-20 bg-primary/5">
-        <div className="container mx-auto px-6">
-          <div className="max-w-3xl mx-auto text-center space-y-8">
-            <h2 className="text-3xl sm:text-4xl font-bold">
-              Pronto para transformar seu marketing?
-            </h2>
-            <p className="text-xl text-muted-foreground">
-              Junte-se a centenas de profissionais que já estão usando a AdzHub
-            </p>
-            <Button 
-              size="lg" 
-              asChild
-              className="h-14 px-8 text-lg bg-primary hover:bg-primary/90"
-            >
-              <Link to="/auth">
-                Começar gratuitamente →
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </section>
+        {/* Phone Mockup Section */}
+        <div className="flex justify-center items-start -mt-10 mb-10">
+          <div className="w-[340px] h-[700px] bg-white rounded-[40px] p-2.5 shadow-2xl phone-mockup border-4 border-gray-200">
+            <div className="w-full h-full bg-gray-50 rounded-[30px] overflow-hidden relative">
+              {/* Phone Notch */}
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-gray-200 rounded-b-xl"></div>
 
-      {/* Footer */}
-      <footer className="border-t border-border py-12 bg-background">
-        <div className="container mx-auto px-6">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
-            <div>
-              <img src={adzhubLogo} alt="AdzHub" className="h-8 w-auto mb-4" />
-              <p className="text-sm text-muted-foreground">
-                A plataforma completa para gestão de marketing digital
-              </p>
+              {/* App UI */}
+              <div className="p-4 pt-8 text-gray-800">
+                <div className="flex justify-between items-center mb-6">
+                  <div className="flex items-center gap-2">
+                    <ChevronLeft className="w-5 h-5" />
+                    <span className="font-semibold text-lg">Dashboard</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Bell className="w-5 h-5" />
+                    <Grid3x3 className="w-5 h-5" />
+                  </div>
+                </div>
+
+                <h2 className="text-2xl font-bold mb-2">Accounts</h2>
+
+                <div className="flex items-center gap-3 mb-8">
+                  <div className="flex items-center gap-2 bg-white p-2 rounded-lg border border-gray-200">
+                    <span className="text-gray-500">**** 874</span>
+                    <ChevronDown className="w-4 h-4" />
+                  </div>
+                  <button className="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center">+</button>
+                  <button className="w-8 h-8 rounded-lg bg-purple-500 text-white flex items-center justify-center">
+                    <Plus className="w-4 h-4" />
+                  </button>
+                </div>
+
+                <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <p className="text-gray-500 text-sm">Monthly Income</p>
+                      <p className="text-2xl font-bold text-gray-900">$78,821<span className="text-gray-400">.88</span></p>
+                    </div>
+                    <MoreVertical className="w-5 h-5 text-gray-400" />
+                  </div>
+                  <div className="bg-green-100 text-green-700 text-xs font-semibold inline-flex px-2 py-0.5 rounded-full">
+                    +1.5%
+                  </div>
+                </div>
+
+                <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mt-4 opacity-50">
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <p className="text-gray-500 text-sm">Monthly Experience</p>
+                      <p className="text-2xl font-bold text-gray-900">$16,225<span className="text-gray-400">.22</span></p>
+                    </div>
+                    <MoreVertical className="w-5 h-5 text-gray-400" />
+                  </div>
+                </div>
+              </div>
             </div>
-            <div>
-              <h4 className="font-semibold mb-4">Produto</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><Link to="/chat" className="hover:text-foreground">Recursos</Link></li>
-                <li><Link to="/blog" className="hover:text-foreground">Blog</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Empresa</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><Link to="/contact" className="hover:text-foreground">Contato</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Legal</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><Link to="/contact" className="hover:text-foreground">Privacidade</Link></li>
-                <li><Link to="/contact" className="hover:text-foreground">Termos</Link></li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-border pt-8 text-center text-sm text-muted-foreground">
-            <p>© 2025 AdzHub. Todos os direitos reservados.</p>
           </div>
         </div>
-      </footer>
+      </div>
     </div>
   );
-}
+};
+
+export default Landing;
