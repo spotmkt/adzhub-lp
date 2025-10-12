@@ -1,272 +1,165 @@
-import { Link } from "react-router-dom";
-import { Zap, FileText, Mail, Shield, Users, Code, Copy, Check } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { Play, Bell, User, ChevronLeft, Grid3x3, ChevronDown, Plus, MoreVertical } from "lucide-react";
 
 const Landing = () => {
-  const [copied, setCopied] = useState(false);
-  const [email, setEmail] = useState("");
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText("https://api.finestra.com/s/XXXXXXX");
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-      {/* Navigation */}
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-200/50">
-        <div className="container mx-auto px-6 py-4">
+    <div className="main-container text-gray-800 overflow-x-hidden">
+      <div className="container mx-auto px-4 py-6">
+        {/* Navigation Bar */}
+        <header className="glass-nav rounded-full p-2 sticky top-4 z-50">
           <div className="flex items-center justify-between">
-            <Link to="/" className="flex items-center gap-2">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
-                  <FileText className="w-5 h-5 text-white" />
+            <div className="flex items-center gap-8">
+              <a href="#" className="flex items-center gap-2 pl-4">
+                <div className="bg-[#F85166] w-8 h-8 rounded-full flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                  </svg>
                 </div>
-                <span className="text-xl font-bold text-gray-900">Finestra</span>
-              </div>
-            </Link>
-            
-            <nav className="hidden md:flex items-center gap-8">
-              <Link to="#examples" className="text-gray-600 hover:text-gray-900 font-medium">Examples</Link>
-              <Link to="#features" className="text-gray-600 hover:text-gray-900 font-medium">Features</Link>
-              <Link to="#integrations" className="text-gray-600 hover:text-gray-900 font-medium">Integrations</Link>
-              <Link to="#docs" className="text-gray-600 hover:text-gray-900 font-medium">Docs</Link>
-              <Link to="#pricing" className="text-gray-600 hover:text-gray-900 font-medium">Pricing</Link>
-            </nav>
-
+                <span className="font-bold text-2xl text-gray-900">Finestra</span>
+              </a>
+              <nav className="hidden lg:flex items-center bg-gray-100 rounded-full">
+                <a href="#" className="py-2 px-5 bg-[#F85166] text-white rounded-full font-semibold">Home</a>
+                <a href="#" className="py-2 px-5 text-gray-600 hover:text-gray-900 font-medium">About Us</a>
+                <a href="#" className="py-2 px-5 text-gray-600 hover:text-gray-900 font-medium">Reviews</a>
+                <a href="#" className="py-2 px-5 text-gray-600 hover:text-gray-900 font-medium">Procedures</a>
+                <a href="#" className="py-2 px-5 text-gray-600 hover:text-gray-900 font-medium">Blog</a>
+              </nav>
+            </div>
             <div className="flex items-center gap-4">
-              <Button variant="ghost" asChild>
-                <Link to="/auth">Login</Link>
-              </Button>
-              <Button asChild className="bg-blue-600 hover:bg-blue-700">
-                <Link to="/auth">Sign up</Link>
-              </Button>
+              <div className="relative hidden md:block">
+                <div className="w-3 h-3 bg-red-500 rounded-full absolute -top-1 -right-1 border-2 border-white"></div>
+                <Bell className="text-gray-500 w-6 h-6" />
+              </div>
+              <div className="bg-gray-200 w-12 h-6 rounded-full relative cursor-pointer hidden md:flex items-center">
+                <div className="w-5 h-5 bg-white rounded-full absolute left-0.5 shadow"></div>
+              </div>
+              <a href="#" className="hidden md:flex items-center gap-2 bg-gray-100 py-2 px-4 rounded-full font-semibold text-sm">
+                <User className="text-gray-500 w-4 h-4" />
+                +pro
+              </a>
+              <a href="#" className="py-2.5 px-6 bg-white border border-gray-300 rounded-full font-semibold hover:bg-gray-50">Sign In</a>
             </div>
           </div>
-        </div>
-      </header>
+        </header>
 
-      {/* Hero Section */}
-      <section className="relative pt-20 pb-32 overflow-hidden">
-        <div className="container mx-auto px-6">
-          <div className="text-center max-w-4xl mx-auto">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-full font-semibold text-sm mb-8">
-              FORM API
+        {/* Main Content */}
+        <main className="text-center pt-24 pb-16 relative">
+          {/* Floating Tag: Finance */}
+          <div className="absolute top-28 left-4 sm:left-12 md:left-24 lg:left-36 transform -rotate-12">
+            <div className="bg-yellow-100 text-yellow-800 font-semibold px-4 py-1 rounded-full shadow-md">
+              Finance
             </div>
-            
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-6">
-              Receive emails{" "}
-              <span className="inline-flex items-center">
-                <Zap className="w-12 h-12 md:w-16 md:h-16 text-blue-600 inline" />
-              </span>{" "}
-              instantly from your website{" "}
-              <span className="inline-flex items-center">
-                <FileText className="w-12 h-12 md:w-16 md:h-16 text-blue-600 inline" />
-              </span>{" "}
-              form
-            </h1>
+            <svg width="40" height="40" viewBox="0 0 100 100" className="absolute -top-6 -right-8 text-gray-800 transform -rotate-45">
+              <path d="M 10 50 L 50 10 L 90 50 L 50 90 Z" fill="currentColor" stroke="none" transform="scale(0.3) translate(80, 80)"></path>
+              <path d="M 50 50 L 90 90" stroke="currentColor" strokeWidth="5" fill="none"></path>
+            </svg>
+          </div>
 
-            <p className="text-xl text-gray-600 mb-12 max-w-3xl mx-auto leading-relaxed">
-              Never worry about the backend of your form again. Create your HTML form,
-              connect to our API, get email notifications, block spam, and use
-              over 3000 integrations.
-            </p>
-
-            {/* Email Input */}
-            <div className="flex gap-3 max-w-md mx-auto mb-16">
-              <Input
-                type="email"
-                placeholder="Your email address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="h-12 px-4 text-base"
-              />
-              <Button className="h-12 px-8 bg-blue-600 hover:bg-blue-700">
-                Get Started
-              </Button>
+          {/* Floating Tag: Business */}
+          <div className="absolute top-16 right-4 sm:right-12 md:right-24 lg:right-36 transform rotate-12">
+            <svg width="40" height="40" viewBox="0 0 100 100" className="absolute -bottom-6 -left-8 text-gray-800 transform rotate-45 scale-x-[-1]">
+              <path d="M 10 50 L 50 10 L 90 50 L 50 90 Z" fill="currentColor" stroke="none" transform="scale(0.3) translate(80, 80)"></path>
+              <path d="M 50 50 L 90 90" stroke="currentColor" strokeWidth="5" fill="none"></path>
+            </svg>
+            <div className="bg-pink-100 text-pink-800 font-semibold px-4 py-1 rounded-full shadow-md">
+              Business
             </div>
+          </div>
 
-            {/* Dashboard Mockup */}
-            <div className="relative max-w-4xl mx-auto">
-              <div className="bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl border border-gray-200/50 p-8">
-                <div className="bg-gradient-to-br from-gray-50 to-white rounded-2xl border border-gray-200 p-6">
-                  {/* Browser Bar */}
-                  <div className="flex items-center gap-2 mb-6 pb-4 border-b border-gray-200">
-                    <div className="flex gap-2">
-                      <div className="w-3 h-3 rounded-full bg-red-400"></div>
-                      <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
-                      <div className="w-3 h-3 rounded-full bg-green-400"></div>
-                    </div>
-                    <div className="flex-1 text-center text-sm text-gray-500">
-                      finestra.com
-                    </div>
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tighter text-gray-900 max-w-4xl mx-auto">
+            Make Your Money Work Harder
+          </h1>
+          <p className="max-w-xl mx-auto text-gray-600 text-lg mt-8 mb-10">
+            Initiating a business venture may appear overwhelming, yet our forte lies in simplifying the entire process for you.
+          </p>
+          <div className="flex justify-center items-center gap-4 flex-wrap">
+            <a href="#" className="bg-gray-900 text-white font-semibold py-3 px-6 rounded-full hover:bg-gray-800 transition duration-300">
+              Get Started Free
+            </a>
+            <a href="#" className="bg-white text-gray-900 font-semibold py-3 px-6 rounded-full border border-gray-300 hover:bg-gray-50 flex items-center gap-2 transition duration-300">
+              <Play className="w-5 h-5 fill-current" />
+              Watch A Demo
+            </a>
+          </div>
+          <div className="flex justify-center items-center gap-4 mt-8">
+            <div className="flex items-center gap-1.5">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#F85166]" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
+              <span className="font-bold text-gray-800">Trustpilot</span>
+            </div>
+            <div className="flex items-center">
+              {[...Array(5)].map((_, i) => (
+                <svg key={i} xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[#F85166]" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+              ))}
+            </div>
+            <div className="text-gray-600 font-medium">3800+ 5 Stars</div>
+          </div>
+        </main>
+
+        {/* Phone Mockup Section */}
+        <div className="flex justify-center items-start -mt-10 mb-10">
+          <div className="w-[340px] h-[700px] bg-white rounded-[40px] p-2.5 shadow-2xl phone-mockup border-4 border-gray-200">
+            <div className="w-full h-full bg-gray-50 rounded-[30px] overflow-hidden relative">
+              {/* Phone Notch */}
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-gray-200 rounded-b-xl"></div>
+
+              {/* App UI */}
+              <div className="p-4 pt-8 text-gray-800">
+                <div className="flex justify-between items-center mb-6">
+                  <div className="flex items-center gap-2">
+                    <ChevronLeft className="w-5 h-5" />
+                    <span className="font-semibold text-lg">Dashboard</span>
                   </div>
-
-                  {/* Dashboard Content */}
-                  <div className="flex items-start gap-4 mb-6">
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
-                      <FileText className="w-6 h-6 text-white" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <h3 className="font-bold text-gray-900 text-lg">My Sweet Form</h3>
-                        <span className="text-sm text-gray-500">XXXXXXXX</span>
-                      </div>
-                      <div className="text-sm text-gray-600">128 Submissions</div>
-                    </div>
+                  <div className="flex items-center gap-3">
+                    <Bell className="w-5 h-5" />
+                    <Grid3x3 className="w-5 h-5" />
                   </div>
+                </div>
 
-                  <div className="bg-gray-50 rounded-xl p-4 mb-4">
-                    <div className="text-sm text-gray-600 mb-2">Your form API endpoint</div>
-                    <div className="flex items-center gap-2">
-                      <code className="flex-1 text-sm font-mono bg-white px-4 py-2 rounded-lg border border-gray-200">
-                        https://finestra.com/s/XXXXXXX
-                      </code>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={handleCopy}
-                        className="gap-2"
-                      >
-                        {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                        {copied ? "Copied!" : "Copy"}
-                      </Button>
-                    </div>
+                <h2 className="text-2xl font-bold mb-2">Accounts</h2>
+
+                <div className="flex items-center gap-3 mb-8">
+                  <div className="flex items-center gap-2 bg-white p-2 rounded-lg border border-gray-200">
+                    <span className="text-gray-500">**** 874</span>
+                    <ChevronDown className="w-4 h-4" />
                   </div>
+                  <button className="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center">+</button>
+                  <button className="w-8 h-8 rounded-lg bg-purple-500 text-white flex items-center justify-center">
+                    <Plus className="w-4 h-4" />
+                  </button>
+                </div>
 
-                  <Button className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700">
-                    Click to See Magic ✨
-                  </Button>
+                <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <p className="text-gray-500 text-sm">Monthly Income</p>
+                      <p className="text-2xl font-bold text-gray-900">$78,821<span className="text-gray-400">.88</span></p>
+                    </div>
+                    <MoreVertical className="w-5 h-5 text-gray-400" />
+                  </div>
+                  <div className="bg-green-100 text-green-700 text-xs font-semibold inline-flex px-2 py-0.5 rounded-full">
+                    +1.5%
+                  </div>
+                </div>
+
+                <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mt-4 opacity-50">
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <p className="text-gray-500 text-sm">Monthly Experience</p>
+                      <p className="text-2xl font-bold text-gray-900">$16,225<span className="text-gray-400">.22</span></p>
+                    </div>
+                    <MoreVertical className="w-5 h-5 text-gray-400" />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </section>
-
-      {/* Trusted By Section */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-6">
-          <p className="text-center text-sm font-semibold text-gray-500 mb-8 tracking-wider">
-            TRUSTED BY TOP BRANDS WORLDWIDE
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-12 opacity-60">
-            <div className="text-2xl font-bold text-gray-400">NBA</div>
-            <div className="text-2xl font-bold text-gray-400">Continental</div>
-            <div className="text-2xl font-bold text-gray-400">Vixen</div>
-            <div className="text-2xl font-bold text-gray-400">Yeezy</div>
-            <div className="text-2xl font-bold text-gray-400">Cannes</div>
-          </div>
-        </div>
-      </section>
-
-      {/* Feature Section 1 */}
-      <section className="py-24 bg-gradient-to-br from-purple-50 to-pink-50">
-        <div className="container mx-auto px-6">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16">
-              <p className="text-blue-600 font-semibold mb-4">Setup, easy-peasy!</p>
-              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-                Easiest way to setup your HTML form.
-              </h2>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                Don't worry about emails, spam checking, integrations and form issues ever,
-                code your front-end, add your unique URL, and we'll handle the rest.
-              </p>
-            </div>
-
-            <div className="bg-gray-900 rounded-2xl p-8 text-left">
-              <div className="flex items-center gap-2 mb-4">
-                <Code className="w-5 h-5 text-green-400" />
-                <span className="text-gray-400 text-sm">HTML Form Example</span>
-              </div>
-              <pre className="text-green-400 font-mono text-sm overflow-x-auto">
-{`<form action="https://finestra.com/s/{Your Form ID}"
-      method="POST" enctype="multipart/form-data">
-  <input type="email" name="email">
-  
-  <textarea name="message"></textarea>
-  <button type="submit">Submit</button>
-</form>`}
-              </pre>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Grid */}
-      <section className="py-24 bg-white">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Features that you need.
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Use features that normally take days to code, in minutes.
-              Integration with your CRM in 2 minutes. Set auto-responses in 2 minutes.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <FileText className="w-8 h-8 text-blue-600" />
-              </div>
-              <h3 className="font-bold text-gray-900 mb-2">Upload Files</h3>
-              <p className="text-gray-600 text-sm">Easy file uploads without configuration</p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Mail className="w-8 h-8 text-purple-600" />
-              </div>
-              <h3 className="font-bold text-gray-900 mb-2">Email Notifications</h3>
-              <p className="text-gray-600 text-sm">Instant email alerts for submissions</p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Shield className="w-8 h-8 text-green-600" />
-              </div>
-              <h3 className="font-bold text-gray-900 mb-2">Field Validations</h3>
-              <p className="text-gray-600 text-sm">Powerful validation rules built-in</p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-16 h-16 bg-pink-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Users className="w-8 h-8 text-pink-600" />
-              </div>
-              <h3 className="font-bold text-gray-900 mb-2">Auto Responses</h3>
-              <p className="text-gray-600 text-sm">Automated responses to your users</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-24 bg-gradient-to-br from-blue-600 to-indigo-600">
-        <div className="container mx-auto px-6 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            Ready to get started?
-          </h2>
-          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            Join thousands of developers who trust Finestra for their form needs.
-          </p>
-          <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100">
-            Start Building Now
-          </Button>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="py-12 bg-gray-900 text-gray-400">
-        <div className="container mx-auto px-6 text-center">
-          <p>© 2025 Finestra. All rights reserved.</p>
-        </div>
-      </footer>
+      </div>
     </div>
   );
 };
