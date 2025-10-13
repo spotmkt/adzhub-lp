@@ -159,7 +159,7 @@ const SummaryScreen = ({ formData, onBack }: SummaryScreenProps) => {
       const campaignPayload = {
         id: campaignId,
         user_id: user.id,
-        name: formData.campaignName || `Campanha ${formData.instanceName}`,
+        name: formData.campaignName || `Campanha ${formData.instanceName.toLowerCase()}`,
         instance_label: formData.instanceName.toLowerCase(),
         message_content: formData.message,
         template_id: null,
@@ -182,7 +182,7 @@ const SummaryScreen = ({ formData, onBack }: SummaryScreenProps) => {
       // Manter campos individuais para compatibilidade
       formDataPayload.append('campaign_id', campaignId);
       formDataPayload.append('user_id', user.id);
-      formDataPayload.append('campaign_name', formData.campaignName || `Campanha ${formData.instanceName} - ${new Date().toLocaleDateString()}`);
+      formDataPayload.append('campaign_name', formData.campaignName || `Campanha ${formData.instanceName.toLowerCase()} - ${new Date().toLocaleDateString()}`);
       formDataPayload.append('instance_name', formData.instanceName.toLowerCase());
       formDataPayload.append('instance_id', instanceData.instance_id || '');
       formDataPayload.append('message_content', formData.message);
