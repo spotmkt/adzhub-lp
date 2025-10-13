@@ -216,7 +216,7 @@ export const ChatInterface = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           message,
-          clientName: selectedClient?.name || 'Cliente não selecionado',
+          clientName: selectedClient?.name?.toLowerCase() || 'cliente não selecionado',
           clientId: selectedClient?.id || null,
           timestamp: new Date().toISOString(),
           userId: 'user-' + Date.now()
