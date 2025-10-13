@@ -63,7 +63,7 @@ const SummaryScreen = ({ formData, onBack }: SummaryScreenProps) => {
         const { error: updateError } = await (supabase as any)
           .from('campaigns')
           .update({
-            instance_label: formData.instanceName,
+            instance_label: formData.instanceName.toLowerCase(),
             message_content: formData.message,
             image_url: formData.imageUrl || null,
             has_image: hasImage,
@@ -160,7 +160,7 @@ const SummaryScreen = ({ formData, onBack }: SummaryScreenProps) => {
         id: campaignId,
         user_id: user.id,
         name: formData.campaignName || `Campanha ${formData.instanceName}`,
-        instance_label: formData.instanceName,
+        instance_label: formData.instanceName.toLowerCase(),
         message_content: formData.message,
         template_id: null,
         status: formData.dispatchType === 'scheduled' ? 'scheduled' : 'processing',

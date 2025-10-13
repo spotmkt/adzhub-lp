@@ -28,7 +28,7 @@ export const logDispatch = async (
     
     console.log('🚀 Creating new campaign:', {
       user_id: userId,
-      instance_label: formData.instanceName,
+      instance_label: formData.instanceName.toLowerCase(),
       status: campaignStatus,
       scheduled_for: formData.data_agendamento?.toISOString() || null,
       dispatch_type: formData.dispatchType,
@@ -42,7 +42,7 @@ export const logDispatch = async (
       .insert({
         user_id: userId,
         name: formData.campaignName || `Campanha ${formData.instanceName}`,
-        instance_label: formData.instanceName,
+        instance_label: formData.instanceName.toLowerCase(),
         message_content: formData.message,
         status: campaignStatus,
         scheduled_for: formData.data_agendamento?.toISOString() || new Date().toISOString(),
@@ -69,7 +69,7 @@ export const logDispatch = async (
           new_status: campaignStatus,
           triggered_by: 'campaign_creation',
           metadata: {
-            instance_label: formData.instanceName,
+            instance_label: formData.instanceName.toLowerCase(),
             scheduled_for: formData.data_agendamento?.toISOString() || null,
             has_recipients: recipients && recipients.length > 0,
             recipient_count: recipients?.length || 0
