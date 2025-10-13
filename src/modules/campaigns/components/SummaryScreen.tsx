@@ -183,7 +183,7 @@ const SummaryScreen = ({ formData, onBack }: SummaryScreenProps) => {
       formDataPayload.append('campaign_id', campaignId);
       formDataPayload.append('user_id', user.id);
       formDataPayload.append('campaign_name', formData.campaignName || `Campanha ${formData.instanceName} - ${new Date().toLocaleDateString()}`);
-      formDataPayload.append('instance_name', formData.instanceName);
+      formDataPayload.append('instance_name', formData.instanceName.toLowerCase());
       formDataPayload.append('instance_id', instanceData.instance_id || '');
       formDataPayload.append('message_content', formData.message);
       formDataPayload.append('is_scheduled', (formData.dispatchType === 'scheduled').toString());

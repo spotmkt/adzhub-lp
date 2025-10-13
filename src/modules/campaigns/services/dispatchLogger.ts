@@ -106,7 +106,7 @@ export const logDispatch = async (
       .from('dispatch_logs' as any)
       .insert({
         user_id: userId,
-        instance_name: formData.instanceName,
+        instance_name: formData.instanceName.toLowerCase(),
         message_content: formData.message,
         template_used: templateName || null,
         scheduled_for: formData.data_agendamento?.toISOString() || null,
