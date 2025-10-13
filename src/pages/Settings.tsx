@@ -223,7 +223,7 @@ const Settings = () => {
         const { error } = await supabase
           .from('meta_accounts')
           .update({
-            cliente: metaAccount.cliente,
+            cliente: metaAccount.cliente.toLowerCase(),
             conta_anuncios: contaAnunciosComPrefixo,
             ig_id: metaAccount.ig_id,
             fb_id: metaAccount.fb_id,
@@ -241,7 +241,7 @@ const Settings = () => {
         const { error } = await supabase
           .from('meta_accounts')
           .insert([{
-            cliente: metaAccount.cliente,
+            cliente: metaAccount.cliente.toLowerCase(),
             conta_anuncios: contaAnunciosComPrefixo,
             ig_id: metaAccount.ig_id,
             fb_id: metaAccount.fb_id,
