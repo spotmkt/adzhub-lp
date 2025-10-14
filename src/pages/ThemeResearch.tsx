@@ -1,0 +1,261 @@
+import { useState } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Search, Play, Image as ImageIcon, Sparkles } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+
+interface ContentResult {
+  id: string;
+  type: 'video' | 'image';
+  thumbnail: string;
+  title: string;
+  stats: {
+    views?: number;
+    likes?: number;
+    comments?: number;
+  };
+  hypothesis: string;
+}
+
+const ThemeResearch = () => {
+  const { toast } = useToast();
+  const [isSearching, setIsSearching] = useState(false);
+  const [theme, setTheme] = useState('');
+  const [searchType, setSearchType] = useState<'trends' | 'views' | 'interactions'>('trends');
+  const [filterValue, setFilterValue] = useState('');
+  const [results, setResults] = useState<ContentResult[]>([]);
+
+  const handleSearch = async () => {
+    if (!theme.trim()) {
+      toast({
+        title: "Campo obrigatório",
+        description: "Por favor, insira um tema para pesquisar",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSearching(true);
+    
+    // Simulação de busca - aqui você conectaria com a API real
+    setTimeout(() => {
+      const mockResults: ContentResult[] = [
+        {
+          id: '1',
+          type: 'video',
+          thumbnail: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=400&h=300&fit=crop',
+          title: 'Tutorial prático sobre ' + theme,
+          stats: { views: 125000, likes: 15400, comments: 892 },
+          hypothesis: `Este formato de vídeo tutorial tem alta performance porque demonstra aplicação prática do tema "${theme}". A audiência responde bem a conteúdos educativos que mostram passo a passo, gerando alto engajamento e compartilhamentos.`
+        },
+        {
+          id: '2',
+          type: 'image',
+          thumbnail: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop',
+          title: 'Infográfico: Dados sobre ' + theme,
+          stats: { likes: 28900, comments: 543 },
+          hypothesis: `Infográficos sobre "${theme}" têm excelente performance visual e são altamente compartilháveis. Este formato simplifica informações complexas, tornando o conteúdo mais digestível e aumentando o potencial viral nas redes sociais.`
+        },
+        {
+          id: '3',
+          type: 'video',
+          thumbnail: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop',
+          title: 'Tendências e insights de ' + theme,
+          stats: { views: 89000, likes: 12100, comments: 678 },
+          hypothesis: `Conteúdos que abordam tendências e análises de mercado sobre "${theme}" geram alta autoridade. Este formato atrai profissionais e tomadores de decisão, resultando em engajamento qualificado e maior retenção de audiência.`
+        }
+      ];
+      
+      setResults(mockResults);
+      setIsSearching(false);
+      
+      toast({
+        title: "Pesquisa concluída",
+        description: `Encontramos 3 conteúdos relevantes sobre "${theme}"`,
+      });
+    }, 2000);
+  };
+
+  const handleRemix = (content: ContentResult) => {
+    toast({
+      title: "Criando a partir desta hipótese",
+      description: `Iniciando criação baseada em: ${content.title}`,
+    });
+    // Aqui você implementaria a lógica de remixar/criar conteúdo
+  };
+
+  const formatNumber = (num: number) => {
+    if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
+    if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
+    return num.toString();
+  };
+
+  return (
+    <div className="h-full p-6 bg-background overflow-y-auto">
+      <div className="max-w-6xl mx-auto space-y-8">
+        {/* Header */}
+        <div>
+          <h1 className="text-3xl font-bold mb-2">Pesquisa de Temas</h1>
+          <p className="text-muted-foreground">
+            Descubra conteúdos de alta performance e crie a partir das melhores hipóteses
+          </p>
+        </div>
+
+        {/* Search Form */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Buscar Conteúdos</CardTitle>
+            <CardDescription>
+              Encontre os melhores conteúdos baseados em trends, visualizações ou interações
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="theme">Tema</Label>
+              <Input
+                id="theme"
+                placeholder="Digite o tema que deseja pesquisar..."
+                value={theme}
+                onChange={(e) => setTheme(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="searchType">Tipo de Busca</Label>
+                <Select value={searchType} onValueChange={(value: any) => setSearchType(value)}>
+                  <SelectTrigger id="searchType">
+                    <SelectValue placeholder="Selecione o tipo" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="trends">Trends</SelectItem>
+                    <SelectItem value="views">Visualizações</SelectItem>
+                    <SelectItem value="interactions">Interações</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="filter">Filtro (opcional)</Label>
+                <Input
+                  id="filter"
+                  placeholder="Ex: mais de 10.000 curtidas"
+                  value={filterValue}
+                  onChange={(e) => setFilterValue(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <Button 
+              onClick={handleSearch} 
+              disabled={isSearching}
+              className="w-full"
+              size="lg"
+            >
+              <Search className="mr-2 h-4 w-4" />
+              {isSearching ? 'Pesquisando...' : 'Pesquisar'}
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* Results */}
+        {results.length > 0 && (
+          <div className="space-y-4">
+            <h2 className="text-2xl font-bold">Resultados da Pesquisa</h2>
+            <div className="grid grid-cols-1 gap-6">
+              {results.map((result) => (
+                <Card key={result.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                  <div className="grid md:grid-cols-[300px_1fr] gap-0">
+                    {/* Thumbnail */}
+                    <div className="relative bg-muted aspect-video md:aspect-auto">
+                      <img 
+                        src={result.thumbnail} 
+                        alt={result.title}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute top-2 left-2 bg-background/90 backdrop-blur-sm px-2 py-1 rounded-md flex items-center gap-1">
+                        {result.type === 'video' ? (
+                          <>
+                            <Play className="h-3 w-3" />
+                            <span className="text-xs font-medium">Vídeo</span>
+                          </>
+                        ) : (
+                          <>
+                            <ImageIcon className="h-3 w-3" />
+                            <span className="text-xs font-medium">Imagem</span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Content */}
+                    <div className="p-6 flex flex-col justify-between">
+                      <div className="space-y-4">
+                        <div>
+                          <h3 className="text-xl font-semibold mb-2">{result.title}</h3>
+                          <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+                            {result.stats.views && (
+                              <span>👁 {formatNumber(result.stats.views)} visualizações</span>
+                            )}
+                            {result.stats.likes && (
+                              <span>❤️ {formatNumber(result.stats.likes)} curtidas</span>
+                            )}
+                            {result.stats.comments && (
+                              <span>💬 {formatNumber(result.stats.comments)} comentários</span>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="bg-muted/50 p-4 rounded-lg border border-border">
+                          <div className="flex items-start gap-2 mb-2">
+                            <Sparkles className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                            <span className="text-sm font-semibold">Hipótese de Resultados</span>
+                          </div>
+                          <p className="text-sm text-muted-foreground leading-relaxed">
+                            {result.hypothesis}
+                          </p>
+                        </div>
+                      </div>
+
+                      <Button 
+                        onClick={() => handleRemix(result)}
+                        className="mt-4"
+                        variant="default"
+                      >
+                        <Sparkles className="mr-2 h-4 w-4" />
+                        Remizar (Criar a partir desta hipótese)
+                      </Button>
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Empty State */}
+        {results.length === 0 && !isSearching && (
+          <Card className="p-12">
+            <div className="text-center space-y-4">
+              <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
+                <Search className="h-8 w-8 text-primary" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold mb-2">Nenhuma pesquisa realizada</h3>
+                <p className="text-muted-foreground">
+                  Insira um tema e clique em pesquisar para encontrar conteúdos relevantes
+                </p>
+              </div>
+            </div>
+          </Card>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default ThemeResearch;

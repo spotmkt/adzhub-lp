@@ -72,6 +72,14 @@ const apps = [
     status: 'Ativo'
   },
   {
+    id: 14,
+    name: 'Pesquisa de Temas',
+    description: 'Descubra conteúdos de alta performance e crie baseado em hipóteses',
+    icon: Sparkles,
+    color: 'accent',
+    status: 'Ativo'
+  },
+  {
     id: 4,
     name: 'Editor Visual',
     description: 'Edite imagens e designs para suas redes sociais',
@@ -133,6 +141,8 @@ const Apps = () => {
       navigate('/apps/tasks');
     } else if (appId === 13) {
       navigate('/apps/contacts');
+    } else if (appId === 14) {
+      navigate('/apps/theme-research');
     }
   };
 
