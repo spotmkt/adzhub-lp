@@ -15,8 +15,8 @@ const taskSchema = z.object({
   text: z.string().trim().min(1, 'O texto da tarefa é obrigatório').max(10000, 'Texto muito longo (máximo 10000 caracteres)'),
 });
 
-// Configure PDF.js worker with local fallback
-pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
+// Configure PDF.js worker using unpkg CDN
+pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.js`;
 
 const TaskGenerator = () => {
   const [taskText, setTaskText] = useState('');
