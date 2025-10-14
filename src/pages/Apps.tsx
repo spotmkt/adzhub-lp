@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { AppWindow, Bot, Calendar, FileText, MessageSquare, Palette, Settings, Sparkles, MessageCircle, Wand2, ClipboardEdit, CheckSquare, Inbox, Users } from 'lucide-react';
+import { AppWindow, Bot, Calendar, FileText, MessageSquare, Palette, Settings, Sparkles, MessageCircle, Wand2, ClipboardEdit, CheckSquare, Inbox, Users, FileSearch } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { AppConfigDialog } from '@/components/AppConfigDialog';
 
@@ -78,6 +78,14 @@ const apps = [
     icon: Sparkles,
     color: 'accent',
     status: 'Ativo'
+  },
+  {
+    id: 15,
+    name: 'Explorar Contexto',
+    description: 'Explore e analise contextos de documentos e informações',
+    icon: FileSearch,
+    color: 'secondary',
+    status: 'Em breve'
   },
   {
     id: 4,
