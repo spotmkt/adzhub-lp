@@ -1775,6 +1775,54 @@ export type Database = {
         }
         Relationships: []
       }
+      theme_research_history: {
+        Row: {
+          content_type: string
+          content_url: string
+          created_at: string
+          filter_value: string | null
+          hypothesis: string
+          id: string
+          search_type: string
+          stats: Json | null
+          theme: string
+          thumbnail_url: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content_type: string
+          content_url: string
+          created_at?: string
+          filter_value?: string | null
+          hypothesis: string
+          id?: string
+          search_type: string
+          stats?: Json | null
+          theme: string
+          thumbnail_url: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content_type?: string
+          content_url?: string
+          created_at?: string
+          filter_value?: string | null
+          hypothesis?: string
+          id?: string
+          search_type?: string
+          stats?: Json | null
+          theme?: string
+          thumbnail_url?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -1862,7 +1910,7 @@ export type Database = {
       }
       l2_normalize: {
         Args: { "": string } | { "": unknown } | { "": unknown }
-        Returns: string
+        Returns: unknown
       }
       sparsevec_out: {
         Args: { "": unknown }

@@ -1,11 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, Play, Image as ImageIcon, Sparkles } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Search, Play, Image as ImageIcon, Sparkles, Trash2, History } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 interface ContentResult {
   id: string;
@@ -20,6 +22,20 @@ interface ContentResult {
   hypothesis: string;
 }
 
+interface HistoryItem {
+  id: string;
+  theme: string;
+  search_type: string;
+  filter_value: string | null;
+  content_type: string;
+  content_url: string;
+  thumbnail_url: string;
+  title: string;
+  stats: any;
+  hypothesis: string;
+  created_at: string;
+}
+
 const ThemeResearch = () => {
   const { toast } = useToast();
   const [isSearching, setIsSearching] = useState(false);
@@ -27,6 +43,91 @@ const ThemeResearch = () => {
   const [searchType, setSearchType] = useState<'trends' | 'views' | 'interactions'>('trends');
   const [filterValue, setFilterValue] = useState('');
   const [results, setResults] = useState<ContentResult[]>([]);
+  const [history, setHistory] = useState<HistoryItem[]>([]);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+  const [activeTab, setActiveTab] = useState('search');
+
+  useEffect(() => {
+    if (activeTab === 'history') {
+      loadHistory();
+    }
+  }, [activeTab]);
+
+  const loadHistory = async () => {
+    setIsLoadingHistory(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from('theme_research_history')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setHistory(data || []);
+    } catch (error) {
+      console.error('Error loading history:', error);
+      toast({
+        title: "Erro ao carregar histórico",
+        description: "Não foi possível carregar o histórico de pesquisas",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoadingHistory(false);
+    }
+  };
+
+  const saveToHistory = async (result: ContentResult) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { error } = await supabase
+        .from('theme_research_history')
+        .insert({
+          user_id: user.id,
+          theme,
+          search_type: searchType,
+          filter_value: filterValue || null,
+          content_type: result.type,
+          content_url: result.id,
+          thumbnail_url: result.thumbnail,
+          title: result.title,
+          stats: result.stats,
+          hypothesis: result.hypothesis,
+        });
+
+      if (error) throw error;
+    } catch (error) {
+      console.error('Error saving to history:', error);
+    }
+  };
+
+  const deleteFromHistory = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('theme_research_history')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      setHistory(history.filter(item => item.id !== id));
+      toast({
+        title: "Item removido",
+        description: "O item foi removido do histórico",
+      });
+    } catch (error) {
+      console.error('Error deleting from history:', error);
+      toast({
+        title: "Erro ao remover",
+        description: "Não foi possível remover o item do histórico",
+        variant: "destructive",
+      });
+    }
+  };
 
   const handleSearch = async () => {
     if (!theme.trim()) {
@@ -41,7 +142,7 @@ const ThemeResearch = () => {
     setIsSearching(true);
     
     // Simulação de busca - aqui você conectaria com a API real
-    setTimeout(() => {
+    setTimeout(async () => {
       const mockResults: ContentResult[] = [
         {
           id: '1',
@@ -70,6 +171,12 @@ const ThemeResearch = () => {
       ];
       
       setResults(mockResults);
+      
+      // Save all results to history
+      for (const result of mockResults) {
+        await saveToHistory(result);
+      }
+      
       setIsSearching(false);
       
       toast({
@@ -104,8 +211,22 @@ const ThemeResearch = () => {
           </p>
         </div>
 
-        {/* Search Form */}
-        <Card>
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList>
+            <TabsTrigger value="search">
+              <Search className="mr-2 h-4 w-4" />
+              Pesquisa
+            </TabsTrigger>
+            <TabsTrigger value="history">
+              <History className="mr-2 h-4 w-4" />
+              Histórico
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="search" className="space-y-6 mt-6">
+
+            {/* Search Form */}
+            <Card>
           <CardHeader>
             <CardTitle>Buscar Conteúdos</CardTitle>
             <CardDescription>
@@ -159,11 +280,11 @@ const ThemeResearch = () => {
               <Search className="mr-2 h-4 w-4" />
               {isSearching ? 'Pesquisando...' : 'Pesquisar'}
             </Button>
-          </CardContent>
-        </Card>
+            </CardContent>
+            </Card>
 
-        {/* Results */}
-        {results.length > 0 && (
+            {/* Results */}
+            {results.length > 0 && (
           <div className="space-y-4">
             <h2 className="text-2xl font-bold">Resultados da Pesquisa</h2>
             <div className="grid grid-cols-1 gap-6">
@@ -234,11 +355,11 @@ const ThemeResearch = () => {
                 </Card>
               ))}
             </div>
-          </div>
-        )}
+            </div>
+            )}
 
-        {/* Empty State */}
-        {results.length === 0 && !isSearching && (
+            {/* Empty State */}
+            {results.length === 0 && !isSearching && (
           <Card className="p-12">
             <div className="text-center space-y-4">
               <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
@@ -250,9 +371,141 @@ const ThemeResearch = () => {
                   Insira um tema e clique em pesquisar para encontrar conteúdos relevantes
                 </p>
               </div>
-            </div>
-          </Card>
-        )}
+              </div>
+            </Card>
+            )}
+          </TabsContent>
+
+          <TabsContent value="history" className="space-y-6 mt-6">
+            {isLoadingHistory ? (
+              <Card className="p-12">
+                <div className="text-center">
+                  <p className="text-muted-foreground">Carregando histórico...</p>
+                </div>
+              </Card>
+            ) : history.length === 0 ? (
+              <Card className="p-12">
+                <div className="text-center space-y-4">
+                  <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
+                    <History className="h-8 w-8 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2">Nenhum histórico encontrado</h3>
+                    <p className="text-muted-foreground">
+                      Faça uma pesquisa para começar a construir seu histórico
+                    </p>
+                  </div>
+                </div>
+              </Card>
+            ) : (
+              <div className="space-y-4">
+                <h2 className="text-2xl font-bold">Histórico de Pesquisas</h2>
+                <div className="grid grid-cols-1 gap-6">
+                  {history.map((item) => (
+                    <Card key={item.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                      <div className="grid md:grid-cols-[300px_1fr] gap-0">
+                        {/* Thumbnail */}
+                        <div className="relative bg-muted aspect-video md:aspect-auto">
+                          <img 
+                            src={item.thumbnail_url} 
+                            alt={item.title}
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute top-2 left-2 bg-background/90 backdrop-blur-sm px-2 py-1 rounded-md flex items-center gap-1">
+                            {item.content_type === 'video' ? (
+                              <>
+                                <Play className="h-3 w-3" />
+                                <span className="text-xs font-medium">Vídeo</span>
+                              </>
+                            ) : (
+                              <>
+                                <ImageIcon className="h-3 w-3" />
+                                <span className="text-xs font-medium">Imagem</span>
+                              </>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Content */}
+                        <div className="p-6 flex flex-col justify-between">
+                          <div className="space-y-4">
+                            <div>
+                              <div className="flex items-start justify-between gap-4 mb-2">
+                                <h3 className="text-xl font-semibold">{item.title}</h3>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => deleteFromHistory(item.id)}
+                                  className="flex-shrink-0"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                              <div className="flex flex-wrap gap-2 text-xs text-muted-foreground mb-2">
+                                <span className="bg-muted px-2 py-1 rounded">Tema: {item.theme}</span>
+                                <span className="bg-muted px-2 py-1 rounded">Tipo: {item.search_type}</span>
+                                {item.filter_value && (
+                                  <span className="bg-muted px-2 py-1 rounded">Filtro: {item.filter_value}</span>
+                                )}
+                              </div>
+                              <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+                                {item.stats.views && (
+                                  <span>👁 {formatNumber(item.stats.views)} visualizações</span>
+                                )}
+                                {item.stats.likes && (
+                                  <span>❤️ {formatNumber(item.stats.likes)} curtidas</span>
+                                )}
+                                {item.stats.comments && (
+                                  <span>💬 {formatNumber(item.stats.comments)} comentários</span>
+                                )}
+                              </div>
+                            </div>
+
+                            <div className="bg-muted/50 p-4 rounded-lg border border-border">
+                              <div className="flex items-start gap-2 mb-2">
+                                <Sparkles className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                                <span className="text-sm font-semibold">Hipótese de Resultados</span>
+                              </div>
+                              <p className="text-sm text-muted-foreground leading-relaxed">
+                                {item.hypothesis}
+                              </p>
+                            </div>
+                            
+                            <p className="text-xs text-muted-foreground">
+                              Pesquisado em {new Date(item.created_at).toLocaleDateString('pt-BR', {
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })}
+                            </p>
+                          </div>
+
+                          <Button 
+                            onClick={() => handleRemix({ 
+                              id: item.content_url, 
+                              type: item.content_type as 'video' | 'image',
+                              thumbnail: item.thumbnail_url,
+                              title: item.title,
+                              stats: item.stats,
+                              hypothesis: item.hypothesis
+                            })}
+                            className="mt-4"
+                            variant="default"
+                          >
+                            <Sparkles className="mr-2 h-4 w-4" />
+                            Remizar (Criar a partir desta hipótese)
+                          </Button>
+                        </div>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
