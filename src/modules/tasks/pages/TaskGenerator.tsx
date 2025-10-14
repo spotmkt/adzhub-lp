@@ -1,24 +1,31 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Calendar, Send } from 'lucide-react';
+import { Calendar, Send, Upload, FileText, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { z } from 'zod';
 import { supabase } from '@/integrations/supabase/client';
 import { TaskProposalCard } from '../components/TaskProposalCard';
+import mammoth from 'mammoth';
+import * as pdfjsLib from 'pdfjs-dist';
 
 const taskSchema = z.object({
   text: z.string().trim().min(1, 'O texto da tarefa é obrigatório').max(2000, 'Texto muito longo (máximo 2000 caracteres)'),
 });
+
+// Configure PDF.js worker
+pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 
 const TaskGenerator = () => {
   const [taskText, setTaskText] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [taskProposals, setTaskProposals] = useState<any[]>([]);
   const [currentRequestId, setCurrentRequestId] = useState<string | null>(null);
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [isExtracting, setIsExtracting] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   // Load existing task proposals
@@ -67,6 +74,79 @@ const TaskGenerator = () => {
       console.error('Error loading task proposals:', error);
     } else {
       setTaskProposals(data || []);
+    }
+  };
+
+  const extractTextFromPDF = async (file: File): Promise<string> => {
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    let fullText = '';
+
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const textContent = await page.getTextContent();
+      const pageText = textContent.items.map((item: any) => item.str).join(' ');
+      fullText += pageText + '\n';
+    }
+
+    return fullText.trim();
+  };
+
+  const extractTextFromDOCX = async (file: File): Promise<string> => {
+    const arrayBuffer = await file.arrayBuffer();
+    const result = await mammoth.extractRawText({ arrayBuffer });
+    return result.value.trim();
+  };
+
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const fileExtension = file.name.split('.').pop()?.toLowerCase();
+    if (!['pdf', 'docx'].includes(fileExtension || '')) {
+      toast({
+        title: 'Formato inválido',
+        description: 'Por favor, envie apenas arquivos PDF ou DOCX.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setIsExtracting(true);
+    setUploadedFile(file);
+
+    try {
+      let extractedText = '';
+      
+      if (fileExtension === 'pdf') {
+        extractedText = await extractTextFromPDF(file);
+      } else if (fileExtension === 'docx') {
+        extractedText = await extractTextFromDOCX(file);
+      }
+
+      setTaskText(extractedText);
+      toast({
+        title: 'Texto extraído!',
+        description: 'O conteúdo do documento foi extraído com sucesso.',
+      });
+    } catch (error) {
+      console.error('Error extracting text:', error);
+      toast({
+        title: 'Erro ao extrair texto',
+        description: 'Não foi possível extrair o texto do documento.',
+        variant: 'destructive',
+      });
+      setUploadedFile(null);
+    } finally {
+      setIsExtracting(false);
+    }
+  };
+
+  const handleRemoveFile = () => {
+    setUploadedFile(null);
+    setTaskText('');
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
     }
   };
 
@@ -203,9 +283,47 @@ const TaskGenerator = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
                 <Label htmlFor="task-text">Descrição da Tarefa / Pauta da Reunião</Label>
+                
+                <div className="flex gap-2 mb-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isExtracting}
+                  >
+                    <Upload className="h-4 w-4 mr-2" />
+                    {isExtracting ? 'Extraindo texto...' : 'Upload PDF/DOCX'}
+                  </Button>
+                  
+                  {uploadedFile && (
+                    <div className="flex items-center gap-2 px-3 py-1 bg-secondary rounded-md">
+                      <FileText className="h-4 w-4 text-primary" />
+                      <span className="text-sm">{uploadedFile.name}</span>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="h-6 w-6 p-0"
+                        onClick={handleRemoveFile}
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  )}
+                </div>
+
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".pdf,.docx"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                />
+
                 <Textarea
                   id="task-text"
-                  placeholder="Descreva a tarefa que precisa ser realizada..."
+                  placeholder="Descreva a tarefa que precisa ser realizada ou faça upload de um documento..."
                   value={taskText}
                   onChange={(e) => setTaskText(e.target.value)}
                   rows={6}
@@ -220,7 +338,7 @@ const TaskGenerator = () => {
               <Button
                 type="submit"
                 className="w-full"
-                disabled={isSubmitting}
+                disabled={isSubmitting || isExtracting}
               >
                 {isSubmitting ? (
                   'Enviando...'
