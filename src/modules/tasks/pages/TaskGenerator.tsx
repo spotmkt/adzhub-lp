@@ -12,18 +12,18 @@ import mammoth from 'mammoth';
 import * as pdfjsLib from 'pdfjs-dist';
 
 const taskSchema = z.object({
-  text: z.string().trim().min(1, 'O texto da tarefa é obrigatório').max(2000, 'Texto muito longo (máximo 2000 caracteres)'),
+  text: z.string().trim().min(1, 'O texto da tarefa é obrigatório').max(10000, 'Texto muito longo (máximo 10000 caracteres)'),
 });
 
-// Configure PDF.js worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+// Configure PDF.js worker with local fallback
+pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
 
 const TaskGenerator = () => {
   const [taskText, setTaskText] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [taskProposals, setTaskProposals] = useState<any[]>([]);
   const [currentRequestId, setCurrentRequestId] = useState<string | null>(null);
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [isExtracting, setIsExtracting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
@@ -78,32 +78,62 @@ const TaskGenerator = () => {
   };
 
   const extractTextFromPDF = async (file: File): Promise<string> => {
-    const arrayBuffer = await file.arrayBuffer();
-    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-    let fullText = '';
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const loadingTask = pdfjsLib.getDocument({
+        data: arrayBuffer,
+        useWorkerFetch: false,
+        isEvalSupported: false,
+        useSystemFonts: true,
+      });
+      
+      const pdf = await loadingTask.promise;
+      let fullText = '';
 
-    for (let i = 1; i <= pdf.numPages; i++) {
-      const page = await pdf.getPage(i);
-      const textContent = await page.getTextContent();
-      const pageText = textContent.items.map((item: any) => item.str).join(' ');
-      fullText += pageText + '\n';
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const textContent = await page.getTextContent();
+        const pageText = textContent.items.map((item: any) => item.str).join(' ');
+        fullText += pageText + '\n\n';
+      }
+
+      return fullText.trim();
+    } catch (error) {
+      console.error('PDF extraction error:', error);
+      throw new Error('Falha ao extrair texto do PDF');
     }
-
-    return fullText.trim();
   };
 
   const extractTextFromDOCX = async (file: File): Promise<string> => {
-    const arrayBuffer = await file.arrayBuffer();
-    const result = await mammoth.extractRawText({ arrayBuffer });
-    return result.value.trim();
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const result = await mammoth.extractRawText({ arrayBuffer });
+      return result.value.trim();
+    } catch (error) {
+      console.error('DOCX extraction error:', error);
+      throw new Error('Falha ao extrair texto do DOCX');
+    }
   };
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
+    const files = Array.from(event.target.files || []);
+    if (files.length === 0) return;
 
-    const fileExtension = file.name.split('.').pop()?.toLowerCase();
-    if (!['pdf', 'docx'].includes(fileExtension || '')) {
+    if (files.length > 3) {
+      toast({
+        title: 'Limite excedido',
+        description: 'Você pode enviar no máximo 3 arquivos por vez.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    const invalidFiles = files.filter(file => {
+      const ext = file.name.split('.').pop()?.toLowerCase();
+      return !['pdf', 'docx'].includes(ext || '');
+    });
+
+    if (invalidFiles.length > 0) {
       toast({
         title: 'Formato inválido',
         description: 'Por favor, envie apenas arquivos PDF ou DOCX.',
@@ -113,40 +143,55 @@ const TaskGenerator = () => {
     }
 
     setIsExtracting(true);
-    setUploadedFile(file);
+    setUploadedFiles(files);
 
     try {
-      let extractedText = '';
+      const extractedTexts: string[] = [];
       
-      if (fileExtension === 'pdf') {
-        extractedText = await extractTextFromPDF(file);
-      } else if (fileExtension === 'docx') {
-        extractedText = await extractTextFromDOCX(file);
+      for (const file of files) {
+        const fileExtension = file.name.split('.').pop()?.toLowerCase();
+        let text = '';
+        
+        if (fileExtension === 'pdf') {
+          text = await extractTextFromPDF(file);
+        } else if (fileExtension === 'docx') {
+          text = await extractTextFromDOCX(file);
+        }
+        
+        if (text) {
+          extractedTexts.push(`=== ${file.name} ===\n\n${text}`);
+        }
       }
 
-      setTaskText(extractedText);
+      const combinedText = extractedTexts.join('\n\n---\n\n');
+      setTaskText(combinedText);
+      
       toast({
         title: 'Texto extraído!',
-        description: 'O conteúdo do documento foi extraído com sucesso.',
+        description: `Conteúdo de ${files.length} arquivo(s) extraído com sucesso.`,
       });
     } catch (error) {
       console.error('Error extracting text:', error);
       toast({
         title: 'Erro ao extrair texto',
-        description: 'Não foi possível extrair o texto do documento.',
+        description: error instanceof Error ? error.message : 'Não foi possível extrair o texto dos documentos.',
         variant: 'destructive',
       });
-      setUploadedFile(null);
+      setUploadedFiles([]);
     } finally {
       setIsExtracting(false);
     }
   };
 
-  const handleRemoveFile = () => {
-    setUploadedFile(null);
-    setTaskText('');
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+  const handleRemoveFile = (index: number) => {
+    const newFiles = uploadedFiles.filter((_, i) => i !== index);
+    setUploadedFiles(newFiles);
+    
+    if (newFiles.length === 0) {
+      setTaskText('');
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     }
   };
 
@@ -284,31 +329,35 @@ const TaskGenerator = () => {
               <div className="space-y-2">
                 <Label htmlFor="task-text">Descrição da Tarefa / Pauta da Reunião</Label>
                 
-                <div className="flex gap-2 mb-2">
+                <div className="space-y-2 mb-2">
                   <Button
                     type="button"
                     variant="outline"
                     size="sm"
                     onClick={() => fileInputRef.current?.click()}
-                    disabled={isExtracting}
+                    disabled={isExtracting || uploadedFiles.length >= 3}
                   >
                     <Upload className="h-4 w-4 mr-2" />
-                    {isExtracting ? 'Extraindo texto...' : 'Upload PDF/DOCX'}
+                    {isExtracting ? 'Extraindo texto...' : `Upload PDF/DOCX (${uploadedFiles.length}/3)`}
                   </Button>
                   
-                  {uploadedFile && (
-                    <div className="flex items-center gap-2 px-3 py-1 bg-secondary rounded-md">
-                      <FileText className="h-4 w-4 text-primary" />
-                      <span className="text-sm">{uploadedFile.name}</span>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="h-6 w-6 p-0"
-                        onClick={handleRemoveFile}
-                      >
-                        <X className="h-3 w-3" />
-                      </Button>
+                  {uploadedFiles.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {uploadedFiles.map((file, index) => (
+                        <div key={index} className="flex items-center gap-2 px-3 py-1 bg-secondary rounded-md">
+                          <FileText className="h-4 w-4 text-primary" />
+                          <span className="text-sm">{file.name}</span>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="h-6 w-6 p-0"
+                            onClick={() => handleRemoveFile(index)}
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      ))}
                     </div>
                   )}
                 </div>
@@ -317,6 +366,7 @@ const TaskGenerator = () => {
                   ref={fileInputRef}
                   type="file"
                   accept=".pdf,.docx"
+                  multiple
                   onChange={handleFileUpload}
                   className="hidden"
                 />
@@ -331,7 +381,7 @@ const TaskGenerator = () => {
                   required
                 />
                 <p className="text-xs text-muted-foreground">
-                  {taskText.length}/2000 caracteres
+                  {taskText.length}/10000 caracteres
                 </p>
               </div>
 
