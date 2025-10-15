@@ -8,6 +8,7 @@ import { Upload, Shield, Lock, FileText, AlertTriangle, Info } from 'lucide-reac
 import { useToast } from '@/hooks/use-toast';
 import { ContactMappingDialog } from '../components/ContactMappingDialog';
 import { readFile } from '@/modules/campaigns/utils/fileReader';
+import { supabase } from '@/integrations/supabase/client';
 
 const ContactsUpload = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -143,47 +144,40 @@ const ContactsUpload = () => {
 
       const mappedContacts = fileData.data.map(row => {
         const contact: any = {
-          identifier: row[identifierIndex],
-          identifierType: mapping.identifierType,
-          metadata: {},
+          [mapping.identifierColumn]: row[identifierIndex],
         };
 
         // Adicionar metadados
         mapping.metadataColumns.forEach((colName, idx) => {
           const value = row[metadataIndexes[idx]];
           if (value) {
-            contact.metadata[colName] = value;
+            contact[colName] = value;
           }
         });
 
         return contact;
       });
 
-      // Enviar para o webhook
-      const payload = {
-        fileName: file.name,
-        totalContacts: mappedContacts.length,
-        identifierType: mapping.identifierType,
-        lgpdConsent,
-        dataUsageConsent,
-        contacts: mappedContacts,
-      };
-
-      const response = await fetch('https://n8n-n8n.ascl7r.easypanel.host/webhook/62ce4693-eb7a-4911-8de2-0da9e0273cbe', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      // Chamar Edge Function para enfileirar o processamento
+      const { data, error } = await supabase.functions.invoke('enqueue-contacts-processing', {
+        body: {
+          fileName: file.name,
+          identifierType: mapping.identifierType,
+          identifierColumn: mapping.identifierColumn,
+          metadataColumns: mapping.metadataColumns,
+          contacts: mappedContacts,
+          lgpdConsent,
+          dataUsageConsent,
         },
-        body: JSON.stringify(payload),
       });
 
-      if (!response.ok) {
-        throw new Error('Erro ao processar arquivo');
+      if (error) {
+        throw error;
       }
 
       toast({
-        title: 'Sucesso!',
-        description: 'Base de contatos processada com sucesso',
+        title: 'Upload Enfileirado!',
+        description: `${mappedContacts.length} contatos serão processados. ID do Job: ${data.jobId}`,
       });
 
       // Limpar formulário
@@ -195,10 +189,11 @@ const ContactsUpload = () => {
       if (fileInput) fileInput.value = '';
       
     } catch (error) {
+      console.error('Error enqueuing contacts:', error);
       toast({
         variant: 'destructive',
         title: 'Erro no processamento',
-        description: 'Não foi possível processar a base de contatos. Tente novamente.',
+        description: error instanceof Error ? error.message : 'Não foi possível processar a base de contatos. Tente novamente.',
       });
     }
   };

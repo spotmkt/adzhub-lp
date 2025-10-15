@@ -959,6 +959,139 @@ export type Database = {
         }
         Relationships: []
       }
+      contact_lists: {
+        Row: {
+          created_at: string
+          id: string
+          identifier_column: string
+          identifier_type: string
+          job_id: string
+          list_name: string
+          metadata_columns: Json | null
+          total_contacts: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          identifier_column: string
+          identifier_type: string
+          job_id: string
+          list_name: string
+          metadata_columns?: Json | null
+          total_contacts?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          identifier_column?: string
+          identifier_type?: string
+          job_id?: string
+          list_name?: string
+          metadata_columns?: Json | null
+          total_contacts?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contact_lists_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "contact_upload_jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contact_upload_jobs: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          data_usage_consent: boolean
+          error_message: string | null
+          file_name: string
+          id: string
+          identifier_column: string
+          identifier_type: string
+          lgpd_consent: boolean
+          metadata_columns: Json | null
+          processed_contacts: number | null
+          status: string
+          total_contacts: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          data_usage_consent?: boolean
+          error_message?: string | null
+          file_name: string
+          id?: string
+          identifier_column: string
+          identifier_type: string
+          lgpd_consent?: boolean
+          metadata_columns?: Json | null
+          processed_contacts?: number | null
+          status?: string
+          total_contacts?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          data_usage_consent?: boolean
+          error_message?: string | null
+          file_name?: string
+          id?: string
+          identifier_column?: string
+          identifier_type?: string
+          lgpd_consent?: boolean
+          metadata_columns?: Json | null
+          processed_contacts?: number | null
+          status?: string
+          total_contacts?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      contacts: {
+        Row: {
+          created_at: string
+          id: string
+          identifier: string
+          list_id: string
+          metadata: Json | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          identifier: string
+          list_id: string
+          metadata?: Json | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          identifier?: string
+          list_id?: string
+          metadata?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contacts_list_id_fkey"
+            columns: ["list_id"]
+            isOneToOne: false
+            referencedRelation: "contact_lists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       content_assets: {
         Row: {
           canal: string
