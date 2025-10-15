@@ -73,7 +73,7 @@ const ThemeResearch = () => {
       if (error) throw error;
       
       if (data) {
-        setShareLink(`${window.location.origin}/shared/theme-research/${data.share_token}`);
+        setShareLink(`https://app.adzhub.com.br/shared/theme-research/${data.share_token}`);
       }
     } catch (error) {
       console.error('Error loading share link:', error);
@@ -211,7 +211,7 @@ const ThemeResearch = () => {
         if (error) throw error;
       }
 
-      const shareUrl = `${window.location.origin}/shared/theme-research/${token}`;
+      const shareUrl = `https://app.adzhub.com.br/shared/theme-research/${token}`;
       setShareLink(shareUrl);
       
       await navigator.clipboard.writeText(shareUrl);
