@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Plus, Search, Database, Wrench } from 'lucide-react';
@@ -186,25 +187,26 @@ const ContactsLists = () => {
   };
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center justify-between flex-wrap gap-4">
-        <div>
-          <h1 className="text-3xl font-bold">Bases de Contatos</h1>
-          <p className="text-muted-foreground mt-1">
-            Gerencie suas bases de contatos importadas
-          </p>
+    <ScrollArea className="h-screen">
+      <div className="container mx-auto p-6 space-y-6 pb-20">
+        <div className="flex items-center justify-between flex-wrap gap-4">
+          <div>
+            <h1 className="text-3xl font-bold">Bases de Contatos</h1>
+            <p className="text-muted-foreground mt-1">
+              Gerencie suas bases de contatos importadas
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => navigate('/apps/contacts/fix-metadata')}>
+              <Wrench className="mr-2 h-4 w-4" />
+              Corrigir Metadata
+            </Button>
+            <Button onClick={() => navigate('/apps/contacts/upload')}>
+              <Plus className="mr-2 h-4 w-4" />
+              Nova Base
+            </Button>
+          </div>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={() => navigate('/apps/contacts/fix-metadata')}>
-            <Wrench className="mr-2 h-4 w-4" />
-            Corrigir Metadata
-          </Button>
-          <Button onClick={() => navigate('/apps/contacts/upload')}>
-            <Plus className="mr-2 h-4 w-4" />
-            Nova Base
-          </Button>
-        </div>
-      </div>
 
       <Alert>
         <AlertDescription className="text-sm">
@@ -274,13 +276,14 @@ const ContactsLists = () => {
         </div>
       )}
 
-      <ContactListDetailsDialog
-        list={selectedList}
-        open={!!selectedList}
-        onOpenChange={(open) => !open && setSelectedList(null)}
-        onUpdateName={handleUpdateListName}
-      />
-    </div>
+        <ContactListDetailsDialog
+          list={selectedList}
+          open={!!selectedList}
+          onOpenChange={(open) => !open && setSelectedList(null)}
+          onUpdateName={handleUpdateListName}
+        />
+      </div>
+    </ScrollArea>
   );
 };
 
