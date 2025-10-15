@@ -20,9 +20,22 @@ export const parseMetadata = (metadata: any, metadataColumns: string[]): Record<
 
   // Se for string, tentar parsear
   if (typeof metadata === 'string') {
-    // Tentar parse JSON
+    // Tentar parse JSON (pode estar duplamente escapado)
     try {
       const parsed = JSON.parse(metadata);
+      
+      // Se o resultado do parse ainda for uma string, tentar parsear novamente
+      if (typeof parsed === 'string') {
+        try {
+          const doubleParsed = JSON.parse(parsed);
+          return parseMetadata(doubleParsed, metadataColumns);
+        } catch {
+          // Se falhar o segundo parse, continuar com o primeiro resultado
+          return parseMetadata(parsed, metadataColumns);
+        }
+      }
+      
+      // Se já for objeto após o primeiro parse, retornar recursivamente
       return parseMetadata(parsed, metadataColumns);
     } catch {
       // Se não for JSON válido, pode ser CSV (valores separados por vírgula)
