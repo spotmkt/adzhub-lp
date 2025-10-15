@@ -14,6 +14,7 @@ interface ContactUploadRequest {
   contacts: Array<{
     [key: string]: any;
   }>;
+  totalContacts: number;
   lgpdConsent: boolean;
   dataUsageConsent: boolean;
 }
@@ -54,7 +55,7 @@ serve(async (req) => {
     const requestData: ContactUploadRequest = await req.json();
     console.log('Processing contact upload request:', {
       fileName: requestData.fileName,
-      totalContacts: requestData.contacts?.length,
+      totalContacts: requestData.totalContacts,
       userId: user.id,
     });
 
@@ -83,7 +84,7 @@ serve(async (req) => {
         user_id: user.id,
         file_name: requestData.fileName,
         status: 'queued',
-        total_contacts: requestData.contacts.length,
+        total_contacts: requestData.totalContacts,
         identifier_type: requestData.identifierType,
         identifier_column: requestData.identifierColumn,
         metadata_columns: requestData.metadataColumns || [],
@@ -141,6 +142,7 @@ serve(async (req) => {
         identifierColumn: requestData.identifierColumn,
         metadataColumns: requestData.metadataColumns || [],
         contacts: requestData.contacts,
+        totalContacts: requestData.totalContacts,
         lgpdConsent: requestData.lgpdConsent,
         dataUsageConsent: requestData.dataUsageConsent,
         supabaseUrl: Deno.env.get('SUPABASE_URL'),
@@ -166,7 +168,7 @@ serve(async (req) => {
         success: true,
         jobId: job.id,
         status: 'queued',
-        totalContacts: requestData.contacts.length,
+        totalContacts: requestData.totalContacts,
         message: 'Upload enfileirado com sucesso. O processamento começará em breve.',
       }),
       { 

@@ -53,6 +53,8 @@ O n8n receberá o seguinte payload da Edge Function:
 }
 ```
 
+> **⚠️ Importante**: O array `contacts` já vem **pré-filtrado** do frontend, contendo apenas contatos válidos (sem linhas vazias). O campo `totalContacts` reflete a quantidade real de contatos válidos a serem processados. **Não é necessário filtrar linhas vazias no n8n**.
+
 ---
 
 ## 🔧 Estrutura do Workflow
@@ -192,6 +194,7 @@ const identifierColumn = item.identifierColumn;
 const metadataColumns = item.metadataColumns;
 
 // Normalizar contatos para o formato do banco
+// NOTA: Não é necessário filtrar linhas vazias aqui, pois já vêm filtradas do frontend
 const normalizedContacts = batchContacts.map(contact => {
   // Montar objeto de metadata
   const metadata = {};
@@ -205,7 +208,7 @@ const normalizedContacts = batchContacts.map(contact => {
     identifier: contact[identifierColumn]?.toString().trim(),
     metadata: metadata
   };
-}).filter(c => c.identifier); // Remover contatos sem identificador
+});
 
 // Calcular progresso
 const processedCount = (currentBatch + 1) * 100;
@@ -239,6 +242,8 @@ return [{
 ```
 
 **Objetivo:** Normalizar dados do batch e preparar para inserção.
+
+> **💡 Nota**: A filtragem de linhas vazias foi removida deste node pois agora é feita no frontend antes de enviar ao n8n.
 
 ---
 

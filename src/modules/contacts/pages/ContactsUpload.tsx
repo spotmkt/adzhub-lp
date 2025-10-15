@@ -160,6 +160,23 @@ const ContactsUpload = () => {
         return contact;
       });
 
+      // Filtrar linhas vazias (onde o identificador está vazio)
+      const validContacts = mappedContacts.filter(contact => {
+        const identifier = String(contact[mapping.identifierColumn] || '').trim();
+        return identifier !== '';
+      });
+
+      const totalValidContacts = validContacts.length;
+      const totalRemovedContacts = mappedContacts.length - totalValidContacts;
+
+      // Notificar usuário sobre linhas removidas
+      if (totalRemovedContacts > 0) {
+        toast({
+          title: 'Linhas vazias removidas',
+          description: `${totalRemovedContacts} linha(s) com identificador vazio foram removidas. ${totalValidContacts} contatos válidos serão processados.`,
+        });
+      }
+
       // Chamar Edge Function para enfileirar o processamento
       const { data, error } = await supabase.functions.invoke('enqueue-contacts-processing', {
         body: {
@@ -167,7 +184,8 @@ const ContactsUpload = () => {
           identifierType: mapping.identifierType,
           identifierColumn: mapping.identifierColumn,
           metadataColumns: mapping.metadataColumns,
-          contacts: mappedContacts,
+          contacts: validContacts,
+          totalContacts: totalValidContacts,
           lgpdConsent,
           dataUsageConsent,
         },
