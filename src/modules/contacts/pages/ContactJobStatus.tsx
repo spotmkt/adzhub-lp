@@ -169,7 +169,7 @@ export const ContactJobStatus = () => {
     }
   };
   
-  // Calcular tempo estimado e tempo decorrido
+  // Calcular tempo estimado
   const estimatedSeconds = useMemo(() => {
     if (!job || job.status !== 'processing' || progress >= 95) return null;
     
@@ -179,13 +179,6 @@ export const ContactJobStatus = () => {
       historyRef.current
     );
   }, [job?.processed_contacts, job?.total_contacts, job?.status, progress]);
-  
-  const elapsedSeconds = useMemo(() => {
-    if (!job) return null;
-    const start = new Date(job.created_at).getTime();
-    const now = Date.now();
-    return Math.round((now - start) / 1000);
-  }, [job?.created_at]);
 
   if (isLoading) {
     return (
@@ -271,29 +264,20 @@ export const ContactJobStatus = () => {
                     </span>
                   </div>
                   
-                  {/* Tempo estimado e decorrido */}
-                  <div className="flex items-center justify-center gap-4 text-xs">
-                    {elapsedSeconds !== null && (
-                      <div className="flex items-center gap-1.5 text-muted-foreground">
-                        <Clock className="h-3 w-3" />
-                        <span>Decorrido: {formatDuration(elapsedSeconds)}</span>
-                      </div>
-                    )}
-                    
-                    {estimatedSeconds !== null && progress < 95 && historyRef.current.length >= 2 && (
-                      <div className="flex items-center gap-1.5 text-primary">
-                        <Clock className="h-3 w-3" />
-                        <span>Estimado: {formatDuration(estimatedSeconds)}</span>
-                      </div>
-                    )}
-                    
-                    {progress >= 95 && (
-                      <div className="flex items-center gap-1.5 text-primary">
-                        <CheckCircle2 className="h-3 w-3" />
-                        <span>Quase pronto...</span>
-                      </div>
-                    )}
-                  </div>
+                  {/* Tempo estimado */}
+                  {estimatedSeconds !== null && progress < 95 && historyRef.current.length >= 2 && (
+                    <div className="flex items-center justify-center gap-1.5 text-xs text-primary">
+                      <Clock className="h-3 w-3" />
+                      <span>Estimado: {formatDuration(estimatedSeconds)}</span>
+                    </div>
+                  )}
+                  
+                  {progress >= 95 && (
+                    <div className="flex items-center justify-center gap-1.5 text-xs text-primary">
+                      <CheckCircle2 className="h-3 w-3" />
+                      <span>Quase pronto...</span>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
