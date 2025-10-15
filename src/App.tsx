@@ -28,6 +28,7 @@ import TasksModule from "@/modules/tasks/TasksModule";
 import ContactsModule from "@/modules/contacts/ContactsModule";
 import ThemeResearch from "./pages/ThemeResearch";
 import FileUpload from "./pages/FileUpload";
+import SharedThemeResearch from "./pages/SharedThemeResearch";
 
 // Create QueryClient outside of component to avoid recreation on each render
 // Updated to fix caching issue
@@ -57,6 +58,7 @@ function App(): React.ReactElement {
                 <Route path="/blog/:slug" element={<BlogPost />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/auth" element={<Auth />} />
+                <Route path="/shared/theme-research/:token" element={<SharedThemeResearch />} />
                 
                 {/* Campaigns Module - Independent WhatsApp campaigns manager */}
                 <Route path="/campaigns/*" element={<CampaignsModule />} />

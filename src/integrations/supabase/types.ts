@@ -1858,6 +1858,44 @@ export type Database = {
           },
         ]
       }
+      theme_research_shares: {
+        Row: {
+          created_at: string
+          created_by: string
+          expires_at: string | null
+          history_id: string
+          id: string
+          share_token: string
+          view_count: number
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          expires_at?: string | null
+          history_id: string
+          id?: string
+          share_token: string
+          view_count?: number
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          expires_at?: string | null
+          history_id?: string
+          id?: string
+          share_token?: string
+          view_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "theme_research_shares_history_id_fkey"
+            columns: ["history_id"]
+            isOneToOne: false
+            referencedRelation: "theme_research_history"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string

@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Search, Play, Image as ImageIcon, Sparkles, Trash2, History } from 'lucide-react';
+import { Search, Play, Image as ImageIcon, Sparkles, Trash2, History, Share2, Copy, Check } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -47,6 +47,7 @@ const ThemeResearch = () => {
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
   const [activeTab, setActiveTab] = useState('search');
+  const [copiedShareLink, setCopiedShareLink] = useState<string | null>(null);
 
   useEffect(() => {
     if (activeTab === 'history') {
@@ -151,6 +152,44 @@ const ThemeResearch = () => {
       toast({
         title: "Erro ao importar",
         description: error.message,
+      variant: "destructive",
+      });
+    }
+  };
+
+  const createShareLink = async (historyId: string) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      // Generate a random token
+      const shareToken = `${Math.random().toString(36).substring(2)}-${Date.now().toString(36)}`;
+
+      const { error } = await supabase
+        .from('theme_research_shares')
+        .insert({
+          history_id: historyId,
+          share_token: shareToken,
+          created_by: user.id
+        });
+
+      if (error) throw error;
+
+      const shareUrl = `${window.location.origin}/shared/theme-research/${shareToken}`;
+      
+      await navigator.clipboard.writeText(shareUrl);
+      setCopiedShareLink(historyId);
+      setTimeout(() => setCopiedShareLink(null), 3000);
+
+      toast({
+        title: "Link copiado",
+        description: "O link compartilhável foi copiado para a área de transferência",
+      });
+    } catch (error) {
+      console.error('Error creating share link:', error);
+      toast({
+        title: "Erro ao criar link",
+        description: "Não foi possível criar o link compartilhável",
         variant: "destructive",
       });
     }
@@ -535,15 +574,28 @@ const ThemeResearch = () => {
                           <div className="space-y-4">
                             <div>
                               <div className="flex items-start justify-between gap-4 mb-2">
-                                <h3 className="text-xl font-semibold">{item.title}</h3>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  onClick={() => deleteFromHistory(item.id)}
-                                  className="flex-shrink-0"
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
+                                <h3 className="text-xl font-semibold flex-1">{item.title}</h3>
+                                <div className="flex gap-2 flex-shrink-0">
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => createShareLink(item.id)}
+                                    title="Compartilhar"
+                                  >
+                                    {copiedShareLink === item.id ? (
+                                      <Check className="h-4 w-4 text-green-500" />
+                                    ) : (
+                                      <Share2 className="h-4 w-4" />
+                                    )}
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => deleteFromHistory(item.id)}
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </div>
                               </div>
                               {item.song_title && (
                                 <div className="flex flex-wrap gap-2 text-xs text-muted-foreground mb-2">
