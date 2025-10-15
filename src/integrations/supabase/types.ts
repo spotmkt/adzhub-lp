@@ -1777,51 +1777,86 @@ export type Database = {
       }
       theme_research_history: {
         Row: {
-          content_type: string
-          content_url: string
+          bookmarks: number | null
+          client_id: string | null
+          comments: number | null
+          content_type: string | null
+          content_url: string | null
           created_at: string
           filter_value: string | null
-          hypothesis: string
+          hypothesis: string | null
           id: string
-          search_type: string
+          likes: number | null
+          post_id: string | null
+          search_type: string | null
+          shares: number | null
+          song_title: string | null
           stats: Json | null
-          theme: string
-          thumbnail_url: string
-          title: string
+          theme: string | null
+          thumbnail_url: string | null
+          title: string | null
           updated_at: string
           user_id: string
+          video_url: string | null
+          views: number | null
         }
         Insert: {
-          content_type: string
-          content_url: string
+          bookmarks?: number | null
+          client_id?: string | null
+          comments?: number | null
+          content_type?: string | null
+          content_url?: string | null
           created_at?: string
           filter_value?: string | null
-          hypothesis: string
+          hypothesis?: string | null
           id?: string
-          search_type: string
+          likes?: number | null
+          post_id?: string | null
+          search_type?: string | null
+          shares?: number | null
+          song_title?: string | null
           stats?: Json | null
-          theme: string
-          thumbnail_url: string
-          title: string
+          theme?: string | null
+          thumbnail_url?: string | null
+          title?: string | null
           updated_at?: string
           user_id: string
+          video_url?: string | null
+          views?: number | null
         }
         Update: {
-          content_type?: string
-          content_url?: string
+          bookmarks?: number | null
+          client_id?: string | null
+          comments?: number | null
+          content_type?: string | null
+          content_url?: string | null
           created_at?: string
           filter_value?: string | null
-          hypothesis?: string
+          hypothesis?: string | null
           id?: string
-          search_type?: string
+          likes?: number | null
+          post_id?: string | null
+          search_type?: string | null
+          shares?: number | null
+          song_title?: string | null
           stats?: Json | null
-          theme?: string
-          thumbnail_url?: string
-          title?: string
+          theme?: string | null
+          thumbnail_url?: string | null
+          title?: string | null
           updated_at?: string
           user_id?: string
+          video_url?: string | null
+          views?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "theme_research_history_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
