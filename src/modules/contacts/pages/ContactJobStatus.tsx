@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Progress } from '@/components/ui/progress';
@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { CheckCircle2, XCircle, Loader2, Clock, ArrowLeft, RefreshCw } from 'lucide-react';
+import { calculateEstimatedTime, formatDuration, ProcessingHistory } from '../utils/timeEstimation';
 
 interface ContactUploadJob {
   id: string;
@@ -31,6 +32,7 @@ export const ContactJobStatus = () => {
   const [job, setJob] = useState<ContactUploadJob | null>(null);
   const [progress, setProgress] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const historyRef = useRef<ProcessingHistory[]>([]);
 
   useEffect(() => {
     if (!jobId) return;
@@ -52,6 +54,14 @@ export const ContactJobStatus = () => {
       setJob(data as ContactUploadJob);
       if (data?.total_contacts && data?.processed_contacts) {
         setProgress((data.processed_contacts / data.total_contacts) * 100);
+        
+        // Inicializar histórico
+        if (data.status === 'processing') {
+          historyRef.current = [{
+            timestamp: Date.now(),
+            processed: data.processed_contacts
+          }];
+        }
       }
       setIsLoading(false);
     };
@@ -76,6 +86,15 @@ export const ContactJobStatus = () => {
           if (updatedJob.total_contacts && updatedJob.processed_contacts) {
             const newProgress = (updatedJob.processed_contacts / updatedJob.total_contacts) * 100;
             setProgress(newProgress);
+            
+            // Atualizar histórico
+            if (updatedJob.status === 'processing') {
+              const newEntry: ProcessingHistory = {
+                timestamp: Date.now(),
+                processed: updatedJob.processed_contacts
+              };
+              historyRef.current = [...historyRef.current, newEntry].slice(-10);
+            }
           }
         }
       )
@@ -149,6 +168,24 @@ export const ContactJobStatus = () => {
         return 'outline';
     }
   };
+  
+  // Calcular tempo estimado e tempo decorrido
+  const estimatedSeconds = useMemo(() => {
+    if (!job || job.status !== 'processing' || progress >= 95) return null;
+    
+    return calculateEstimatedTime(
+      job.processed_contacts,
+      job.total_contacts,
+      historyRef.current
+    );
+  }, [job?.processed_contacts, job?.total_contacts, job?.status, progress]);
+  
+  const elapsedSeconds = useMemo(() => {
+    if (!job) return null;
+    const start = new Date(job.created_at).getTime();
+    const now = Date.now();
+    return Math.round((now - start) / 1000);
+  }, [job?.created_at]);
 
   if (isLoading) {
     return (
@@ -220,17 +257,43 @@ export const ContactJobStatus = () => {
 
             {/* Progress Bar */}
             {job.status === 'processing' && (
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <div className="flex justify-between text-sm">
                   <span className="font-medium">Progresso</span>
                   <span className="text-muted-foreground">{Math.round(progress)}%</span>
                 </div>
                 <Progress value={progress} className="h-3" />
-                <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
-                  <RefreshCw className="h-3 w-3 animate-spin" />
-                  <span>
-                    {job.processed_contacts.toLocaleString('pt-BR')} de {job.total_contacts.toLocaleString('pt-BR')} contatos processados
-                  </span>
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
+                    <RefreshCw className="h-3 w-3 animate-spin" />
+                    <span>
+                      {job.processed_contacts.toLocaleString('pt-BR')} de {job.total_contacts.toLocaleString('pt-BR')} contatos processados
+                    </span>
+                  </div>
+                  
+                  {/* Tempo estimado e decorrido */}
+                  <div className="flex items-center justify-center gap-4 text-xs">
+                    {elapsedSeconds !== null && (
+                      <div className="flex items-center gap-1.5 text-muted-foreground">
+                        <Clock className="h-3 w-3" />
+                        <span>Decorrido: {formatDuration(elapsedSeconds)}</span>
+                      </div>
+                    )}
+                    
+                    {estimatedSeconds !== null && progress < 95 && historyRef.current.length >= 2 && (
+                      <div className="flex items-center gap-1.5 text-primary">
+                        <Clock className="h-3 w-3" />
+                        <span>Estimado: {formatDuration(estimatedSeconds)}</span>
+                      </div>
+                    )}
+                    
+                    {progress >= 95 && (
+                      <div className="flex items-center gap-1.5 text-primary">
+                        <CheckCircle2 className="h-3 w-3" />
+                        <span>Quase pronto...</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             )}
