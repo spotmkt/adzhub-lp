@@ -27,6 +27,7 @@ import AgendaSettings from "@/modules/agenda/pages/AgendaSettings";
 import TasksModule from "@/modules/tasks/TasksModule";
 import ContactsModule from "@/modules/contacts/ContactsModule";
 import ThemeResearch from "./pages/ThemeResearch";
+import FileUpload from "./pages/FileUpload";
 
 // Create QueryClient outside of component to avoid recreation on each render
 // Updated to fix caching issue
@@ -71,6 +72,7 @@ function App(): React.ReactElement {
                 <Route path="/apps/tasks/*" element={<Layout><TasksModule /></Layout>} />
                 <Route path="/apps/contacts/*" element={<Layout><ContactsModule /></Layout>} />
                 <Route path="/apps/theme-research" element={<Layout><ThemeResearch /></Layout>} />
+                <Route path="/file-upload" element={<Layout><FileUpload /></Layout>} />
                 <Route path="/image-editor" element={<Layout><ImageEditor /></Layout>} />
                 <Route path="/settings" element={<Layout><Settings /></Layout>} />
                 <Route path="/content-generator-settings" element={<Layout><ContentGeneratorSettings /></Layout>} />

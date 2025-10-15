@@ -81,11 +81,12 @@ const apps = [
   },
   {
     id: 15,
-    name: 'Explorar Contexto',
-    description: 'Explore e analise contextos de documentos e informações',
+    name: 'Upload de Arquivos',
+    description: 'Faça upload de arquivos no Supabase e obtenha URLs públicas',
     icon: FileSearch,
     color: 'secondary',
-    status: 'Em breve'
+    status: 'Ativo',
+    path: '/file-upload'
   },
   {
     id: 4,
