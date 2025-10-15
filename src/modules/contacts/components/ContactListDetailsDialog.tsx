@@ -119,8 +119,8 @@ export const ContactListDetailsDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh]">
-        <DialogHeader>
+      <DialogContent className="max-w-[95vw] w-full max-h-[90vh] flex flex-col">
+        <DialogHeader className="flex-shrink-0">
           <DialogTitle className="flex items-center gap-2">
             <Database className="h-5 w-5" />
             {isEditing ? (
@@ -156,7 +156,8 @@ export const ContactListDetailsDialog = ({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4">
+        <ScrollArea className="flex-1 pr-4">
+          <div className="space-y-4">
           {/* Informações da Base */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="space-y-1">
@@ -205,49 +206,67 @@ export const ContactListDetailsDialog = ({
           {/* Tabela de Contatos */}
           <div className="space-y-2">
             <Label className="text-sm">Contatos ({totalContacts})</Label>
-            <ScrollArea className="h-[400px] rounded-md border">
-              {loading ? (
-                <div className="flex items-center justify-center py-12">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-                </div>
-              ) : (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="min-w-[150px]">{list.identifier_column}</TableHead>
-                      {list.metadata_columns.map((col) => (
-                        <TableHead key={col} className="min-w-[200px]">{col}</TableHead>
-                      ))}
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {contacts.map((contact) => {
-                      // Usar a função de parse para lidar com diferentes formatos
-                      const parsedMetadata = parseMetadata(contact.metadata, list.metadata_columns);
-                      
-                      return (
-                        <TableRow key={contact.id}>
-                          <TableCell className="font-medium">{contact.identifier}</TableCell>
-                          {list.metadata_columns.map((col) => {
-                            const value = parsedMetadata[col];
-                            return (
-                              <TableCell key={col} className="max-w-[300px]">
-                                {formatMetadataValue(value)}
-                              </TableCell>
-                            );
-                          })}
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              )}
-            </ScrollArea>
+            <div className="rounded-md border overflow-hidden">
+              <div className="overflow-x-auto max-h-[400px] overflow-y-auto">
+                {loading ? (
+                  <div className="flex items-center justify-center py-12">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+                  </div>
+                ) : (
+                  <Table>
+                    <TableHeader className="sticky top-0 bg-background z-10">
+                      <TableRow>
+                        <TableHead className="min-w-[150px] max-w-[200px] whitespace-nowrap">
+                          {list.identifier_column}
+                        </TableHead>
+                        {list.metadata_columns.map((col) => (
+                          <TableHead key={col} className="min-w-[150px] max-w-[250px] whitespace-nowrap">
+                            {col}
+                          </TableHead>
+                        ))}
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {contacts.map((contact) => {
+                        // Usar a função de parse para lidar com diferentes formatos
+                        const parsedMetadata = parseMetadata(contact.metadata, list.metadata_columns);
+                        
+                        console.log('Contact metadata:', {
+                          raw: contact.metadata,
+                          parsed: parsedMetadata,
+                          columns: list.metadata_columns
+                        });
+                        
+                        return (
+                          <TableRow key={contact.id}>
+                            <TableCell className="font-medium max-w-[200px] truncate">
+                              {contact.identifier}
+                            </TableCell>
+                            {list.metadata_columns.map((col) => {
+                              const value = parsedMetadata[col];
+                              return (
+                                <TableCell 
+                                  key={col} 
+                                  className="max-w-[250px] truncate"
+                                  title={formatMetadataValue(value)}
+                                >
+                                  {formatMetadataValue(value)}
+                                </TableCell>
+                              );
+                            })}
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                )}
+              </div>
+            </div>
           </div>
 
           {/* Paginação */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between pt-2">
               <p className="text-sm text-muted-foreground">
                 Página {currentPage} de {totalPages}
               </p>
@@ -271,7 +290,8 @@ export const ContactListDetailsDialog = ({
               </div>
             </div>
           )}
-        </div>
+          </div>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );
