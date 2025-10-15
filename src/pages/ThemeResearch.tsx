@@ -54,6 +54,108 @@ const ThemeResearch = () => {
     }
   }, [activeTab]);
 
+  const importSampleData = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: "Erro",
+          description: "Você precisa estar autenticado",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const sampleData = [
+        {
+          post_id: '7558528813802523916',
+          title: 'crochê amigurumis #viral #fy #croche #amigurumis #explorar',
+          views: 2148224,
+          likes: 207161,
+          comments: 360,
+          shares: 32342,
+          bookmarks: 15860,
+          song_title: 'Suddenly I See',
+          video_url: 'https://xciubsogktecqcgafwaa.supabase.co/storage/v1/object/public/company-profiles/uploads/3qyhgxt0b4v-1760537791812.mp4',
+          hypothesis: 'O sucesso deste post no TikTok resulta da combinação estratégica entre um forte apelo emocional e um elemento surpresa que gera alta viralidade.'
+        },
+        {
+          post_id: '7553318834309057814',
+          title: 'endlich Herbst! #crochet #crochetideas #fall #autumn',
+          views: 3499188,
+          likes: 165864,
+          comments: 129,
+          shares: 11508,
+          bookmarks: 7447,
+          song_title: 'som original - hera_musics',
+          video_url: 'https://xciubsogktecqcgafwaa.supabase.co/storage/v1/object/public/company-profiles/uploads/tkljpdidkgf-1760537791812.mp4',
+          hypothesis: 'A hipótese para o sucesso deste post está em seu brilhante aproveitamento da sazonalidade através de um formato de transição rápido e altamente satisfatório.'
+        },
+        {
+          post_id: '7552249135118781752',
+          title: 'A Mia fingindo que gostou #gatos #crochet #croche',
+          views: 985406,
+          likes: 103789,
+          comments: 511,
+          shares: 11886,
+          bookmarks: 15098,
+          song_title: 'Into The Thick Of It!',
+          video_url: 'https://xciubsogktecqcgafwaa.supabase.co/storage/v1/object/public/company-profiles/uploads/7ozsakuro4-1760537791812.mp4',
+          hypothesis: 'A hipótese para o alto desempenho deste post reside na brilhante combinação de um processo de criação satisfatório com uma recompensa emocional irresistível.'
+        },
+        {
+          post_id: '7550061649789570360',
+          title: 'A coisa mais útil, simples e terapêutica que você vai aprender esse ano: #DIY #crochê',
+          views: 779962,
+          likes: 82469,
+          comments: 520,
+          shares: 4305,
+          bookmarks: 29429,
+          song_title: 'som original - alexiabyhand',
+          video_url: 'https://xciubsogktecqcgafwaa.supabase.co/storage/v1/object/public/company-profiles/uploads/5b6w533iotd-1760537791812.mp4',
+          hypothesis: 'A hipótese para o sucesso viral deste post está em sua abordagem magistral de empoderamento e desmistificação para iniciantes absolutos.'
+        },
+        {
+          post_id: '7556046669700156690',
+          title: 'TUTORIAL NA BIO! qual seu favorito? #foryoupage #crochettiktok #croche #ratisqueiro #crochecriativo',
+          views: 559194,
+          likes: 71504,
+          comments: 356,
+          shares: 24877,
+          bookmarks: 6870,
+          song_title: 'The Theme of "Pele"',
+          video_url: 'https://xciubsogktecqcgafwaa.supabase.co/storage/v1/object/public/company-profiles/uploads/3brqe21xb0f-1760537791812.mp4',
+          hypothesis: 'A hipótese para o sucesso deste post reside na sua brilhante fusão de criatividade, humor e utilidade prática.'
+        }
+      ];
+
+      const records = sampleData.map(item => ({
+        user_id: user.id,
+        ...item
+      }));
+
+      const { error } = await supabase
+        .from('theme_research_history')
+        .insert(records);
+
+      if (error) throw error;
+
+      toast({
+        title: "Dados importados",
+        description: `${sampleData.length} registros foram adicionados ao histórico`,
+      });
+
+      loadHistory();
+    } catch (error: any) {
+      console.error('Import error:', error);
+      toast({
+        title: "Erro ao importar",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
   const loadHistory = async () => {
     setIsLoadingHistory(true);
     try {
@@ -392,9 +494,13 @@ const ThemeResearch = () => {
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold mb-2">Nenhum histórico encontrado</h3>
-                    <p className="text-muted-foreground">
+                    <p className="text-muted-foreground mb-4">
                       Faça uma pesquisa para começar a construir seu histórico
                     </p>
+                    <Button onClick={importSampleData} variant="outline">
+                      <Sparkles className="mr-2 h-4 w-4" />
+                      Importar dados de exemplo
+                    </Button>
                   </div>
                 </div>
               </Card>
