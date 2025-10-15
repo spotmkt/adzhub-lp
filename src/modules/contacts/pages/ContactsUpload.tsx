@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -11,6 +12,7 @@ import { readFile } from '@/modules/campaigns/utils/fileReader';
 import { supabase } from '@/integrations/supabase/client';
 
 const ContactsUpload = () => {
+  const navigate = useNavigate();
   const [file, setFile] = useState<File | null>(null);
   const [lgpdConsent, setLgpdConsent] = useState(false);
   const [dataUsageConsent, setDataUsageConsent] = useState(false);
@@ -175,18 +177,8 @@ const ContactsUpload = () => {
         throw error;
       }
 
-      toast({
-        title: 'Upload Enfileirado!',
-        description: `${mappedContacts.length} contatos serão processados. ID do Job: ${data.jobId}`,
-      });
-
-      // Limpar formulário
-      setFile(null);
-      setFileData(null);
-      setLgpdConsent(false);
-      setDataUsageConsent(false);
-      const fileInput = document.getElementById('file-upload') as HTMLInputElement;
-      if (fileInput) fileInput.value = '';
+      // Redirecionar para a página de status
+      navigate(`/apps/contacts/jobs/${data.jobId}`);
       
     } catch (error) {
       console.error('Error enqueuing contacts:', error);
