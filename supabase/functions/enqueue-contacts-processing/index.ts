@@ -104,10 +104,10 @@ serve(async (req) => {
     console.log('Job created successfully:', job.id);
 
     // Send data to n8n webhook for processing
-    const n8nWebhookUrl = Deno.env.get('N8N_CONTACTS_WEBHOOK_URL');
+    const n8nWebhookUrl = Deno.env.get('BASE_PROCESSING');
     
     if (!n8nWebhookUrl) {
-      console.error('N8N_CONTACTS_WEBHOOK_URL not configured');
+      console.error('BASE_PROCESSING not configured');
       
       // Update job status to failed
       await supabaseClient
@@ -120,7 +120,7 @@ serve(async (req) => {
 
       return new Response(
         JSON.stringify({ 
-          error: 'Processing service not configured',
+          error: 'Serviço de processamento não configurado',
           jobId: job.id,
         }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
