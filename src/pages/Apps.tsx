@@ -152,6 +152,8 @@ const Apps = () => {
       navigate('/apps/contacts');
     } else if (appId === 14) {
       navigate('/apps/theme-research');
+    } else if (appId === 15) {
+      navigate('/file-upload');
     }
   };
 
