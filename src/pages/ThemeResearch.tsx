@@ -24,15 +24,16 @@ interface ContentResult {
 
 interface HistoryItem {
   id: string;
-  theme: string;
-  search_type: string;
-  filter_value: string | null;
-  content_type: string;
-  content_url: string;
-  thumbnail_url: string;
+  post_id: string;
   title: string;
-  stats: any;
-  hypothesis: string;
+  views: number;
+  likes: number;
+  comments: number;
+  shares: number;
+  bookmarks: number;
+  song_title: string | null;
+  video_url: string | null;
+  hypothesis: string | null;
   created_at: string;
 }
 
@@ -404,25 +405,22 @@ const ThemeResearch = () => {
                   {history.map((item) => (
                     <Card key={item.id} className="overflow-hidden hover:shadow-lg transition-shadow">
                       <div className="grid md:grid-cols-[300px_1fr] gap-0">
-                        {/* Thumbnail */}
+                        {/* Video/Thumbnail */}
                         <div className="relative bg-muted aspect-video md:aspect-auto">
-                          <img 
-                            src={item.thumbnail_url} 
-                            alt={item.title}
-                            className="w-full h-full object-cover"
-                          />
+                          {item.video_url ? (
+                            <video 
+                              src={item.video_url} 
+                              className="w-full h-full object-cover"
+                              controls
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                              <Play className="h-12 w-12 text-muted-foreground" />
+                            </div>
+                          )}
                           <div className="absolute top-2 left-2 bg-background/90 backdrop-blur-sm px-2 py-1 rounded-md flex items-center gap-1">
-                            {item.content_type === 'video' ? (
-                              <>
-                                <Play className="h-3 w-3" />
-                                <span className="text-xs font-medium">Vídeo</span>
-                              </>
-                            ) : (
-                              <>
-                                <ImageIcon className="h-3 w-3" />
-                                <span className="text-xs font-medium">Imagem</span>
-                              </>
-                            )}
+                            <Play className="h-3 w-3" />
+                            <span className="text-xs font-medium">Vídeo</span>
                           </div>
                         </div>
 
@@ -441,35 +439,31 @@ const ThemeResearch = () => {
                                   <Trash2 className="h-4 w-4" />
                                 </Button>
                               </div>
-                              <div className="flex flex-wrap gap-2 text-xs text-muted-foreground mb-2">
-                                <span className="bg-muted px-2 py-1 rounded">Tema: {item.theme}</span>
-                                <span className="bg-muted px-2 py-1 rounded">Tipo: {item.search_type}</span>
-                                {item.filter_value && (
-                                  <span className="bg-muted px-2 py-1 rounded">Filtro: {item.filter_value}</span>
-                                )}
-                              </div>
+                              {item.song_title && (
+                                <div className="flex flex-wrap gap-2 text-xs text-muted-foreground mb-2">
+                                  <span className="bg-muted px-2 py-1 rounded">🎵 {item.song_title}</span>
+                                </div>
+                              )}
                               <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-                                {item.stats.views && (
-                                  <span>👁 {formatNumber(item.stats.views)} visualizações</span>
-                                )}
-                                {item.stats.likes && (
-                                  <span>❤️ {formatNumber(item.stats.likes)} curtidas</span>
-                                )}
-                                {item.stats.comments && (
-                                  <span>💬 {formatNumber(item.stats.comments)} comentários</span>
-                                )}
+                                <span>👁 {formatNumber(item.views)} visualizações</span>
+                                <span>❤️ {formatNumber(item.likes)} curtidas</span>
+                                <span>💬 {formatNumber(item.comments)} comentários</span>
+                                <span>🔄 {formatNumber(item.shares)} compartilhamentos</span>
+                                <span>🔖 {formatNumber(item.bookmarks)} salvos</span>
                               </div>
                             </div>
 
-                            <div className="bg-muted/50 p-4 rounded-lg border border-border">
-                              <div className="flex items-start gap-2 mb-2">
-                                <Sparkles className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                                <span className="text-sm font-semibold">Hipótese de Resultados</span>
+                            {item.hypothesis && (
+                              <div className="bg-muted/50 p-4 rounded-lg border border-border">
+                                <div className="flex items-start gap-2 mb-2">
+                                  <Sparkles className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                                  <span className="text-sm font-semibold">Hipótese de Resultados</span>
+                                </div>
+                                <p className="text-sm text-muted-foreground leading-relaxed">
+                                  {item.hypothesis}
+                                </p>
                               </div>
-                              <p className="text-sm text-muted-foreground leading-relaxed">
-                                {item.hypothesis}
-                              </p>
-                            </div>
+                            )}
                             
                             <p className="text-xs text-muted-foreground">
                               Pesquisado em {new Date(item.created_at).toLocaleDateString('pt-BR', {
@@ -484,12 +478,12 @@ const ThemeResearch = () => {
 
                           <Button 
                             onClick={() => handleRemix({ 
-                              id: item.content_url, 
-                              type: item.content_type as 'video' | 'image',
-                              thumbnail: item.thumbnail_url,
+                              id: item.post_id, 
+                              type: 'video',
+                              thumbnail: item.video_url || '',
                               title: item.title,
-                              stats: item.stats,
-                              hypothesis: item.hypothesis
+                              stats: { views: item.views, likes: item.likes, comments: item.comments },
+                              hypothesis: item.hypothesis || ''
                             })}
                             className="mt-4"
                             variant="default"
