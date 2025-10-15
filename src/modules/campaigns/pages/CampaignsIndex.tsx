@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import { Database, Upload, Image, MessageSquare, Calendar, Send, FileUp, ClipboardPaste } from 'lucide-react';
+import { Database, Upload, Image, MessageSquare, Calendar, Send, FileUp, ClipboardPaste, ListOrdered } from 'lucide-react';
 import { useCampaignsAuth } from '../contexts/CampaignsAuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { ImageTemplateSelectorV2 } from '../components/ImageTemplateSelectorV2';
@@ -45,7 +45,9 @@ const CampaignsIndex = () => {
   const [selectedInstance, setSelectedInstance] = useState<string>('');
   const [csvFile, setCsvFile] = useState<File | null>(null);
   const [pastedData, setPastedData] = useState<string>('');
-  const [uploadMethod, setUploadMethod] = useState<'file' | 'paste'>('file');
+  const [uploadMethod, setUploadMethod] = useState<'file' | 'paste' | 'contactlist'>('file');
+  const [contactLists, setContactLists] = useState<any[]>([]);
+  const [selectedContactList, setSelectedContactList] = useState<string>('');
   const [csvData, setCsvData] = useState<string[][]>([]);
   const [csvHeaders, setCsvHeaders] = useState<string[]>([]);
   const [csvLines, setCsvLines] = useState<number>(0);
@@ -59,7 +61,7 @@ const CampaignsIndex = () => {
   const [scheduledTime, setScheduledTime] = useState<string>('');
   const [mappedData, setMappedData] = useState<any[]>([]);
 
-  // Fetch instances
+  // Fetch instances and contact lists
   useEffect(() => {
     const fetchInstances = async () => {
       const { data, error } = await (supabase as any)
@@ -81,7 +83,22 @@ const CampaignsIndex = () => {
       setInstances(data || []);
     };
 
+    const fetchContactLists = async () => {
+      const { data, error } = await supabase
+        .from('contact_lists')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Erro ao buscar bases de contatos:', error);
+        return;
+      }
+
+      setContactLists(data || []);
+    };
+
     fetchInstances();
+    fetchContactLists();
   }, [toast]);
 
   // Handle file upload
@@ -99,6 +116,102 @@ const CampaignsIndex = () => {
     } catch (error: any) {
       toast({
         title: 'Erro ao processar arquivo',
+        description: error.message,
+        variant: 'destructive'
+      });
+    }
+  };
+
+  // Handle contact list selection
+  const handleContactListSelect = async (listId: string) => {
+    setSelectedContactList(listId);
+    
+    try {
+      // Buscar a base de contatos
+      const { data: list, error: listError } = await supabase
+        .from('contact_lists')
+        .select('*')
+        .eq('id', listId)
+        .single();
+
+      if (listError) throw listError;
+
+      // Buscar os contatos da base
+      const { data: contacts, error: contactsError } = await supabase
+        .from('contacts')
+        .select('*')
+        .eq('list_id', listId);
+
+      if (contactsError) throw contactsError;
+
+      // Processar os contatos para o formato esperado
+      const processedData = contacts.map((contact: any) => {
+        const metadata = typeof contact.metadata === 'string' 
+          ? JSON.parse(contact.metadata) 
+          : contact.metadata || {};
+        
+        return {
+          [list.identifier_column]: contact.identifier,
+          ...metadata
+        };
+      });
+
+      // Criar dados no formato CSV
+      const allKeys = new Set<string>();
+      allKeys.add(list.identifier_column);
+      processedData.forEach((item: any) => {
+        Object.keys(item).forEach(key => allKeys.add(key));
+      });
+
+      const headers = Array.from(allKeys);
+      const csvRows = [
+        headers,
+        ...processedData.map((item: any) => 
+          headers.map(header => item[header] || '')
+        )
+      ];
+
+      setCsvData(csvRows);
+      setCsvHeaders(headers);
+      setCsvLines(contacts.length);
+      
+      // Configurar mapeamento automático
+      const metadataColumns = Array.isArray(list.metadata_columns) 
+        ? list.metadata_columns 
+        : [];
+      
+      const nameColumn = metadataColumns.find((col: string) => 
+        col.toLowerCase().includes('nome')
+      ) || '';
+
+      setColumnMapping({
+        phoneColumn: list.identifier_column,
+        nameColumn,
+        mode: 'simple',
+        selectedColumns: metadataColumns
+      });
+
+      // Processar dados mapeados
+      const mapped = processedData.map((item: any) => {
+        const phone = String(item[list.identifier_column] || '');
+        const name = nameColumn ? String(item[String(nameColumn)] || '') : '';
+        
+        return {
+          phone,
+          name,
+          ...item
+        };
+      });
+
+      setMappedData(mapped);
+
+      toast({
+        title: 'Base carregada',
+        description: `${contacts.length} contatos carregados com sucesso`
+      });
+    } catch (error: any) {
+      toast({
+        title: 'Erro ao carregar contatos',
         description: error.message,
         variant: 'destructive'
       });
@@ -331,7 +444,7 @@ const CampaignsIndex = () => {
                 Carregar Contatos *
               </Label>
               
-              <RadioGroup value={uploadMethod} onValueChange={(v: any) => setUploadMethod(v)} className="flex gap-4">
+              <RadioGroup value={uploadMethod} onValueChange={(v: any) => setUploadMethod(v)} className="flex flex-wrap gap-4">
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="file" id="file" />
                   <Label htmlFor="file" className="cursor-pointer flex items-center gap-2">
@@ -344,6 +457,13 @@ const CampaignsIndex = () => {
                   <Label htmlFor="paste" className="cursor-pointer flex items-center gap-2">
                     <ClipboardPaste className="h-4 w-4" />
                     Colar Dados
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="contactlist" id="contactlist" />
+                  <Label htmlFor="contactlist" className="cursor-pointer flex items-center gap-2">
+                    <ListOrdered className="h-4 w-4" />
+                    Base de Contatos
                   </Label>
                 </div>
               </RadioGroup>
@@ -359,6 +479,32 @@ const CampaignsIndex = () => {
                   {csvFile && (
                     <p className="text-sm text-muted-foreground">
                       Arquivo carregado: {csvFile.name} ({csvLines} linhas)
+                    </p>
+                  )}
+                </div>
+              ) : uploadMethod === 'contactlist' ? (
+                <div className="space-y-2">
+                  <Select value={selectedContactList} onValueChange={handleContactListSelect}>
+                    <SelectTrigger className="h-12">
+                      <SelectValue placeholder="Selecione uma base de contatos" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {contactLists.length === 0 ? (
+                        <div className="p-2 text-sm text-muted-foreground text-center">
+                          Nenhuma base encontrada
+                        </div>
+                      ) : (
+                        contactLists.map((list) => (
+                          <SelectItem key={list.id} value={list.id}>
+                            {list.list_name} ({list.total_contacts} contatos)
+                          </SelectItem>
+                        ))
+                      )}
+                    </SelectContent>
+                  </Select>
+                  {selectedContactList && csvLines > 0 && (
+                    <p className="text-sm text-muted-foreground">
+                      {csvLines} contatos carregados da base
                     </p>
                   )}
                 </div>
