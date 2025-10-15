@@ -1,7 +1,8 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Eye, Trash2, Users, Calendar, Tag } from 'lucide-react';
+import { Progress } from '@/components/ui/progress';
+import { Eye, Trash2, Users, Calendar, Tag, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
@@ -14,21 +15,52 @@ interface ContactList {
   metadata_columns: string[];
   created_at: string;
   updated_at: string;
+  job_id: string;
+}
+
+interface ContactJob {
+  id: string;
+  status: string;
+  processed_contacts: number;
+  total_contacts: number;
 }
 
 interface ContactListCardProps {
   list: ContactList;
+  job?: ContactJob;
   onView: (list: ContactList) => void;
   onDelete: (listId: string) => void;
 }
 
-export const ContactListCard = ({ list, onView, onDelete }: ContactListCardProps) => {
+export const ContactListCard = ({ list, job, onView, onDelete }: ContactListCardProps) => {
   const identifierTypeLabel = {
     email: 'E-mail',
     phone: 'Telefone',
     cpf: 'CPF',
     other: 'Outro',
   }[list.identifier_type] || list.identifier_type;
+
+  const isProcessing = job?.status === 'processing' || job?.status === 'queued';
+  const isCompleted = job?.status === 'completed';
+  const isFailed = job?.status === 'failed';
+  
+  const progress = job 
+    ? Math.round((job.processed_contacts / job.total_contacts) * 100)
+    : 100;
+
+  const getStatusIcon = () => {
+    if (isProcessing) return <Loader2 className="h-4 w-4 animate-spin text-blue-500" />;
+    if (isCompleted) return <CheckCircle className="h-4 w-4 text-green-500" />;
+    if (isFailed) return <AlertCircle className="h-4 w-4 text-red-500" />;
+    return null;
+  };
+
+  const getStatusText = () => {
+    if (isProcessing) return 'Processando...';
+    if (isCompleted) return 'Concluída';
+    if (isFailed) return 'Erro';
+    return 'Concluída';
+  };
 
   return (
     <Card className="hover:shadow-lg transition-shadow">
@@ -53,6 +85,26 @@ export const ContactListCard = ({ list, onView, onDelete }: ContactListCardProps
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
+        {/* Barra de Progresso */}
+        {job && isProcessing && (
+          <div className="space-y-2">
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-muted-foreground">Importando contatos</span>
+              <span className="font-medium">{progress}%</span>
+            </div>
+            <Progress value={progress} className="h-2" />
+            <p className="text-xs text-muted-foreground">
+              {job.processed_contacts.toLocaleString('pt-BR')} de {job.total_contacts.toLocaleString('pt-BR')} contatos
+            </p>
+          </div>
+        )}
+
+        {/* Status Badge */}
+        <div className="flex items-center gap-2">
+          {getStatusIcon()}
+          <span className="text-sm font-medium">{getStatusText()}</span>
+        </div>
+
         <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
           <div className="flex items-center gap-2">
             <Users className="h-4 w-4 text-muted-foreground" />
@@ -85,6 +137,7 @@ export const ContactListCard = ({ list, onView, onDelete }: ContactListCardProps
             size="sm"
             className="flex-1"
             onClick={() => onView(list)}
+            disabled={isProcessing}
           >
             <Eye className="h-4 w-4 mr-1" />
             Visualizar
@@ -93,6 +146,7 @@ export const ContactListCard = ({ list, onView, onDelete }: ContactListCardProps
             variant="outline"
             size="sm"
             onClick={() => onDelete(list.id)}
+            disabled={isProcessing}
           >
             <Trash2 className="h-4 w-4" />
           </Button>

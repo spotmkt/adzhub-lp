@@ -19,6 +19,14 @@ interface ContactList {
   metadata_columns: string[];
   created_at: string;
   updated_at: string;
+  job_id: string;
+}
+
+interface ContactJob {
+  id: string;
+  status: string;
+  processed_contacts: number;
+  total_contacts: number;
 }
 
 const ContactsLists = () => {
@@ -26,12 +34,33 @@ const ContactsLists = () => {
   const { toast } = useToast();
   const [lists, setLists] = useState<ContactList[]>([]);
   const [filteredLists, setFilteredLists] = useState<ContactList[]>([]);
+  const [jobs, setJobs] = useState<Record<string, ContactJob>>({});
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
   const [selectedList, setSelectedList] = useState<ContactList | null>(null);
 
   useEffect(() => {
     fetchLists();
+    
+    // Configurar realtime para atualizar jobs
+    const channel = supabase
+      .channel('contact_jobs_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'contact_upload_jobs'
+        },
+        () => {
+          fetchJobs();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   useEffect(() => {
@@ -62,6 +91,9 @@ const ContactsLists = () => {
 
       setLists(typedData);
       setFilteredLists(typedData);
+      
+      // Buscar jobs após carregar listas
+      await fetchJobs();
     } catch (error: any) {
       toast({
         variant: 'destructive',
@@ -70,6 +102,25 @@ const ContactsLists = () => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchJobs = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('contact_upload_jobs')
+        .select('id, status, processed_contacts, total_contacts');
+
+      if (error) throw error;
+
+      const jobsMap: Record<string, ContactJob> = {};
+      (data || []).forEach((job) => {
+        jobsMap[job.id] = job;
+      });
+
+      setJobs(jobsMap);
+    } catch (error: any) {
+      console.error('Erro ao carregar jobs:', error);
     }
   };
 
@@ -215,6 +266,7 @@ const ContactsLists = () => {
             <ContactListCard
               key={list.id}
               list={list}
+              job={jobs[list.job_id]}
               onView={(list) => setSelectedList(list)}
               onDelete={handleDeleteList}
             />
