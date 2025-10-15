@@ -213,23 +213,31 @@ export const ContactListDetailsDialog = ({
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>{list.identifier_column}</TableHead>
+                      <TableHead className="min-w-[150px]">{list.identifier_column}</TableHead>
                       {list.metadata_columns.map((col) => (
-                        <TableHead key={col}>{col}</TableHead>
+                        <TableHead key={col} className="min-w-[200px]">{col}</TableHead>
                       ))}
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {contacts.map((contact) => (
-                      <TableRow key={contact.id}>
-                        <TableCell className="font-medium">{contact.identifier}</TableCell>
-                        {list.metadata_columns.map((col) => (
-                          <TableCell key={col}>
-                            {contact.metadata?.[col] || '-'}
-                          </TableCell>
-                        ))}
-                      </TableRow>
-                    ))}
+                    {contacts.map((contact) => {
+                      const metadata = contact.metadata || {};
+                      return (
+                        <TableRow key={contact.id}>
+                          <TableCell className="font-medium">{contact.identifier}</TableCell>
+                          {list.metadata_columns.map((col) => {
+                            const value = metadata[col];
+                            return (
+                              <TableCell key={col} className="max-w-[300px]">
+                                {value !== null && value !== undefined && value !== '' 
+                                  ? String(value) 
+                                  : '-'}
+                              </TableCell>
+                            );
+                          })}
+                        </TableRow>
+                      );
+                    })}
                   </TableBody>
                 </Table>
               )}
