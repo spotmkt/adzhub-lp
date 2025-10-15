@@ -6,6 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface SharedItem {
+  id: string;
   post_id: string;
   title: string;
   views: number;
@@ -16,16 +17,17 @@ interface SharedItem {
   song_title: string | null;
   video_url: string | null;
   hypothesis: string | null;
+  created_at: string;
 }
 
 const SharedThemeResearch = () => {
   const { token } = useParams<{ token: string }>();
-  const [item, setItem] = useState<SharedItem | null>(null);
+  const [items, setItems] = useState<SharedItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const loadSharedItem = async () => {
+    const loadSharedHistory = async () => {
       if (!token) {
         setError('Link inválido');
         setLoading(false);
@@ -36,7 +38,7 @@ const SharedThemeResearch = () => {
         // Get the share record
         const { data: shareData, error: shareError } = await supabase
           .from('theme_research_shares')
-          .select('history_id')
+          .select('user_id')
           .eq('share_token', token)
           .single();
 
@@ -46,29 +48,29 @@ const SharedThemeResearch = () => {
           return;
         }
 
-        // Get the history item
+        // Get all history items for this user
         const { data: historyData, error: historyError } = await supabase
           .from('theme_research_history')
           .select('*')
-          .eq('id', shareData.history_id)
-          .single();
+          .eq('user_id', shareData.user_id)
+          .order('created_at', { ascending: false });
 
-        if (historyError || !historyData) {
-          setError('Conteúdo não encontrado');
+        if (historyError) {
+          setError('Erro ao carregar histórico');
           setLoading(false);
           return;
         }
 
-        setItem(historyData);
+        setItems(historyData || []);
       } catch (err) {
-        console.error('Error loading shared item:', err);
+        console.error('Error loading shared history:', err);
         setError('Erro ao carregar conteúdo compartilhado');
       } finally {
         setLoading(false);
       }
     };
 
-    loadSharedItem();
+    loadSharedHistory();
   }, [token]);
 
   const formatNumber = (num: number) => {
@@ -87,13 +89,13 @@ const SharedThemeResearch = () => {
     );
   }
 
-  if (error || !item) {
+  if (error || items.length === 0) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-6">
         <Card className="p-8 max-w-md w-full">
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
-            <AlertDescription>{error || 'Link inválido'}</AlertDescription>
+            <AlertDescription>{error || 'Nenhum conteúdo encontrado'}</AlertDescription>
           </Alert>
         </Card>
       </div>
@@ -101,70 +103,84 @@ const SharedThemeResearch = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="max-w-4xl mx-auto space-y-6">
+    <div className="min-h-screen bg-background p-6 overflow-y-auto">
+      <div className="max-w-6xl mx-auto space-y-6">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Pesquisa de Tema Compartilhada</h1>
+          <h1 className="text-3xl font-bold mb-2">Histórico de Pesquisa de Temas</h1>
           <p className="text-muted-foreground">
-            Análise de conteúdo viral
+            {items.length} {items.length === 1 ? 'análise compartilhada' : 'análises compartilhadas'}
           </p>
         </div>
 
-        <Card className="overflow-hidden">
-          <div className="grid md:grid-cols-[400px_1fr] gap-0">
-            {/* Video */}
-            <div className="relative bg-muted aspect-video md:aspect-auto">
-              {item.video_url ? (
-                <video 
-                  src={item.video_url} 
-                  className="w-full h-full object-cover"
-                  controls
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <Play className="h-12 w-12 text-muted-foreground" />
-                </div>
-              )}
-              <div className="absolute top-2 left-2 bg-background/90 backdrop-blur-sm px-2 py-1 rounded-md flex items-center gap-1">
-                <Play className="h-3 w-3" />
-                <span className="text-xs font-medium">Vídeo</span>
-              </div>
-            </div>
-
-            {/* Content */}
-            <CardContent className="p-6 flex flex-col justify-between">
-              <div className="space-y-4">
-                <div>
-                  <h2 className="text-xl font-semibold mb-2">{item.title}</h2>
-                  {item.song_title && (
-                    <div className="flex flex-wrap gap-2 text-xs text-muted-foreground mb-2">
-                      <span className="bg-muted px-2 py-1 rounded">🎵 {item.song_title}</span>
+        <div className="grid grid-cols-1 gap-6">
+          {items.map((item) => (
+            <Card key={item.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+              <div className="grid md:grid-cols-[300px_1fr] gap-0">
+                {/* Video/Thumbnail */}
+                <div className="relative bg-muted aspect-video md:aspect-auto">
+                  {item.video_url ? (
+                    <video 
+                      src={item.video_url} 
+                      className="w-full h-full object-cover"
+                      controls
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <Play className="h-12 w-12 text-muted-foreground" />
                     </div>
                   )}
-                  <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-                    <span>👁 {formatNumber(item.views)} visualizações</span>
-                    <span>❤️ {formatNumber(item.likes)} curtidas</span>
-                    <span>💬 {formatNumber(item.comments)} comentários</span>
-                    <span>🔄 {formatNumber(item.shares)} compartilhamentos</span>
-                    <span>🔖 {formatNumber(item.bookmarks)} salvos</span>
+                  <div className="absolute top-2 left-2 bg-background/90 backdrop-blur-sm px-2 py-1 rounded-md flex items-center gap-1">
+                    <Play className="h-3 w-3" />
+                    <span className="text-xs font-medium">Vídeo</span>
                   </div>
                 </div>
 
-                {item.hypothesis && (
-                  <div className="bg-muted/50 p-4 rounded-lg border border-border">
-                    <div className="flex items-start gap-2 mb-2">
-                      <Sparkles className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                      <span className="text-sm font-semibold">Hipótese de Resultados</span>
+                {/* Content */}
+                <CardContent className="p-6">
+                  <div className="space-y-4">
+                    <div>
+                      <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
+                      {item.song_title && (
+                        <div className="flex flex-wrap gap-2 text-xs text-muted-foreground mb-2">
+                          <span className="bg-muted px-2 py-1 rounded">🎵 {item.song_title}</span>
+                        </div>
+                      )}
+                      <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+                        <span>👁 {formatNumber(item.views)} visualizações</span>
+                        <span>❤️ {formatNumber(item.likes)} curtidas</span>
+                        <span>💬 {formatNumber(item.comments)} comentários</span>
+                        <span>🔄 {formatNumber(item.shares)} compartilhamentos</span>
+                        <span>🔖 {formatNumber(item.bookmarks)} salvos</span>
+                      </div>
                     </div>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      {item.hypothesis}
+
+                    {item.hypothesis && (
+                      <div className="bg-muted/50 p-4 rounded-lg border border-border">
+                        <div className="flex items-start gap-2 mb-2">
+                          <Sparkles className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                          <span className="text-sm font-semibold">Hipótese de Resultados</span>
+                        </div>
+                        <p className="text-sm text-muted-foreground leading-relaxed">
+                          {item.hypothesis}
+                        </p>
+                      </div>
+                    )}
+
+                    <p className="text-xs text-muted-foreground">
+                      Pesquisado em {new Date(item.created_at).toLocaleDateString('pt-BR', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
                     </p>
                   </div>
-                )}
+                </CardContent>
               </div>
-            </CardContent>
-          </div>
-        </Card>
+            </Card>
+          ))}
+        </div>
 
         <div className="text-center text-sm text-muted-foreground">
           <p>Compartilhado via AdzHub - Pesquisa de Temas</p>

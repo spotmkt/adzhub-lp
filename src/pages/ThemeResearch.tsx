@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Search, Play, Image as ImageIcon, Sparkles, Trash2, History, Share2, Copy, Check } from 'lucide-react';
+import { Search, Play, Image as ImageIcon, Sparkles, Trash2, History, Share2, Check } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -47,13 +47,38 @@ const ThemeResearch = () => {
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
   const [activeTab, setActiveTab] = useState('search');
-  const [copiedShareLink, setCopiedShareLink] = useState<string | null>(null);
+  const [shareLink, setShareLink] = useState<string | null>(null);
+  const [isCreatingShare, setIsCreatingShare] = useState(false);
 
   useEffect(() => {
     if (activeTab === 'history') {
       loadHistory();
+      loadShareLink();
     }
   }, [activeTab]);
+
+  const loadShareLink = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from('theme_research_shares')
+        .select('share_token')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (error) throw error;
+      
+      if (data) {
+        setShareLink(`${window.location.origin}/shared/theme-research/${data.share_token}`);
+      }
+    } catch (error) {
+      console.error('Error loading share link:', error);
+    }
+  };
 
   const importSampleData = async () => {
     try {
@@ -157,39 +182,69 @@ const ThemeResearch = () => {
     }
   };
 
-  const createShareLink = async (historyId: string) => {
+  const createShareLink = async () => {
+    setIsCreatingShare(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      // Generate a random token
-      const shareToken = `${Math.random().toString(36).substring(2)}-${Date.now().toString(36)}`;
-
-      const { error } = await supabase
+      // Check if share already exists
+      const { data: existingShare } = await supabase
         .from('theme_research_shares')
-        .insert({
-          history_id: historyId,
-          share_token: shareToken,
-          created_by: user.id
-        });
+        .select('share_token')
+        .eq('user_id', user.id)
+        .maybeSingle();
 
-      if (error) throw error;
+      let token = existingShare?.share_token;
 
-      const shareUrl = `${window.location.origin}/shared/theme-research/${shareToken}`;
+      if (!existingShare) {
+        // Generate a random token
+        token = `${Math.random().toString(36).substring(2)}-${Date.now().toString(36)}`;
+
+        const { error } = await supabase
+          .from('theme_research_shares')
+          .insert({
+            user_id: user.id,
+            share_token: token
+          });
+
+        if (error) throw error;
+      }
+
+      const shareUrl = `${window.location.origin}/shared/theme-research/${token}`;
+      setShareLink(shareUrl);
       
       await navigator.clipboard.writeText(shareUrl);
-      setCopiedShareLink(historyId);
-      setTimeout(() => setCopiedShareLink(null), 3000);
 
       toast({
         title: "Link copiado",
-        description: "O link compartilhável foi copiado para a área de transferência",
+        description: "O link do histórico foi copiado para a área de transferência",
       });
     } catch (error) {
       console.error('Error creating share link:', error);
       toast({
         title: "Erro ao criar link",
         description: "Não foi possível criar o link compartilhável",
+        variant: "destructive",
+      });
+    } finally {
+      setIsCreatingShare(false);
+    }
+  };
+
+  const copyShareLink = async () => {
+    if (!shareLink) return;
+    
+    try {
+      await navigator.clipboard.writeText(shareLink);
+      toast({
+        title: "Link copiado",
+        description: "O link foi copiado para a área de transferência",
+      });
+    } catch (error) {
+      toast({
+        title: "Erro",
+        description: "Não foi possível copiar o link",
         variant: "destructive",
       });
     }
@@ -519,6 +574,42 @@ const ThemeResearch = () => {
           </TabsContent>
 
           <TabsContent value="history" className="space-y-6 mt-6">
+            {/* Share Link Section */}
+            {history.length > 0 && (
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold mb-2">Compartilhar Histórico</h3>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        Gere um link para compartilhar todo o seu histórico de pesquisas
+                      </p>
+                      {shareLink && (
+                        <div className="flex items-center gap-2 p-3 bg-muted rounded-lg">
+                          <code className="text-sm flex-1 truncate">{shareLink}</code>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={copyShareLink}
+                          >
+                            <Check className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                    <Button
+                      onClick={createShareLink}
+                      disabled={isCreatingShare}
+                      variant={shareLink ? "outline" : "default"}
+                    >
+                      <Share2 className="mr-2 h-4 w-4" />
+                      {shareLink ? 'Regenerar Link' : 'Gerar Link'}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
             {isLoadingHistory ? (
               <Card className="p-12">
                 <div className="text-center">
@@ -573,30 +664,7 @@ const ThemeResearch = () => {
                         <div className="p-6 flex flex-col justify-between">
                           <div className="space-y-4">
                             <div>
-                              <div className="flex items-start justify-between gap-4 mb-2">
-                                <h3 className="text-xl font-semibold flex-1">{item.title}</h3>
-                                <div className="flex gap-2 flex-shrink-0">
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={() => createShareLink(item.id)}
-                                    title="Compartilhar"
-                                  >
-                                    {copiedShareLink === item.id ? (
-                                      <Check className="h-4 w-4 text-green-500" />
-                                    ) : (
-                                      <Share2 className="h-4 w-4" />
-                                    )}
-                                  </Button>
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={() => deleteFromHistory(item.id)}
-                                  >
-                                    <Trash2 className="h-4 w-4" />
-                                  </Button>
-                                </div>
-                              </div>
+                              <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
                               {item.song_title && (
                                 <div className="flex flex-wrap gap-2 text-xs text-muted-foreground mb-2">
                                   <span className="bg-muted px-2 py-1 rounded">🎵 {item.song_title}</span>
