@@ -11,7 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Edit2, Save, X, Users, Calendar, Tag, Database } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { parseMetadata, formatMetadataValue } from '../utils/fixMetadataFormat';
+import { parseMetadata, formatMetadataValue, getMetadataValue } from '../utils/fixMetadataFormat';
 
 interface ContactList {
   id: string;
@@ -207,50 +207,51 @@ export const ContactListDetailsDialog = ({
           <div className="space-y-2">
             <Label className="text-sm">Contatos ({totalContacts})</Label>
             <div className="rounded-md border overflow-hidden">
-              <div className="overflow-x-auto max-h-[400px] overflow-y-auto">
+              <div className="overflow-x-auto overflow-y-auto max-h-[400px]">
                 {loading ? (
                   <div className="flex items-center justify-center py-12">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
                   </div>
                 ) : (
                   <Table>
-                    <TableHeader className="sticky top-0 bg-background z-10">
+                    <TableHeader className="sticky top-0 bg-background z-10 shadow-sm">
                       <TableRow>
-                        <TableHead className="min-w-[150px] max-w-[200px] whitespace-nowrap">
-                          {list.identifier_column}
+                        <TableHead className="min-w-[180px] bg-background">
+                          <div className="py-1 text-xs font-semibold">
+                            {list.identifier_column}
+                          </div>
                         </TableHead>
                         {list.metadata_columns.map((col) => (
-                          <TableHead key={col} className="min-w-[150px] max-w-[250px] whitespace-nowrap">
-                            {col}
+                          <TableHead key={col} className="min-w-[180px] bg-background">
+                            <div className="py-1 text-xs font-semibold line-clamp-2" title={col}>
+                              {col}
+                            </div>
                           </TableHead>
                         ))}
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {contacts.map((contact) => {
-                        // Usar a função de parse para lidar com diferentes formatos
                         const parsedMetadata = parseMetadata(contact.metadata, list.metadata_columns);
-                        
-                        console.log('Contact metadata:', {
-                          raw: contact.metadata,
-                          parsed: parsedMetadata,
-                          columns: list.metadata_columns
-                        });
                         
                         return (
                           <TableRow key={contact.id}>
-                            <TableCell className="font-medium max-w-[200px] truncate">
-                              {contact.identifier}
+                            <TableCell className="font-medium">
+                              <div className="max-w-[180px] truncate" title={contact.identifier}>
+                                {contact.identifier}
+                              </div>
                             </TableCell>
                             {list.metadata_columns.map((col) => {
-                              const value = parsedMetadata[col];
+                              const value = getMetadataValue(parsedMetadata, col);
+                              const formattedValue = formatMetadataValue(value);
                               return (
-                                <TableCell 
-                                  key={col} 
-                                  className="max-w-[250px] truncate"
-                                  title={formatMetadataValue(value)}
-                                >
-                                  {formatMetadataValue(value)}
+                                <TableCell key={col}>
+                                  <div 
+                                    className="max-w-[180px] truncate text-sm"
+                                    title={formattedValue}
+                                  >
+                                    {formattedValue}
+                                  </div>
                                 </TableCell>
                               );
                             })}
@@ -266,7 +267,7 @@ export const ContactListDetailsDialog = ({
 
           {/* Paginação */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-between pt-2">
+            <div className="flex items-center justify-between pt-4 pb-2">
               <p className="text-sm text-muted-foreground">
                 Página {currentPage} de {totalPages}
               </p>
