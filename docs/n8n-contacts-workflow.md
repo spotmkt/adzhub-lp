@@ -330,6 +330,20 @@ Body (JSON):
 }}
 ```
 
+**⚠️ IMPORTANTE - Configuração do Campo `metadata`:**
+
+O campo `metadata` no Supabase é do tipo `JSONB`, então é crucial que o n8n envie um **objeto JSON válido**, não uma string.
+
+**✅ Configuração Correta no n8n:**
+- No node "Insert Contacts Batch", ao mapear o campo `metadata`:
+  - Use a expressão: `={{ $json.contacts.map(c => ({ ...c, metadata: c.metadata })) }}`
+  - **OU** certifique-se de que o `Content-Type` está como `application/json`
+  - O n8n deve automaticamente serializar o objeto metadata como JSON
+
+**❌ Erros Comuns:**
+- Se o metadata estiver sendo salvo como string (ex: `"Juliane,Rua...,blog"`), significa que o n8n está convertendo o objeto em string
+- Solução: Garanta que o body está com expressão JavaScript (`{{ ... }}`) e não como string literal
+
 **Objetivo:** Inserir os contatos do batch no banco de dados.
 
 **Observações:**

@@ -5,9 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Plus, Search, Database } from 'lucide-react';
+import { Plus, Search, Database, Wrench } from 'lucide-react';
 import { ContactListCard } from '../components/ContactListCard';
 import { ContactListDetailsDialog } from '../components/ContactListDetailsDialog';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface ContactList {
   id: string;
@@ -135,18 +136,31 @@ const ContactsLists = () => {
 
   return (
     <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-3xl font-bold">Bases de Contatos</h1>
           <p className="text-muted-foreground mt-1">
             Gerencie suas bases de contatos importadas
           </p>
         </div>
-        <Button onClick={() => navigate('/apps/contacts/upload')}>
-          <Plus className="mr-2 h-4 w-4" />
-          Nova Base
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => navigate('/apps/contacts/fix-metadata')}>
+            <Wrench className="mr-2 h-4 w-4" />
+            Corrigir Metadata
+          </Button>
+          <Button onClick={() => navigate('/apps/contacts/upload')}>
+            <Plus className="mr-2 h-4 w-4" />
+            Nova Base
+          </Button>
+        </div>
       </div>
+
+      <Alert>
+        <AlertDescription className="text-sm">
+          <strong>Dados não aparecem?</strong> Se os campos de metadata aparecem como "-", pode ser
+          que os dados foram salvos incorretamente. Use a ferramenta "Corrigir Metadata" para resolver.
+        </AlertDescription>
+      </Alert>
 
       <Card>
         <CardHeader>

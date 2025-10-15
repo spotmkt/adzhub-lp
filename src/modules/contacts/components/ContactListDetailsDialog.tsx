@@ -11,6 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Edit2, Save, X, Users, Calendar, Tag, Database } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { parseMetadata, formatMetadataValue } from '../utils/fixMetadataFormat';
 
 interface ContactList {
   id: string;
@@ -221,17 +222,17 @@ export const ContactListDetailsDialog = ({
                   </TableHeader>
                   <TableBody>
                     {contacts.map((contact) => {
-                      const metadata = contact.metadata || {};
+                      // Usar a função de parse para lidar com diferentes formatos
+                      const parsedMetadata = parseMetadata(contact.metadata, list.metadata_columns);
+                      
                       return (
                         <TableRow key={contact.id}>
                           <TableCell className="font-medium">{contact.identifier}</TableCell>
                           {list.metadata_columns.map((col) => {
-                            const value = metadata[col];
+                            const value = parsedMetadata[col];
                             return (
                               <TableCell key={col} className="max-w-[300px]">
-                                {value !== null && value !== undefined && value !== '' 
-                                  ? String(value) 
-                                  : '-'}
+                                {formatMetadataValue(value)}
                               </TableCell>
                             );
                           })}
