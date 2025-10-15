@@ -99,8 +99,9 @@ export default function FileUpload() {
   };
 
   return (
-    <div className="container mx-auto p-6 max-w-4xl">
-      <div className="mb-6">
+    <div className="h-full overflow-y-auto">
+      <div className="container mx-auto p-6 max-w-4xl">
+        <div className="mb-6">
         <h1 className="text-3xl font-bold mb-2">Upload de Arquivos</h1>
         <p className="text-muted-foreground">
           Faça upload de arquivos para o Supabase Storage e obtenha URLs públicas
@@ -175,6 +176,7 @@ export default function FileUpload() {
           )}
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 }
