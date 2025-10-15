@@ -1954,6 +1954,10 @@ export type Database = {
         Args: { "": unknown }
         Returns: unknown
       }
+      is_valid_share_token: {
+        Args: { _user_id: string }
+        Returns: boolean
+      }
       ivfflat_bit_support: {
         Args: { "": unknown }
         Returns: unknown
