@@ -10,21 +10,19 @@ import {
 } from "react"
 import {
   AnimatePresence,
-  AnimatePresenceProps,
   motion,
-  MotionProps,
-  Transition,
-} from "motion/react"
+  type Transition,
+} from "framer-motion"
 
 import { cn } from "@/lib/utils"
 
 interface TextRotateProps {
   texts: string[]
   rotationInterval?: number
-  initial?: MotionProps["initial"]
-  animate?: MotionProps["animate"]
-  exit?: MotionProps["exit"]
-  animatePresenceMode?: AnimatePresenceProps["mode"]
+  initial?: any
+  animate?: any
+  exit?: any
+  animatePresenceMode?: "sync" | "wait" | "popLayout"
   animatePresenceInitial?: boolean
   staggerDuration?: number
   staggerFrom?: "first" | "last" | "center" | number | "random"
