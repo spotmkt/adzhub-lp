@@ -5,6 +5,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Link } from 'react-router-dom';
 import { MessageSquare, Bot, Calendar as CalendarIcon, FileText, Palette, Sparkles } from 'lucide-react';
 import { useState } from 'react';
+import { MorphPanel } from '@/components/ui/ai-input';
 
 const Index = () => {
   const [date, setDate] = useState<Date | undefined>(new Date());
@@ -176,6 +177,8 @@ const Index = () => {
           </div>
         </div>
       </div>
+      
+      <MorphPanel />
     </div>
   );
 };
