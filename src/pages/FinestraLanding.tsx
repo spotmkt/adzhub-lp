@@ -1,23 +1,27 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, lazy, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { Play, Star, ChevronRight, TrendingUp, Shield, Zap } from "lucide-react";
 import finestraLogo from "@/assets/finestra-logo.png";
-import DisplayCards from "@/components/ui/display-cards";
-import { TestimonialsColumn } from "@/components/ui/testimonials-columns-1";
-import { TiltedScroll } from "@/components/ui/tilted-scroll";
 import { StarBorder } from "@/components/ui/star-border";
 import { RainbowButton } from "@/components/ui/rainbow-button";
-import { Sparkles } from "@/components/ui/sparkles";
-import { Features } from "@/components/ui/features-6";
-import { supabase } from "@/integrations/supabase/client";
-import { MorphPanel } from "@/components/ui/ai-input";
-import RadialOrbitalTimeline from "@/components/ui/radial-orbital-timeline";
-import { Calendar, Code, FileText, User, Clock, Target, BarChart, MessageSquare } from "lucide-react";
+import { useCampaignCounter } from "@/hooks/useCampaignCounter";
+import { testimonials, tiltedScrollItems, timelineData, displayCardsData } from "@/data/finestraData";
+
+// Lazy load heavy components
+const DisplayCards = lazy(() => import("@/components/ui/display-cards"));
+const TestimonialsColumn = lazy(() => import("@/components/ui/testimonials-columns-1").then(m => ({ default: m.TestimonialsColumn })));
+const TiltedScroll = lazy(() => import("@/components/ui/tilted-scroll").then(m => ({ default: m.TiltedScroll })));
+const Sparkles = lazy(() => import("@/components/ui/sparkles").then(m => ({ default: m.Sparkles })));
+const Features = lazy(() => import("@/components/ui/features-6").then(m => ({ default: m.Features })));
+const RadialOrbitalTimeline = lazy(() => import("@/components/ui/radial-orbital-timeline"));
+const MorphPanel = lazy(() => import("@/components/ui/ai-input").then(m => ({ default: m.MorphPanel })));
+
+const LoadingFallback = () => <div className="w-full h-32 animate-pulse bg-gray-100 rounded-lg" />;
 export default function FinestraLanding() {
   const [titleNumber, setTitleNumber] = useState(0);
-  const [campaignCount, setCampaignCount] = useState(0);
+  const campaignCount = useCampaignCounter();
+  
   const titles = useMemo(
     () => ["+Inteligente", "+lucrativo", "+simples", "+personalizado", "+estratégico"],
     []
@@ -34,107 +38,15 @@ export default function FinestraLanding() {
     return () => clearTimeout(timeoutId);
   }, [titleNumber, titles]);
 
-  // Subscribe to campaign counter updates
-  useEffect(() => {
-    const fetchInitialCount = async () => {
-      const { data, error } = await supabase
-        .from('campaign_counter')
-        .select('count')
-        .single();
-      
-      if (data && !error) {
-        setCampaignCount(data.count);
-      }
-    };
-
-    fetchInitialCount();
-
-    const channel = supabase
-      .channel('campaign-counter-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'campaign_counter'
-        },
-        (payload) => {
-          setCampaignCount(payload.new.count);
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, []);
-
-  const testimonials = [
-    {
-      text: "This platform revolutionized our financial operations, streamlining everything. The cloud-based system keeps us productive, even remotely.",
-      image: "https://randomuser.me/api/portraits/women/1.jpg",
-      name: "Briana Patton",
-      role: "Operations Manager",
-    },
-    {
-      text: "Implementation was smooth and quick. The customizable, user-friendly interface made team training effortless and efficient.",
-      image: "https://randomuser.me/api/portraits/men/2.jpg",
-      name: "Bilal Ahmed",
-      role: "IT Manager",
-    },
-    {
-      text: "The support team is exceptional, guiding us through setup and providing ongoing assistance, ensuring our complete satisfaction.",
-      image: "https://randomuser.me/api/portraits/women/3.jpg",
-      name: "Saman Malik",
-      role: "Customer Support Lead",
-    },
-    {
-      text: "Seamless integration enhanced our business operations and efficiency significantly. Highly recommend for its intuitive interface.",
-      image: "https://randomuser.me/api/portraits/men/4.jpg",
-      name: "Omar Raza",
-      role: "CEO",
-    },
-    {
-      text: "Robust features and quick support have transformed our workflow, making us significantly more efficient in daily operations.",
-      image: "https://randomuser.me/api/portraits/women/5.jpg",
-      name: "Zainab Hussain",
-      role: "Project Manager",
-    },
-    {
-      text: "The smooth implementation exceeded expectations. It streamlined processes, improving overall business performance dramatically.",
-      image: "https://randomuser.me/api/portraits/women/6.jpg",
-      name: "Aliza Khan",
-      role: "Business Analyst",
-    },
-    {
-      text: "Our business functions improved with a user-friendly design and we received overwhelmingly positive customer feedback.",
-      image: "https://randomuser.me/api/portraits/men/7.jpg",
-      name: "Farhan Siddiqui",
-      role: "Marketing Director",
-    },
-    {
-      text: "They delivered a solution that exceeded expectations, understanding our needs perfectly and enhancing our operations.",
-      image: "https://randomuser.me/api/portraits/women/8.jpg",
-      name: "Sana Sheikh",
-      role: "Sales Manager",
-    },
-    {
-      text: "Using this platform, our online presence and conversions significantly improved, boosting overall business performance.",
-      image: "https://randomuser.me/api/portraits/men/9.jpg",
-      name: "Hassan Ali",
-      role: "E-commerce Manager",
-    },
-  ];
-
-  const firstColumn = testimonials.slice(0, 3);
-  const secondColumn = testimonials.slice(3, 6);
-  const thirdColumn = testimonials.slice(6, 9);
+  const firstColumn = useMemo(() => testimonials.slice(0, 3), []);
+  const secondColumn = useMemo(() => testimonials.slice(3, 6), []);
+  const thirdColumn = useMemo(() => testimonials.slice(6, 9), []);
 
   return <div className="min-h-screen bg-white">
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-3 bg-white/60 backdrop-blur-md">
         <div className="flex items-center gap-3">
-          <img src={finestraLogo} alt="Finestra" className="h-8 w-auto" />
+          <img src={finestraLogo} alt="Finestra" className="h-8 w-auto" loading="eager" />
         </div>
 
         <div className="hidden md:flex items-center gap-6 px-3 py-1.5 rounded-full bg-white/40 backdrop-blur-sm border border-gray-200/50">
@@ -263,16 +175,20 @@ export default function FinestraLanding() {
         <div className="relative h-64 w-full overflow-hidden [mask-image:radial-gradient(50%_50%,white,transparent)]">
           <div className="absolute inset-0 before:absolute before:inset-0 before:bg-[radial-gradient(circle_at_bottom_center,hsl(224,47%,42%),transparent_70%)] before:opacity-40" />
           <div className="absolute -left-1/2 top-1/2 aspect-[1/0.7] z-10 w-[200%] rounded-[100%] border-t border-[#08080C]/20 bg-white" />
-          <Sparkles
-            density={1200}
-            className="absolute inset-x-0 bottom-0 h-full w-full [mask-image:radial-gradient(50%_50%,white,transparent_85%)]"
-            color="#000000"
-          />
+          <Suspense fallback={null}>
+            <Sparkles
+              density={1200}
+              className="absolute inset-x-0 bottom-0 h-full w-full [mask-image:radial-gradient(50%_50%,white,transparent_85%)]"
+              color="#000000"
+            />
+          </Suspense>
         </div>
       </section>
 
       {/* Features Section */}
-      <Features />
+      <Suspense fallback={<LoadingFallback />}>
+        <Features />
+      </Suspense>
 
       {/* Manage Money Wisely Section */}
       <section className="py-24 bg-white">
@@ -429,40 +345,42 @@ export default function FinestraLanding() {
             </p>
           </div>
           <div className="flex justify-center items-center min-h-[400px]">
-            <DisplayCards
-              cards={[
-                {
-                  icon: <TrendingUp className="size-4 text-emerald-300" />,
-                  title: "Growth",
-                  description: "Maximize your investments",
-                  date: "Active",
-                  iconClassName: "text-emerald-500",
-                  titleClassName: "text-emerald-500",
-                  className:
-                    "[grid-area:stack] hover:-translate-y-10 before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0",
-                },
-                {
-                  icon: <Shield className="size-4 text-blue-300" />,
-                  title: "Security",
-                  description: "Bank-level protection",
-                  date: "24/7",
-                  iconClassName: "text-blue-500",
-                  titleClassName: "text-blue-500",
-                  className:
-                    "[grid-area:stack] translate-x-16 translate-y-10 hover:-translate-y-1 before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0",
-                },
-                {
-                  icon: <Zap className="size-4 text-amber-300" />,
-                  title: "Speed",
-                  description: "Instant transactions",
-                  date: "Real-time",
-                  iconClassName: "text-amber-500",
-                  titleClassName: "text-amber-500",
-                  className:
-                    "[grid-area:stack] translate-x-32 translate-y-20 hover:translate-y-10",
-                },
-              ]}
-            />
+            <Suspense fallback={<LoadingFallback />}>
+              <DisplayCards
+                cards={[
+                  {
+                    icon: <TrendingUp className="size-4 text-emerald-300" />,
+                    title: "Growth",
+                    description: "Maximize your investments",
+                    date: "Active",
+                    iconClassName: "text-emerald-500",
+                    titleClassName: "text-emerald-500",
+                    className:
+                      "[grid-area:stack] hover:-translate-y-10 before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0",
+                  },
+                  {
+                    icon: <Shield className="size-4 text-blue-300" />,
+                    title: "Security",
+                    description: "Bank-level protection",
+                    date: "24/7",
+                    iconClassName: "text-blue-500",
+                    titleClassName: "text-blue-500",
+                    className:
+                      "[grid-area:stack] translate-x-16 translate-y-10 hover:-translate-y-1 before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0",
+                  },
+                  {
+                    icon: <Zap className="size-4 text-amber-300" />,
+                    title: "Speed",
+                    description: "Instant transactions",
+                    date: "Real-time",
+                    iconClassName: "text-amber-500",
+                    titleClassName: "text-amber-500",
+                    className:
+                      "[grid-area:stack] translate-x-32 translate-y-20 hover:translate-y-10",
+                  },
+                ]}
+              />
+            </Suspense>
           </div>
         </div>
       </section>
@@ -481,114 +399,18 @@ export default function FinestraLanding() {
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <div>
-              <TiltedScroll
-                items={[
-                  { id: "1", text: "Real-time Analytics" },
-                  { id: "2", text: "Multi-currency Support" },
-                  { id: "3", text: "Automated Reporting" },
-                  { id: "4", text: "Bank-level Security" },
-                  { id: "5", text: "Mobile First Design" },
-                  { id: "6", text: "24/7 Customer Support" },
-                  { id: "7", text: "Smart Budgeting Tools" },
-                  { id: "8", text: "Easy Integration" },
-                ]}
-                className="mt-8"
-              />
+              <Suspense fallback={<LoadingFallback />}>
+                <TiltedScroll
+                  items={tiltedScrollItems}
+                  className="mt-8"
+                />
+              </Suspense>
             </div>
             
             <div>
-              <RadialOrbitalTimeline
-                timelineData={[
-                  {
-                    id: 1,
-                    title: "Planning",
-                    date: "Jan 2024",
-                    content: "Campaign planning and strategy definition phase.",
-                    category: "Planning",
-                    icon: Calendar,
-                    relatedIds: [2],
-                    status: "completed" as const,
-                    energy: 100,
-                  },
-                  {
-                    id: 2,
-                    title: "Design",
-                    date: "Feb 2024",
-                    content: "Message templates and creative design.",
-                    category: "Design",
-                    icon: FileText,
-                    relatedIds: [1, 3],
-                    status: "completed" as const,
-                    energy: 90,
-                  },
-                  {
-                    id: 3,
-                    title: "Development",
-                    date: "Mar 2024",
-                    content: "Campaign setup and contact list preparation.",
-                    category: "Development",
-                    icon: Code,
-                    relatedIds: [2, 4],
-                    status: "in-progress" as const,
-                    energy: 60,
-                  },
-                  {
-                    id: 4,
-                    title: "Testing",
-                    date: "Apr 2024",
-                    content: "Message testing and quality assurance.",
-                    category: "Testing",
-                    icon: User,
-                    relatedIds: [3, 5],
-                    status: "pending" as const,
-                    energy: 30,
-                  },
-                  {
-                    id: 5,
-                    title: "Launch",
-                    date: "May 2024",
-                    content: "Campaign launch and initial monitoring.",
-                    category: "Launch",
-                    icon: Target,
-                    relatedIds: [4, 6],
-                    status: "pending" as const,
-                    energy: 10,
-                  },
-                  {
-                    id: 6,
-                    title: "Analytics",
-                    date: "Jun 2024",
-                    content: "Performance tracking and optimization.",
-                    category: "Analytics",
-                    icon: BarChart,
-                    relatedIds: [5, 7],
-                    status: "pending" as const,
-                    energy: 5,
-                  },
-                  {
-                    id: 7,
-                    title: "Engagement",
-                    date: "Jul 2024",
-                    content: "Customer engagement and response management.",
-                    category: "Engagement",
-                    icon: MessageSquare,
-                    relatedIds: [6, 8],
-                    status: "pending" as const,
-                    energy: 5,
-                  },
-                  {
-                    id: 8,
-                    title: "Review",
-                    date: "Aug 2024",
-                    content: "Campaign review and lessons learned.",
-                    category: "Review",
-                    icon: Clock,
-                    relatedIds: [7],
-                    status: "pending" as const,
-                    energy: 5,
-                  },
-                ]}
-              />
+              <Suspense fallback={<LoadingFallback />}>
+                <RadialOrbitalTimeline timelineData={timelineData} />
+              </Suspense>
             </div>
           </div>
         </div>
@@ -676,11 +498,13 @@ export default function FinestraLanding() {
             </p>
           </motion.div>
 
-          <div className="flex justify-center gap-6 mt-10 [mask-image:linear-gradient(to_bottom,transparent,black_25%,black_75%,transparent)] max-h-[740px] overflow-hidden">
-            <TestimonialsColumn testimonials={firstColumn} duration={15} />
-            <TestimonialsColumn testimonials={secondColumn} className="hidden md:block" duration={19} />
-            <TestimonialsColumn testimonials={thirdColumn} className="hidden lg:block" duration={17} />
-          </div>
+          <Suspense fallback={<LoadingFallback />}>
+            <div className="flex justify-center gap-6 mt-10 [mask-image:linear-gradient(to_bottom,transparent,black_25%,black_75%,transparent)] max-h-[740px] overflow-hidden">
+              <TestimonialsColumn testimonials={firstColumn} duration={15} />
+              <TestimonialsColumn testimonials={secondColumn} className="hidden md:block" duration={19} />
+              <TestimonialsColumn testimonials={thirdColumn} className="hidden lg:block" duration={17} />
+            </div>
+          </Suspense>
         </div>
       </section>
 
@@ -751,6 +575,8 @@ export default function FinestraLanding() {
           </div>
         </div>
       </footer>
-      <MorphPanel />
+      <Suspense fallback={null}>
+        <MorphPanel />
+      </Suspense>
     </div>;
 }
