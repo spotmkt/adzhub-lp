@@ -5,6 +5,7 @@ import { Play, Star, ChevronRight, TrendingUp, Shield, Zap } from "lucide-react"
 import finestraLogo from "@/assets/finestra-logo.png";
 import DisplayCards from "@/components/ui/display-cards";
 import { TestimonialsColumn } from "@/components/ui/testimonials-columns-1";
+import { TiltedScroll } from "@/components/ui/tilted-scroll";
 export default function FinestraLanding() {
   const [titleNumber, setTitleNumber] = useState(0);
   const titles = useMemo(
@@ -367,6 +368,33 @@ export default function FinestraLanding() {
               ]}
             />
           </div>
+        </div>
+      </section>
+
+      {/* Platform Features Section */}
+      <section className="py-24 bg-[#F8F8F8] rounded-3xl mx-5">
+        <div className="max-w-7xl mx-auto px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-6xl lg:text-[72px] font-medium leading-[100%] tracking-tight text-[#08080C] mb-6">
+              Platform Attributes
+            </h2>
+            <p className="text-lg font-medium text-[#6B7280] leading-[170%] max-w-[600px] mx-auto">
+              Everything you need to manage your finances efficiently and securely
+            </p>
+          </div>
+          <TiltedScroll
+            items={[
+              { id: "1", text: "Real-time Analytics" },
+              { id: "2", text: "Multi-currency Support" },
+              { id: "3", text: "Automated Reporting" },
+              { id: "4", text: "Bank-level Security" },
+              { id: "5", text: "Mobile First Design" },
+              { id: "6", text: "24/7 Customer Support" },
+              { id: "7", text: "Smart Budgeting Tools" },
+              { id: "8", text: "Easy Integration" },
+            ]}
+            className="mt-8"
+          />
         </div>
       </section>
 
