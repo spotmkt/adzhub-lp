@@ -138,7 +138,7 @@ export default function FinestraLanding() {
               </span>
             </h1>
             <p className="text-lg text-[#08080C] opacity-80 max-w-[566px]">
-              Initiating a business venture may appear overwhelming, yet our forte lies in simplifying the entire process for you.
+              A ferramenta de campanhas de disparo de whatsapp em massa que substitui todas as outras. Comece grátis agora mesmo
             </p>
           </div>
 
