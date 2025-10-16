@@ -157,14 +157,13 @@ export default function FinestraLanding() {
       <section className="relative pt-20 pb-32 overflow-hidden bg-gradient-to-br from-[#D4EFF4]/30 via-[#F9C7B2]/20 to-[#F9B2D4]/20 rounded-[32px] mx-5 mt-[83px]">
         <div className="relative max-w-5xl mx-auto px-8 z-10">
           <div className="flex flex-col items-center text-center gap-8 max-w-[781px] mx-auto mb-12">
-            <h1 className="text-5xl md:text-7xl lg:text-[100px] font-medium leading-[100%] tracking-tight text-[#08080C]">
-              <span>Whatsapp Comercial 10x</span>
-              <span className="relative inline-block min-w-[200px] md:min-w-[300px] text-center md:pb-4 md:pt-1" style={{ height: '1.2em' }}>
-                &nbsp;
+            <h1 className="text-5xl md:text-7xl lg:text-[100px] font-bold leading-[100%] tracking-tight text-[#08080C]">
+              <span className="block mb-2">Whatsapp Comercial 10x</span>
+              <span className="relative inline-block min-w-[280px] md:min-w-[420px] lg:min-w-[600px] text-center" style={{ height: '1.2em' }}>
                 <AnimatePresence mode="wait">
                   <motion.span
                     key={titleNumber}
-                    className="absolute left-0 right-0 font-semibold"
+                    className="absolute left-0 right-0 font-bold text-[#37489d]"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -20 }}
