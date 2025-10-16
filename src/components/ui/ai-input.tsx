@@ -281,7 +281,15 @@ function DockBar() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
               >
-                <ColorOrb dimension="24px" tones={{ base: "oklch(22.64% 0 0)" }} />
+                <ColorOrb 
+                  dimension="24px" 
+                  tones={{ 
+                    base: "oklch(90% 0.12 85)",
+                    accent1: "oklch(80% 0.18 85)",
+                    accent2: "oklch(70% 0.20 45)",
+                    accent3: "oklch(65% 0.15 250)"
+                  }} 
+                />
               </motion.div>
             )}
           </AnimatePresence>
@@ -370,7 +378,15 @@ function InputForm({ ref, onSuccess }: { ref: React.Ref<HTMLTextAreaElement>; on
             transition={{ duration: 0.2 }}
             className="absolute top-2 left-3"
           >
-            <ColorOrb dimension="24px" tones={{ base: "oklch(22.64% 0 0)" }} />
+            <ColorOrb 
+              dimension="24px" 
+              tones={{ 
+                base: "oklch(90% 0.12 85)",
+                accent1: "oklch(80% 0.18 85)",
+                accent2: "oklch(70% 0.20 45)",
+                accent3: "oklch(65% 0.15 250)"
+              }} 
+            />
           </motion.div>
         )}
       </AnimatePresence>
