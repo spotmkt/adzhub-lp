@@ -50,6 +50,8 @@ function App(): React.ReactElement {
         <BrowserRouter>
           <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
             <TooltipProvider>
+              <Toaster />
+              <Sonner />
               <Routes>
                 {/* Landing and Blog routes without Layout */}
                 <Route path="/landing" element={<Landing />} />
@@ -80,8 +82,6 @@ function App(): React.ReactElement {
                 <Route path="/content-generator-settings" element={<Layout><ContentGeneratorSettings /></Layout>} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
-              <Toaster />
-              <Sonner />
             </TooltipProvider>
           </ThemeProvider>
         </BrowserRouter>
