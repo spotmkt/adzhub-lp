@@ -8,9 +8,20 @@
     <meta name="description" content="A plataforma completa para gestão criativa, automação de marketing e análise de dados. Substitua mais de 20 ferramentas com uma solução convergente." />
     <meta name="keywords" content="gestão de marketing, automação marketing, geração de conteúdo, analytics, gestão criativa, marketing digital" />
     <meta name="author" content="AdzHub" />
+    
+    <!-- DNS Prefetch and Preconnect for faster resource loading -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    <link rel="dns-prefetch" href="https://randomuser.me">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Preload critical fonts -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" as="style">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript>
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    </noscript>
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
@@ -30,5 +41,13 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- Performance monitoring hint -->
+    <script>
+      // Reduce layout shifts
+      if ('loading' in HTMLImageElement.prototype) {
+        document.documentElement.classList.add('native-lazy-loading');
+      }
+    </script>
   </body>
 </html>

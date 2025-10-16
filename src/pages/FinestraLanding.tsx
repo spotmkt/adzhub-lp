@@ -7,6 +7,7 @@ import { StarBorder } from "@/components/ui/star-border";
 import { RainbowButton } from "@/components/ui/rainbow-button";
 import { useCampaignCounter } from "@/hooks/useCampaignCounter";
 import { testimonials, tiltedScrollItems, timelineData, displayCardsData } from "@/data/finestraData";
+import { OptimizedImage } from "@/components/OptimizedImage";
 
 // Lazy load heavy components
 const DisplayCards = lazy(() => import("@/components/ui/display-cards"));
@@ -46,7 +47,14 @@ export default function FinestraLanding() {
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-3 bg-white/60 backdrop-blur-md">
         <div className="flex items-center gap-3">
-          <img src={finestraLogo} alt="Finestra" className="h-8 w-auto" loading="eager" />
+          <OptimizedImage 
+            src={finestraLogo} 
+            alt="Finestra Logo" 
+            className="h-8 w-auto" 
+            width={120} 
+            height={32}
+            priority
+          />
         </div>
 
         <div className="hidden md:flex items-center gap-6 px-3 py-1.5 rounded-full bg-white/40 backdrop-blur-sm border border-gray-200/50">
