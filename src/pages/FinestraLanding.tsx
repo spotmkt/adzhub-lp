@@ -8,6 +8,7 @@ import { TestimonialsColumn } from "@/components/ui/testimonials-columns-1";
 import { TiltedScroll } from "@/components/ui/tilted-scroll";
 import { StarBorder } from "@/components/ui/star-border";
 import { Sparkles } from "@/components/ui/sparkles";
+import { Features } from "@/components/ui/features-6";
 export default function FinestraLanding() {
   const [titleNumber, setTitleNumber] = useState(0);
   const titles = useMemo(
@@ -222,6 +223,9 @@ export default function FinestraLanding() {
           />
         </div>
       </section>
+
+      {/* Features Section */}
+      <Features />
 
       {/* Manage Money Wisely Section */}
       <section className="py-24 bg-white">
