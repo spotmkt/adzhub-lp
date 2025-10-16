@@ -1,22 +1,20 @@
 import { Button } from "@/components/ui/button";
 import { Play, Star, ChevronRight } from "lucide-react";
-import finestraLogo from "@/assets/finestra-logo.png";
+import adzHubLogo from "@/assets/adzhub-logo-final.png";
 import { SplashCursor } from "@/components/ui/splash-cursor";
-
 export default function FinestraLanding() {
-  return (
-    <div className="min-h-screen bg-white">
+  return <div className="min-h-screen bg-white">
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 bg-white/80 backdrop-blur-sm">
         <div className="flex items-center gap-3">
-          <img src={finestraLogo} alt="Finestra" className="h-10 w-auto" />
-          <span className="text-2xl font-medium text-[#08080C]">AdzHub</span>
+          <img src={adzHubLogo} alt="AdzHub" className="h-10 w-auto" />
+          
         </div>
 
         <div className="hidden md:flex items-center gap-8 px-4 py-2 rounded-full bg-[#0B0B0B] border border-white/[0.08]">
           <a href="#" className="flex items-center gap-2 px-6 py-2 rounded-full bg-[hsl(224,47%,42%)] border border-white/[0.08] text-white text-base font-medium">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <path d="M3.29461 7.1756L8.68125 2.95574C9.45692 2.34809 10.5431 2.34809 11.3188 2.95574L16.7054 7.1756C17.3203 7.65731 17.4911 8.37427 17.4997 9.20295C17.5001 9.24787 17.4987 9.29129 17.4953 9.33608C17.4604 9.7957 17.2195 12.6041 16.3291 15.757C16.0145 16.6346 15.2741 17.5 14.2555 17.5H5.74446C4.72592 17.5 3.98558 16.6346 3.67092 15.757C2.78052 12.6041 2.53958 9.79569 2.50473 9.33608C2.50134 9.29129 2.49988 9.24787 2.50034 9.20295C2.5089 8.37427 2.67971 7.65731 3.29461 7.1756Z" stroke="white" strokeWidth="1.5"/>
+              <path d="M3.29461 7.1756L8.68125 2.95574C9.45692 2.34809 10.5431 2.34809 11.3188 2.95574L16.7054 7.1756C17.3203 7.65731 17.4911 8.37427 17.4997 9.20295C17.5001 9.24787 17.4987 9.29129 17.4953 9.33608C17.4604 9.7957 17.2195 12.6041 16.3291 15.757C16.0145 16.6346 15.2741 17.5 14.2555 17.5H5.74446C4.72592 17.5 3.98558 16.6346 3.67092 15.757C2.78052 12.6041 2.53958 9.79569 2.50473 9.33608C2.50134 9.29129 2.49988 9.24787 2.50034 9.20295C2.5089 8.37427 2.67971 7.65731 3.29461 7.1756Z" stroke="white" strokeWidth="1.5" />
             </svg>
             Home
           </a>
@@ -63,9 +61,7 @@ export default function FinestraLanding() {
             </div>
             <div className="flex items-center gap-2">
               <div className="flex gap-1">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-5 h-5 fill-[hsl(41,100%,58%)] text-[hsl(41,100%,58%)]" />
-                ))}
+                {[...Array(5)].map((_, i) => <Star key={i} className="w-5 h-5 fill-[hsl(41,100%,58%)] text-[hsl(41,100%,58%)]" />)}
               </div>
               <span className="text-base font-medium text-[#08080C]">3800+ 5 Stars</span>
             </div>
@@ -299,11 +295,7 @@ export default function FinestraLanding() {
             </h2>
             <div className="w-full lg:w-[469px]">
               <div className="flex items-center justify-between mb-9">
-                <input
-                  type="email"
-                  placeholder="Enter Your Email"
-                  className="text-2xl md:text-[40px] font-normal leading-[120%] tracking-tight text-[#1F2937] opacity-20 bg-transparent border-none outline-none flex-1"
-                />
+                <input type="email" placeholder="Enter Your Email" className="text-2xl md:text-[40px] font-normal leading-[120%] tracking-tight text-[#1F2937] opacity-20 bg-transparent border-none outline-none flex-1" />
                 <ChevronRight className="w-10 h-10 text-[#1F2937]" />
               </div>
               <div className="h-px bg-[#6B7280]"></div>
@@ -361,6 +353,5 @@ export default function FinestraLanding() {
           </div>
         </div>
       </footer>
-    </div>
-  );
+    </div>;
 }
