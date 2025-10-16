@@ -6,6 +6,7 @@ import finestraLogo from "@/assets/finestra-logo.png";
 import DisplayCards from "@/components/ui/display-cards";
 import { TestimonialsColumn } from "@/components/ui/testimonials-columns-1";
 import { TiltedScroll } from "@/components/ui/tilted-scroll";
+import { StarBorder } from "@/components/ui/star-border";
 export default function FinestraLanding() {
   const [titleNumber, setTitleNumber] = useState(0);
   const titles = useMemo(
@@ -140,13 +141,17 @@ export default function FinestraLanding() {
           </div>
 
           <div className="flex items-center justify-center gap-4 mb-6 flex-wrap">
-            <Button className="px-5 py-[14px] rounded-full bg-black text-white font-medium text-base h-auto hover:bg-black/90">
+            <StarBorder color="hsl(224, 47%, 42%)" speed="8s">
               Get Started Free
-            </Button>
-            <Button variant="outline" className="px-5 py-[14px] rounded-full border-[#08080C] text-[#08080C] font-medium text-base h-auto flex items-center gap-2 hover:bg-black/5">
-              <Play className="w-6 h-6" />
+            </StarBorder>
+            <StarBorder 
+              color="hsl(41, 100%, 58%)" 
+              speed="10s"
+              className="flex items-center gap-2"
+            >
+              <Play className="w-5 h-5" />
               Watch A Demo
-            </Button>
+            </StarBorder>
           </div>
 
           <div className="flex items-center justify-center gap-5 flex-wrap">
@@ -193,9 +198,9 @@ export default function FinestraLanding() {
               </p>
             </div>
             <div className="flex flex-col gap-2">
-              <Button className="px-4 py-[14px] rounded-full bg-black text-white font-medium text-base h-auto hover:bg-black/90">
+              <StarBorder color="hsl(224, 47%, 42%)" speed="8s">
                 Get Started Free
-              </Button>
+              </StarBorder>
               <p className="text-base font-medium text-[#6B7280] capitalize">
                 explore more about us
               </p>
@@ -253,9 +258,9 @@ export default function FinestraLanding() {
                     <span className="text-[rgba(33,33,33,0.6)]">$349.</span>
                     <span className="text-[rgba(33,33,33,0.6)]">00</span>
                   </p>
-                  <Button className="px-5 py-[14px] rounded-full bg-[hsl(41,100%,58%)] text-[hsl(224,47%,25%)] font-medium text-base h-auto hover:bg-[hsl(41,100%,58%)]/90">
+                  <StarBorder color="hsl(41, 100%, 58%)" speed="7s">
                     Send
-                  </Button>
+                  </StarBorder>
                 </div>
               </div>
             </div>
