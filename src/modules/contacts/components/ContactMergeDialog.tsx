@@ -62,7 +62,7 @@ export const ContactMergeDialog = ({
       case 'deduplicate':
         return 'Remove contatos duplicados pelo identificador';
       case 'merge_metadata':
-        return 'Combina campos de metadata (mais completo ganha)';
+        return 'Remove duplicatas E consolida todos os campos de metadata das bases';
       default:
         return '';
     }
@@ -185,7 +185,11 @@ export const ContactMergeDialog = ({
           <Button variant="outline" onClick={() => onOpenChange(false)} disabled={loading}>
             Cancelar
           </Button>
-          <Button onClick={handleMerge} disabled={!targetName.trim() || loading}>
+          <Button 
+            onClick={handleMerge} 
+            disabled={!targetName.trim() || loading}
+            title={!targetName.trim() ? 'Digite um nome para a nova base' : ''}
+          >
             {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Mesclar Bases
           </Button>

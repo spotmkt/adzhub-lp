@@ -23,6 +23,8 @@ export const useContactMerge = () => {
     setLoading(true);
 
     try {
+      console.log('Iniciando mesclagem:', { sourceListIds, targetListName, mergeStrategy });
+      
       const { data: { session } } = await supabase.auth.getSession();
 
       if (!session) {
@@ -37,7 +39,10 @@ export const useContactMerge = () => {
         }
       });
 
+      console.log('Resposta da Edge Function:', response);
+
       if (response.error) {
+        console.error('Erro na resposta:', response.error);
         throw new Error(response.error.message || 'Erro ao mesclar bases');
       }
 
