@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { LayoutGroup } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { Play, Star, ChevronRight, TrendingUp, Shield, Zap } from "lucide-react";
 import finestraLogo from "@/assets/finestra-logo.png";
@@ -9,6 +10,7 @@ import { TiltedScroll } from "@/components/ui/tilted-scroll";
 import { StarBorder } from "@/components/ui/star-border";
 import { Sparkles } from "@/components/ui/sparkles";
 import { Features } from "@/components/ui/features-6";
+import { TextRotate } from "@/components/ui/text-rotate";
 import { supabase } from "@/integrations/supabase/client";
 export default function FinestraLanding() {
   const [titleNumber, setTitleNumber] = useState(0);
@@ -577,9 +579,23 @@ export default function FinestraLanding() {
       <footer className="bg-white rounded-t-[40px] pt-24 pb-12 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-8">
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-24 gap-8">
-            <h2 className="text-4xl md:text-6xl lg:text-[80px] font-medium leading-[100%] tracking-tight text-[#08080C]">
-              Let's Sit &Talk
-            </h2>
+            <LayoutGroup>
+              <h2 className="text-4xl md:text-6xl lg:text-[80px] font-medium leading-[100%] tracking-tight text-[#08080C] flex whitespace-pre">
+                <span>Let's Sit </span>
+                <TextRotate
+                  texts={["&Talk", "&Chat", "&Connect", "&Grow"]}
+                  mainClassName="overflow-hidden"
+                  staggerFrom="last"
+                  initial={{ y: "100%" }}
+                  animate={{ y: 0 }}
+                  exit={{ y: "-120%" }}
+                  staggerDuration={0.025}
+                  splitLevelClassName="overflow-hidden"
+                  transition={{ type: "spring", damping: 30, stiffness: 400 }}
+                  rotationInterval={2500}
+                />
+              </h2>
+            </LayoutGroup>
             <div className="w-full lg:w-[469px]">
               <div className="flex items-center justify-between mb-9">
                 <input type="email" placeholder="Enter Your Email" className="text-2xl md:text-[40px] font-normal leading-[120%] tracking-tight text-[#1F2937] opacity-20 bg-transparent border-none outline-none flex-1" />
