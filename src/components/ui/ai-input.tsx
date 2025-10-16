@@ -301,7 +301,7 @@ function DockBar() {
           variant="ghost"
           onClick={triggerOpen}
         >
-          <span className="truncate">Perguntar à IA</span>
+          <span className="truncate">Pergunte ao Adz</span>
         </Button>
       </div>
     </footer>
