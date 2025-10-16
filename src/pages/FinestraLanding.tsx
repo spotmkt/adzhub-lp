@@ -127,26 +127,26 @@ export default function FinestraLanding() {
 
   return <div className="min-h-screen bg-white">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 bg-white/80 backdrop-blur-sm">
+      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-3 bg-white/60 backdrop-blur-md">
         <div className="flex items-center gap-3">
-          <img src={finestraLogo} alt="Finestra" className="h-10 w-auto" />
+          <img src={finestraLogo} alt="Finestra" className="h-8 w-auto" />
         </div>
 
-        <div className="hidden md:flex items-center gap-8 px-4 py-2 rounded-full bg-[#0B0B0B] border border-white/[0.08]">
-          <a href="#" className="flex items-center gap-2 px-6 py-2 rounded-full bg-[hsl(224,47%,42%)] border border-white/[0.08] text-white text-base font-medium">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <div className="hidden md:flex items-center gap-6 px-3 py-1.5 rounded-full bg-white/40 backdrop-blur-sm border border-gray-200/50">
+          <a href="#" className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-[hsl(224,47%,42%)] text-white text-sm font-medium">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
               <path d="M3.29461 7.1756L8.68125 2.95574C9.45692 2.34809 10.5431 2.34809 11.3188 2.95574L16.7054 7.1756C17.3203 7.65731 17.4911 8.37427 17.4997 9.20295C17.5001 9.24787 17.4987 9.29129 17.4953 9.33608C17.4604 9.7957 17.2195 12.6041 16.3291 15.757C16.0145 16.6346 15.2741 17.5 14.2555 17.5H5.74446C4.72592 17.5 3.98558 16.6346 3.67092 15.757C2.78052 12.6041 2.53958 9.79569 2.50473 9.33608C2.50134 9.29129 2.49988 9.24787 2.50034 9.20295C2.5089 8.37427 2.67971 7.65731 3.29461 7.1756Z" stroke="white" strokeWidth="1.5" />
             </svg>
             Home
           </a>
-          <a href="#" className="text-white text-base">About Us</a>
-          <a href="#" className="text-white text-base">Reviews</a>
-          <a href="#" className="text-white text-base">Procedures</a>
-          <a href="#" className="text-white text-base">Blog</a>
+          <a href="#" className="text-gray-700 text-sm hover:text-gray-900 transition-colors">About Us</a>
+          <a href="#" className="text-gray-700 text-sm hover:text-gray-900 transition-colors">Reviews</a>
+          <a href="#" className="text-gray-700 text-sm hover:text-gray-900 transition-colors">Procedures</a>
+          <a href="#" className="text-gray-700 text-sm hover:text-gray-900 transition-colors">Blog</a>
         </div>
 
         <div className="flex items-center gap-6">
-          <button className="px-5 py-2 rounded-full border border-[#08080C]/40 text-[#08080C] text-base">
+          <button className="px-4 py-1.5 rounded-full border border-gray-300 text-gray-700 text-sm hover:bg-gray-50 transition-colors">
             Sign In
           </button>
         </div>
