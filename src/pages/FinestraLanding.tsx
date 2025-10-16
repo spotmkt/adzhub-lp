@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Play, Star, ChevronRight } from "lucide-react";
+import { Play, Star, ChevronRight, TrendingUp, Shield, Zap } from "lucide-react";
 import finestraLogo from "@/assets/finestra-logo.png";
+import DisplayCards from "@/components/ui/display-cards";
 export default function FinestraLanding() {
   const [titleNumber, setTitleNumber] = useState(0);
   const titles = useMemo(
@@ -253,6 +254,56 @@ export default function FinestraLanding() {
                 We started with a rebellious mindset and set ourselves the challenge
               </p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Display Cards Section */}
+      <section className="py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-6xl lg:text-[72px] font-medium leading-[100%] tracking-tight text-[#08080C] mb-6">
+              Discover Our Features
+            </h2>
+            <p className="text-lg font-medium text-[#6B7280] leading-[170%] max-w-[600px] mx-auto">
+              Experience the power of smart financial management with our innovative solutions
+            </p>
+          </div>
+          <div className="flex justify-center items-center min-h-[400px]">
+            <DisplayCards
+              cards={[
+                {
+                  icon: <TrendingUp className="size-4 text-emerald-300" />,
+                  title: "Growth",
+                  description: "Maximize your investments",
+                  date: "Active",
+                  iconClassName: "text-emerald-500",
+                  titleClassName: "text-emerald-500",
+                  className:
+                    "[grid-area:stack] hover:-translate-y-10 before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0",
+                },
+                {
+                  icon: <Shield className="size-4 text-blue-300" />,
+                  title: "Security",
+                  description: "Bank-level protection",
+                  date: "24/7",
+                  iconClassName: "text-blue-500",
+                  titleClassName: "text-blue-500",
+                  className:
+                    "[grid-area:stack] translate-x-16 translate-y-10 hover:-translate-y-1 before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0",
+                },
+                {
+                  icon: <Zap className="size-4 text-amber-300" />,
+                  title: "Speed",
+                  description: "Instant transactions",
+                  date: "Real-time",
+                  iconClassName: "text-amber-500",
+                  titleClassName: "text-amber-500",
+                  className:
+                    "[grid-area:stack] translate-x-32 translate-y-20 hover:translate-y-10",
+                },
+              ]}
+            />
           </div>
         </div>
       </section>
