@@ -76,17 +76,37 @@ serve(async (req) => {
     const totalContactsBefore = sourceLists.reduce((sum, list) => sum + list.total_contacts, 0);
     console.log('Total contacts before merge:', totalContactsBefore);
 
+    // Criar job primeiro (necessário por causa da foreign key)
+    const { data: newJob, error: createJobError } = await supabaseClient
+      .from('contact_upload_jobs')
+      .insert({
+        user_id: user.id,
+        filename: `${targetListName} (mesclagem)`,
+        status: 'completed',
+        total_contacts: 0,
+        processed_contacts: 0
+      })
+      .select()
+      .single();
+
+    if (createJobError || !newJob) {
+      console.error('Error creating job:', createJobError);
+      throw new Error('Erro ao criar job de mesclagem');
+    }
+
+    console.log('Job created:', newJob.id);
+
     // Criar nova contact_list
     const { data: newList, error: createListError } = await supabaseClient
       .from('contact_lists')
       .insert({
         user_id: user.id,
+        job_id: newJob.id,
         list_name: targetListName,
         identifier_type: sourceLists[0].identifier_type,
         identifier_column: sourceLists[0].identifier_column,
         metadata_columns: [...new Set(sourceLists.flatMap(l => l.metadata_columns || []))],
-        total_contacts: 0,
-        job_id: crypto.randomUUID()
+        total_contacts: 0
       })
       .select()
       .single();
