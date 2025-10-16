@@ -2,7 +2,7 @@ import { Cpu, Lock, Sparkles, Zap } from 'lucide-react'
 
 export function Features() {
     return (
-        <section className="py-16 md:py-32">
+        <section className="pt-8 pb-16 md:pt-12 md:pb-32">
             <div className="mx-auto max-w-5xl space-y-12 px-6">
                 <div className="relative z-10 grid items-center gap-4 md:grid-cols-2 md:gap-12">
                     <h2 className="text-4xl font-semibold text-[#08080C]">Ecossistema completo de campanhas com a sua base de contatos</h2>
