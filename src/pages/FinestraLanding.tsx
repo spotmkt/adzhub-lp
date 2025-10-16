@@ -10,6 +10,7 @@ import { StarBorder } from "@/components/ui/star-border";
 import { Sparkles } from "@/components/ui/sparkles";
 import { Features } from "@/components/ui/features-6";
 import { supabase } from "@/integrations/supabase/client";
+import { MorphPanel } from "@/components/ui/ai-input";
 export default function FinestraLanding() {
   const [titleNumber, setTitleNumber] = useState(0);
   const [campaignCount, setCampaignCount] = useState(0);
@@ -640,5 +641,6 @@ export default function FinestraLanding() {
           </div>
         </div>
       </footer>
+      <MorphPanel />
     </div>;
 }
