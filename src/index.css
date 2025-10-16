@@ -72,6 +72,13 @@ All colors MUST be HSL.
     --hero-gradient-start: 350 100% 88%;
     --hero-gradient-mid: 15 100% 85%;
     --hero-gradient-end: 200 100% 92%;
+
+    /* Rainbow button colors */
+    --color-1: 0 100% 63%;
+    --color-2: 270 100% 63%;
+    --color-3: 210 100% 63%;
+    --color-4: 195 100% 63%;
+    --color-5: 90 100% 63%;
   }
 
   .dark {
