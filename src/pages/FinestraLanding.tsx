@@ -10,6 +10,7 @@ export default function FinestraLanding() {
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 bg-white/80 backdrop-blur-sm">
         <div className="flex items-center gap-3">
           <img src={finestraLogo} alt="Finestra" className="h-10 w-auto" />
+          <span className="text-2xl font-medium text-[#08080C]">AdzHub</span>
         </div>
 
         <div className="hidden md:flex items-center gap-8 px-4 py-2 rounded-full bg-[#0B0B0B] border border-white/[0.08]">
