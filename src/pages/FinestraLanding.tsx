@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Play, Star, ChevronRight } from "lucide-react";
-import adzHubLogo from "@/assets/adzhub-logo-final.png";
+import finestraLogo from "@/assets/finestra-logo.png";
 import { SplashCursor } from "@/components/ui/splash-cursor";
 
 export default function FinestraLanding() {
@@ -9,7 +9,7 @@ export default function FinestraLanding() {
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 bg-white/80 backdrop-blur-sm">
         <div className="flex items-center gap-3">
-          <img src={adzHubLogo} alt="AdzHub" className="h-10 w-auto" />
+          <img src={finestraLogo} alt="Finestra" className="h-10 w-auto" />
           <span className="text-2xl font-medium text-[#08080C]">AdzHub</span>
         </div>
 
