@@ -16,8 +16,8 @@ const config = {
     // Colors for the scene
     colors: {
         // Using HSL for easier color manipulation and vibrant results
-        baseHue: 200, // Base hue for particles (200 is a cyan/blue)
-        hueVariance: 20, // How much the hue can vary between particles
+        baseHue: 224, // Base hue for particles (224 is AdzHub blue)
+        hueVariance: 183, // Variance to include gold (41 hue) - 224-41=183
     },
     // Animation and simulation properties
     simulation: {
