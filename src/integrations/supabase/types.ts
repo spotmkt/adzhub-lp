@@ -569,6 +569,24 @@ export type Database = {
         }
         Relationships: []
       }
+      campaign_counter: {
+        Row: {
+          count: number
+          id: string
+          updated_at: string | null
+        }
+        Insert: {
+          count?: number
+          id?: string
+          updated_at?: string | null
+        }
+        Update: {
+          count?: number
+          id?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       campaign_recipients: {
         Row: {
           campaign_id: string

@@ -9,8 +9,10 @@ import { TiltedScroll } from "@/components/ui/tilted-scroll";
 import { StarBorder } from "@/components/ui/star-border";
 import { Sparkles } from "@/components/ui/sparkles";
 import { Features } from "@/components/ui/features-6";
+import { supabase } from "@/integrations/supabase/client";
 export default function FinestraLanding() {
   const [titleNumber, setTitleNumber] = useState(0);
+  const [campaignCount, setCampaignCount] = useState(0);
   const titles = useMemo(
     () => ["+Inteligente", "+lucrativo", "+simples", "+personalizado", "+estratégico"],
     []
@@ -26,6 +28,41 @@ export default function FinestraLanding() {
     }, 2000);
     return () => clearTimeout(timeoutId);
   }, [titleNumber, titles]);
+
+  // Subscribe to campaign counter updates
+  useEffect(() => {
+    const fetchInitialCount = async () => {
+      const { data, error } = await supabase
+        .from('campaign_counter')
+        .select('count')
+        .single();
+      
+      if (data && !error) {
+        setCampaignCount(data.count);
+      }
+    };
+
+    fetchInitialCount();
+
+    const channel = supabase
+      .channel('campaign-counter-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'campaign_counter'
+        },
+        (payload) => {
+          setCampaignCount(payload.new.count);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   const testimonials = [
     {
@@ -157,15 +194,16 @@ export default function FinestraLanding() {
           </div>
 
           <div className="flex items-center justify-center gap-5 flex-wrap">
-            <div className="flex items-center gap-1">
-              <Star className="w-[31px] h-[31px] fill-[hsl(41,100%,58%)] text-[hsl(41,100%,58%)]" />
-              <span className="text-lg font-medium text-[#08080C]">Trustpilot</span>
+            <div className="flex items-center gap-2">
+              <span className="text-lg font-medium text-[#08080C]">
+                Campanhas criadas: {campaignCount.toLocaleString('pt-BR')}
+              </span>
             </div>
             <div className="flex items-center gap-2">
               <div className="flex gap-1">
                 {[...Array(5)].map((_, i) => <Star key={i} className="w-5 h-5 fill-[hsl(41,100%,58%)] text-[hsl(41,100%,58%)]" />)}
               </div>
-              <span className="text-base font-medium text-[#08080C]">3800+ 5 Stars</span>
+              <span className="text-base font-medium text-[#08080C]">+100</span>
             </div>
           </div>
         </div>
