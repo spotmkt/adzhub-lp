@@ -280,7 +280,7 @@ export default function FinestraLanding() {
                   iconClassName: "text-emerald-500",
                   titleClassName: "text-emerald-500",
                   className:
-                    "[grid-area:stack] hover:-translate-y-10 before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0 bg-white",
+                    "[grid-area:stack] hover:-translate-y-10 before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0",
                 },
                 {
                   icon: <Shield className="size-4 text-blue-300" />,
@@ -290,7 +290,7 @@ export default function FinestraLanding() {
                   iconClassName: "text-blue-500",
                   titleClassName: "text-blue-500",
                   className:
-                    "[grid-area:stack] translate-x-16 translate-y-10 hover:-translate-y-1 before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0 bg-white",
+                    "[grid-area:stack] translate-x-16 translate-y-10 hover:-translate-y-1 before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0",
                 },
                 {
                   icon: <Zap className="size-4 text-amber-300" />,
@@ -300,7 +300,7 @@ export default function FinestraLanding() {
                   iconClassName: "text-amber-500",
                   titleClassName: "text-amber-500",
                   className:
-                    "[grid-area:stack] translate-x-32 translate-y-20 hover:translate-y-10 bg-white",
+                    "[grid-area:stack] translate-x-32 translate-y-20 hover:translate-y-10",
                 },
               ]}
             />
