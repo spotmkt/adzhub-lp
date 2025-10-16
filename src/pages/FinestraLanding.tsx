@@ -12,6 +12,8 @@ import { Sparkles } from "@/components/ui/sparkles";
 import { Features } from "@/components/ui/features-6";
 import { supabase } from "@/integrations/supabase/client";
 import { MorphPanel } from "@/components/ui/ai-input";
+import RadialOrbitalTimeline from "@/components/ui/radial-orbital-timeline";
+import { Calendar, Code, FileText, User, Clock, Target, BarChart, MessageSquare } from "lucide-react";
 export default function FinestraLanding() {
   const [titleNumber, setTitleNumber] = useState(0);
   const [campaignCount, setCampaignCount] = useState(0);
@@ -472,21 +474,100 @@ export default function FinestraLanding() {
               Platform Attributes
             </h2>
             <p className="text-lg font-medium text-[#6B7280] leading-[170%] max-w-[600px] mx-auto">
-              Everything you need to manage your finances efficiently and securely
+              Everything you need to manage your campaigns efficiently and effectively
             </p>
           </div>
-          <TiltedScroll
-            items={[
-              { id: "1", text: "Real-time Analytics" },
-              { id: "2", text: "Multi-currency Support" },
-              { id: "3", text: "Automated Reporting" },
-              { id: "4", text: "Bank-level Security" },
-              { id: "5", text: "Mobile First Design" },
-              { id: "6", text: "24/7 Customer Support" },
-              { id: "7", text: "Smart Budgeting Tools" },
-              { id: "8", text: "Easy Integration" },
+          <RadialOrbitalTimeline
+            timelineData={[
+              {
+                id: 1,
+                title: "Planning",
+                date: "Jan 2024",
+                content: "Campaign planning and strategy definition phase.",
+                category: "Planning",
+                icon: Calendar,
+                relatedIds: [2],
+                status: "completed" as const,
+                energy: 100,
+              },
+              {
+                id: 2,
+                title: "Design",
+                date: "Feb 2024",
+                content: "Message templates and creative design.",
+                category: "Design",
+                icon: FileText,
+                relatedIds: [1, 3],
+                status: "completed" as const,
+                energy: 90,
+              },
+              {
+                id: 3,
+                title: "Development",
+                date: "Mar 2024",
+                content: "Campaign setup and contact list preparation.",
+                category: "Development",
+                icon: Code,
+                relatedIds: [2, 4],
+                status: "in-progress" as const,
+                energy: 60,
+              },
+              {
+                id: 4,
+                title: "Testing",
+                date: "Apr 2024",
+                content: "Message testing and quality assurance.",
+                category: "Testing",
+                icon: User,
+                relatedIds: [3, 5],
+                status: "pending" as const,
+                energy: 30,
+              },
+              {
+                id: 5,
+                title: "Launch",
+                date: "May 2024",
+                content: "Campaign launch and initial monitoring.",
+                category: "Launch",
+                icon: Target,
+                relatedIds: [4, 6],
+                status: "pending" as const,
+                energy: 10,
+              },
+              {
+                id: 6,
+                title: "Analytics",
+                date: "Jun 2024",
+                content: "Performance tracking and optimization.",
+                category: "Analytics",
+                icon: BarChart,
+                relatedIds: [5, 7],
+                status: "pending" as const,
+                energy: 5,
+              },
+              {
+                id: 7,
+                title: "Engagement",
+                date: "Jul 2024",
+                content: "Customer engagement and response management.",
+                category: "Engagement",
+                icon: MessageSquare,
+                relatedIds: [6, 8],
+                status: "pending" as const,
+                energy: 5,
+              },
+              {
+                id: 8,
+                title: "Review",
+                date: "Aug 2024",
+                content: "Campaign review and lessons learned.",
+                category: "Review",
+                icon: Clock,
+                relatedIds: [7],
+                status: "pending" as const,
+                energy: 5,
+              },
             ]}
-            className="mt-8"
           />
         </div>
       </section>
