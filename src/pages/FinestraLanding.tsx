@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Play, Star, ChevronRight } from "lucide-react";
 import adzHubLogo from "@/assets/adzhub-logo-final.png";
-import GenerativeArtSceneV3 from "@/components/ui/quantum-nebula";
 
 export default function FinestraLanding() {
   return (
@@ -35,8 +34,7 @@ export default function FinestraLanding() {
 
       {/* Hero Section */}
       <section className="relative pt-20 pb-32 overflow-hidden bg-gradient-to-br from-[#D4EFF4]/30 via-[#F9C7B2]/20 to-[#F9B2D4]/20 rounded-[32px] mx-5 mt-[83px]">
-        <GenerativeArtSceneV3 />
-        <div className="relative max-w-7xl mx-auto px-8 z-10">
+        <div className="relative max-w-7xl mx-auto px-8">
           <div className="flex flex-col items-center text-center gap-8 max-w-[781px] mx-auto mb-12">
             <h1 className="text-5xl md:text-7xl lg:text-[100px] font-medium leading-[100%] tracking-tight text-[#08080C]">
               Make your money work harder
