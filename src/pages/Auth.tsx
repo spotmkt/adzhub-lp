@@ -22,7 +22,7 @@ export default function Auth() {
 
   // Get redirect URL from query params
   const searchParams = new URLSearchParams(window.location.search);
-  const redirectTo = searchParams.get('redirect') || '/chat';
+  const redirectTo = searchParams.get('redirect') || '/finestra';
 
   useEffect(() => {
     // Check if user is already logged in
@@ -138,7 +138,7 @@ export default function Auth() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="flex justify-center mb-8">
-          <Link to="/landing">
+          <Link to="/finestra">
             <img src={adzhubLogo} alt="AdzHub" className="h-12 w-auto" />
           </Link>
         </div>
@@ -250,7 +250,7 @@ export default function Auth() {
                     )}
                   </Button>
                   <p className="text-sm text-muted-foreground text-center">
-                    <Link to="/landing" className="hover:text-primary underline">
+                    <Link to="/finestra" className="hover:text-primary underline">
                       Voltar para home
                     </Link>
                   </p>

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Play, Star, ChevronRight, TrendingUp, Shield, Zap } from "lucide-react";
 import finestraLogo from "@/assets/finestra-logo.png";
@@ -146,10 +147,17 @@ export default function FinestraLanding() {
           <a href="#" className="text-gray-700 text-sm hover:text-gray-900 transition-colors">Blog</a>
         </div>
 
-        <div className="flex items-center gap-6">
-          <button className="px-4 py-1.5 rounded-full border border-gray-300 text-gray-700 text-sm hover:bg-gray-50 transition-colors">
-            Sign In
-          </button>
+        <div className="flex items-center gap-3">
+          <Link to="/auth">
+            <button className="px-4 py-1.5 rounded-full border border-[#37489d] text-[#37489d] text-sm hover:bg-[#37489d]/10 transition-colors font-medium">
+              Entrar
+            </button>
+          </Link>
+          <Link to="/auth">
+            <button className="px-4 py-1.5 rounded-full bg-[#37489d] text-white text-sm hover:bg-[#37489d]/90 transition-colors font-medium">
+              Começar Grátis
+            </button>
+          </Link>
         </div>
       </nav>
 
@@ -180,16 +188,18 @@ export default function FinestraLanding() {
           </div>
 
           <div className="flex items-center justify-center gap-4 mb-6 flex-wrap">
-            <StarBorder color="hsl(224, 47%, 42%)" speed="8s">
-              Get Started Free
-            </StarBorder>
+            <Link to="/auth">
+              <StarBorder color="hsl(224, 47%, 42%)" speed="8s">
+                Começar Grátis
+              </StarBorder>
+            </Link>
             <StarBorder 
               color="hsl(41, 100%, 58%)" 
               speed="10s"
               className="flex items-center gap-2"
             >
               <Play className="w-5 h-5" />
-              Watch A Demo
+              Ver Demonstração
             </StarBorder>
           </div>
 
@@ -278,11 +288,13 @@ export default function FinestraLanding() {
               </p>
             </div>
             <div className="flex flex-col gap-2">
-              <StarBorder color="hsl(224, 47%, 42%)" speed="8s">
-                Get Started Free
-              </StarBorder>
+              <Link to="/auth">
+                <StarBorder color="hsl(224, 47%, 42%)" speed="8s">
+                  Começar Grátis
+                </StarBorder>
+              </Link>
               <p className="text-base font-medium text-[#6B7280] capitalize">
-                explore more about us
+                saiba mais sobre nós
               </p>
             </div>
           </div>
@@ -339,7 +351,7 @@ export default function FinestraLanding() {
                     <span className="text-[rgba(33,33,33,0.6)]">00</span>
                   </p>
                   <StarBorder color="hsl(41, 100%, 58%)" speed="7s">
-                    Send
+                    Enviar
                   </StarBorder>
                 </div>
               </div>
