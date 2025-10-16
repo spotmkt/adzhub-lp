@@ -1,14 +1,98 @@
+import { useEffect, useMemo, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Play, Star, ChevronRight } from "lucide-react";
-import adzHubLogo from "@/assets/adzhub-logo-final.png";
-import { SplashCursor } from "@/components/ui/splash-cursor";
+import { Play, Star, ChevronRight, TrendingUp, Shield, Zap } from "lucide-react";
+import finestraLogo from "@/assets/finestra-logo.png";
+import DisplayCards from "@/components/ui/display-cards";
+import { TestimonialsColumn } from "@/components/ui/testimonials-columns-1";
+import { TiltedScroll } from "@/components/ui/tilted-scroll";
+import { StarBorder } from "@/components/ui/star-border";
+import { Sparkles } from "@/components/ui/sparkles";
+import { Features } from "@/components/ui/features-6";
 export default function FinestraLanding() {
+  const [titleNumber, setTitleNumber] = useState(0);
+  const titles = useMemo(
+    () => ["amazing", "new", "wonderful", "beautiful", "smart"],
+    []
+  );
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (titleNumber === titles.length - 1) {
+        setTitleNumber(0);
+      } else {
+        setTitleNumber(titleNumber + 1);
+      }
+    }, 2000);
+    return () => clearTimeout(timeoutId);
+  }, [titleNumber, titles]);
+
+  const testimonials = [
+    {
+      text: "This platform revolutionized our financial operations, streamlining everything. The cloud-based system keeps us productive, even remotely.",
+      image: "https://randomuser.me/api/portraits/women/1.jpg",
+      name: "Briana Patton",
+      role: "Operations Manager",
+    },
+    {
+      text: "Implementation was smooth and quick. The customizable, user-friendly interface made team training effortless and efficient.",
+      image: "https://randomuser.me/api/portraits/men/2.jpg",
+      name: "Bilal Ahmed",
+      role: "IT Manager",
+    },
+    {
+      text: "The support team is exceptional, guiding us through setup and providing ongoing assistance, ensuring our complete satisfaction.",
+      image: "https://randomuser.me/api/portraits/women/3.jpg",
+      name: "Saman Malik",
+      role: "Customer Support Lead",
+    },
+    {
+      text: "Seamless integration enhanced our business operations and efficiency significantly. Highly recommend for its intuitive interface.",
+      image: "https://randomuser.me/api/portraits/men/4.jpg",
+      name: "Omar Raza",
+      role: "CEO",
+    },
+    {
+      text: "Robust features and quick support have transformed our workflow, making us significantly more efficient in daily operations.",
+      image: "https://randomuser.me/api/portraits/women/5.jpg",
+      name: "Zainab Hussain",
+      role: "Project Manager",
+    },
+    {
+      text: "The smooth implementation exceeded expectations. It streamlined processes, improving overall business performance dramatically.",
+      image: "https://randomuser.me/api/portraits/women/6.jpg",
+      name: "Aliza Khan",
+      role: "Business Analyst",
+    },
+    {
+      text: "Our business functions improved with a user-friendly design and we received overwhelmingly positive customer feedback.",
+      image: "https://randomuser.me/api/portraits/men/7.jpg",
+      name: "Farhan Siddiqui",
+      role: "Marketing Director",
+    },
+    {
+      text: "They delivered a solution that exceeded expectations, understanding our needs perfectly and enhancing our operations.",
+      image: "https://randomuser.me/api/portraits/women/8.jpg",
+      name: "Sana Sheikh",
+      role: "Sales Manager",
+    },
+    {
+      text: "Using this platform, our online presence and conversions significantly improved, boosting overall business performance.",
+      image: "https://randomuser.me/api/portraits/men/9.jpg",
+      name: "Hassan Ali",
+      role: "E-commerce Manager",
+    },
+  ];
+
+  const firstColumn = testimonials.slice(0, 3);
+  const secondColumn = testimonials.slice(3, 6);
+  const thirdColumn = testimonials.slice(6, 9);
+
   return <div className="min-h-screen bg-white">
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 bg-white/80 backdrop-blur-sm">
         <div className="flex items-center gap-3">
-          <img src={adzHubLogo} alt="AdzHub" className="h-10 w-auto" />
-          
+          <img src={finestraLogo} alt="Finestra" className="h-10 w-auto" />
         </div>
 
         <div className="hidden md:flex items-center gap-8 px-4 py-2 rounded-full bg-[#0B0B0B] border border-white/[0.08]">
@@ -33,11 +117,25 @@ export default function FinestraLanding() {
 
       {/* Hero Section */}
       <section className="relative pt-20 pb-32 overflow-hidden bg-gradient-to-br from-[#D4EFF4]/30 via-[#F9C7B2]/20 to-[#F9B2D4]/20 rounded-[32px] mx-5 mt-[83px]">
-        <SplashCursor />
         <div className="relative max-w-5xl mx-auto px-8 z-10">
           <div className="flex flex-col items-center text-center gap-8 max-w-[781px] mx-auto mb-12">
             <h1 className="text-5xl md:text-7xl lg:text-[100px] font-medium leading-[100%] tracking-tight text-[#08080C]">
-              Make your money work harder
+              <span>This is something</span>
+              <span className="relative inline-block min-w-[200px] md:min-w-[300px] text-center md:pb-4 md:pt-1" style={{ height: '1.2em' }}>
+                &nbsp;
+                <AnimatePresence mode="wait">
+                  <motion.span
+                    key={titleNumber}
+                    className="absolute left-0 right-0 font-semibold"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                  >
+                    {titles[titleNumber]}
+                  </motion.span>
+                </AnimatePresence>
+              </span>
             </h1>
             <p className="text-lg text-[#08080C] opacity-80 max-w-[566px]">
               Initiating a business venture may appear overwhelming, yet our forte lies in simplifying the entire process for you.
@@ -45,13 +143,17 @@ export default function FinestraLanding() {
           </div>
 
           <div className="flex items-center justify-center gap-4 mb-6 flex-wrap">
-            <Button className="px-5 py-[14px] rounded-full bg-black text-white font-medium text-base h-auto hover:bg-black/90">
+            <StarBorder color="hsl(224, 47%, 42%)" speed="8s">
               Get Started Free
-            </Button>
-            <Button variant="outline" className="px-5 py-[14px] rounded-full border-[#08080C] text-[#08080C] font-medium text-base h-auto flex items-center gap-2 hover:bg-black/5">
-              <Play className="w-6 h-6" />
+            </StarBorder>
+            <StarBorder 
+              color="hsl(41, 100%, 58%)" 
+              speed="10s"
+              className="flex items-center gap-2"
+            >
+              <Play className="w-5 h-5" />
               Watch A Demo
-            </Button>
+            </StarBorder>
           </div>
 
           <div className="flex items-center justify-center gap-5 flex-wrap">
@@ -70,20 +172,60 @@ export default function FinestraLanding() {
       </section>
 
       {/* Trusted By Section */}
-      <section className="py-16">
+      <section className="py-8 overflow-hidden">
         <div className="max-w-7xl mx-auto px-8">
-          <p className="text-center text-xl font-medium text-[#08080C] mb-8">
-            Loved by 25 million+ users
-          </p>
-          <div className="flex justify-center items-center gap-8 opacity-24 flex-wrap">
-            <div className="text-sm text-[#212126]">Circooles</div>
-            <div className="text-sm text-[#212126]">Quotient</div>
-            <div className="text-sm text-[#212126]">Hourglass</div>
-            <div className="text-sm text-[#212126]">Catalog</div>
-            <div className="text-sm text-[#212126]">Layers</div>
+          <div className="text-center mb-8">
+            <span className="text-[#6B7280] text-lg font-medium">
+              Trusted by experts.
+            </span>
+            <br />
+            <span className="text-[#08080C] text-lg font-medium">
+              Used by the leaders.
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-8 text-[#08080C] mb-8">
+            <div className="flex items-center justify-center">
+              <svg viewBox="0 0 120 40" fill="currentColor" className="w-full h-8">
+                <text x="10" y="25" fontSize="18" fontWeight="600">Circooles</text>
+              </svg>
+            </div>
+            <div className="flex items-center justify-center">
+              <svg viewBox="0 0 120 40" fill="currentColor" className="w-full h-8">
+                <text x="10" y="25" fontSize="18" fontWeight="600">Quotient</text>
+              </svg>
+            </div>
+            <div className="flex items-center justify-center">
+              <svg viewBox="0 0 120 40" fill="currentColor" className="w-full h-8">
+                <text x="10" y="25" fontSize="18" fontWeight="600">Hourglass</text>
+              </svg>
+            </div>
+            <div className="flex items-center justify-center">
+              <svg viewBox="0 0 120 40" fill="currentColor" className="w-full h-8">
+                <text x="15" y="25" fontSize="18" fontWeight="600">Catalog</text>
+              </svg>
+            </div>
+            <div className="flex items-center justify-center col-span-2 md:col-span-1">
+              <svg viewBox="0 0 120 40" fill="currentColor" className="w-full h-8">
+                <text x="20" y="25" fontSize="18" fontWeight="600">Layers</text>
+              </svg>
+            </div>
           </div>
         </div>
+
+        <div className="relative h-64 w-full overflow-hidden [mask-image:radial-gradient(50%_50%,white,transparent)]">
+          <div className="absolute inset-0 before:absolute before:inset-0 before:bg-[radial-gradient(circle_at_bottom_center,hsl(224,47%,42%),transparent_70%)] before:opacity-40" />
+          <div className="absolute -left-1/2 top-1/2 aspect-[1/0.7] z-10 w-[200%] rounded-[100%] border-t border-[#08080C]/20 bg-white" />
+          <Sparkles
+            density={1200}
+            className="absolute inset-x-0 bottom-0 h-full w-full [mask-image:radial-gradient(50%_50%,white,transparent_85%)]"
+            color="#000000"
+          />
+        </div>
       </section>
+
+      {/* Features Section */}
+      <Features />
 
       {/* Manage Money Wisely Section */}
       <section className="py-24 bg-white">
@@ -98,9 +240,9 @@ export default function FinestraLanding() {
               </p>
             </div>
             <div className="flex flex-col gap-2">
-              <Button className="px-4 py-[14px] rounded-full bg-black text-white font-medium text-base h-auto hover:bg-black/90">
+              <StarBorder color="hsl(224, 47%, 42%)" speed="8s">
                 Get Started Free
-              </Button>
+              </StarBorder>
               <p className="text-base font-medium text-[#6B7280] capitalize">
                 explore more about us
               </p>
@@ -115,7 +257,7 @@ export default function FinestraLanding() {
                   <p className="text-sm font-medium text-[#08080C] mb-2">USD Account</p>
                   <div className="flex justify-between items-center">
                     <div>
-                      <p className="text-base font-medium text-[#08080C]">Campanhas de Whatsapp</p>
+                      <p className="text-base font-medium text-[#08080C]">Visa</p>
                       <p className="text-xs font-semibold text-[#6B7280]">**** ****   ****  1990</p>
                     </div>
                     <p className="text-xl font-medium tracking-[-0.8px]">
@@ -158,9 +300,9 @@ export default function FinestraLanding() {
                     <span className="text-[rgba(33,33,33,0.6)]">$349.</span>
                     <span className="text-[rgba(33,33,33,0.6)]">00</span>
                   </p>
-                  <Button className="px-5 py-[14px] rounded-full bg-[hsl(41,100%,58%)] text-[hsl(224,47%,25%)] font-medium text-base h-auto hover:bg-[hsl(41,100%,58%)]/90">
+                  <StarBorder color="hsl(41, 100%, 58%)" speed="7s">
                     Send
-                  </Button>
+                  </StarBorder>
                 </div>
               </div>
             </div>
@@ -226,6 +368,83 @@ export default function FinestraLanding() {
         </div>
       </section>
 
+      {/* Display Cards Section */}
+      <section className="py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-6xl lg:text-[72px] font-medium leading-[100%] tracking-tight text-[#08080C] mb-6">
+              Discover Our Features
+            </h2>
+            <p className="text-lg font-medium text-[#6B7280] leading-[170%] max-w-[600px] mx-auto">
+              Experience the power of smart financial management with our innovative solutions
+            </p>
+          </div>
+          <div className="flex justify-center items-center min-h-[400px]">
+            <DisplayCards
+              cards={[
+                {
+                  icon: <TrendingUp className="size-4 text-emerald-300" />,
+                  title: "Growth",
+                  description: "Maximize your investments",
+                  date: "Active",
+                  iconClassName: "text-emerald-500",
+                  titleClassName: "text-emerald-500",
+                  className:
+                    "[grid-area:stack] hover:-translate-y-10 before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0",
+                },
+                {
+                  icon: <Shield className="size-4 text-blue-300" />,
+                  title: "Security",
+                  description: "Bank-level protection",
+                  date: "24/7",
+                  iconClassName: "text-blue-500",
+                  titleClassName: "text-blue-500",
+                  className:
+                    "[grid-area:stack] translate-x-16 translate-y-10 hover:-translate-y-1 before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0",
+                },
+                {
+                  icon: <Zap className="size-4 text-amber-300" />,
+                  title: "Speed",
+                  description: "Instant transactions",
+                  date: "Real-time",
+                  iconClassName: "text-amber-500",
+                  titleClassName: "text-amber-500",
+                  className:
+                    "[grid-area:stack] translate-x-32 translate-y-20 hover:translate-y-10",
+                },
+              ]}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Platform Features Section */}
+      <section className="py-24 bg-[#F8F8F8] rounded-3xl mx-5">
+        <div className="max-w-7xl mx-auto px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-6xl lg:text-[72px] font-medium leading-[100%] tracking-tight text-[#08080C] mb-6">
+              Platform Attributes
+            </h2>
+            <p className="text-lg font-medium text-[#6B7280] leading-[170%] max-w-[600px] mx-auto">
+              Everything you need to manage your finances efficiently and securely
+            </p>
+          </div>
+          <TiltedScroll
+            items={[
+              { id: "1", text: "Real-time Analytics" },
+              { id: "2", text: "Multi-currency Support" },
+              { id: "3", text: "Automated Reporting" },
+              { id: "4", text: "Bank-level Security" },
+              { id: "5", text: "Mobile First Design" },
+              { id: "6", text: "24/7 Customer Support" },
+              { id: "7", text: "Smart Budgeting Tools" },
+              { id: "8", text: "Easy Integration" },
+            ]}
+            className="mt-8"
+          />
+        </div>
+      </section>
+
       {/* Testimonials Section */}
       <section className="py-24 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-8 text-center mb-16">
@@ -282,6 +501,36 @@ export default function FinestraLanding() {
                 "I absolutely love this cup. I've bought several different brands and there's always something"
               </p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Animated Testimonials Section */}
+      <section className="bg-white py-20 relative">
+        <div className="container z-10 mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+            viewport={{ once: true }}
+            className="flex flex-col items-center justify-center max-w-[540px] mx-auto"
+          >
+            <div className="flex justify-center">
+              <div className="border py-1 px-4 rounded-lg bg-white">Testimonials</div>
+            </div>
+
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tighter mt-5 text-[#08080C]">
+              What our users say
+            </h2>
+            <p className="text-center mt-5 opacity-75 text-[#6B7280]">
+              See what our customers have to say about us.
+            </p>
+          </motion.div>
+
+          <div className="flex justify-center gap-6 mt-10 [mask-image:linear-gradient(to_bottom,transparent,black_25%,black_75%,transparent)] max-h-[740px] overflow-hidden">
+            <TestimonialsColumn testimonials={firstColumn} duration={15} />
+            <TestimonialsColumn testimonials={secondColumn} className="hidden md:block" duration={19} />
+            <TestimonialsColumn testimonials={thirdColumn} className="hidden lg:block" duration={17} />
           </div>
         </div>
       </section>
