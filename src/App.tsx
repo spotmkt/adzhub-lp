@@ -15,6 +15,7 @@ import Apps from "./pages/Apps";
 import Settings from "./pages/Settings";
 import ContentGeneratorSettings from "./pages/ContentGeneratorSettings";
 import Landing from "./pages/Landing";
+import LandingPageNova from "./pages/LandingPageNova";
 import BlogList from "./pages/BlogList";
 import BlogPost from "./pages/BlogPost";
 import Contact from "./pages/Contact";
@@ -54,6 +55,7 @@ function App(): React.ReactElement {
               <Routes>
                 {/* Landing and Blog routes without Layout */}
                 <Route path="/landing" element={<Landing />} />
+                <Route path="/landing-page-nova" element={<LandingPageNova />} />
                 <Route path="/blog" element={<BlogList />} />
                 <Route path="/blog/:slug" element={<BlogPost />} />
                 <Route path="/contact" element={<Contact />} />
