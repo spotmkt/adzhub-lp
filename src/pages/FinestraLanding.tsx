@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Play, Star, ChevronRight } from "lucide-react";
 import finestraLogo from "@/assets/finestra-logo.png";
-import { SplashCursor } from "@/components/ui/splash-cursor";
 export default function FinestraLanding() {
   const [titleNumber, setTitleNumber] = useState(0);
   const titles = useMemo(
@@ -51,7 +50,6 @@ export default function FinestraLanding() {
 
       {/* Hero Section */}
       <section className="relative pt-20 pb-32 overflow-hidden bg-gradient-to-br from-[#D4EFF4]/30 via-[#F9C7B2]/20 to-[#F9B2D4]/20 rounded-[32px] mx-5 mt-[83px]">
-        <SplashCursor />
         <div className="relative max-w-5xl mx-auto px-8 z-10">
           <div className="flex flex-col items-center text-center gap-8 max-w-[781px] mx-auto mb-12">
             <h1 className="text-5xl md:text-7xl lg:text-[100px] font-medium leading-[100%] tracking-tight text-[#08080C]">
