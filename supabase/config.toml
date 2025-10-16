@@ -3,6 +3,9 @@ project_id = "xciubsogktecqcgafwaa"
 [functions.enqueue-contacts-processing]
 verify_jwt = true
 
+[functions.merge-contact-lists]
+verify_jwt = true
+
 [functions.receive-actions]
 verify_jwt = false
 

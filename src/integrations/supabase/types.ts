@@ -1024,6 +1024,62 @@ export type Database = {
           },
         ]
       }
+      contact_merge_operations: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          deduplication_column: string | null
+          duplicates_removed: number | null
+          error_message: string | null
+          id: string
+          merge_strategy: string
+          merged_list_id: string | null
+          source_list_ids: string[]
+          status: string
+          total_contacts_after: number
+          total_contacts_before: number
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          deduplication_column?: string | null
+          duplicates_removed?: number | null
+          error_message?: string | null
+          id?: string
+          merge_strategy: string
+          merged_list_id?: string | null
+          source_list_ids: string[]
+          status?: string
+          total_contacts_after?: number
+          total_contacts_before?: number
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          deduplication_column?: string | null
+          duplicates_removed?: number | null
+          error_message?: string | null
+          id?: string
+          merge_strategy?: string
+          merged_list_id?: string | null
+          source_list_ids?: string[]
+          status?: string
+          total_contacts_after?: number
+          total_contacts_before?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contact_merge_operations_merged_list_id_fkey"
+            columns: ["merged_list_id"]
+            isOneToOne: false
+            referencedRelation: "contact_lists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contact_upload_jobs: {
         Row: {
           completed_at: string | null
@@ -1085,6 +1141,7 @@ export type Database = {
           identifier: string
           list_id: string
           metadata: Json | null
+          source_list_id: string | null
         }
         Insert: {
           created_at?: string
@@ -1092,6 +1149,7 @@ export type Database = {
           identifier: string
           list_id: string
           metadata?: Json | null
+          source_list_id?: string | null
         }
         Update: {
           created_at?: string
@@ -1099,11 +1157,19 @@ export type Database = {
           identifier?: string
           list_id?: string
           metadata?: Json | null
+          source_list_id?: string | null
         }
         Relationships: [
           {
             foreignKeyName: "contacts_list_id_fkey"
             columns: ["list_id"]
+            isOneToOne: false
+            referencedRelation: "contact_lists"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contacts_source_list_id_fkey"
+            columns: ["source_list_id"]
             isOneToOne: false
             referencedRelation: "contact_lists"
             referencedColumns: ["id"]
@@ -2128,6 +2194,30 @@ export type Database = {
       l2_normalize: {
         Args: { "": string } | { "": unknown } | { "": unknown }
         Returns: unknown
+      }
+      merge_contacts_deduplicate: {
+        Args: {
+          p_merge_op_id: string
+          p_source_list_ids: string[]
+          p_target_list_id: string
+        }
+        Returns: Json
+      }
+      merge_contacts_union: {
+        Args: {
+          p_merge_op_id: string
+          p_source_list_ids: string[]
+          p_target_list_id: string
+        }
+        Returns: number
+      }
+      merge_contacts_with_metadata: {
+        Args: {
+          p_merge_op_id: string
+          p_source_list_ids: string[]
+          p_target_list_id: string
+        }
+        Returns: Json
       }
       sparsevec_out: {
         Args: { "": unknown }

@@ -6,9 +6,11 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Plus, Search, Database, Wrench } from 'lucide-react';
+import { Plus, Search, Database, Wrench, Combine, X } from 'lucide-react';
 import { ContactListCard } from '../components/ContactListCard';
 import { ContactListDetailsDialog } from '../components/ContactListDetailsDialog';
+import { ContactMergeDialog } from '../components/ContactMergeDialog';
+import { useContactMerge } from '../hooks/useContactMerge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface ContactList {
@@ -33,12 +35,16 @@ interface ContactJob {
 const ContactsLists = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { mergeContacts, loading: mergeLoading } = useContactMerge();
   const [lists, setLists] = useState<ContactList[]>([]);
   const [filteredLists, setFilteredLists] = useState<ContactList[]>([]);
   const [jobs, setJobs] = useState<Record<string, ContactJob>>({});
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
   const [selectedList, setSelectedList] = useState<ContactList | null>(null);
+  const [selectionMode, setSelectionMode] = useState(false);
+  const [selectedListIds, setSelectedListIds] = useState<Set<string>>(new Set());
+  const [mergeDialogOpen, setMergeDialogOpen] = useState(false);
 
   useEffect(() => {
     fetchLists();
@@ -186,6 +192,42 @@ const ContactsLists = () => {
     }
   };
 
+  const handleToggleSelection = (listId: string) => {
+    const newSelection = new Set(selectedListIds);
+    if (newSelection.has(listId)) {
+      newSelection.delete(listId);
+    } else {
+      newSelection.add(listId);
+    }
+    setSelectedListIds(newSelection);
+  };
+
+  const handleCancelSelection = () => {
+    setSelectionMode(false);
+    setSelectedListIds(new Set());
+  };
+
+  const handleMerge = async (targetName: string, strategy: 'union' | 'deduplicate' | 'merge_metadata') => {
+    const result = await mergeContacts(
+      Array.from(selectedListIds),
+      targetName,
+      strategy
+    );
+
+    if (result) {
+      setMergeDialogOpen(false);
+      setSelectionMode(false);
+      setSelectedListIds(new Set());
+      fetchLists();
+    }
+  };
+
+  const selectedLists = lists.filter(list => selectedListIds.has(list.id));
+  
+  // Validar se bases selecionadas têm o mesmo identifier_type
+  const identifierTypes = [...new Set(selectedLists.map(l => l.identifier_type))];
+  const hasIncompatibleTypes = identifierTypes.length > 1;
+
   return (
     <ScrollArea className="h-screen">
       <div className="container mx-auto p-6 space-y-6 pb-20">
@@ -193,27 +235,67 @@ const ContactsLists = () => {
           <div>
             <h1 className="text-3xl font-bold">Bases de Contatos</h1>
             <p className="text-muted-foreground mt-1">
-              Gerencie suas bases de contatos importadas
+              {selectionMode 
+                ? `${selectedListIds.size} base(s) selecionada(s)` 
+                : 'Gerencie suas bases de contatos importadas'
+              }
             </p>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" onClick={() => navigate('/apps/contacts/fix-metadata')}>
-              <Wrench className="mr-2 h-4 w-4" />
-              Corrigir Metadata
-            </Button>
-            <Button onClick={() => navigate('/apps/contacts/upload')}>
-              <Plus className="mr-2 h-4 w-4" />
-              Nova Base
-            </Button>
+            {selectionMode ? (
+              <>
+                <Button variant="outline" onClick={handleCancelSelection}>
+                  <X className="mr-2 h-4 w-4" />
+                  Cancelar
+                </Button>
+                <Button 
+                  onClick={() => setMergeDialogOpen(true)}
+                  disabled={selectedListIds.size < 2 || hasIncompatibleTypes}
+                >
+                  <Combine className="mr-2 h-4 w-4" />
+                  Mesclar Bases ({selectedListIds.size})
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button 
+                  variant="outline" 
+                  onClick={() => setSelectionMode(true)}
+                  disabled={lists.length < 2}
+                >
+                  <Combine className="mr-2 h-4 w-4" />
+                  Mesclar Bases
+                </Button>
+                <Button variant="outline" onClick={() => navigate('/apps/contacts/fix-metadata')}>
+                  <Wrench className="mr-2 h-4 w-4" />
+                  Corrigir Metadata
+                </Button>
+                <Button onClick={() => navigate('/apps/contacts/upload')}>
+                  <Plus className="mr-2 h-4 w-4" />
+                  Nova Base
+                </Button>
+              </>
+            )}
           </div>
         </div>
 
-      <Alert>
-        <AlertDescription className="text-sm">
-          <strong>Dados não aparecem?</strong> Se os campos de metadata aparecem como "-", pode ser
-          que os dados foram salvos incorretamente. Use a ferramenta "Corrigir Metadata" para resolver.
-        </AlertDescription>
-      </Alert>
+      {!selectionMode && (
+        <Alert>
+          <AlertDescription className="text-sm">
+            <strong>Dados não aparecem?</strong> Se os campos de metadata aparecem como "-", pode ser
+            que os dados foram salvos incorretamente. Use a ferramenta "Corrigir Metadata" para resolver.
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {selectionMode && hasIncompatibleTypes && (
+        <Alert variant="destructive">
+          <AlertDescription className="text-sm">
+            <strong>Tipos incompatíveis!</strong> Todas as bases selecionadas devem ter o mesmo tipo 
+            de identificador (telefone ou email) para serem mescladas.
+          </AlertDescription>
+        </Alert>
+      )}
 
       <Card>
         <CardHeader>
@@ -271,10 +353,21 @@ const ContactsLists = () => {
               job={jobs[list.job_id]}
               onView={(list) => setSelectedList(list)}
               onDelete={handleDeleteList}
+              selectionMode={selectionMode}
+              isSelected={selectedListIds.has(list.id)}
+              onToggleSelection={handleToggleSelection}
             />
           ))}
         </div>
       )}
+
+      <ContactMergeDialog
+        open={mergeDialogOpen}
+        onOpenChange={setMergeDialogOpen}
+        selectedLists={selectedLists}
+        onMerge={handleMerge}
+        loading={mergeLoading}
+      />
 
         <ContactListDetailsDialog
           list={selectedList}

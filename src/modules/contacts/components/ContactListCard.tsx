@@ -2,6 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Eye, Trash2, Users, Calendar, Tag, Loader2, CheckCircle, AlertCircle, Clock } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -29,12 +30,18 @@ interface ContactListCardProps {
   job?: ContactJob;
   onView: (list: ContactList) => void;
   onDelete: (listId: string) => void;
+  selectionMode?: boolean;
+  isSelected?: boolean;
+  onToggleSelection?: (listId: string) => void;
 }
 export const ContactListCard = ({
   list,
   job,
   onView,
-  onDelete
+  onDelete,
+  selectionMode = false,
+  isSelected = false,
+  onToggleSelection
 }: ContactListCardProps) => {
   const historyRef = useRef<ProcessingHistory[]>([]);
   
@@ -84,9 +91,18 @@ export const ContactListCard = ({
     if (isFailed) return 'Erro';
     return 'Concluída';
   };
-  return <Card className="hover:shadow-lg transition-shadow">
+  return <Card className={`hover:shadow-lg transition-shadow ${isSelected ? 'ring-2 ring-primary' : ''}`}>
       <CardHeader>
-        <div className="flex items-start justify-between">
+        <div className="flex items-start justify-between gap-3">
+          {selectionMode && (
+            <Checkbox 
+              checked={isSelected}
+              onCheckedChange={() => onToggleSelection?.(list.id)}
+              disabled={isProcessing}
+              className="mt-1"
+            />
+          )}
+          <div className="flex items-start justify-between flex-1">
           <div className="flex-1 min-w-0">
             <CardTitle className="text-lg truncate">{list.list_name}</CardTitle>
             <CardDescription className="flex items-center gap-2 mt-1">
@@ -98,11 +114,12 @@ export const ContactListCard = ({
               })}
               </span>
             </CardDescription>
+            </div>
+            <Badge variant="secondary" className="ml-2 flex-shrink-0">
+              <Tag className="h-3 w-3 mr-1" />
+              {identifierTypeLabel}
+            </Badge>
           </div>
-          <Badge variant="secondary" className="ml-2 flex-shrink-0">
-            <Tag className="h-3 w-3 mr-1" />
-            {identifierTypeLabel}
-          </Badge>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
