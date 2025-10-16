@@ -7,6 +7,7 @@ import finestraLogo from "@/assets/finestra-logo.png";
 import DisplayCards from "@/components/ui/display-cards";
 import { TestimonialsColumn } from "@/components/ui/testimonials-columns-1";
 import { TiltedScroll } from "@/components/ui/tilted-scroll";
+import { StarBorder } from "@/components/ui/star-border";
 import { RainbowButton } from "@/components/ui/rainbow-button";
 import { Sparkles } from "@/components/ui/sparkles";
 import { Features } from "@/components/ui/features-6";
@@ -191,9 +192,9 @@ export default function FinestraLanding() {
 
           <div className="flex items-center justify-center gap-4 mb-6 flex-wrap">
             <Link to="/auth">
-              <RainbowButton>
+              <StarBorder color="hsl(224, 47%, 42%)" speed="8s">
                 Começar Grátis
-              </RainbowButton>
+              </StarBorder>
             </Link>
             <button className="flex items-center gap-2 text-[#37489d] hover:text-[#37489d]/80 transition-colors">
               <Play className="w-5 h-5" />
@@ -287,9 +288,9 @@ export default function FinestraLanding() {
             </div>
             <div className="flex flex-col gap-2">
               <Link to="/auth">
-                <RainbowButton>
+                <StarBorder color="hsl(224, 47%, 42%)" speed="8s">
                   Começar Grátis
-                </RainbowButton>
+                </StarBorder>
               </Link>
               <p className="text-base font-medium text-[#6B7280] capitalize">
                 saiba mais sobre nós
