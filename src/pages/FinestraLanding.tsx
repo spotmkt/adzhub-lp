@@ -281,7 +281,7 @@ export default function FinestraLanding() {
           <div className="flex flex-col lg:flex-row justify-between items-end mb-16 gap-8">
             <div className="max-w-[649px]">
               <h2 className="text-4xl md:text-6xl lg:text-[72px] font-medium leading-[100%] tracking-tight text-[#08080C] mb-6">
-                Manage money wisely
+                Faça um envio teste abaixo
               </h2>
               <p className="text-lg font-medium text-[#6B7280] leading-[170%]">
                 Master the Art of Financial Management: Strategies and Tools to Optimize Your Budget, Build Wealth, and Secure a Stable Financial Future
