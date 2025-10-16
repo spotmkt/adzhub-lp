@@ -45,13 +45,12 @@ const queryClient = new QueryClient({
 
 function App(): React.ReactElement {
   return (
-    <React.StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <HelmetProvider>
-          <BrowserRouter>
-            <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-              <TooltipProvider>
-                <Routes>
+    <QueryClientProvider client={queryClient}>
+      <HelmetProvider>
+        <BrowserRouter>
+          <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+            <TooltipProvider>
+              <Routes>
                 {/* Landing and Blog routes without Layout */}
                 <Route path="/landing" element={<Landing />} />
                 <Route path="/blog" element={<BlogList />} />
@@ -88,7 +87,6 @@ function App(): React.ReactElement {
         </BrowserRouter>
       </HelmetProvider>
     </QueryClientProvider>
-    </React.StrictMode>
   );
 }
 
