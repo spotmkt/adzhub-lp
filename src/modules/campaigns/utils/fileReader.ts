@@ -1,5 +1,6 @@
 // Utilitários para leitura e processamento de arquivos CSV/Excel
 import * as XLSX from 'xlsx';
+import { sanitizePhoneNumber } from './phoneNormalizer';
 
 export interface FileData {
   data: string[][];
@@ -24,15 +25,24 @@ export const readFile = async (file: File, hasHeader: boolean = true): Promise<F
         if (extension === 'csv') {
           // Processar CSV
           const text = data as string;
-          workbook = XLSX.read(text, { type: 'string' });
+          workbook = XLSX.read(text, { type: 'string', raw: true });
         } else {
-          // Processar Excel
-          workbook = XLSX.read(data, { type: 'binary' });
+          // Processar Excel com configuração para preservar valores originais
+          workbook = XLSX.read(data, { 
+            type: 'binary',
+            raw: true, // Preservar valores originais
+            cellText: false, // Não converter para texto automaticamente
+            cellDates: false // Não converter datas
+          });
         }
 
         const sheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[sheetName];
-        const jsonData: any[][] = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+        const jsonData: any[][] = XLSX.utils.sheet_to_json(worksheet, { 
+          header: 1,
+          raw: true, // Preservar valores brutos
+          defval: '' // Valor padrão para células vazias
+        });
 
         if (!jsonData || jsonData.length === 0) {
           throw new Error('O arquivo está vazio');
@@ -114,7 +124,12 @@ export const extractMappedData = (
   
   for (let i = 1; i < csvData.length; i++) {
     const row = csvData[i];
-    const phone = row[phoneIndex]?.toString().trim();
+    const rawPhone = row[phoneIndex];
+    
+    if (!rawPhone) continue;
+
+    // Sanitizar o número de telefone para corrigir problemas de formatação
+    const phone = sanitizePhoneNumber(rawPhone);
     
     if (!phone) continue;
 
@@ -128,7 +143,13 @@ export const extractMappedData = (
       selectedColumns.forEach(col => {
         const colIndex = headers.indexOf(col);
         if (colIndex !== -1 && col !== phoneColumn && col !== nameColumn) {
-          entry[col] = row[colIndex]?.toString().trim() || '';
+          const rawValue = row[colIndex];
+          // Se for uma coluna que parece ser telefone, sanitizar também
+          if (col.toLowerCase().includes('telefone') || col.toLowerCase().includes('phone') || col.toLowerCase().includes('celular')) {
+            entry[col] = sanitizePhoneNumber(rawValue);
+          } else {
+            entry[col] = rawValue?.toString().trim() || '';
+          }
         }
       });
     }
