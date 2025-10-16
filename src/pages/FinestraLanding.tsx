@@ -1,26 +1,19 @@
 import { Button } from "@/components/ui/button";
 import { Play, Star, ChevronRight } from "lucide-react";
+import adzHubLogo from "@/assets/adzhub-logo-final.png";
 
 export default function FinestraLanding() {
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 bg-white/80 backdrop-blur-sm">
-        <div className="flex items-center gap-2">
-          <div className="w-[52px] h-[41px] relative">
-            <svg width="52" height="42" viewBox="0 0 52 42" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="26.5" cy="21.5" r="16.5" fill="white"/>
-              <path d="M51.2879 20.5151C51.2879 15.0742 49.1265 9.85603 45.2791 6.00872C41.4318 2.1614 36.2138 7.13492e-07 30.7729 0C25.3319 -7.1349e-07 20.1139 2.1614 16.2666 6.00872C12.4192 9.85603 10.2578 15.0742 10.2578 20.5151H16.6689C18.7933 20.5151 20.4501 18.7348 21.2282 16.7579C21.7391 15.4601 22.5143 14.2673 23.5196 13.2619C25.4433 11.3382 28.0524 10.2575 30.7729 10.2575C33.4933 10.2575 36.1024 11.3382 38.0261 13.2619C39.9497 15.1855 41.0303 17.7946 41.0303 20.5151H51.2879Z" fill="#FF5F5F"/>
-              <path d="M39.468 28.3663C40.499 25.8773 41.0297 23.2096 41.0297 20.5156H51.2861C51.2861 31.8457 42.1011 41.0306 30.771 41.0306C28.9966 41.0306 27.2748 40.8053 25.6328 40.3819C26.5618 40.1425 27.475 39.8377 28.3653 39.469C30.8543 38.438 33.1159 36.9269 35.0209 35.0219C36.9259 33.1169 38.4371 30.8553 39.468 28.3663Z" fill="#FF5F5F"/>
-              <path d="M0 20.5156C-3.85411e-07 23.2098 0.530637 25.8774 1.56161 28.3665C2.59259 30.8555 4.10371 33.117 6.00872 35.0221C7.91371 36.9269 10.1753 38.4381 12.6643 39.4691C15.1532 40.5001 17.8209 41.0307 20.5151 41.0307C23.2091 41.0307 25.8768 40.5001 28.3658 39.4691C30.8548 38.4381 33.1163 36.9269 35.0214 35.0221C36.9264 33.117 38.4374 30.8555 39.4684 28.3665C40.4994 25.8774 41.0301 23.2098 41.0301 20.5156H34.6191C32.4947 20.5156 30.8379 22.2959 30.0597 24.2726C30.0376 24.329 30.0149 24.385 29.9917 24.4411C29.4762 25.6856 28.7207 26.8164 27.7681 27.7688C26.8157 28.7213 25.6849 29.4769 24.4404 29.9924C23.196 30.5079 21.8621 30.7732 20.5151 30.7732C19.168 30.7732 17.8342 30.5079 16.5897 29.9924C15.3451 29.4769 14.2144 28.7213 13.2619 27.7688C12.3094 26.8164 11.5538 25.6856 11.0383 24.4411C10.5228 23.1965 10.2575 21.8627 10.2575 20.5156H0Z" fill="#FF5F5F"/>
-              <path d="M0.00195312 20.5151C0.00195312 9.18486 9.18682 0 20.5169 0C22.2909 0 24.0122 0.225145 25.654 0.648437C22.1311 1.55598 18.8813 3.3926 16.265 6.00873C12.4177 9.856 10.2564 15.0742 10.2564 20.5151H0.00195312Z" fill="#FF5F5F"/>
-            </svg>
-          </div>
-          <span className="text-2xl font-medium text-[#08080C]">Finestra</span>
+        <div className="flex items-center gap-3">
+          <img src={adzHubLogo} alt="AdzHub" className="h-10 w-auto" />
+          <span className="text-2xl font-medium text-[#08080C]">AdzHub</span>
         </div>
 
         <div className="hidden md:flex items-center gap-8 px-4 py-2 rounded-full bg-[#0B0B0B] border border-white/[0.08]">
-          <a href="#" className="flex items-center gap-2 px-6 py-2 rounded-full bg-[#FF5F5F] border border-white/[0.08] text-white text-base font-medium">
+          <a href="#" className="flex items-center gap-2 px-6 py-2 rounded-full bg-[hsl(224,47%,42%)] border border-white/[0.08] text-white text-base font-medium">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
               <path d="M3.29461 7.1756L8.68125 2.95574C9.45692 2.34809 10.5431 2.34809 11.3188 2.95574L16.7054 7.1756C17.3203 7.65731 17.4911 8.37427 17.4997 9.20295C17.5001 9.24787 17.4987 9.29129 17.4953 9.33608C17.4604 9.7957 17.2195 12.6041 16.3291 15.757C16.0145 16.6346 15.2741 17.5 14.2555 17.5H5.74446C4.72592 17.5 3.98558 16.6346 3.67092 15.757C2.78052 12.6041 2.53958 9.79569 2.50473 9.33608C2.50134 9.29129 2.49988 9.24787 2.50034 9.20295C2.5089 8.37427 2.67971 7.65731 3.29461 7.1756Z" stroke="white" strokeWidth="1.5"/>
             </svg>
@@ -63,13 +56,13 @@ export default function FinestraLanding() {
 
           <div className="flex items-center justify-center gap-5 flex-wrap">
             <div className="flex items-center gap-1">
-              <Star className="w-[31px] h-[31px] fill-[#FF5F5F] text-[#FF5F5F]" />
+              <Star className="w-[31px] h-[31px] fill-[hsl(41,100%,58%)] text-[hsl(41,100%,58%)]" />
               <span className="text-lg font-medium text-[#08080C]">Trustpilot</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="flex gap-1">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-5 h-5 fill-[#FF5F5F] text-[#FF5F5F]" />
+                  <Star key={i} className="w-5 h-5 fill-[hsl(41,100%,58%)] text-[hsl(41,100%,58%)]" />
                 ))}
               </div>
               <span className="text-base font-medium text-[#08080C]">3800+ 5 Stars</span>
@@ -148,7 +141,7 @@ export default function FinestraLanding() {
             <div className="rounded-3xl bg-[#F6F6F6] p-6">
               <h3 className="text-[28px] font-normal capitalize text-[#08080C] mb-6">Quick Transfer</h3>
               <div className="flex gap-4 mb-6">
-                <button className="px-3 py-2 rounded-full bg-[rgba(255,95,95,0.2)] text-[#08080C] text-lg font-medium">
+                <button className="px-3 py-2 rounded-full bg-[hsl(224,47%,42%)]/20 text-[#08080C] text-lg font-medium">
                   Contacts
                 </button>
                 <button className="text-lg font-medium text-[#08080C]">All</button>
@@ -167,7 +160,7 @@ export default function FinestraLanding() {
                     <span className="text-[rgba(33,33,33,0.6)]">$349.</span>
                     <span className="text-[rgba(33,33,33,0.6)]">00</span>
                   </p>
-                  <Button className="px-5 py-[14px] rounded-full bg-[#FF5F5F] text-white font-medium text-base h-auto hover:bg-[#FF5F5F]/90">
+                  <Button className="px-5 py-[14px] rounded-full bg-[hsl(41,100%,58%)] text-[hsl(224,47%,25%)] font-medium text-base h-auto hover:bg-[hsl(41,100%,58%)]/90">
                     Send
                   </Button>
                 </div>
@@ -191,9 +184,9 @@ export default function FinestraLanding() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white rounded-3xl p-6">
-              <div className="inline-flex items-center gap-2 px-2 py-1 rounded bg-[rgba(255,95,95,0.08)] mb-4">
-                <div className="w-6 h-6 rounded-full bg-[#FF5F5F]"></div>
-                <span className="text-base font-medium text-[#FF5F5F]">Customers</span>
+              <div className="inline-flex items-center gap-2 px-2 py-1 rounded bg-[hsl(224,47%,42%)]/10 mb-4">
+                <div className="w-6 h-6 rounded-full bg-[hsl(224,47%,42%)]"></div>
+                <span className="text-base font-medium text-[hsl(224,47%,42%)]">Customers</span>
               </div>
               <div className="flex items-start mb-8">
                 <span className="text-6xl md:text-[100px] font-normal leading-[120%] tracking-tight text-[#1F2937]">20K</span>
@@ -205,9 +198,9 @@ export default function FinestraLanding() {
             </div>
 
             <div className="bg-white rounded-3xl p-6">
-              <div className="inline-flex items-center gap-2 px-2 py-1 rounded bg-[rgba(255,95,95,0.08)] mb-4">
-                <div className="w-6 h-6 rounded-full bg-[#FF5F5F]"></div>
-                <span className="text-base font-medium text-[#FF5F5F]">Impact</span>
+              <div className="inline-flex items-center gap-2 px-2 py-1 rounded bg-[hsl(41,100%,58%)]/10 mb-4">
+                <div className="w-6 h-6 rounded-full bg-[hsl(41,100%,58%)]"></div>
+                <span className="text-base font-medium text-[hsl(41,100%,58%)]">Impact</span>
               </div>
               <div className="flex items-start mb-8">
                 <span className="text-6xl md:text-[100px] font-normal leading-[120%] tracking-tight text-[#1F2937]">98</span>
@@ -219,9 +212,9 @@ export default function FinestraLanding() {
             </div>
 
             <div className="bg-white rounded-3xl p-6">
-              <div className="inline-flex items-center gap-2 px-2 py-1 rounded bg-[rgba(255,95,95,0.08)] mb-4">
-                <div className="w-6 h-6 rounded-full bg-[#FF5F5F]"></div>
-                <span className="text-base font-medium text-[#FF5F5F]">Experience</span>
+              <div className="inline-flex items-center gap-2 px-2 py-1 rounded bg-[hsl(224,47%,42%)]/10 mb-4">
+                <div className="w-6 h-6 rounded-full bg-[hsl(224,47%,42%)]"></div>
+                <span className="text-base font-medium text-[hsl(224,47%,42%)]">Experience</span>
               </div>
               <div className="flex items-start mb-8">
                 <span className="text-6xl md:text-[100px] font-normal leading-[120%] tracking-tight text-[#1F2937]">89</span>
@@ -355,7 +348,7 @@ export default function FinestraLanding() {
           </div>
 
           <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-[#6B7280]/20 gap-4">
-            <p className="text-base text-[#1F2937]">© 2024 Copyright By Sansbro - Finestra</p>
+            <p className="text-base text-[#1F2937]">© 2024 Copyright AdzHub - Marketing Intelligence Platform</p>
             <div className="flex flex-wrap gap-8 justify-center">
               <a href="#" className="text-base text-[#1F2937] hover:text-[#08080C]">Terms</a>
               <a href="#" className="text-base text-center text-[#1F2937] hover:text-[#08080C]">Privacy</a>
