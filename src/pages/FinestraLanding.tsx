@@ -172,9 +172,9 @@ export default function FinestraLanding() {
       </section>
 
       {/* Trusted By Section */}
-      <section className="py-16 overflow-hidden">
+      <section className="py-8 overflow-hidden">
         <div className="max-w-7xl mx-auto px-8">
-          <div className="text-center mb-14">
+          <div className="text-center mb-8">
             <span className="text-[#6B7280] text-lg font-medium">
               Trusted by experts.
             </span>
@@ -184,7 +184,7 @@ export default function FinestraLanding() {
             </span>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-8 text-[#08080C] mb-14">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-8 text-[#08080C] mb-8">
             <div className="flex items-center justify-center">
               <svg viewBox="0 0 120 40" fill="currentColor" className="w-full h-8">
                 <text x="10" y="25" fontSize="18" fontWeight="600">Circooles</text>
@@ -213,7 +213,7 @@ export default function FinestraLanding() {
           </div>
         </div>
 
-        <div className="relative -mt-16 h-96 w-full overflow-hidden [mask-image:radial-gradient(50%_50%,white,transparent)]">
+        <div className="relative h-64 w-full overflow-hidden [mask-image:radial-gradient(50%_50%,white,transparent)]">
           <div className="absolute inset-0 before:absolute before:inset-0 before:bg-[radial-gradient(circle_at_bottom_center,hsl(224,47%,42%),transparent_70%)] before:opacity-40" />
           <div className="absolute -left-1/2 top-1/2 aspect-[1/0.7] z-10 w-[200%] rounded-[100%] border-t border-[#08080C]/20 bg-white" />
           <Sparkles
