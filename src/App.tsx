@@ -29,6 +29,7 @@ import ContactsModule from "@/modules/contacts/ContactsModule";
 import ThemeResearch from "./pages/ThemeResearch";
 import FileUpload from "./pages/FileUpload";
 import SharedThemeResearch from "./pages/SharedThemeResearch";
+import FinestraLanding from "./pages/FinestraLanding";
 
 // Create QueryClient outside of component to avoid recreation on each render
 // Updated to fix caching issue
@@ -59,6 +60,7 @@ function App(): React.ReactElement {
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/shared/theme-research/:token" element={<SharedThemeResearch />} />
+                <Route path="/finestra" element={<FinestraLanding />} />
                 
                 {/* Campaigns Module - Independent WhatsApp campaigns manager */}
                 <Route path="/campaigns/*" element={<CampaignsModule />} />
