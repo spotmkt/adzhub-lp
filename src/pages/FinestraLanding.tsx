@@ -120,7 +120,7 @@ export default function FinestraLanding() {
         <div className="relative max-w-5xl mx-auto px-8 z-10">
           <div className="flex flex-col items-center text-center gap-8 max-w-[781px] mx-auto mb-12">
             <h1 className="text-5xl md:text-7xl lg:text-[100px] font-medium leading-[100%] tracking-tight text-[#08080C]">
-              <span>This is something</span>
+              <span>Marketing no Whatsapp</span>
               <span className="relative inline-block min-w-[200px] md:min-w-[300px] text-center md:pb-4 md:pt-1" style={{ height: '1.2em' }}>
                 &nbsp;
                 <AnimatePresence mode="wait">
