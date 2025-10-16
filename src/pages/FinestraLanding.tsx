@@ -220,7 +220,7 @@ export default function FinestraLanding() {
       </section>
 
       {/* Trusted By Section */}
-      <section className="py-8 overflow-hidden">
+      <section className="py-4 overflow-hidden">
         <div className="max-w-7xl mx-auto px-8">
           <div className="text-center mb-8">
             <span className="text-[#6B7280] text-lg font-medium">
