@@ -285,8 +285,8 @@ function DockBar() {
                   dimension="24px" 
                   tones={{ 
                     base: "oklch(95% 0.05 330)",
-                    accent1: "oklch(78% 0.25 330)",
-                    accent2: "oklch(70% 0.18 50)",
+                    accent1: "oklch(70% 0.18 50)",
+                    accent2: "oklch(78% 0.25 330)",
                     accent3: "oklch(40% 0.15 265)"
                   }} 
                 />
@@ -382,8 +382,8 @@ function InputForm({ ref, onSuccess }: { ref: React.Ref<HTMLTextAreaElement>; on
               dimension="24px" 
               tones={{ 
                 base: "oklch(95% 0.05 330)",
-                accent1: "oklch(78% 0.25 330)",
-                accent2: "oklch(70% 0.18 50)",
+                accent1: "oklch(70% 0.18 50)",
+                accent2: "oklch(78% 0.25 330)",
                 accent3: "oklch(40% 0.15 265)"
               }} 
             />
