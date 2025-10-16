@@ -284,10 +284,10 @@ function DockBar() {
                 <ColorOrb 
                   dimension="24px" 
                   tones={{ 
-                    base: "oklch(90% 0.12 85)",
-                    accent1: "oklch(80% 0.18 85)",
-                    accent2: "oklch(70% 0.20 45)",
-                    accent3: "oklch(65% 0.15 250)"
+                    base: "oklch(95% 0.05 330)",
+                    accent1: "oklch(78% 0.25 330)",
+                    accent2: "oklch(70% 0.18 50)",
+                    accent3: "oklch(40% 0.15 265)"
                   }} 
                 />
               </motion.div>
@@ -381,10 +381,10 @@ function InputForm({ ref, onSuccess }: { ref: React.Ref<HTMLTextAreaElement>; on
             <ColorOrb 
               dimension="24px" 
               tones={{ 
-                base: "oklch(90% 0.12 85)",
-                accent1: "oklch(80% 0.18 85)",
-                accent2: "oklch(70% 0.20 45)",
-                accent3: "oklch(65% 0.15 250)"
+                base: "oklch(95% 0.05 330)",
+                accent1: "oklch(78% 0.25 330)",
+                accent2: "oklch(70% 0.18 50)",
+                accent3: "oklch(40% 0.15 265)"
               }} 
             />
           </motion.div>
