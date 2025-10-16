@@ -193,14 +193,10 @@ export default function FinestraLanding() {
                 Começar Grátis
               </StarBorder>
             </Link>
-            <StarBorder 
-              color="hsl(41, 100%, 58%)" 
-              speed="10s"
-              className="flex items-center gap-2"
-            >
+            <button className="flex items-center gap-2 text-[#37489d] hover:text-[#37489d]/80 transition-colors">
               <Play className="w-5 h-5" />
               Ver Demonstração
-            </StarBorder>
+            </button>
           </div>
 
           <div className="flex items-center justify-center gap-5 flex-wrap">
