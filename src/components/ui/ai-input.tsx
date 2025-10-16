@@ -297,19 +297,19 @@ function DockBar() {
 
         <Button
           type="button"
-          className="flex h-fit flex-1 justify-end rounded-full px-2 !py-0.5"
+          className="flex h-fit flex-1 justify-end rounded-full px-3 !py-1.5"
           variant="ghost"
           onClick={triggerOpen}
         >
-          <span className="truncate">Perguntar à IA</span>
+          <span className="truncate text-[#37489d] font-semibold">Perguntar à IA</span>
         </Button>
       </div>
     </footer>
   )
 }
 
-const FORM_WIDTH = 360
-const FORM_HEIGHT = 200
+const FORM_WIDTH = 400
+const FORM_HEIGHT = 220
 
 function InputForm({ ref, onSuccess }: { ref: React.Ref<HTMLTextAreaElement>; onSuccess: () => void }) {
   const { triggerClose, showForm } = useFormContext()
@@ -343,14 +343,14 @@ function InputForm({ ref, onSuccess }: { ref: React.Ref<HTMLTextAreaElement>; on
             transition={{ type: "spring", stiffness: 550 / SPEED_FACTOR, damping: 45, mass: 0.7 }}
             className="flex h-full flex-col p-1"
           >
-            <div className="flex justify-between py-1">
-              <p className="text-foreground z-2 ml-[38px] flex items-center gap-[6px] select-none">
+            <div className="flex justify-between py-2 px-1">
+              <p className="z-2 ml-[38px] flex items-center gap-[6px] select-none text-[#37489d] font-semibold text-lg">
                 Pergunte à IA
               </p>
               <button
                 type="submit"
                 ref={btnRef}
-                className="text-foreground right-4 mt-1 flex -translate-y-[3px] cursor-pointer items-center justify-center gap-1 rounded-[12px] bg-transparent pr-1 text-center select-none"
+                className="right-4 mt-1 flex -translate-y-[3px] cursor-pointer items-center justify-center gap-1 rounded-[12px] bg-transparent pr-1 text-center select-none text-[#37489d]"
               >
                 <KeyHint>⌘</KeyHint>
                 <KeyHint className="w-fit">Enter</KeyHint>
@@ -360,7 +360,7 @@ function InputForm({ ref, onSuccess }: { ref: React.Ref<HTMLTextAreaElement>; on
               ref={ref}
               placeholder="Pergunte qualquer coisa..."
               name="message"
-              className="h-full w-full resize-none scroll-py-2 rounded-md p-4 outline-0 bg-muted"
+              className="h-full w-full resize-none scroll-py-2 rounded-md p-4 outline-0 bg-muted text-[#37489d] placeholder:text-[#37489d]/60"
               required
               onKeyDown={handleKeys}
               spellCheck={false}
@@ -398,7 +398,7 @@ function KeyHint({ children, className }: { children: string; className?: string
   return (
     <kbd
       className={cx(
-        "text-foreground flex h-6 w-fit items-center justify-center rounded-sm border px-[6px] font-sans",
+        "flex h-6 w-fit items-center justify-center rounded-sm border border-[#37489d] text-[#37489d] px-[6px] font-sans text-sm",
         className
       )}
     >
