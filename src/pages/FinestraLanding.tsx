@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Play, Star, ChevronRight } from "lucide-react";
 import finestraLogo from "@/assets/finestra-logo.png";
@@ -54,29 +54,20 @@ export default function FinestraLanding() {
           <div className="flex flex-col items-center text-center gap-8 max-w-[781px] mx-auto mb-12">
             <h1 className="text-5xl md:text-7xl lg:text-[100px] font-medium leading-[100%] tracking-tight text-[#08080C]">
               <span>This is something</span>
-              <span className="relative flex w-full justify-center overflow-hidden text-center md:pb-4 md:pt-1">
+              <span className="relative inline-block min-w-[200px] md:min-w-[300px] text-center md:pb-4 md:pt-1" style={{ height: '1.2em' }}>
                 &nbsp;
-                {titles.map((title, index) => (
+                <AnimatePresence mode="wait">
                   <motion.span
-                    key={index}
-                    className="absolute font-semibold"
-                    initial={{ opacity: 0, y: "-100" }}
-                    transition={{ type: "spring", stiffness: 50 }}
-                    animate={
-                      titleNumber === index
-                        ? {
-                            y: 0,
-                            opacity: 1,
-                          }
-                        : {
-                            y: titleNumber > index ? -150 : 150,
-                            opacity: 0,
-                          }
-                    }
+                    key={titleNumber}
+                    className="absolute left-0 right-0 font-semibold"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
                   >
-                    {title}
+                    {titles[titleNumber]}
                   </motion.span>
-                ))}
+                </AnimatePresence>
               </span>
             </h1>
             <p className="text-lg text-[#08080C] opacity-80 max-w-[566px]">
