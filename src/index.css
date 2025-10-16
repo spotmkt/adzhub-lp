@@ -39,6 +39,10 @@ All colors MUST be HSL.
 
     --radius: 0.75rem;
 
+    /* Sparkles */
+    --gradient-color: #8350e8;
+    --sparkles-color: #8350e8;
+
     /* Chat specific colors */
     --chat-background: 38 33% 96%;
     --chat-bubble-user: 224 47% 42%;
@@ -99,6 +103,10 @@ All colors MUST be HSL.
     --border: 224 47% 20%;
     --input: 224 47% 15%;
     --ring: 41 100% 58%;
+
+    /* Sparkles */
+    --gradient-color: #8350e8;
+    --sparkles-color: #ffffff;
 
     /* Chat specific colors */
     --chat-background: 224 47% 10%;

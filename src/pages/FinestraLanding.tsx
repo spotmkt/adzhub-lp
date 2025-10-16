@@ -7,6 +7,7 @@ import DisplayCards from "@/components/ui/display-cards";
 import { TestimonialsColumn } from "@/components/ui/testimonials-columns-1";
 import { TiltedScroll } from "@/components/ui/tilted-scroll";
 import { StarBorder } from "@/components/ui/star-border";
+import { Sparkles } from "@/components/ui/sparkles";
 export default function FinestraLanding() {
   const [titleNumber, setTitleNumber] = useState(0);
   const titles = useMemo(
@@ -170,18 +171,55 @@ export default function FinestraLanding() {
       </section>
 
       {/* Trusted By Section */}
-      <section className="py-16">
+      <section className="py-16 overflow-hidden">
         <div className="max-w-7xl mx-auto px-8">
-          <p className="text-center text-xl font-medium text-[#08080C] mb-8">
-            Loved by 25 million+ users
-          </p>
-          <div className="flex justify-center items-center gap-8 opacity-24 flex-wrap">
-            <div className="text-sm text-[#212126]">Circooles</div>
-            <div className="text-sm text-[#212126]">Quotient</div>
-            <div className="text-sm text-[#212126]">Hourglass</div>
-            <div className="text-sm text-[#212126]">Catalog</div>
-            <div className="text-sm text-[#212126]">Layers</div>
+          <div className="text-center mb-14">
+            <span className="text-[#6B7280] text-lg font-medium">
+              Trusted by experts.
+            </span>
+            <br />
+            <span className="text-[#08080C] text-lg font-medium">
+              Used by the leaders.
+            </span>
           </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-8 text-[#08080C] mb-14">
+            <div className="flex items-center justify-center">
+              <svg viewBox="0 0 120 40" fill="currentColor" className="w-full h-8">
+                <text x="10" y="25" fontSize="18" fontWeight="600">Circooles</text>
+              </svg>
+            </div>
+            <div className="flex items-center justify-center">
+              <svg viewBox="0 0 120 40" fill="currentColor" className="w-full h-8">
+                <text x="10" y="25" fontSize="18" fontWeight="600">Quotient</text>
+              </svg>
+            </div>
+            <div className="flex items-center justify-center">
+              <svg viewBox="0 0 120 40" fill="currentColor" className="w-full h-8">
+                <text x="10" y="25" fontSize="18" fontWeight="600">Hourglass</text>
+              </svg>
+            </div>
+            <div className="flex items-center justify-center">
+              <svg viewBox="0 0 120 40" fill="currentColor" className="w-full h-8">
+                <text x="15" y="25" fontSize="18" fontWeight="600">Catalog</text>
+              </svg>
+            </div>
+            <div className="flex items-center justify-center col-span-2 md:col-span-1">
+              <svg viewBox="0 0 120 40" fill="currentColor" className="w-full h-8">
+                <text x="20" y="25" fontSize="18" fontWeight="600">Layers</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div className="relative -mt-16 h-96 w-full overflow-hidden [mask-image:radial-gradient(50%_50%,white,transparent)]">
+          <div className="absolute inset-0 before:absolute before:inset-0 before:bg-[radial-gradient(circle_at_bottom_center,hsl(224,47%,42%),transparent_70%)] before:opacity-40" />
+          <div className="absolute -left-1/2 top-1/2 aspect-[1/0.7] z-10 w-[200%] rounded-[100%] border-t border-[#08080C]/20 bg-white" />
+          <Sparkles
+            density={1200}
+            className="absolute inset-x-0 bottom-0 h-full w-full [mask-image:radial-gradient(50%_50%,white,transparent_85%)]"
+            color="#000000"
+          />
         </div>
       </section>
 
