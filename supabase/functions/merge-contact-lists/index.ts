@@ -81,10 +81,14 @@ serve(async (req) => {
       .from('contact_upload_jobs')
       .insert({
         user_id: user.id,
-        filename: `${targetListName} (mesclagem)`,
+        file_name: `${targetListName} (mesclagem)`,
         status: 'completed',
         total_contacts: 0,
-        processed_contacts: 0
+        processed_contacts: 0,
+        identifier_type: sourceLists[0].identifier_type,
+        identifier_column: sourceLists[0].identifier_column,
+        lgpd_consent: true,
+        data_usage_consent: true
       })
       .select()
       .single();
