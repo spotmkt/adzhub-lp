@@ -27,11 +27,9 @@ Deno.serve(async (req) => {
       throw fetchError
     }
 
-    // Calculate random increment (average 30 per minute)
-    // Using Poisson-like distribution for more natural variation
-    const baseIncrement = 0.5 // 30 per minute = 0.5 per second
-    const randomFactor = Math.random() * 2 // 0 to 2x multiplier
-    const increment = Math.floor(baseIncrement * randomFactor + 0.5)
+    // Calculate random increment (average 30 per minute = 0.5 per second)
+    // 50% chance of 0, 50% chance of 1 = average of 0.5 per second
+    const increment = Math.random() < 0.5 ? 0 : 1
     
     const newCount = Math.min(currentCounter.count + increment, 100000000)
 
