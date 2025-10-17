@@ -1701,6 +1701,57 @@ export type Database = {
         }
         Relationships: []
       }
+      task_generation_sessions: {
+        Row: {
+          approved_tasks: Json | null
+          completed_at: string | null
+          context_hooks: Json | null
+          context_responses: Json | null
+          created_at: string
+          error_message: string | null
+          files: Json | null
+          generated_tasks: Json | null
+          id: string
+          initial_prompt: string
+          request_id: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          approved_tasks?: Json | null
+          completed_at?: string | null
+          context_hooks?: Json | null
+          context_responses?: Json | null
+          created_at?: string
+          error_message?: string | null
+          files?: Json | null
+          generated_tasks?: Json | null
+          id?: string
+          initial_prompt: string
+          request_id: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          approved_tasks?: Json | null
+          completed_at?: string | null
+          context_hooks?: Json | null
+          context_responses?: Json | null
+          created_at?: string
+          error_message?: string | null
+          files?: Json | null
+          generated_tasks?: Json | null
+          id?: string
+          initial_prompt?: string
+          request_id?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       task_proposals: {
         Row: {
           card_type: string
@@ -1708,6 +1759,7 @@ export type Database = {
           id: string
           parent_task: Json
           request_id: string
+          session_id: string | null
           subtasks: Json
           updated_at: string
         }
@@ -1717,6 +1769,7 @@ export type Database = {
           id?: string
           parent_task: Json
           request_id: string
+          session_id?: string | null
           subtasks: Json
           updated_at?: string
         }
@@ -1726,10 +1779,19 @@ export type Database = {
           id?: string
           parent_task?: Json
           request_id?: string
+          session_id?: string | null
           subtasks?: Json
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "task_proposals_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "task_generation_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       tasks: {
         Row: {
