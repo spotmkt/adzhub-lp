@@ -1,6 +1,9 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, User, Flag } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Calendar, User, Flag, Eye } from 'lucide-react';
 import { format } from 'date-fns';
 
 interface Subtask {
@@ -49,74 +52,108 @@ const formatDate = (timestamp: number) => {
 };
 
 export const TaskProposalCard = ({ proposal }: TaskProposalCardProps) => {
-  const { parent_task, subtasks } = proposal;
-  const priorityInfo = getPriorityLabel(parent_task.priority);
+  const [isOpen, setIsOpen] = useState(false);
+  const { parent_task, subtasks, request_id } = proposal;
 
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <CardTitle className="text-xl mb-2">{parent_task.name}</CardTitle>
-            <CardDescription className="text-sm">{parent_task.content}</CardDescription>
-          </div>
-          <Badge className={`${priorityInfo.color} text-white`}>
-            <Flag className="h-3 w-3 mr-1" />
-            {priorityInfo.label}
-          </Badge>
-        </div>
-        
-        <div className="flex gap-4 mt-4 text-sm text-muted-foreground">
-          {parent_task.assignees.length > 0 && (
-            <div className="flex items-center gap-1">
-              <User className="h-4 w-4" />
-              <span>{parent_task.assignees.join(', ')}</span>
-            </div>
-          )}
-          {parent_task.due_date_ts > 0 && (
-            <div className="flex items-center gap-1">
-              <Calendar className="h-4 w-4" />
-              <span>Prazo: {formatDate(parent_task.due_date_ts)}</span>
-            </div>
-          )}
-        </div>
-      </CardHeader>
-      
-      {subtasks.length > 0 && (
+    <>
+      <Card className="w-full">
+        <CardHeader>
+          <CardTitle className="text-lg mb-2">{parent_task.name}</CardTitle>
+        </CardHeader>
         <CardContent>
-          <h4 className="font-semibold mb-3">Subtarefas ({subtasks.length})</h4>
-          <div className="space-y-3">
-            {subtasks.map((subtask, index) => {
-              const subPriorityInfo = getPriorityLabel(subtask.priority);
-              return (
-                <div key={index} className="border-l-2 border-primary/30 pl-4 py-2">
-                  <div className="flex items-start justify-between mb-1">
-                    <h5 className="font-medium">{subtask.name}</h5>
-                    <Badge variant="outline" className={`${subPriorityInfo.color} text-white text-xs`}>
-                      {subPriorityInfo.label}
-                    </Badge>
-                  </div>
-                  <p className="text-sm text-muted-foreground mb-2">{subtask.content}</p>
-                  <div className="flex gap-3 text-xs text-muted-foreground">
-                    {subtask.assignees.length > 0 && (
-                      <div className="flex items-center gap-1">
-                        <User className="h-3 w-3" />
-                        <span>{subtask.assignees.join(', ')}</span>
-                      </div>
-                    )}
-                    {subtask.due_date_ts > 0 && (
-                      <div className="flex items-center gap-1">
-                        <Calendar className="h-3 w-3" />
-                        <span>{formatDate(subtask.due_date_ts)}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+            {request_id}
+          </p>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => setIsOpen(true)}
+            className="w-full"
+          >
+            <Eye className="h-4 w-4 mr-2" />
+            Ver Tarefas Geradas ({subtasks.length})
+          </Button>
         </CardContent>
-      )}
-    </Card>
+      </Card>
+
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-2xl">{parent_task.name}</DialogTitle>
+            <DialogDescription>
+              <div className="flex items-center gap-4 text-sm mt-2">
+                <Badge className={`${getPriorityLabel(parent_task.priority).color} text-white`}>
+                  <Flag className="h-3 w-3 mr-1" />
+                  {getPriorityLabel(parent_task.priority).label}
+                </Badge>
+                {parent_task.assignees.length > 0 && (
+                  <div className="flex items-center gap-1">
+                    <User className="h-4 w-4" />
+                    <span>{parent_task.assignees.join(', ')}</span>
+                  </div>
+                )}
+                {parent_task.due_date_ts > 0 && (
+                  <div className="flex items-center gap-1">
+                    <Calendar className="h-4 w-4" />
+                    <span>{formatDate(parent_task.due_date_ts)}</span>
+                  </div>
+                )}
+              </div>
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-6 mt-4">
+            <div>
+              <h4 className="font-semibold text-sm mb-2">Prompt da Solicitação:</h4>
+              <p className="text-sm text-muted-foreground bg-muted p-3 rounded-md">
+                {request_id}
+              </p>
+            </div>
+
+            <div>
+              <h4 className="font-semibold text-sm mb-2">Descrição:</h4>
+              <p className="text-sm text-muted-foreground">{parent_task.content}</p>
+            </div>
+            
+            {subtasks.length > 0 && (
+              <div>
+                <h4 className="font-semibold text-sm mb-3">Subtarefas ({subtasks.length})</h4>
+                <div className="space-y-3">
+                  {subtasks.map((subtask, index) => {
+                    const subPriorityInfo = getPriorityLabel(subtask.priority);
+                    return (
+                      <div key={index} className="border-l-2 border-primary pl-4 py-3 bg-muted/30 rounded-r-md">
+                        <div className="flex items-start justify-between mb-1">
+                          <h5 className="font-medium text-sm">{subtask.name}</h5>
+                          <Badge variant="outline" className={`${subPriorityInfo.color} text-white text-xs`}>
+                            {subPriorityInfo.label}
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-muted-foreground mb-2">{subtask.content}</p>
+                        <div className="flex gap-4 text-xs text-muted-foreground">
+                          {subtask.assignees.length > 0 && (
+                            <div className="flex items-center gap-1">
+                              <User className="h-3 w-3" />
+                              <span>{subtask.assignees.join(', ')}</span>
+                            </div>
+                          )}
+                          {subtask.due_date_ts > 0 && (
+                            <div className="flex items-center gap-1">
+                              <Calendar className="h-3 w-3" />
+                              <span>{formatDate(subtask.due_date_ts)}</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
