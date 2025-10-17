@@ -395,7 +395,7 @@ export default function FinestraLanding() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             <SpotlightCard
-              className="flex flex-col gap-4 rounded-3xl bg-white border border-neutral-200 shadow-lg"
+              className="flex flex-col gap-4 rounded-3xl !bg-white !border-primary/10 shadow-2xl"
               spotlightColor="#6300ff30"
             >
               <div className="text-2xl font-bold flex items-center gap-2">
@@ -408,7 +408,7 @@ export default function FinestraLanding() {
             </SpotlightCard>
 
             <SpotlightCard
-              className="flex flex-col gap-4 rounded-3xl bg-white border border-neutral-200 shadow-lg"
+              className="flex flex-col gap-4 rounded-3xl !bg-white !border-primary/10 shadow-2xl"
               spotlightColor="#ff006630"
             >
               <div className="text-2xl font-bold flex items-center gap-2">
@@ -421,7 +421,7 @@ export default function FinestraLanding() {
             </SpotlightCard>
 
             <SpotlightCard
-              className="flex flex-col gap-4 rounded-3xl bg-white border border-neutral-200 shadow-lg"
+              className="flex flex-col gap-4 rounded-3xl !bg-white !border-primary/10 shadow-2xl"
               spotlightColor="#6300ff30"
             >
               <div className="text-2xl font-bold flex items-center gap-2">
