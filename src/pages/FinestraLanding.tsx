@@ -1,13 +1,14 @@
 import { useEffect, useMemo, useState, lazy, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
-import { Play, Star, ChevronRight, TrendingUp, Shield, Zap } from "lucide-react";
+import { Play, Star, ChevronRight, TrendingUp, Shield, Zap, Rocket, Users, Target } from "lucide-react";
 import finestraLogo from "@/assets/finestra-logo.png";
 import { StarBorder } from "@/components/ui/star-border";
 import { RainbowButton } from "@/components/ui/rainbow-button";
 import { useCampaignCounter } from "@/hooks/useCampaignCounter";
 import { testimonials, tiltedScrollItems, timelineData, displayCardsData } from "@/data/finestraData";
 import { OptimizedImage } from "@/components/OptimizedImage";
+import { SpotlightCard } from "@/components/ui/spotlight-card";
 
 // Lazy load heavy components
 const DisplayCards = lazy(() => import("@/components/ui/display-cards"));
@@ -352,43 +353,46 @@ export default function FinestraLanding() {
               Experience the power of smart financial management with our innovative solutions
             </p>
           </div>
-          <div className="flex justify-center items-center min-h-[400px]">
-            <Suspense fallback={<LoadingFallback />}>
-              <DisplayCards
-                cards={[
-                  {
-                    icon: <TrendingUp className="size-4 text-emerald-300" />,
-                    title: "Growth",
-                    description: "Maximize your investments",
-                    date: "Active",
-                    iconClassName: "text-emerald-500",
-                    titleClassName: "text-emerald-500",
-                    className:
-                      "[grid-area:stack] hover:-translate-y-10 before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0",
-                  },
-                  {
-                    icon: <Shield className="size-4 text-blue-300" />,
-                    title: "Security",
-                    description: "Bank-level protection",
-                    date: "24/7",
-                    iconClassName: "text-blue-500",
-                    titleClassName: "text-blue-500",
-                    className:
-                      "[grid-area:stack] translate-x-16 translate-y-10 hover:-translate-y-1 before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0",
-                  },
-                  {
-                    icon: <Zap className="size-4 text-amber-300" />,
-                    title: "Speed",
-                    description: "Instant transactions",
-                    date: "Real-time",
-                    iconClassName: "text-amber-500",
-                    titleClassName: "text-amber-500",
-                    className:
-                      "[grid-area:stack] translate-x-32 translate-y-20 hover:translate-y-10",
-                  },
-                ]}
-              />
-            </Suspense>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <SpotlightCard
+              className="flex flex-col gap-4 rounded-3xl bg-white border border-primary/10 shadow-lg"
+              spotlightColor="#37489d30"
+            >
+              <div className="text-2xl font-bold flex items-center gap-2">
+                <Rocket className="text-[hsl(224,47%,42%)] w-8 h-8" />
+                <span className="text-[#08080C]">Rápido e Eficiente</span>
+              </div>
+              <div className="text-muted-foreground text-[#6B7280]">
+                Envie milhares de mensagens em minutos com nossa plataforma otimizada para alta performance e velocidade.
+              </div>
+            </SpotlightCard>
+
+            <SpotlightCard
+              className="flex flex-col gap-4 rounded-3xl bg-white border border-primary/10 shadow-lg"
+              spotlightColor="#ff006630"
+            >
+              <div className="text-2xl font-bold flex items-center gap-2">
+                <Users className="text-[hsl(41,100%,58%)] w-8 h-8" />
+                <span className="text-[#08080C]">Gestão Inteligente</span>
+              </div>
+              <div className="text-muted-foreground text-[#6B7280]">
+                Organize seus contatos, campanhas e templates em um só lugar. Interface intuitiva e fácil de usar.
+              </div>
+            </SpotlightCard>
+
+            <SpotlightCard
+              className="flex flex-col gap-4 rounded-3xl bg-white border border-primary/10 shadow-lg"
+              spotlightColor="#10b98130"
+            >
+              <div className="text-2xl font-bold flex items-center gap-2">
+                <Target className="text-emerald-500 w-8 h-8" />
+                <span className="text-[#08080C]">Resultados Garantidos</span>
+              </div>
+              <div className="text-muted-foreground text-[#6B7280]">
+                Acompanhe suas campanhas em tempo real com análises detalhadas e métricas de desempenho.
+              </div>
+            </SpotlightCard>
           </div>
         </div>
       </section>
