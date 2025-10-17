@@ -3,11 +3,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Calendar, Send, Upload, FileText, X } from 'lucide-react';
+import { Calendar, Send, Upload, FileText, X, History } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { z } from 'zod';
 import { supabase } from '@/integrations/supabase/client';
 import { TaskProposalCard } from '../components/TaskProposalCard';
+import { useNavigate } from 'react-router-dom';
 
 const taskSchema = z.object({
   text: z.string().trim().min(1, 'O texto da tarefa é obrigatório').max(10000, 'Texto muito longo (máximo 10000 caracteres)'),
@@ -21,6 +22,7 @@ const TaskGenerator = () => {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   // Load existing task proposals
   useEffect(() => {
@@ -250,11 +252,20 @@ const TaskGenerator = () => {
   return (
     <div className="h-full p-6 bg-background overflow-y-auto">
       <div className="max-w-3xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Gerador de Tarefas</h1>
-          <p className="text-muted-foreground">
-            Crie tarefas com prazo de entrega definido
-          </p>
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold mb-2">Gerador de Tarefas</h1>
+            <p className="text-muted-foreground">
+              Crie tarefas com prazo de entrega definido
+            </p>
+          </div>
+          <Button
+            variant="outline"
+            onClick={() => navigate('/apps/tasks/history')}
+          >
+            <History className="h-4 w-4 mr-2" />
+            Histórico
+          </Button>
         </div>
 
         <Card>
