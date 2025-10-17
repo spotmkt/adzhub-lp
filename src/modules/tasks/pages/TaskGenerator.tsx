@@ -215,6 +215,25 @@ const TaskGenerator = () => {
         {/* Indicador de progresso */}
         <TaskGenerationProgress status={status} />
 
+        {/* Botão de cancelar durante processamento */}
+        {status === 'processing' && (
+          <Card className="mb-8">
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">
+                    Aguardando resposta do sistema...
+                  </p>
+                </div>
+                <Button variant="outline" onClick={handleCancel}>
+                  <X className="h-4 w-4 mr-2" />
+                  Cancelar
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Painel de revisão de tarefas */}
         {status === 'awaiting_review' && generatedTasks && (
           <div className="mb-8">
