@@ -1,5 +1,8 @@
 project_id = "xciubsogktecqcgafwaa"
 
+[functions.task-generation-handler]
+verify_jwt = true
+
 [functions.enqueue-contacts-processing]
 verify_jwt = true
 
