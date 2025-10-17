@@ -66,7 +66,7 @@ export default function FinestraLanding() {
           </a>
           <a href="#" className="text-gray-700 text-sm hover:text-gray-900 transition-colors">About Us</a>
           <a href="#" className="text-gray-700 text-sm hover:text-gray-900 transition-colors">Reviews</a>
-          <a href="#" className="text-gray-700 text-sm hover:text-gray-900 transition-colors">Procedures</a>
+          <Link to="/pricing" className="text-gray-700 text-sm hover:text-gray-900 transition-colors">Preços</Link>
           <a href="#" className="text-gray-700 text-sm hover:text-gray-900 transition-colors">Blog</a>
         </div>
 
@@ -544,7 +544,7 @@ export default function FinestraLanding() {
               <h3 className="text-lg font-medium text-[#1F2937] mb-6">Company</h3>
               <div className="flex flex-col gap-4">
                 <a href="#" className="text-base text-[#6B7280] hover:text-[#1F2937]">About</a>
-                <a href="#" className="text-base text-[#6B7280] hover:text-[#1F2937]">Pricing</a>
+                <Link to="/pricing" className="text-base text-[#6B7280] hover:text-[#1F2937]">Pricing</Link>
                 <a href="#" className="text-base text-[#6B7280] hover:text-[#1F2937]">Jobs</a>
                 <a href="#" className="text-base text-[#6B7280] hover:text-[#1F2937]">Blog</a>
               </div>
