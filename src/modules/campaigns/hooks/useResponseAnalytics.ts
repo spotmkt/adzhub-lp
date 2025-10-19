@@ -52,7 +52,7 @@ export const useResponseAnalytics = (dateRange?: { from?: Date; to?: Date }, sel
 
         const campaignIds = campaigns.map(c => c.id);
 
-        // 2. Get only recipients that were actually sent (sent_at is not null)
+        // 2. Get only recipients that were actually sent (status = 'sent')
         let recipientsQuery = supabase
           .from('campaign_recipients')
           .select('id, updated_at')
