@@ -17,7 +17,61 @@ Deno.serve(async (req) => {
     console.log('📤 Recebendo disparo de campanha...')
     console.log('Campaign ID:', campaignData.campaign_id)
     console.log('Instance:', campaignData.instance_name)
-    console.log('Recipients:', campaignData.recipients_data ? JSON.parse(campaignData.recipients_data).length : 0)
+
+    // Criar cliente Supabase para descriptografar os dados
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')
+    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
+    
+    if (!supabaseUrl || !supabaseKey) {
+      throw new Error('Supabase credentials not configured')
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseKey)
+
+    // Descriptografar os destinatários usando a função do banco
+    console.log('🔓 Descriptografando destinatários...')
+    const { data: decryptedRecipients, error: decryptError } = await supabase
+      .rpc('decrypt_campaign_recipients', {
+        p_campaign_id: campaignData.campaign_id
+      })
+
+    if (decryptError) {
+      console.error('❌ Erro ao descriptografar destinatários:', decryptError)
+      throw new Error(`Falha ao descriptografar dados: ${decryptError.message}`)
+    }
+
+    if (!decryptedRecipients || decryptedRecipients.length === 0) {
+      console.warn('⚠️ Nenhum destinatário encontrado para a campanha')
+      throw new Error('Nenhum destinatário encontrado')
+    }
+
+    console.log('✅ Destinatários descriptografados:', decryptedRecipients.length)
+
+    // Registrar auditoria do acesso aos dados
+    const { error: auditError } = await supabase
+      .from('data_access_audit')
+      .insert({
+        user_id: campaignData.user_id || null,
+        action: 'decrypt',
+        table_name: 'campaign_recipients',
+        record_id: campaignData.campaign_id,
+        metadata: {
+          campaign_id: campaignData.campaign_id,
+          recipients_count: decryptedRecipients.length,
+          source: 'dispatch_campaign_edge_function',
+          instance: campaignData.instance_name
+        }
+      })
+
+    if (auditError) {
+      console.error('⚠️ Erro ao registrar auditoria:', auditError)
+      // Não bloqueia o fluxo se auditoria falhar
+    } else {
+      console.log('📊 Acesso auditado com sucesso')
+    }
+
+    // Substituir recipients_data com os dados descriptografados
+    campaignData.recipients_data = JSON.stringify(decryptedRecipients)
 
     // Preparar o FormData para enviar ao n8n
     const n8nFormData = new FormData()
