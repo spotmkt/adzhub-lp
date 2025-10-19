@@ -291,8 +291,10 @@ function InputForm({
   useEffect(() => {
     if (!sessionId) return;
 
-    // Buscar mensagens existentes
-    const fetchMessages = async () => {
+    let channel: any = null;
+
+    // Buscar mensagens existentes e configurar subscription
+    const setupRealtimeSubscription = async () => {
       const { data: conversation } = await supabase
         .from('ai_conversations')
         .select('id')
@@ -300,6 +302,7 @@ function InputForm({
         .single();
 
       if (conversation) {
+        // Buscar mensagens existentes
         const { data: msgs } = await supabase
           .from('ai_messages')
           .select('*')
@@ -309,36 +312,38 @@ function InputForm({
         if (msgs) {
           setMessages(msgs as Message[]);
         }
+
+        // Configurar realtime subscription com o conversation_id correto
+        channel = supabase
+          .channel(`ai-messages-${conversation.id}`)
+          .on(
+            'postgres_changes',
+            {
+              event: 'INSERT',
+              schema: 'public',
+              table: 'ai_messages',
+              filter: `conversation_id=eq.${conversation.id}`
+            },
+            (payload) => {
+              console.log('Nova mensagem recebida:', payload);
+              const newMessage = payload.new as Message;
+              setMessages(prev => [...prev, newMessage]);
+              
+              if (newMessage.role === 'assistant') {
+                setIsLoadingResponse(false);
+              }
+            }
+          )
+          .subscribe();
       }
     };
 
-    fetchMessages();
-
-    // Configurar realtime subscription
-    const channel = supabase
-      .channel('ai-messages-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'ai_messages',
-          filter: `conversation_id=in.(SELECT id FROM ai_conversations WHERE session_id='${sessionId}')`
-        },
-        (payload) => {
-          console.log('Nova mensagem recebida:', payload);
-          const newMessage = payload.new as Message;
-          setMessages(prev => [...prev, newMessage]);
-          
-          if (newMessage.role === 'assistant') {
-            setIsLoadingResponse(false);
-          }
-        }
-      )
-      .subscribe();
+    setupRealtimeSubscription();
 
     return () => {
-      supabase.removeChannel(channel);
+      if (channel) {
+        supabase.removeChannel(channel);
+      }
     };
   }, [sessionId]);
   
