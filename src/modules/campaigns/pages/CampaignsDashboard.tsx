@@ -1,9 +1,7 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { useCampaigns, useUpdateCampaign, useDeleteCampaign, useCreateCampaign } from '../hooks/useCampaigns';
 import { useInstances } from '../hooks/useInstances';
-import { useCheckRateLimit } from '../hooks/useRateLimit';
-import { useResponseAnalytics } from '../hooks/useResponseAnalytics';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { MessageSquare, Plus, Filter, AlertCircle, Activity, ArrowUpDown, Calendar, Search, CalendarIcon, Smartphone, Loader2, RefreshCw } from 'lucide-react';
@@ -22,7 +20,7 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
 import { ChartLoadingState } from '../components/ChartLoadingState';
 
-const CampaignsDashboard = React.memo(() => {
+const CampaignsDashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -99,14 +97,19 @@ const CampaignsDashboard = React.memo(() => {
     }
   };
   
-  const { getRemainingDispatches } = useCheckRateLimit();
   const { data: instances } = useInstances();
   
   const { data: campaignsData, isLoading, error, refetch: refetchCampaigns } = useCampaigns(filter === 'all' ? undefined : filter);
-  const { data: responseAnalytics, isLoading: isAnalyticsLoading, refetch: refetchAnalytics } = useResponseAnalytics(dateRange, selectedInstance);
   const updateCampaign = useUpdateCampaign();
   const deleteCampaign = useDeleteCampaign();
   const createCampaign = useCreateCampaign();
+
+  // Mock data for charts while we don't have analytics
+  const mockAnalytics = {
+    responsesByWeekday: [],
+    responsesByTimeSlot: []
+  };
+  const isAnalyticsLoading = false;
 
   const campaigns = useMemo(() => {
     if (!campaignsData) return [];
@@ -158,7 +161,7 @@ const CampaignsDashboard = React.memo(() => {
 
   const totalPages = Math.ceil(campaigns.length / CARDS_PER_PAGE);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setCurrentPage(1);
   }, [filter, searchName, selectedInstance, dateRange?.from, dateRange?.to]);
 
@@ -172,8 +175,6 @@ const CampaignsDashboard = React.memo(() => {
       completed: campaignsData.filter(c => c.status === 'completed').length,
     };
   }, [campaignsData]);
-
-  const remainingDispatches = getRemainingDispatches();
 
   const handleViewCampaign = (campaign: any) => {
     const currentPath = `${location.pathname}${location.search}`;
@@ -222,10 +223,7 @@ const CampaignsDashboard = React.memo(() => {
 
   const handleRefreshData = async () => {
     try {
-      await Promise.all([
-        refetchCampaigns(),
-        refetchAnalytics()
-      ]);
+      await refetchCampaigns();
       toast.success('Dados atualizados com sucesso');
     } catch (error) {
       toast.error('Erro ao atualizar dados');
@@ -346,7 +344,7 @@ const CampaignsDashboard = React.memo(() => {
               >
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart 
-                    data={responseAnalytics?.responsesByWeekday || []}
+                    data={mockAnalytics.responsesByWeekday}
                     margin={{ top: 20, right: 20, left: 20, bottom: 20 }}
                   >
                     <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
@@ -398,7 +396,7 @@ const CampaignsDashboard = React.memo(() => {
               >
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart 
-                    data={responseAnalytics?.responsesByTimeSlot || []}
+                    data={mockAnalytics.responsesByTimeSlot}
                     margin={{ top: 20, right: 20, left: 20, bottom: 20 }}
                   >
                     <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
@@ -429,14 +427,6 @@ const CampaignsDashboard = React.memo(() => {
         </Card>
       </div>
 
-      {remainingDispatches.daily < 1000 && (
-        <Alert>
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
-            Atenção: Você tem {remainingDispatches.daily} envios restantes hoje e {remainingDispatches.monthly} este mês.
-          </AlertDescription>
-        </Alert>
-      )}
 
       <div className="space-y-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
@@ -689,8 +679,6 @@ const CampaignsDashboard = React.memo(() => {
       )}
     </div>
   );
-});
-
-CampaignsDashboard.displayName = 'CampaignsDashboard';
+};
 
 export default CampaignsDashboard;
