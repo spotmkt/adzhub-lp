@@ -1,5 +1,8 @@
 project_id = "xciubsogktecqcgafwaa"
 
+[functions.ask-ai]
+verify_jwt = false
+
 [functions.dispatch-campaign]
 verify_jwt = false
 
