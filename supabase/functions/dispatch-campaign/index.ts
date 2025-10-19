@@ -29,10 +29,15 @@ Deno.serve(async (req) => {
       }
     }
 
-    // URL do webhook n8n
-    const webhookUrl = 'https://n8n-n8n.ascl7r.easypanel.host/webhook/871c12da-9ea0-4c92-abd2-0c8b8eac106a'
+    // URL do webhook n8n (configurada via secret)
+    const webhookUrl = Deno.env.get('N8N_DISPATCH_WEBHOOK_URL')
+    
+    if (!webhookUrl) {
+      throw new Error('N8N_DISPATCH_WEBHOOK_URL não configurado')
+    }
     
     console.log('🔗 Enviando para n8n webhook...')
+    console.log('Webhook URL:', webhookUrl)
     
     // Enviar para o n8n
     const n8nResponse = await fetch(webhookUrl, {
