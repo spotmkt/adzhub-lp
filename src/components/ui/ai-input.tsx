@@ -416,7 +416,7 @@ function InputForm({
   }
   function handleKeys(e: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (e.key === "Escape") triggerClose();
-    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       btnRef.current?.click();
     }
@@ -447,7 +447,6 @@ function InputForm({
                 disabled={isSubmitting}
                 className="text-foreground right-4 mt-1 flex -translate-y-[3px] cursor-pointer items-center justify-center gap-1 rounded-[12px] bg-transparent pr-1 text-center select-none disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <KeyHint>⌘</KeyHint>
                 <KeyHint className="w-fit">{isSubmitting ? '...' : 'Enter'}</KeyHint>
               </button>
             </div>
