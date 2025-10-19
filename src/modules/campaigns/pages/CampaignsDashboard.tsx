@@ -5,9 +5,20 @@ import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Calendar, MessageSquare, Users, Clock, CheckCircle, XCircle, Loader2 } from 'lucide-react';
+import { Calendar, MessageSquare, Users, Clock, CheckCircle, XCircle, Loader2, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { useDeleteCampaign } from '../hooks/useCampaigns';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 interface Campaign {
   id: string;
@@ -27,6 +38,9 @@ const CampaignsDashboard = () => {
   const { toast } = useToast();
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [campaignToDelete, setCampaignToDelete] = useState<string | null>(null);
+  const deleteCampaign = useDeleteCampaign();
 
   useEffect(() => {
     fetchCampaigns();
@@ -52,6 +66,35 @@ const CampaignsDashboard = () => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDeleteClick = (campaignId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCampaignToDelete(campaignId);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!campaignToDelete) return;
+
+    try {
+      await deleteCampaign.mutateAsync(campaignToDelete);
+      toast({
+        title: 'Campanha excluída',
+        description: 'A campanha foi excluída com sucesso'
+      });
+      fetchCampaigns();
+    } catch (error: any) {
+      console.error('Erro ao excluir campanha:', error);
+      toast({
+        title: 'Erro ao excluir campanha',
+        description: error.message,
+        variant: 'destructive'
+      });
+    } finally {
+      setDeleteDialogOpen(false);
+      setCampaignToDelete(null);
     }
   };
 
@@ -116,13 +159,23 @@ const CampaignsDashboard = () => {
             {campaigns.map((campaign) => (
               <Card 
                 key={campaign.id}
-                className="hover:shadow-lg transition-shadow cursor-pointer"
+                className="hover:shadow-lg transition-shadow cursor-pointer group relative"
                 onClick={() => navigate(`/campaigns/campaign/${campaign.id}`)}
               >
                 <CardHeader className="pb-3">
                   <div className="flex justify-between items-start gap-2">
                     <CardTitle className="text-lg line-clamp-1">{campaign.name}</CardTitle>
-                    {getStatusBadge(campaign.status)}
+                    <div className="flex items-center gap-2">
+                      {getStatusBadge(campaign.status)}
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                        onClick={(e) => handleDeleteClick(campaign.id, e)}
+                      >
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    </div>
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-3">
@@ -169,6 +222,26 @@ const CampaignsDashboard = () => {
           </div>
         )}
       </div>
+
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Excluir campanha</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja excluir esta campanha? Esta ação não pode ser desfeita.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleDeleteConfirm}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Excluir
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

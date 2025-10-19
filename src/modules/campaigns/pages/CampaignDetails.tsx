@@ -10,7 +10,9 @@ import { ptBR } from 'date-fns/locale';
 const CampaignDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { data: campaign, isLoading } = useCampaignDetails(id || null);
+  const { data: campaign, isLoading, error } = useCampaignDetails(id || null);
+
+  console.log('🔍 CampaignDetails:', { id, campaign, isLoading, error });
 
   const getStatusBadge = (status: string) => {
     const statusConfig = {
