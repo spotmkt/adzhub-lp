@@ -355,7 +355,6 @@ function InputForm({
             
             if (newMessage.role === 'assistant') {
               setIsLoadingResponse(false);
-              toast.success('Resposta recebida!');
             }
           }
         )
@@ -402,8 +401,6 @@ function InputForm({
       });
       
       if (error) throw error;
-      
-      toast.success('Pergunta enviada!');
       
       // Limpar o textarea
       if (ref && 'current' in ref && ref.current) {
