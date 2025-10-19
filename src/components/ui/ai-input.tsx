@@ -299,9 +299,12 @@ function InputForm({
 
     let channel: any = null;
     let retryTimeout: any = null;
+    let isSubscribed = false;
 
     // Configurar subscription do Realtime
     const setupRealtimeSubscription = async () => {
+      if (isSubscribed) return;
+      
       console.log('🔄 Tentando configurar Realtime para session:', sessionId);
       
       const { data: conversation, error } = await supabase
@@ -321,6 +324,7 @@ function InputForm({
         return;
       }
 
+      isSubscribed = true;
       console.log('✅ Conversa encontrada:', conversation.id);
 
       // Buscar mensagens existentes
@@ -374,6 +378,7 @@ function InputForm({
     setupRealtimeSubscription();
 
     return () => {
+      isSubscribed = true; // Prevenir novos setups
       if (retryTimeout) clearTimeout(retryTimeout);
       if (channel) {
         console.log('🔌 Desconectando Realtime');
@@ -408,9 +413,11 @@ function InputForm({
       
       if (error) throw error;
       
-      // Limpar o textarea imediatamente
-      const form = e.currentTarget;
-      form.reset();
+      // Limpar o textarea usando a ref
+      if (ref && 'current' in ref && ref.current) {
+        ref.current.value = '';
+        ref.current.focus();
+      }
     } catch (error) {
       console.error('Erro ao enviar pergunta:', error);
       toast.error('Erro ao enviar pergunta. Tente novamente.');
