@@ -263,7 +263,7 @@ function DockBar() {
     </footer>;
 }
 const FORM_WIDTH = 400;
-const FORM_HEIGHT = 450;
+const FORM_HEIGHT = 320;
 interface Message {
   role: 'user' | 'assistant';
   content: string;
