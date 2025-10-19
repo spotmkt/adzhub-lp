@@ -257,7 +257,7 @@ function DockBar() {
         </div>
 
         <Button type="button" className="flex h-fit flex-1 justify-end rounded-full px-2 !py-0.5" variant="ghost" onClick={triggerOpen}>
-          <span className="truncate">Pergunte ao Adz</span>
+          <span className="truncate">Respostas rápidas e diretas</span>
         </Button>
       </div>
     </footer>;
@@ -440,7 +440,7 @@ function InputForm({
         mass: 0.7
       }} className="flex h-full flex-col p-1">
             <div className="flex justify-between py-1">
-              <p className="text-foreground z-2 ml-[38px] flex items-center gap-[6px] select-none">Pergunte ao Adz</p>
+              <p className="text-foreground z-2 ml-[38px] flex items-center gap-[6px] select-none">Respostas rápidas e diretas</p>
               <button 
                 type="submit" 
                 ref={btnRef} 
