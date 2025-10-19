@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.54.0';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -11,7 +12,7 @@ serve(async (req) => {
   }
 
   try {
-    const { session_id, page, message } = await req.json();
+    const { session_id, page, message, user_id } = await req.json();
 
     console.log('📨 Recebendo pergunta para AI...');
     console.log('Session ID:', session_id);
@@ -30,6 +31,58 @@ serve(async (req) => {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         }
       );
+    }
+
+    // Inicializar cliente Supabase
+    const supabaseUrl = Deno.env.get('SUPABASE_URL');
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+    
+    if (!supabaseUrl || !supabaseServiceKey) {
+      throw new Error('Supabase configuration missing');
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+    // Criar ou buscar a conversa
+    let conversationId;
+    const { data: existingConv } = await supabase
+      .from('ai_conversations')
+      .select('id')
+      .eq('session_id', session_id)
+      .single();
+
+    if (existingConv) {
+      conversationId = existingConv.id;
+    } else {
+      const { data: newConv, error: convError } = await supabase
+        .from('ai_conversations')
+        .insert({
+          session_id,
+          page,
+          user_id: user_id || null
+        })
+        .select('id')
+        .single();
+
+      if (convError) {
+        console.error('❌ Erro ao criar conversa:', convError);
+        throw convError;
+      }
+      conversationId = newConv.id;
+    }
+
+    // Salvar a mensagem do usuário
+    const { error: messageError } = await supabase
+      .from('ai_messages')
+      .insert({
+        conversation_id: conversationId,
+        role: 'user',
+        content: message
+      });
+
+    if (messageError) {
+      console.error('❌ Erro ao salvar mensagem:', messageError);
+      throw messageError;
     }
 
     // URL do webhook n8n

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useEffect, useState } from "react";
 interface OrbProps {
   dimension?: string;
   className?: string;
@@ -261,8 +262,14 @@ function DockBar() {
       </div>
     </footer>;
 }
-const FORM_WIDTH = 360;
-const FORM_HEIGHT = 200;
+const FORM_WIDTH = 400;
+const FORM_HEIGHT = 450;
+interface Message {
+  role: 'user' | 'assistant';
+  content: string;
+  created_at: string;
+}
+
 function InputForm({
   ref,
   onSuccess
@@ -277,6 +284,63 @@ function InputForm({
   const btnRef = React.useRef<HTMLButtonElement>(null);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [sessionId] = React.useState(() => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [isLoadingResponse, setIsLoadingResponse] = useState(false);
+
+  // Subscrever às mensagens da conversa
+  useEffect(() => {
+    if (!sessionId) return;
+
+    // Buscar mensagens existentes
+    const fetchMessages = async () => {
+      const { data: conversation } = await supabase
+        .from('ai_conversations')
+        .select('id')
+        .eq('session_id', sessionId)
+        .single();
+
+      if (conversation) {
+        const { data: msgs } = await supabase
+          .from('ai_messages')
+          .select('*')
+          .eq('conversation_id', conversation.id)
+          .order('created_at', { ascending: true });
+
+        if (msgs) {
+          setMessages(msgs as Message[]);
+        }
+      }
+    };
+
+    fetchMessages();
+
+    // Configurar realtime subscription
+    const channel = supabase
+      .channel('ai-messages-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'ai_messages',
+          filter: `conversation_id=in.(SELECT id FROM ai_conversations WHERE session_id='${sessionId}')`
+        },
+        (payload) => {
+          console.log('Nova mensagem recebida:', payload);
+          const newMessage = payload.new as Message;
+          setMessages(prev => [...prev, newMessage]);
+          
+          if (newMessage.role === 'assistant') {
+            setIsLoadingResponse(false);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [sessionId]);
   
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -287,22 +351,24 @@ function InputForm({
     if (!message?.trim() || isSubmitting) return;
     
     setIsSubmitting(true);
+    setIsLoadingResponse(true);
     
     try {
       const page = window.location.pathname;
+      const { data: { user } } = await supabase.auth.getUser();
       
       const { data, error } = await supabase.functions.invoke('ask-ai', {
         body: {
           session_id: sessionId,
           page: page,
-          message: message.trim()
+          message: message.trim(),
+          user_id: user?.id || null
         }
       });
       
       if (error) throw error;
       
-      toast.success('Pergunta enviada com sucesso!');
-      onSuccess();
+      toast.success('Pergunta enviada!');
       
       // Limpar o textarea
       if (ref && 'current' in ref && ref.current) {
@@ -311,6 +377,7 @@ function InputForm({
     } catch (error) {
       console.error('Erro ao enviar pergunta:', error);
       toast.error('Erro ao enviar pergunta. Tente novamente.');
+      setIsLoadingResponse(false);
     } finally {
       setIsSubmitting(false);
     }
@@ -352,7 +419,32 @@ function InputForm({
                 <KeyHint className="w-fit">{isSubmitting ? '...' : 'Enter'}</KeyHint>
               </button>
             </div>
-            <textarea ref={ref} placeholder="Pergunte qualquer coisa..." name="message" className="h-full w-full resize-none scroll-py-2 rounded-md p-4 outline-0 bg-muted" required onKeyDown={handleKeys} spellCheck={false} />
+            
+            {/* Histórico de mensagens */}
+            {messages.length > 0 && (
+              <div className="flex-1 overflow-y-auto px-4 py-2 space-y-2 mb-2">
+                {messages.map((msg, idx) => (
+                  <div 
+                    key={idx}
+                    className={cn(
+                      "text-sm p-2 rounded",
+                      msg.role === 'user' 
+                        ? "bg-primary/10 text-foreground ml-8" 
+                        : "bg-muted text-foreground mr-8"
+                    )}
+                  >
+                    {msg.content}
+                  </div>
+                ))}
+                {isLoadingResponse && (
+                  <div className="text-sm p-2 rounded bg-muted text-foreground mr-8 animate-pulse">
+                    Aguardando resposta...
+                  </div>
+                )}
+              </div>
+            )}
+            
+            <textarea ref={ref} placeholder="Pergunte qualquer coisa..." name="message" className="min-h-[60px] w-full resize-none scroll-py-2 rounded-md p-4 outline-0 bg-muted" required onKeyDown={handleKeys} spellCheck={false} />
           </motion.div>}
       </AnimatePresence>
 
