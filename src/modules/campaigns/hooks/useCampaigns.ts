@@ -38,7 +38,6 @@ export const useCampaigns = (status?: Campaign['status']) => {
         .from('campaigns')
         .select(`
           *,
-          metrics:campaign_metrics(*),
           recipients:campaign_recipients(*)
         `)
         .order('created_at', { ascending: false });
@@ -55,14 +54,7 @@ export const useCampaigns = (status?: Campaign['status']) => {
 
       if (!data) return [];
 
-      // Calculate responded_count
-      return data.map((campaign: any) => ({
-        ...campaign,
-        metrics: campaign.metrics ? {
-          ...campaign.metrics,
-          responded_count: campaign.recipients?.filter((r: any) => r.respond === true).length || 0
-        } : undefined
-      })) as CampaignWithMetrics[];
+      return data as CampaignWithMetrics[];
     },
     staleTime: 30 * 1000, // Reduced to 30 seconds for more frequent updates
     refetchOnWindowFocus: true, // Enable refetch on focus to catch updates
@@ -79,7 +71,6 @@ export const useCampaignDetails = (campaignId: string | null) => {
         .from('campaigns')
         .select(`
           *,
-          metrics:campaign_metrics(*),
           recipients:campaign_recipients(*)
         `)
         .eq('id', campaignId)
