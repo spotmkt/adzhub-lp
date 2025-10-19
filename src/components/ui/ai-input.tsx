@@ -395,6 +395,11 @@ function InputForm({
     
     if (!message?.trim() || isSubmitting) return;
     
+    // Limpar o textarea IMEDIATAMENTE antes de enviar
+    if (ref && 'current' in ref && ref.current) {
+      ref.current.value = '';
+    }
+    
     setIsSubmitting(true);
     setIsLoadingResponse(true);
     
@@ -412,12 +417,6 @@ function InputForm({
       });
       
       if (error) throw error;
-      
-      // Limpar o textarea usando a ref
-      if (ref && 'current' in ref && ref.current) {
-        ref.current.value = '';
-        ref.current.focus();
-      }
     } catch (error) {
       console.error('Erro ao enviar pergunta:', error);
       toast.error('Erro ao enviar pergunta. Tente novamente.');
