@@ -292,56 +292,86 @@ function InputForm({
     if (!sessionId) return;
 
     let channel: any = null;
+    let retryTimeout: any = null;
 
-    // Buscar mensagens existentes e configurar subscription
+    // Configurar subscription do Realtime
     const setupRealtimeSubscription = async () => {
-      const { data: conversation } = await supabase
+      console.log('🔄 Tentando configurar Realtime para session:', sessionId);
+      
+      const { data: conversation, error } = await supabase
         .from('ai_conversations')
         .select('id')
         .eq('session_id', sessionId)
-        .single();
+        .maybeSingle();
 
-      if (conversation) {
-        // Buscar mensagens existentes
-        const { data: msgs } = await supabase
-          .from('ai_messages')
-          .select('*')
-          .eq('conversation_id', conversation.id)
-          .order('created_at', { ascending: true });
-
-        if (msgs) {
-          setMessages(msgs as Message[]);
-        }
-
-        // Configurar realtime subscription com o conversation_id correto
-        channel = supabase
-          .channel(`ai-messages-${conversation.id}`)
-          .on(
-            'postgres_changes',
-            {
-              event: 'INSERT',
-              schema: 'public',
-              table: 'ai_messages',
-              filter: `conversation_id=eq.${conversation.id}`
-            },
-            (payload) => {
-              console.log('Nova mensagem recebida:', payload);
-              const newMessage = payload.new as Message;
-              setMessages(prev => [...prev, newMessage]);
-              
-              if (newMessage.role === 'assistant') {
-                setIsLoadingResponse(false);
-              }
-            }
-          )
-          .subscribe();
+      if (error) {
+        console.error('❌ Erro ao buscar conversa:', error);
+        return;
       }
+
+      if (!conversation) {
+        console.log('⏳ Conversa ainda não existe, tentando novamente em 2s...');
+        retryTimeout = setTimeout(setupRealtimeSubscription, 2000);
+        return;
+      }
+
+      console.log('✅ Conversa encontrada:', conversation.id);
+
+      // Buscar mensagens existentes
+      const { data: msgs } = await supabase
+        .from('ai_messages')
+        .select('*')
+        .eq('conversation_id', conversation.id)
+        .order('created_at', { ascending: true });
+
+      if (msgs && msgs.length > 0) {
+        console.log('📨 Carregando', msgs.length, 'mensagens existentes');
+        setMessages(msgs as Message[]);
+      }
+
+      // Configurar realtime subscription
+      console.log('🔔 Configurando Realtime subscription...');
+      channel = supabase
+        .channel(`ai-messages-${conversation.id}`)
+        .on(
+          'postgres_changes',
+          {
+            event: 'INSERT',
+            schema: 'public',
+            table: 'ai_messages',
+            filter: `conversation_id=eq.${conversation.id}`
+          },
+          (payload) => {
+            console.log('✉️ Nova mensagem recebida via Realtime:', payload.new);
+            const newMessage = payload.new as Message;
+            
+            setMessages(prev => {
+              // Evitar duplicatas
+              if (prev.some(m => m.created_at === newMessage.created_at && m.content === newMessage.content)) {
+                return prev;
+              }
+              return [...prev, newMessage];
+            });
+            
+            if (newMessage.role === 'assistant') {
+              setIsLoadingResponse(false);
+              toast.success('Resposta recebida!');
+            }
+          }
+        )
+        .subscribe((status) => {
+          console.log('📡 Status do Realtime:', status);
+        });
+
+      console.log('✅ Realtime configurado com sucesso!');
     };
 
     setupRealtimeSubscription();
 
     return () => {
+      if (retryTimeout) clearTimeout(retryTimeout);
       if (channel) {
+        console.log('🔌 Desconectando Realtime');
         supabase.removeChannel(channel);
       }
     };
