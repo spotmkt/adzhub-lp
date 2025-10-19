@@ -5,6 +5,8 @@ import { cx } from "class-variance-authority";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 interface OrbProps {
   dimension?: string;
   className?: string;
@@ -273,13 +275,49 @@ function InputForm({
     showForm
   } = useFormContext();
   const btnRef = React.useRef<HTMLButtonElement>(null);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [sessionId] = React.useState(() => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
+  
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    onSuccess();
+    
+    const formData = new FormData(e.currentTarget);
+    const message = formData.get('message') as string;
+    
+    if (!message?.trim() || isSubmitting) return;
+    
+    setIsSubmitting(true);
+    
+    try {
+      const page = window.location.pathname;
+      
+      const { data, error } = await supabase.functions.invoke('ask-ai', {
+        body: {
+          session_id: sessionId,
+          page: page,
+          message: message.trim()
+        }
+      });
+      
+      if (error) throw error;
+      
+      toast.success('Pergunta enviada com sucesso!');
+      onSuccess();
+      
+      // Limpar o textarea
+      if (ref && 'current' in ref && ref.current) {
+        ref.current.value = '';
+      }
+    } catch (error) {
+      console.error('Erro ao enviar pergunta:', error);
+      toast.error('Erro ao enviar pergunta. Tente novamente.');
+    } finally {
+      setIsSubmitting(false);
+    }
   }
   function handleKeys(e: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (e.key === "Escape") triggerClose();
-    if (e.key === "Enter" && e.metaKey) {
+    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
       e.preventDefault();
       btnRef.current?.click();
     }
@@ -304,9 +342,14 @@ function InputForm({
       }} className="flex h-full flex-col p-1">
             <div className="flex justify-between py-1">
               <p className="text-foreground z-2 ml-[38px] flex items-center gap-[6px] select-none">Pergunte ao Adz</p>
-              <button type="submit" ref={btnRef} className="text-foreground right-4 mt-1 flex -translate-y-[3px] cursor-pointer items-center justify-center gap-1 rounded-[12px] bg-transparent pr-1 text-center select-none">
+              <button 
+                type="submit" 
+                ref={btnRef} 
+                disabled={isSubmitting}
+                className="text-foreground right-4 mt-1 flex -translate-y-[3px] cursor-pointer items-center justify-center gap-1 rounded-[12px] bg-transparent pr-1 text-center select-none disabled:opacity-50 disabled:cursor-not-allowed"
+              >
                 <KeyHint>⌘</KeyHint>
-                <KeyHint className="w-fit">Enter</KeyHint>
+                <KeyHint className="w-fit">{isSubmitting ? '...' : 'Enter'}</KeyHint>
               </button>
             </div>
             <textarea ref={ref} placeholder="Pergunte qualquer coisa..." name="message" className="h-full w-full resize-none scroll-py-2 rounded-md p-4 outline-0 bg-muted" required onKeyDown={handleKeys} spellCheck={false} />
