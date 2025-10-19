@@ -224,27 +224,60 @@ const SummaryScreen = ({ formData, onBack }: SummaryScreenProps) => {
         console.log("Arquivo CSV adicionado como binário:", formData.csvFile.name);
       }
 
-      // Determinar o webhook baseado no tipo de disparo
-      let webhookUrl: string;
-      
+      // Preparar dados para enviar à edge function (apenas para disparos instantâneos)
       if (formData.dispatchType === 'instant') {
-        // Webhook para disparo instantâneo
-        webhookUrl = 'https://n8n-n8n.ascl7r.easypanel.host/webhook/871c12da-9ea0-4c92-abd2-0c8b8eac106a';
-        console.log("Enviando para webhook de disparo instantâneo");
+        console.log("Enviando para edge function de disparo instantâneo");
         
-        const response = await fetch(webhookUrl, {
-          method: 'POST',
-          mode: 'no-cors',
-          body: formDataPayload,
+        // Converter FormData para objeto para enviar como JSON
+        const campaignData: any = {
+          campaign_id: campaignId,
+          user_id: user.id,
+          campaign_name: formData.campaignName || `Campanha ${formData.instanceName.toLowerCase()} - ${new Date().toLocaleDateString()}`,
+          instance_name: formData.instanceName.toLowerCase(),
+          instance_id: instanceData.instance_id || '',
+          message_content: formData.message,
+          is_scheduled: false,
+          csv_lines: formData.csvLines,
+          timestamp: new Date().toISOString(),
+          campaign_data: JSON.stringify([campaignPayload]),
+        };
+
+        // Adicionar informações do mapeamento
+        if (formData.columnMapping) {
+          campaignData.mapping_mode = formData.columnMapping.mode;
+          campaignData.name_column = formData.columnMapping.nameColumn || '';
+          campaignData.phone_column = formData.columnMapping.phoneColumn;
+          
+          if (formData.columnMapping.mode === 'advanced' && formData.columnMapping.selectedColumns) {
+            campaignData.selected_columns = JSON.stringify(formData.columnMapping.selectedColumns);
+          }
+        }
+
+        // Adicionar dados dos recipients
+        if (formData.mappedData) {
+          campaignData.recipients_data = JSON.stringify(formData.mappedData);
+        }
+
+        // Adicionar URL da imagem se existir
+        if (formData.imageUrl) {
+          console.log('🖼️ Adicionando image_url ao payload:', formData.imageUrl);
+          campaignData.image_url = formData.imageUrl;
+        }
+
+        const { data, error } = await supabase.functions.invoke('dispatch-campaign', {
+          body: campaignData,
         });
         
-        console.log("Requisição enviada com sucesso para o webhook instantâneo");
+        if (error) {
+          console.error("Erro ao enviar para edge function:", error);
+          throw error;
+        }
+        
+        console.log("Requisição enviada com sucesso para a edge function:", data);
       } else {
         // Para disparo agendado, apenas salva no banco (webhook não é executado)
         console.log("Disparo agendado - apenas salvando no banco de dados, sem executar webhook");
       }
-
-      console.log("Requisição enviada com sucesso para o n8n");
 
       setIsSuccess(true);
       toast({

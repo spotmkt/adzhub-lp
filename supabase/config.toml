@@ -1,5 +1,8 @@
 project_id = "xciubsogktecqcgafwaa"
 
+[functions.dispatch-campaign]
+verify_jwt = false
+
 [functions.task-generation-handler]
 verify_jwt = true
 
