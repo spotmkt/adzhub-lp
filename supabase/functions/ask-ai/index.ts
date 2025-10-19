@@ -49,11 +49,13 @@ serve(async (req) => {
       .from('ai_conversations')
       .select('id')
       .eq('session_id', session_id)
-      .single();
+      .maybeSingle();
 
     if (existingConv) {
+      console.log('✅ Conversa existente encontrada:', existingConv.id);
       conversationId = existingConv.id;
     } else {
+      console.log('🆕 Criando nova conversa...');
       const { data: newConv, error: convError } = await supabase
         .from('ai_conversations')
         .insert({
@@ -68,6 +70,7 @@ serve(async (req) => {
         console.error('❌ Erro ao criar conversa:', convError);
         throw convError;
       }
+      console.log('✅ Nova conversa criada:', newConv.id);
       conversationId = newConv.id;
     }
 

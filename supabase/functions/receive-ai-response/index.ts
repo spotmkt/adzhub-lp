@@ -47,12 +47,19 @@ serve(async (req) => {
       .from('ai_conversations')
       .select('id')
       .eq('session_id', session_id)
-      .single();
+      .maybeSingle();
 
     if (convError) {
       console.error('❌ Erro ao buscar conversa:', convError);
-      throw new Error('Conversa não encontrada');
+      throw new Error('Erro ao buscar conversa');
     }
+
+    if (!conversation) {
+      console.error('❌ Conversa não encontrada para session_id:', session_id);
+      throw new Error('Conversa não encontrada. Verifique se o session_id está correto.');
+    }
+
+    console.log('✅ Conversa encontrada:', conversation.id);
 
     // Inserir a resposta do assistente
     const { error: messageError } = await supabase
