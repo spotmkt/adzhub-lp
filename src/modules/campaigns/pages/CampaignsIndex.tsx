@@ -230,15 +230,33 @@ const CampaignsIndex = () => {
     }
 
     try {
+      console.log('📋 Processando dados colados...');
+      console.log('Dados brutos:', pastedData);
+      
       // Convert pasted data to CSV format
       const lines = pastedData.trim().split('\n');
+      console.log('Linhas encontradas:', lines.length);
+      
       const data = lines.map(line => line.split('\t'));
+      console.log('Dados processados:', data);
+      
+      if (data.length < 2) {
+        toast({
+          title: 'Dados insuficientes',
+          description: 'Cole pelo menos uma linha de cabeçalho e uma linha de dados',
+          variant: 'destructive'
+        });
+        return;
+      }
       
       setCsvData(data);
       setCsvHeaders(data[0]);
       setCsvLines(data.length - 1);
       setShowMappingModal(true);
+      
+      console.log('✅ Dados processados com sucesso');
     } catch (error: any) {
+      console.error('❌ Erro ao processar dados:', error);
       toast({
         title: 'Erro ao processar dados',
         description: error.message,
@@ -279,6 +297,11 @@ const CampaignsIndex = () => {
 
   // Handle form submission
   const handleContinue = () => {
+    console.log('🔍 Validando dados antes de continuar...');
+    console.log('CSV Data:', csvData.length, 'linhas');
+    console.log('Mapped Data:', mappedData.length, 'contatos');
+    console.log('Column Mapping:', columnMapping);
+    
     // Validation
     if (!selectedInstance) {
       toast({
@@ -289,10 +312,10 @@ const CampaignsIndex = () => {
       return;
     }
 
-    if (!csvFile && !pastedData) {
+    if (!csvFile && !pastedData && !selectedContactList) {
       toast({
         title: 'Contatos não carregados',
-        description: 'Faça upload de um arquivo CSV ou cole os dados',
+        description: 'Faça upload de um arquivo CSV, cole os dados ou selecione uma base de contatos',
         variant: 'destructive'
       });
       return;
@@ -302,6 +325,15 @@ const CampaignsIndex = () => {
       toast({
         title: 'Mapeamento não configurado',
         description: 'Configure o mapeamento das colunas',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    if (mappedData.length === 0) {
+      toast({
+        title: 'Nenhum contato processado',
+        description: 'Verifique o mapeamento e tente novamente',
         variant: 'destructive'
       });
       return;
@@ -325,6 +357,7 @@ const CampaignsIndex = () => {
       return;
     }
 
+    console.log('✅ Validação OK, continuando para resumo');
     setShowSummary(true);
   };
 
