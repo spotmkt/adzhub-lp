@@ -270,13 +270,9 @@ interface Message {
   created_at: string;
 }
 
-function InputForm({
-  ref,
-  onSuccess
-}: {
-  ref: React.Ref<HTMLTextAreaElement>;
+const InputForm = React.forwardRef<HTMLTextAreaElement, {
   onSuccess: () => void;
-}) {
+}>((props, ref) => {
   const {
     triggerClose,
     showForm
@@ -510,7 +506,7 @@ function InputForm({
           </motion.div>}
       </AnimatePresence>
     </form>;
-}
+});
 function KeyHint({
   children,
   className
