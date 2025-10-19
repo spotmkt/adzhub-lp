@@ -282,10 +282,16 @@ function InputForm({
     showForm
   } = useFormContext();
   const btnRef = React.useRef<HTMLButtonElement>(null);
+  const messagesEndRef = React.useRef<HTMLDivElement>(null);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [sessionId] = React.useState(() => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoadingResponse, setIsLoadingResponse] = useState(false);
+
+  // Auto-scroll ao receber novas mensagens
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
   // Subscrever às mensagens da conversa
   useEffect(() => {
@@ -402,10 +408,9 @@ function InputForm({
       
       if (error) throw error;
       
-      // Limpar o textarea
-      if (ref && 'current' in ref && ref.current) {
-        ref.current.value = '';
-      }
+      // Limpar o textarea imediatamente
+      const form = e.currentTarget;
+      form.reset();
     } catch (error) {
       console.error('Erro ao enviar pergunta:', error);
       toast.error('Erro ao enviar pergunta. Tente novamente.');
@@ -472,6 +477,7 @@ function InputForm({
                     Aguardando resposta...
                   </div>
                 )}
+                <div ref={messagesEndRef} />
               </div>
             )}
             
