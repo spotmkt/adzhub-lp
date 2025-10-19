@@ -30,21 +30,28 @@ export const sanitizePhoneNumber = (value: any): string => {
   // Formato: +55 (11) xxxx-xxxx = +5511 xxxxxxxx (12 dígitos)
   
   if (phone.startsWith('+55')) {
-    // Remover zeros extras no final se o número tiver mais de 13 dígitos
-    while (phone.length > 13 && phone.endsWith('0')) {
+    // Telefones brasileiros válidos:
+    // +55 11 91234-5678 = +5511912345678 (14 dígitos - celular com 9)
+    // +55 11 1234-5678 = +55111234567 (13 dígitos - fixo)
+    
+    // Remover zeros extras no final APENAS se tiver muito mais que 14 dígitos
+    while (phone.length > 14 && phone.endsWith('0')) {
       phone = phone.slice(0, -1);
     }
-    // Se após remover ainda tem mais de 13, é provável que seja erro
-    if (phone.length > 13) {
-      phone = phone.substring(0, 13);
+    
+    // Se após remover ainda tem mais de 14, é provável que seja erro
+    // Mas permitir até 14 para celulares válidos
+    if (phone.length > 14) {
+      phone = phone.substring(0, 14);
     }
   } else if (phone.startsWith('55') && !phone.startsWith('+')) {
     // Número sem + mas com código do país
-    while (phone.length > 12 && phone.endsWith('0')) {
+    // Permitir até 13 dígitos (55 + DDD + 9 + 8 dígitos)
+    while (phone.length > 13 && phone.endsWith('0')) {
       phone = phone.slice(0, -1);
     }
-    if (phone.length > 12) {
-      phone = phone.substring(0, 12);
+    if (phone.length > 13) {
+      phone = phone.substring(0, 13);
     }
   }
   
@@ -81,12 +88,13 @@ export const isValidPhoneNumber = (phone: string): boolean => {
 export const formatPhoneDisplay = (phone: string): string => {
   const cleaned = sanitizePhoneNumber(phone);
   
-  // Formato brasileiro: +55 (11) 91234-5678
-  if (cleaned.startsWith('+55') && cleaned.length === 13) {
+  // Formato brasileiro: +55 (11) 91234-5678 (14 dígitos - celular)
+  if (cleaned.startsWith('+55') && cleaned.length === 14) {
     return `+55 (${cleaned.slice(3, 5)}) ${cleaned.slice(5, 10)}-${cleaned.slice(10)}`;
   }
   
-  if (cleaned.startsWith('+55') && cleaned.length === 12) {
+  // Formato brasileiro: +55 (11) 1234-5678 (13 dígitos - fixo)
+  if (cleaned.startsWith('+55') && cleaned.length === 13) {
     return `+55 (${cleaned.slice(3, 5)}) ${cleaned.slice(5, 9)}-${cleaned.slice(9)}`;
   }
   
