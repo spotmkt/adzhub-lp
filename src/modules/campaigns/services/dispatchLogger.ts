@@ -101,20 +101,6 @@ export const logDispatch = async (
       }
     }
 
-    // Legacy logging for backward compatibility
-    await supabase
-      .from('dispatch_logs' as any)
-      .insert({
-        user_id: userId,
-        instance_name: formData.instanceName.toLowerCase(),
-        message_content: formData.message,
-        template_used: templateName || null,
-        scheduled_for: formData.data_agendamento?.toISOString() || null,
-        recipient_count: formData.csvLines,
-        status: formData.dispatchType === 'scheduled' ? 'scheduled' : 'send',
-        campaign_name: campaign.name,
-      });
-
     return campaign.id;
   } catch (error) {
     console.error('Error logging dispatch:', error);
