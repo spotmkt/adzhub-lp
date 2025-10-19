@@ -1,134 +1,143 @@
 import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { 
+  MoreVertical, 
+  Eye, 
+  Edit, 
+  Copy, 
+  Trash2, 
+  FileText,
+  Calendar,
+  Clock,
+  Users,
+  CheckCircle2,
+  XCircle,
+  Loader2,
+  Image as ImageIcon
+} from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Calendar, MessageSquare, Users, Clock, CheckCircle, XCircle, MoreVertical, Edit2, Copy, Trash2 } from 'lucide-react';
+import { Label } from '@/components/ui/label';
 import { format } from 'date-fns';
-
-// Type definition for campaign with metrics
-export interface CampaignMetrics {
-  total_recipients: number;
-  sent_count: number;
-  failed_count: number;
-}
-
-export interface CampaignWithMetrics {
-  id: string;
-  name: string;
-  status: string;
-  instance_label: string;
-  message_content?: string;
-  scheduled_for?: string;
-  completed_at?: string;
-  started_at?: string;
-  created_at: string;
-  metrics?: CampaignMetrics[];
-}
+import { ptBR } from 'date-fns/locale';
 
 interface CampaignCardProps {
-  campaign: CampaignWithMetrics;
-  onView?: (campaign: CampaignWithMetrics) => void;
-  onEdit?: (campaign: CampaignWithMetrics) => void;
-  onRename?: (campaign: CampaignWithMetrics, newName: string) => void;
-  onDuplicate?: (campaign: CampaignWithMetrics) => void;
-  onDelete?: (campaign: CampaignWithMetrics) => void;
+  campaign: any;
+  onView: (campaign: any) => void;
+  onEdit: (campaign: any) => void;
+  onRename: (campaign: any, newName: string) => void;
+  onDuplicate: (campaign: any) => void;
+  onDelete: (campaign: any) => void;
 }
 
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case 'draft': return 'bg-muted text-muted-foreground';
-    case 'scheduled': return 'bg-primary/10 text-primary';
-    case 'processing': return 'bg-accent text-accent-foreground';
-    case 'completed': return 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-300';
-    case 'cancelled': return 'bg-destructive/10 text-destructive';
-    default: return 'bg-muted text-muted-foreground';
-  }
-};
+export const CampaignCard: React.FC<CampaignCardProps> = ({
+  campaign,
+  onView,
+  onEdit,
+  onRename,
+  onDuplicate,
+  onDelete,
+}) => {
+  const [renameDialogOpen, setRenameDialogOpen] = useState(false);
+  const [newName, setNewName] = useState(campaign.name);
 
-const getStatusLabel = (status: string) => {
-  switch (status) {
-    case 'draft': return 'Rascunho';
-    case 'scheduled': return 'Agendado';
-    case 'processing': return 'Processando';
-    case 'completed': return 'Concluído';
-    case 'cancelled': return 'Cancelado';
-    default: return status;
-  }
-};
+  const getStatusBadge = (status: string) => {
+    const statusConfig = {
+      draft: { label: 'Rascunho', variant: 'secondary' as const, icon: FileText },
+      scheduled: { label: 'Agendada', variant: 'default' as const, icon: Calendar },
+      processing: { label: 'Enviando', variant: 'default' as const, icon: Loader2 },
+      completed: { label: 'Concluída', variant: 'default' as const, icon: CheckCircle2 },
+      cancelled: { label: 'Cancelada', variant: 'destructive' as const, icon: XCircle },
+    };
 
-export const CampaignCard = React.memo(({ campaign, onView, onEdit, onRename, onDuplicate, onDelete }: CampaignCardProps) => {
-  const metrics = campaign.metrics?.[0];
-  const [isEditing, setIsEditing] = useState(false);
-  const [editName, setEditName] = useState(campaign.name);
+    const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.draft;
+    const Icon = config.icon;
 
-  const handleNameSave = () => {
-    if (editName.trim() && editName !== campaign.name && onRename) {
-      onRename(campaign, editName.trim());
+    return (
+      <Badge variant={config.variant} className="gap-1">
+        <Icon className={`h-3 w-3 ${status === 'processing' ? 'animate-spin' : ''}`} />
+        {config.label}
+      </Badge>
+    );
+  };
+
+  const handleRename = () => {
+    onRename(campaign, newName);
+    setRenameDialogOpen(false);
+  };
+
+  const getCampaignDate = () => {
+    if (campaign.status === 'completed' && campaign.completed_at) {
+      return format(new Date(campaign.completed_at), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR });
+    } else if (campaign.status === 'scheduled' && campaign.scheduled_for) {
+      return format(new Date(campaign.scheduled_for), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR });
+    } else {
+      return format(new Date(campaign.created_at), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR });
     }
-    setIsEditing(false);
   };
 
-  const handleNameCancel = () => {
-    setEditName(campaign.name);
-    setIsEditing(false);
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleNameSave();
-    } else if (e.key === 'Escape') {
-      handleNameCancel();
-    }
-  };
+  const recipientsCount = campaign.recipients?.length || 0;
+  const sentCount = campaign.recipients?.filter((r: any) => r.status === 'sent').length || 0;
+  const failedCount = campaign.recipients?.filter((r: any) => r.status === 'failed').length || 0;
 
   return (
-    <Card className="hover:shadow-md transition-shadow">
-      <CardHeader className="pb-3">
-        <div className="flex items-start justify-between">
-          <div className="space-y-1 flex-1">
-            {isEditing ? (
-              <Input
-                value={editName}
-                onChange={(e) => setEditName(e.target.value)}
-                onBlur={handleNameSave}
-                onKeyDown={handleKeyPress}
-                className="text-lg font-semibold"
-                autoFocus
-              />
-            ) : (
-              <CardTitle className="text-lg font-semibold" title={campaign.name}>
-                {campaign.name || 'Sem nome'}
+    <>
+      <Card className="hover:shadow-lg transition-all duration-200 group">
+        <CardHeader className="pb-3">
+          <div className="flex items-start justify-between">
+            <div className="flex-1 min-w-0 pr-2">
+              <CardTitle className="text-lg truncate mb-2">
+                {campaign.name}
               </CardTitle>
-            )}
-            <CardDescription className="flex items-center gap-2">
-              <MessageSquare className="h-4 w-4" />
-              {campaign.instance_label}
-            </CardDescription>
-          </div>
-          <div className="flex items-center gap-2">
-            <Badge className={getStatusColor(campaign.status)}>
-              {getStatusLabel(campaign.status)}
-            </Badge>
+              {getStatusBadge(campaign.status)}
+            </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                >
                   <MoreVertical className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setIsEditing(true)}>
-                  <Edit2 className="h-4 w-4 mr-2" />
+                <DropdownMenuItem onClick={() => onView(campaign)}>
+                  <Eye className="h-4 w-4 mr-2" />
+                  Ver Detalhes
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => onEdit(campaign)}>
+                  <Edit className="h-4 w-4 mr-2" />
+                  Editar
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setRenameDialogOpen(true)}>
+                  <FileText className="h-4 w-4 mr-2" />
                   Renomear
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => onDuplicate?.(campaign)}>
+                <DropdownMenuItem onClick={() => onDuplicate(campaign)}>
                   <Copy className="h-4 w-4 mr-2" />
                   Duplicar
                 </DropdownMenuItem>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem 
-                  onClick={() => onDelete?.(campaign)}
-                  className="text-destructive"
+                  onClick={() => onDelete(campaign)}
+                  className="text-destructive focus:text-destructive"
                 >
                   <Trash2 className="h-4 w-4 mr-2" />
                   Excluir
@@ -136,87 +145,78 @@ export const CampaignCard = React.memo(({ campaign, onView, onEdit, onRename, on
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-        </div>
-      </CardHeader>
-
-      <CardContent className="space-y-4">
-        {/* Metrics */}
-        {metrics && (
-          <div className="grid grid-cols-3 gap-4 text-sm">
-            <div className="flex items-center gap-2">
-              <Users className="h-4 w-4 text-primary" />
-              <div>
-                <div className="font-medium">{metrics.total_recipients}</div>
-                <div className="text-muted-foreground">Total</div>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
-              <div>
-                <div className="font-medium">{metrics.sent_count}</div>
-                <div className="text-muted-foreground">Enviados</div>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <XCircle className="h-4 w-4 text-destructive" />
-              <div>
-                <div className="font-medium">{metrics.failed_count}</div>
-                <div className="text-muted-foreground">Falhas</div>
-              </div>
-            </div>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="flex items-center text-sm text-muted-foreground">
+            <Clock className="h-4 w-4 mr-2" />
+            {getCampaignDate()}
           </div>
-        )}
 
-        {/* Scheduled/Sent time */}
-        {campaign.status === 'scheduled' && campaign.scheduled_for && (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Calendar className="h-4 w-4" />
-            Agendado para {format(new Date(campaign.scheduled_for), 'dd/MM/yyyy HH:mm')}
+          <div className="flex items-center text-sm text-muted-foreground">
+            <Users className="h-4 w-4 mr-2" />
+            {recipientsCount} destinatários
+            {campaign.status === 'completed' && (
+              <span className="ml-2">
+                ({sentCount} enviados, {failedCount} falhas)
+              </span>
+            )}
           </div>
-        )}
-        
-        {campaign.status === 'completed' && (campaign.completed_at || campaign.started_at || campaign.scheduled_for) && (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Calendar className="h-4 w-4" />
-            Enviado em {format(new Date(campaign.completed_at || campaign.started_at || campaign.scheduled_for || ''), 'dd/MM/yyyy HH:mm')}
-          </div>
-        )}
 
-        {/* Created time */}
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Clock className="h-4 w-4" />
-          Criado em {format(new Date(campaign.created_at), 'dd/MM/yyyy HH:mm')}
-        </div>
-
-        {/* Message preview */}
-        {campaign.message_content && (
-          <div className="text-sm">
-            <div className="font-medium mb-1">Mensagem:</div>
-            <div className="text-muted-foreground bg-muted p-2 rounded text-xs">
-              {campaign.message_content.length > 100 
-                ? `${campaign.message_content.substring(0, 100)}...`
-                : campaign.message_content
-              }
+          {campaign.has_image && (
+            <div className="flex items-center text-sm text-muted-foreground">
+              <ImageIcon className="h-4 w-4 mr-2" />
+              Com imagem
             </div>
-          </div>
-        )}
-
-        {/* Actions */}
-        <div className="flex gap-2 pt-2">
-          {onView && (
-            <Button variant="outline" size="sm" onClick={() => onView(campaign)}>
-              Ver Detalhes
-            </Button>
           )}
-          {onEdit && campaign.status === 'draft' && (
-            <Button variant="outline" size="sm" onClick={() => onEdit(campaign)}>
-              Editar
+
+          <div className="pt-2">
+            <p className="text-sm text-muted-foreground line-clamp-2">
+              {campaign.message_content || 'Sem mensagem'}
+            </p>
+          </div>
+
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="w-full mt-2"
+            onClick={() => onView(campaign)}
+          >
+            <Eye className="h-4 w-4 mr-2" />
+            Ver Detalhes
+          </Button>
+        </CardContent>
+      </Card>
+
+      {/* Rename Dialog */}
+      <Dialog open={renameDialogOpen} onOpenChange={setRenameDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Renomear Campanha</DialogTitle>
+            <DialogDescription>
+              Digite o novo nome para a campanha
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="name">Nome da Campanha</Label>
+              <Input
+                id="name"
+                value={newName}
+                onChange={(e) => setNewName(e.target.value)}
+                placeholder="Digite o novo nome..."
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setRenameDialogOpen(false)}>
+              Cancelar
             </Button>
-          )}
-        </div>
-      </CardContent>
-    </Card>
+            <Button onClick={handleRename}>
+              Salvar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
-});
-
-CampaignCard.displayName = 'CampaignCard';
+};
