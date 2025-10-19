@@ -1320,6 +1320,39 @@ export type Database = {
           },
         ]
       }
+      exclusion_list: {
+        Row: {
+          created_at: string
+          id: string
+          identifier: string
+          identifier_type: string
+          metadata: Json | null
+          reason: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          identifier: string
+          identifier_type: string
+          metadata?: Json | null
+          reason?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          identifier?: string
+          identifier_type?: string
+          metadata?: Json | null
+          reason?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       image_templates: {
         Row: {
           created_at: string

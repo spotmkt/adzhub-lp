@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Plus, Search, Database, Wrench, Combine, X } from 'lucide-react';
+import { Plus, Search, Database, Wrench, Combine, X, Ban } from 'lucide-react';
 import { ContactListCard } from '../components/ContactListCard';
 import { ContactListDetailsDialog } from '../components/ContactListDetailsDialog';
 import { ContactMergeDialog } from '../components/ContactMergeDialog';
@@ -265,6 +265,10 @@ const ContactsLists = () => {
                 >
                   <Combine className="mr-2 h-4 w-4" />
                   Mesclar Bases
+                </Button>
+                <Button variant="outline" onClick={() => navigate('/apps/contacts/exclusion')}>
+                  <Ban className="mr-2 h-4 w-4" />
+                  Lista de Exclusão
                 </Button>
                 <Button variant="outline" onClick={() => navigate('/apps/contacts/fix-metadata')}>
                   <Wrench className="mr-2 h-4 w-4" />
