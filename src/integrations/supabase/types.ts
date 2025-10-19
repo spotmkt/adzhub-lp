@@ -652,8 +652,11 @@ export type Database = {
           created_at: string
           id: string
           metadata: Json | null
+          metadata_encrypted: string | null
           name: string | null
+          name_encrypted: string | null
           phone: string
+          phone_encrypted: string | null
           scheduler: string | null
           status: string
           updated_at: string
@@ -663,8 +666,11 @@ export type Database = {
           created_at?: string
           id?: string
           metadata?: Json | null
+          metadata_encrypted?: string | null
           name?: string | null
+          name_encrypted?: string | null
           phone: string
+          phone_encrypted?: string | null
           scheduler?: string | null
           status?: string
           updated_at?: string
@@ -674,8 +680,11 @@ export type Database = {
           created_at?: string
           id?: string
           metadata?: Json | null
+          metadata_encrypted?: string | null
           name?: string | null
+          name_encrypted?: string | null
           phone?: string
+          phone_encrypted?: string | null
           scheduler?: string | null
           status?: string
           updated_at?: string
@@ -686,6 +695,13 @@ export type Database = {
             columns: ["campaign_id"]
             isOneToOne: false
             referencedRelation: "campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "campaign_recipients_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "campaigns_with_decrypted_data"
             referencedColumns: ["id"]
           },
         ]
@@ -1139,6 +1155,30 @@ export type Database = {
           },
         ]
       }
+      contact_pseudonyms: {
+        Row: {
+          created_at: string | null
+          id: string
+          original_identifier_hash: string
+          pseudonym_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          original_identifier_hash: string
+          pseudonym_id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          original_identifier_hash?: string
+          pseudonym_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       contact_upload_jobs: {
         Row: {
           completed_at: string | null
@@ -1198,24 +1238,30 @@ export type Database = {
           created_at: string
           id: string
           identifier: string
+          identifier_encrypted: string | null
           list_id: string
           metadata: Json | null
+          metadata_encrypted: string | null
           source_list_id: string | null
         }
         Insert: {
           created_at?: string
           id?: string
           identifier: string
+          identifier_encrypted?: string | null
           list_id: string
           metadata?: Json | null
+          metadata_encrypted?: string | null
           source_list_id?: string | null
         }
         Update: {
           created_at?: string
           id?: string
           identifier?: string
+          identifier_encrypted?: string | null
           list_id?: string
           metadata?: Json | null
+          metadata_encrypted?: string | null
           source_list_id?: string | null
         }
         Relationships: [
@@ -1378,6 +1424,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      data_access_audit: {
+        Row: {
+          action: string
+          id: string
+          ip_address: unknown | null
+          metadata: Json | null
+          record_id: string | null
+          table_name: string
+          timestamp: string | null
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          action: string
+          id?: string
+          ip_address?: unknown | null
+          metadata?: Json | null
+          record_id?: string | null
+          table_name: string
+          timestamp?: string | null
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          action?: string
+          id?: string
+          ip_address?: unknown | null
+          metadata?: Json | null
+          record_id?: string | null
+          table_name?: string
+          timestamp?: string | null
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       exclusion_list: {
         Row: {
@@ -2279,12 +2361,57 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      campaigns_with_decrypted_data: {
+        Row: {
+          created_at: string | null
+          id: string | null
+          name: string | null
+          pending_count: number | null
+          sent_count: number | null
+          status: string | null
+          total_recipients: number | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
+      anonymize_user_data: {
+        Args: { p_user_id: string }
+        Returns: boolean
+      }
       binary_quantize: {
         Args: { "": string } | { "": unknown }
         Returns: unknown
+      }
+      decrypt_campaign_recipients: {
+        Args: { p_campaign_id: string }
+        Returns: {
+          campaign_id: string
+          id: string
+          metadata: Json
+          name: string
+          phone: string
+          scheduler: string
+          status: string
+        }[]
+      }
+      decrypt_pii: {
+        Args: { ciphertext: string; secret_name?: string }
+        Returns: string
+      }
+      encrypt_pii: {
+        Args: { plaintext: string; secret_name?: string }
+        Returns: string
+      }
+      export_user_data: {
+        Args: { p_user_id: string }
+        Returns: Json
+      }
+      get_or_create_pseudonym: {
+        Args: { p_identifier: string; p_user_id: string }
+        Returns: string
       }
       halfvec_avg: {
         Args: { "": number[] }
