@@ -315,8 +315,8 @@ const InputForm = React.forwardRef<HTMLTextAreaElement, {
       }
 
       if (!conversation) {
-        console.log('⏳ Conversa ainda não existe, tentando novamente em 2s...');
-        retryTimeout = setTimeout(setupRealtimeSubscription, 2000);
+        console.log('⏳ Conversa ainda não existe, tentando novamente em 1s...');
+        retryTimeout = setTimeout(setupRealtimeSubscription, 1000); // Reduzido de 2s para 1s
         return;
       }
 
@@ -333,6 +333,11 @@ const InputForm = React.forwardRef<HTMLTextAreaElement, {
       if (msgs && msgs.length > 0) {
         console.log('📨 Carregando', msgs.length, 'mensagens existentes');
         setMessages(msgs as Message[]);
+        // Desativar loading se já houver resposta do assistente
+        const hasAssistantResponse = msgs.some(m => m.role === 'assistant');
+        if (hasAssistantResponse) {
+          setIsLoadingResponse(false);
+        }
       }
 
       // Configurar realtime subscription
@@ -413,6 +418,39 @@ const InputForm = React.forwardRef<HTMLTextAreaElement, {
       });
       
       if (error) throw error;
+      
+      // Aguardar um pouco e então forçar reload das mensagens
+      // Isso garante que a resposta apareça mesmo se o Realtime ainda não conectou
+      setTimeout(async () => {
+        const { data: conversation } = await supabase
+          .from('ai_conversations')
+          .select('id')
+          .eq('session_id', sessionId)
+          .maybeSingle();
+        
+        if (conversation) {
+          const { data: msgs } = await supabase
+            .from('ai_messages')
+            .select('*')
+            .eq('conversation_id', conversation.id)
+            .order('created_at', { ascending: true });
+          
+          if (msgs && msgs.length > 0) {
+            setMessages(msgs as Message[]);
+            // Verificar se há resposta do assistente
+            const hasAssistantResponse = msgs.some(m => m.role === 'assistant');
+            if (hasAssistantResponse) {
+              setIsLoadingResponse(false);
+            }
+          }
+        }
+      }, 2000);
+      
+      // Failsafe: desativar loading após 10s se ainda não foi desativado
+      setTimeout(() => {
+        setIsLoadingResponse(false);
+      }, 10000);
+      
     } catch (error) {
       console.error('Erro ao enviar pergunta:', error);
       toast.error('Erro ao enviar pergunta. Tente novamente.');
