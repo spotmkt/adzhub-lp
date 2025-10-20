@@ -1,4 +1,5 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.54.0'
+import { decryptData, decryptJSON } from './decrypt.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -28,24 +29,61 @@ Deno.serve(async (req) => {
 
     const supabase = createClient(supabaseUrl, supabaseKey)
 
-    // Descriptografar os destinatários usando a função do banco
-    console.log('🔓 Descriptografando destinatários...')
-    const { data: decryptedRecipients, error: decryptError } = await supabase
-      .rpc('decrypt_campaign_recipients', {
-        p_campaign_id: campaignData.campaign_id
+    // Buscar chave de criptografia do vault
+    const { data: secretData, error: secretError } = await supabase
+      .from('vault.decrypted_secrets')
+      .select('decrypted_secret')
+      .eq('name', 'pii_encryption_key')
+      .single();
+
+    if (secretError || !secretData) {
+      console.error('❌ Erro ao buscar chave do vault:', secretError);
+      throw new Error('Chave de criptografia não encontrada');
+    }
+
+    const encryptionKey = secretData.decrypted_secret as string;
+
+    // Buscar recipients criptografados do banco
+    console.log('🔓 Buscando recipients criptografados...')
+    const { data: encryptedRecipients, error: fetchError } = await supabase
+      .from('campaign_recipients')
+      .select('id, name_encrypted, phone_encrypted, metadata_encrypted, status, scheduler')
+      .eq('campaign_id', campaignData.campaign_id);
+
+    if (fetchError) {
+      console.error('❌ Erro ao buscar recipients:', fetchError);
+      throw new Error(`Falha ao buscar recipients: ${fetchError.message}`);
+    }
+
+    if (!encryptedRecipients || encryptedRecipients.length === 0) {
+      console.warn('⚠️ Nenhum recipient encontrado para a campanha')
+      throw new Error('Nenhum recipient encontrado')
+    }
+
+    // Descriptografar cada recipient usando Web Crypto API
+    console.log('🔓 Descriptografando recipients...')
+    const decryptedRecipients = await Promise.all(
+      encryptedRecipients.map(async (recipient) => {
+        try {
+          return {
+            id: recipient.id,
+            campaign_id: campaignData.campaign_id,
+            name: await decryptData(recipient.name_encrypted || '', encryptionKey),
+            phone: await decryptData(recipient.phone_encrypted || '', encryptionKey),
+            metadata: recipient.metadata_encrypted 
+              ? await decryptJSON(recipient.metadata_encrypted, encryptionKey)
+              : {},
+            status: recipient.status,
+            scheduler: recipient.scheduler
+          };
+        } catch (decryptError) {
+          console.error('❌ Erro ao descriptografar recipient:', recipient.id, decryptError);
+          throw new Error(`Falha ao descriptografar recipient ${recipient.id}`);
+        }
       })
+    );
 
-    if (decryptError) {
-      console.error('❌ Erro ao descriptografar destinatários:', decryptError)
-      throw new Error(`Falha ao descriptografar dados: ${decryptError.message}`)
-    }
-
-    if (!decryptedRecipients || decryptedRecipients.length === 0) {
-      console.warn('⚠️ Nenhum destinatário encontrado para a campanha')
-      throw new Error('Nenhum destinatário encontrado')
-    }
-
-    console.log('✅ Destinatários descriptografados:', decryptedRecipients.length)
+    console.log('✅ Recipients descriptografados:', decryptedRecipients.length)
 
     // Registrar auditoria do acesso aos dados
     const { error: auditError } = await supabase

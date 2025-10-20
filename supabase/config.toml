@@ -41,3 +41,6 @@ verify_jwt = true
 
 [functions.receive-task-proposals]
 verify_jwt = false
+
+[functions.get-encryption-key]
+verify_jwt = true

@@ -1,4 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
+import { encryptData, encryptJSON } from './encryption';
 
 export interface FormData {
   instanceName: string;
@@ -80,22 +81,37 @@ export const logDispatch = async (
       console.warn('Failed to track campaign creation:', trackError);
     }
 
-    // Add recipients if provided (usando função RPC para criptografar)
+    // Add recipients with client-side encryption
     if (recipients && recipients.length > 0) {
-      const { error: recipientsError } = await supabase.rpc('insert_encrypted_recipients', {
-        p_campaign_id: campaign.id,
-        p_recipients: recipients.map(recipient => ({
-          name: recipient.name,
-          phone: recipient.phone,
-          status: 'pending',
-          scheduler: formData.data_agendamento?.toISOString() || new Date().toISOString(),
-          metadata: recipient.metadata || {},
-        }))
-      });
+      try {
+        // Criptografar dados dos recipients no cliente
+        const encryptedRecipients = await Promise.all(
+          recipients.map(async (recipient) => ({
+            name_encrypted: await encryptData(recipient.name),
+            phone_encrypted: await encryptData(recipient.phone),
+            metadata_encrypted: await encryptJSON(recipient.metadata || {}),
+            status: 'pending',
+            scheduler: formData.data_agendamento?.toISOString() || new Date().toISOString(),
+          }))
+        );
 
-      if (recipientsError) {
-        console.error('Error adding recipients:', recipientsError);
-        // Don't throw here, campaign was created successfully
+        console.log('🔐 Dados criptografados no cliente, inserindo recipients...');
+
+        // Inserir recipients criptografados usando RPC v2
+        const { error: recipientsError } = await supabase.rpc('insert_encrypted_recipients_v2', {
+          p_campaign_id: campaign.id,
+          p_recipients: encryptedRecipients
+        });
+
+        if (recipientsError) {
+          console.error('Error adding encrypted recipients:', recipientsError);
+          throw recipientsError;
+        }
+
+        console.log('✅ Recipients criptografados inseridos com sucesso');
+      } catch (encryptError) {
+        console.error('Error encrypting/inserting recipients:', encryptError);
+        throw encryptError;
       }
     }
 

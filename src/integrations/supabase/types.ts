@@ -2456,6 +2456,10 @@ export type Database = {
         Args: { p_campaign_id: string; p_recipients: Json }
         Returns: undefined
       }
+      insert_encrypted_recipients_v2: {
+        Args: { p_campaign_id: string; p_recipients: Json }
+        Returns: undefined
+      }
       is_valid_share_token: {
         Args: { _user_id: string }
         Returns: boolean
