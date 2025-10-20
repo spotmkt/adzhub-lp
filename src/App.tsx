@@ -39,6 +39,7 @@ function App(): React.ReactElement {
               <Routes>
                 {/* Landing page routes */}
                 <Route path="/" element={<FinestraLanding />} />
+                <Route path="/whatsapp" element={<FinestraLanding />} />
                 <Route path="/landing" element={<Landing />} />
                 <Route path="/blog" element={<BlogList />} />
                 <Route path="/blog/:slug" element={<BlogPost />} />
