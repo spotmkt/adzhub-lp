@@ -5,6 +5,7 @@ import adzHubLogo from "@/assets/adzhub-logo-final.png";
 import { StarBorder } from "@/components/ui/star-border";
 import { SpotlightCard } from "@/components/ui/spotlight-card";
 import { RainbowButton } from "@/components/ui/rainbow-button";
+import { LandingNav } from "@/components/LandingNav";
 
 export default function AdzHubLanding() {
   const [titleNumber, setTitleNumber] = useState(0);
@@ -27,41 +28,7 @@ export default function AdzHubLanding() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-3 bg-white/60 backdrop-blur-md">
-        <div className="flex items-center gap-3">
-          <img 
-            src={adzHubLogo} 
-            alt="Adzhub Logo" 
-            className="h-8 w-auto" 
-            width="120" 
-            height="32"
-            loading="eager"
-            fetchPriority="high"
-          />
-        </div>
-
-        <div className="hidden md:flex items-center gap-6 px-3 py-1.5 rounded-full bg-white/40 backdrop-blur-sm border border-gray-200/50">
-          <a href="#" className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-[hsl(224,47%,42%)] text-white text-sm font-medium">
-            <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
-              <path d="M3.29461 7.1756L8.68125 2.95574C9.45692 2.34809 10.5431 2.34809 11.3188 2.95574L16.7054 7.1756C17.3203 7.65731 17.4911 8.37427 17.4997 9.20295C17.5001 9.24787 17.4987 9.29129 17.4953 9.33608C17.4604 9.7957 17.2195 12.6041 16.3291 15.757C16.0145 16.6346 15.2741 17.5 14.2555 17.5H5.74446C4.72592 17.5 3.98558 16.6346 3.67092 15.757C2.78052 12.6041 2.53958 9.79569 2.50473 9.33608C2.50134 9.29129 2.49988 9.24787 2.50034 9.20295C2.5089 8.37427 2.67971 7.65731 3.29461 7.1756Z" stroke="white" strokeWidth="1.5" />
-            </svg>
-            Home
-          </a>
-          <a href="#sobre" className="text-gray-700 text-sm hover:text-gray-900 transition-colors">Sobre</a>
-          <a href="#como-funciona" className="text-gray-700 text-sm hover:text-gray-900 transition-colors">Como Funciona</a>
-          <a href="#empresas" className="text-gray-700 text-sm hover:text-gray-900 transition-colors">Para Empresas</a>
-          <a href="#contato" className="text-gray-700 text-sm hover:text-gray-900 transition-colors">Contato</a>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <Link to="/whatsapp">
-            <button className="px-4 py-1.5 rounded-full border border-[#37489d] text-[#37489d] text-sm hover:bg-[#37489d]/10 transition-colors font-medium">
-              App WhatsApp
-            </button>
-          </Link>
-        </div>
-      </nav>
+      <LandingNav activeSection="home" />
 
       {/* Hero Section */}
       <section className="relative pt-20 pb-32 overflow-hidden bg-gradient-to-br from-[#D4EFF4]/30 via-[#F9C7B2]/20 to-[#F9B2D4]/20 rounded-[32px] mx-5 mt-[83px]">
