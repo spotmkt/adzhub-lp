@@ -10,6 +10,7 @@ import { logDispatch } from '../services/dispatchLogger';
 import type { FormData } from '../pages/CampaignsIndex';
 import { truncateFileName } from '../services/imageUpload';
 import { supabase } from '@/integrations/supabase/client';
+import { encryptData, encryptJSON } from '../services/encryption';
 
 interface SummaryScreenProps {
   formData: FormData;
@@ -100,19 +101,28 @@ const SummaryScreen = ({ formData, onBack }: SummaryScreenProps) => {
         }
       }
 
-      // Criar os recipients da campanha usando os dados já processados (com criptografia)
+      // Criar os recipients da campanha usando criptografia client-side
       if (formData.mappedData && formData.mappedData.length > 0) {
         try {
-          // Usar RPC function para inserir recipients com criptografia
-          const { error: recipientsError } = await supabase.rpc('insert_encrypted_recipients', {
-            p_campaign_id: campaignId,
-            p_recipients: formData.mappedData.map(item => ({
-              name: item.name,
-              phone: item.phone,
+          console.log('🔐 Criptografando recipients no cliente...');
+          
+          // Criptografar dados de cada recipient no cliente
+          const encryptedRecipients = await Promise.all(
+            formData.mappedData.map(async (item) => ({
+              name_encrypted: await encryptData(item.name),
+              phone_encrypted: await encryptData(item.phone),
+              metadata_encrypted: await encryptJSON(item.metadata || {}),
               status: 'pending',
               scheduler: formData.data_agendamento?.toISOString() || new Date().toISOString(),
-              metadata: item.metadata || {}
             }))
+          );
+
+          console.log(`✅ ${encryptedRecipients.length} recipients criptografados`);
+
+          // Inserir recipients criptografados usando RPC v2
+          const { error: recipientsError } = await supabase.rpc('insert_encrypted_recipients_v2', {
+            p_campaign_id: campaignId,
+            p_recipients: encryptedRecipients
           });
 
           if (recipientsError) {
