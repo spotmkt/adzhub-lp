@@ -13,7 +13,6 @@ import Contact from "./pages/Contact";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import FinestraLanding from "./pages/FinestraLanding";
-import AdzHubLanding from "./pages/AdzHubLanding";
 import Pricing from "./pages/Pricing";
 
 // Create QueryClient outside of component to avoid recreation on each render
@@ -39,8 +38,7 @@ function App(): React.ReactElement {
               <Sonner />
               <Routes>
                 {/* Landing page routes */}
-                <Route path="/" element={<AdzHubLanding />} />
-                <Route path="/whatsapp" element={<FinestraLanding />} />
+                <Route path="/" element={<FinestraLanding />} />
                 <Route path="/landing" element={<Landing />} />
                 <Route path="/blog" element={<BlogList />} />
                 <Route path="/blog/:slug" element={<BlogPost />} />
