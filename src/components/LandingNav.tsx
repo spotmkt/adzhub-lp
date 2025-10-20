@@ -74,16 +74,16 @@ export const LandingNav = ({ activeSection = "home" }: LandingNavProps) => {
       </div>
 
       <div className="flex items-center gap-3">
-        <Link to="/auth">
+        <a href="https://app.adzhub.com.br">
           <button className="px-4 py-1.5 rounded-full border border-[#37489d] text-[#37489d] text-sm hover:bg-[#37489d]/10 transition-colors font-medium">
             Entrar
           </button>
-        </Link>
-        <Link to="/auth">
+        </a>
+        <a href="https://app.adzhub.com.br">
           <button className="px-4 py-1.5 rounded-full bg-[#37489d] text-white text-sm hover:bg-[#37489d]/90 transition-colors font-medium">
             Começar Grátis
           </button>
-        </Link>
+        </a>
       </div>
     </nav>
   );
