@@ -100,32 +100,41 @@ const SummaryScreen = ({ formData, onBack }: SummaryScreenProps) => {
         }
       }
 
-      // Criar os recipients da campanha usando os dados já processados
+      // Criar os recipients da campanha usando os dados já processados (com criptografia)
       if (formData.mappedData && formData.mappedData.length > 0) {
         try {
-          const recipients = formData.mappedData.map(item => ({
-            campaign_id: campaignId,
-            name: item.name,
-            phone: item.phone,
-            status: 'pending' as const,
-            scheduler: formData.data_agendamento?.toISOString() || new Date().toISOString(),
-            metadata: item.metadata || {}
-          }));
-
-          const { data: insertedRecipients, error: recipientsError } = await (supabase as any)
-            .from('campaign_recipients')
-            .insert(recipients)
-            .select('id, phone');
+          // Usar RPC function para inserir recipients com criptografia
+          const { error: recipientsError } = await supabase.rpc('insert_encrypted_recipients', {
+            p_campaign_id: campaignId,
+            p_recipients: formData.mappedData.map(item => ({
+              name: item.name,
+              phone: item.phone,
+              status: 'pending',
+              scheduler: formData.data_agendamento?.toISOString() || new Date().toISOString(),
+              metadata: item.metadata || {}
+            }))
+          });
 
           if (recipientsError) {
             console.error('Erro ao criar recipients:', recipientsError);
             throw new Error('Falha ao criar recipients da campanha');
           }
 
-          console.log(`${recipients.length} recipients criados para a campanha ${campaignId}`);
+          console.log(`${formData.mappedData.length} recipients criados (criptografados) para a campanha ${campaignId}`);
+
+          // Buscar os recipients inseridos para criar campaign_responses
+          const { data: insertedRecipients, error: fetchError } = await supabase
+            .from('campaign_recipients')
+            .select('id, phone')
+            .eq('campaign_id', campaignId);
+
+          if (fetchError) {
+            console.error('Erro ao buscar recipients inseridos:', fetchError);
+            throw new Error('Falha ao buscar recipients criados');
+          }
 
           // Criar as linhas de resposta vazias para todos os tipos de disparo
-          if (insertedRecipients) {
+          if (insertedRecipients && insertedRecipients.length > 0) {
             const responseEntries = insertedRecipients.map((recipient: any) => ({
               recipient_id: recipient.id,
               phone: recipient.phone,
@@ -135,7 +144,7 @@ const SummaryScreen = ({ formData, onBack }: SummaryScreenProps) => {
               is_valid_response: false
             }));
 
-            const { error: responsesError } = await (supabase as any)
+            const { error: responsesError } = await supabase
               .from('campaign_responses')
               .insert(responseEntries);
 
