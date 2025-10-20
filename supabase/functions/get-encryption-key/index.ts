@@ -34,28 +34,19 @@ Deno.serve(async (req) => {
       throw new Error('Usuário não autenticado');
     }
 
-    // Buscar chave do vault usando service role
-    const supabaseAdmin = createClient(
-      supabaseUrl,
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-    );
-
-    const { data: secrets, error: secretError } = await supabaseAdmin
-      .from('vault.decrypted_secrets')
-      .select('decrypted_secret')
-      .eq('name', 'pii_encryption_key')
-      .limit(1)
-      .single();
-
-    if (secretError || !secrets) {
-      console.error('❌ Erro ao buscar chave do vault:', secretError);
-      throw new Error('Chave de criptografia não encontrada');
+    // Buscar chave de criptografia das variáveis de ambiente (Vault)
+    const encryptionKey = Deno.env.get('pii_encryption_key');
+    
+    if (!encryptionKey) {
+      console.error('❌ Secret pii_encryption_key não encontrado nas variáveis de ambiente');
+      throw new Error('Chave de criptografia não configurada');
     }
 
-    // Obter a chave e criar hash SHA-256 de 32 bytes para AES-256
-    const keyString = secrets.decrypted_secret as string;
+    console.log('✅ Chave de criptografia encontrada, gerando hash...');
+
+    // Criar hash SHA-256 da chave (32 bytes para AES-256)
     const encoder = new TextEncoder();
-    const keyData = encoder.encode(keyString);
+    const keyData = encoder.encode(encryptionKey);
     
     // Gerar hash SHA-256 da chave (32 bytes)
     const hashBuffer = await crypto.subtle.digest('SHA-256', keyData);

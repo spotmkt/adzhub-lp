@@ -29,19 +29,12 @@ Deno.serve(async (req) => {
 
     const supabase = createClient(supabaseUrl, supabaseKey)
 
-    // Buscar chave de criptografia do vault
-    const { data: secretData, error: secretError } = await supabase
-      .from('vault.decrypted_secrets')
-      .select('decrypted_secret')
-      .eq('name', 'pii_encryption_key')
-      .single();
-
-    if (secretError || !secretData) {
-      console.error('❌ Erro ao buscar chave do vault:', secretError);
+    const encryptionKey = Deno.env.get('pii_encryption_key');
+    
+    if (!encryptionKey) {
+      console.error('❌ Secret pii_encryption_key não encontrado');
       throw new Error('Chave de criptografia não encontrada');
     }
-
-    const encryptionKey = secretData.decrypted_secret as string;
 
     // Buscar recipients criptografados do banco
     console.log('🔓 Buscando recipients criptografados...')
