@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState, lazy, Suspense } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Play, Star, ChevronRight, TrendingUp, Shield, Zap, Rocket, Users, Target } from "lucide-react";
 import finestraLogo from "@/assets/finestra-logo.png";
@@ -9,16 +8,15 @@ import { useCampaignCounter } from "@/hooks/useCampaignCounter";
 import { testimonials, tiltedScrollItems, timelineData, displayCardsData } from "@/data/finestraData";
 import { SpotlightCard } from "@/components/ui/spotlight-card";
 
-// Lazy load heavy components - defer non-critical
+// Lazy load ALL heavy components for better performance
 const DisplayCards = lazy(() => import("@/components/ui/display-cards"));
 const TestimonialsColumn = lazy(() => import("@/components/ui/testimonials-columns-1").then(m => ({ default: m.TestimonialsColumn })));
 const TiltedScroll = lazy(() => import("@/components/ui/tilted-scroll").then(m => ({ default: m.TiltedScroll })));
-const Sparkles = lazy(() => import("@/components/ui/sparkles").then(m => ({ default: m.Sparkles })));
 const Features = lazy(() => import("@/components/ui/features-6").then(m => ({ default: m.Features })));
 const RadialOrbitalTimeline = lazy(() => import("@/components/ui/radial-orbital-timeline"));
 const MorphPanel = lazy(() => import("@/components/ui/ai-input").then(m => ({ default: m.MorphPanel })));
 
-const LoadingFallback = () => <div className="w-full h-32 bg-gray-100/50 rounded-lg" />;
+const LoadingFallback = () => <div className="w-full h-32 bg-muted/30 rounded-lg" />;
 export default function FinestraLanding() {
   const [titleNumber, setTitleNumber] = useState(0);
   const campaignCount = useCampaignCounter();
@@ -92,18 +90,12 @@ export default function FinestraLanding() {
             <h1 className="text-5xl md:text-7xl lg:text-[100px] font-bold leading-[100%] tracking-tight text-[#08080C]">
               <span className="block mb-2">Whatsapp Comercial 10x</span>
               <span className="relative inline-block min-w-[280px] md:min-w-[420px] lg:min-w-[600px] text-center h-[1.2em]">
-                <AnimatePresence mode="wait">
-                  <motion.span
-                    key={titleNumber}
-                    className="absolute left-0 right-0 font-bold text-[#37489d]"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{ duration: 0.3, ease: "easeInOut" }}
-                  >
-                    {titles[titleNumber]}
-                  </motion.span>
-                </AnimatePresence>
+                <span 
+                  key={titleNumber}
+                  className="absolute left-0 right-0 font-bold text-[#37489d] animate-fade-in"
+                >
+                  {titles[titleNumber]}
+                </span>
               </span>
             </h1>
             <p className="text-lg text-[#08080C] opacity-80 max-w-[566px]">
@@ -124,7 +116,7 @@ export default function FinestraLanding() {
           </div>
 
           <div className="flex items-center justify-center gap-5 flex-wrap">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 min-h-[28px]">
               <span className="text-lg font-medium text-[#08080C]">
                 Campanhas criadas: {campaignCount.toLocaleString('pt-BR')}
               </span>
@@ -184,13 +176,7 @@ export default function FinestraLanding() {
         <div className="relative h-64 w-full overflow-hidden [mask-image:radial-gradient(50%_50%,white,transparent)]">
           <div className="absolute inset-0 before:absolute before:inset-0 before:bg-[radial-gradient(circle_at_bottom_center,hsl(224,47%,42%),transparent_70%)] before:opacity-40" />
           <div className="absolute -left-1/2 top-1/2 aspect-[1/0.7] z-10 w-[200%] rounded-[100%] border-t border-[#08080C]/20 bg-white" />
-          <Suspense fallback={null}>
-            <Sparkles
-              density={1200}
-              className="absolute inset-x-0 bottom-0 h-full w-full [mask-image:radial-gradient(50%_50%,white,transparent_85%)]"
-              color="#000000"
-            />
-          </Suspense>
+          {/* Sparkles removed for performance - add back if needed */}
         </div>
       </section>
 
@@ -530,13 +516,7 @@ export default function FinestraLanding() {
       {/* Animated Testimonials Section */}
       <section className="bg-white py-20 relative">
         <div className="container z-10 mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-            viewport={{ once: true }}
-            className="flex flex-col items-center justify-center max-w-[540px] mx-auto"
-          >
+          <div className="flex flex-col items-center justify-center max-w-[540px] mx-auto animate-fade-in">
             <div className="flex justify-center">
               <div className="border py-1 px-4 rounded-lg bg-white">Testimonials</div>
             </div>
@@ -547,7 +527,7 @@ export default function FinestraLanding() {
             <p className="text-center mt-5 opacity-75 text-[#6B7280]">
               See what our customers have to say about us.
             </p>
-          </motion.div>
+          </div>
 
           <Suspense fallback={<LoadingFallback />}>
             <div className="flex justify-center gap-6 mt-10 [mask-image:linear-gradient(to_bottom,transparent,black_25%,black_75%,transparent)] max-h-[740px] overflow-hidden">
