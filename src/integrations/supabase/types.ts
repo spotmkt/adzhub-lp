@@ -655,7 +655,7 @@ export type Database = {
           metadata_encrypted: string | null
           name: string | null
           name_encrypted: string | null
-          phone: string
+          phone: string | null
           phone_encrypted: string | null
           scheduler: string | null
           status: string
@@ -669,7 +669,7 @@ export type Database = {
           metadata_encrypted?: string | null
           name?: string | null
           name_encrypted?: string | null
-          phone: string
+          phone?: string | null
           phone_encrypted?: string | null
           scheduler?: string | null
           status?: string
@@ -683,7 +683,7 @@ export type Database = {
           metadata_encrypted?: string | null
           name?: string | null
           name_encrypted?: string | null
-          phone?: string
+          phone?: string | null
           phone_encrypted?: string | null
           scheduler?: string | null
           status?: string
