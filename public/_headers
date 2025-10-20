@@ -1,24 +1,42 @@
-/*
-  # Cache static assets
-  Cache-Control: public, max-age=31536000, immutable
+# Cache HTML with revalidation
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  X-XSS-Protection: 1; mode=block
 
+# Cache CSS files for 1 year
 /*.css
   Cache-Control: public, max-age=31536000, immutable
-
+  
+# Cache JS files for 1 year
 /*.js
   Cache-Control: public, max-age=31536000, immutable
 
+# Cache fonts for 1 year
+/*.woff
+  Cache-Control: public, max-age=31536000, immutable
 /*.woff2
   Cache-Control: public, max-age=31536000, immutable
+/*.ttf
+  Cache-Control: public, max-age=31536000, immutable
 
+# Cache images for 1 year
 /*.png
   Cache-Control: public, max-age=31536000, immutable
-
 /*.jpg
   Cache-Control: public, max-age=31536000, immutable
-
+/*.jpeg
+  Cache-Control: public, max-age=31536000, immutable
 /*.webp
   Cache-Control: public, max-age=31536000, immutable
+/*.avif
+  Cache-Control: public, max-age=31536000, immutable
+/*.svg
+  Cache-Control: public, max-age=31536000, immutable
+/*.ico
+  Cache-Control: public, max-age=31536000, immutable
 
-/index.html
+# Cache other static assets
+/*.json
   Cache-Control: public, max-age=0, must-revalidate

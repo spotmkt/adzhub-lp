@@ -91,7 +91,7 @@ export default function FinestraLanding() {
           <div className="flex flex-col items-center text-center gap-8 max-w-[781px] mx-auto mb-12">
             <h1 className="text-5xl md:text-7xl lg:text-[100px] font-bold leading-[100%] tracking-tight text-[#08080C]">
               <span className="block mb-2">Whatsapp Comercial 10x</span>
-              <span className="relative inline-block min-w-[280px] md:min-w-[420px] lg:min-w-[600px] text-center" style={{ height: '1.2em' }}>
+              <span className="relative inline-block min-w-[280px] md:min-w-[420px] lg:min-w-[600px] text-center h-[1.2em]">
                 <AnimatePresence mode="wait">
                   <motion.span
                     key={titleNumber}
