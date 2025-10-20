@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { ArrowLeft, Calendar, Clock, MessageSquare, Users, Image as ImageIcon, CheckCircle2, XCircle, Loader2, Download } from 'lucide-react';
 import { useCampaignDetails } from '../hooks/useCampaigns';
+import { useDecryptRecipients } from '../hooks/useDecryptRecipients';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Cell, Pie, PieChart, ResponsiveContainer } from 'recharts';
@@ -13,14 +14,15 @@ const CampaignDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { data: campaign, isLoading } = useCampaignDetails(id || null);
+  const { data: decryptedRecipients, isLoading: isDecrypting } = useDecryptRecipients(campaign?.recipients);
 
-  // Calculate metrics from recipients
-  const metrics = campaign?.recipients ? {
-    total: campaign.recipients.length,
-    sent: campaign.recipients.filter((r: any) => r.status === 'sent').length,
-    pending: campaign.recipients.filter((r: any) => r.status === 'pending').length,
-    failed: campaign.recipients.filter((r: any) => r.status === 'failed').length,
-    responded: campaign.recipients.filter((r: any) => r.has_response).length,
+  // Calculate metrics from decrypted recipients
+  const metrics = decryptedRecipients ? {
+    total: decryptedRecipients.length,
+    sent: decryptedRecipients.filter((r) => r.status === 'sent').length,
+    pending: decryptedRecipients.filter((r) => r.status === 'pending').length,
+    failed: decryptedRecipients.filter((r) => r.status === 'failed').length,
+    responded: decryptedRecipients.filter((r) => r.has_response).length,
   } : { total: 0, sent: 0, pending: 0, failed: 0, responded: 0 };
 
   const responseRate = metrics.total > 0 ? ((metrics.responded / metrics.total) * 100).toFixed(1) : '0';
@@ -52,10 +54,15 @@ const CampaignDetails = () => {
     );
   };
 
-  if (isLoading) {
+  if (isLoading || isDecrypting) {
     return (
       <div className="min-h-screen bg-background p-8 flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <div className="text-center space-y-2">
+          <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto" />
+          <p className="text-sm text-muted-foreground">
+            {isDecrypting ? 'Descriptografando dados...' : 'Carregando campanha...'}
+          </p>
+        </div>
       </div>
     );
   }
@@ -173,16 +180,16 @@ const CampaignDetails = () => {
             </Card>
 
             {/* Recipients List */}
-            {campaign.recipients && campaign.recipients.length > 0 && (
+            {decryptedRecipients && decryptedRecipients.length > 0 && (
               <Card className="p-6">
                 <h2 className="text-lg font-semibold mb-4">
-                  Destinatários ({campaign.recipients.length})
+                  Destinatários ({decryptedRecipients.length})
                 </h2>
                 <p className="text-sm text-muted-foreground mb-4">
                   Lista de todos os contatos desta campanha
                 </p>
                 <div className="space-y-2 max-h-96 overflow-y-auto">
-                  {campaign.recipients.map((recipient: any, index: number) => (
+                  {decryptedRecipients.map((recipient, index) => (
                     <div 
                       key={recipient.id} 
                       className="flex items-center justify-between p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors"
@@ -201,7 +208,7 @@ const CampaignDetails = () => {
                         recipient.status === 'failed' ? 'destructive' : 
                         'secondary'
                       } className="text-xs">
-                        {recipient.status === 'sent' ? 'Pendente' : 
+                        {recipient.status === 'sent' ? 'Enviado' : 
                          recipient.status === 'failed' ? 'Falhou' : 
                          'Pendente'}
                       </Badge>

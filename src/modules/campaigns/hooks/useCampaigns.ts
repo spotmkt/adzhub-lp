@@ -38,7 +38,15 @@ export const useCampaigns = (status?: Campaign['status']) => {
         .from('campaigns')
         .select(`
           *,
-          recipients:campaign_recipients(*)
+          recipients:campaign_recipients(
+            id,
+            campaign_id,
+            name_encrypted,
+            phone_encrypted,
+            metadata_encrypted,
+            status,
+            scheduler
+          )
         `)
         .order('created_at', { ascending: false });
 
@@ -71,7 +79,15 @@ export const useCampaignDetails = (campaignId: string | null) => {
         .from('campaigns')
         .select(`
           *,
-          recipients:campaign_recipients(*)
+          recipients:campaign_recipients(
+            id,
+            campaign_id,
+            name_encrypted,
+            phone_encrypted,
+            metadata_encrypted,
+            status,
+            scheduler
+          )
         `)
         .eq('id', campaignId)
         .maybeSingle();
