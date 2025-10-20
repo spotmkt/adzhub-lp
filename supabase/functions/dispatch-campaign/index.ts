@@ -101,47 +101,16 @@ Deno.serve(async (req) => {
       console.log('📊 Acesso auditado com sucesso')
     }
 
-    // Substituir recipients_data com os dados descriptografados
-    campaignData.recipients_data = JSON.stringify(decryptedRecipients)
-
-    // Preparar o FormData para enviar ao n8n
-    const n8nFormData = new FormData()
-    
-    // Adicionar todos os campos do payload
-    for (const [key, value] of Object.entries(campaignData)) {
-      if (value !== null && value !== undefined) {
-        n8nFormData.append(key, String(value))
-      }
-    }
-
-    // URL do webhook n8n (configurada via secret)
-    const webhookUrl = Deno.env.get('N8N_DISPATCH_WEBHOOK_URL')
-    
-    if (!webhookUrl) {
-      throw new Error('N8N_DISPATCH_WEBHOOK_URL não configurado')
-    }
-    
-    console.log('🔗 Enviando para n8n webhook...')
-    console.log('Webhook URL:', webhookUrl)
-    
-    // Enviar para o n8n
-    const n8nResponse = await fetch(webhookUrl, {
-      method: 'POST',
-      body: n8nFormData,
-    })
-
-    if (!n8nResponse.ok) {
-      const errorText = await n8nResponse.text()
-      console.error('❌ N8N webhook error:', errorText)
-      throw new Error(`N8N webhook returned status ${n8nResponse.status}`)
-    }
-
-    console.log('✅ Disparo enviado com sucesso para n8n')
+    console.log('✅ Retornando dados descriptografados diretamente')
 
     return new Response(
       JSON.stringify({ 
         success: true, 
-        message: 'Campanha enviada para processamento' 
+        message: 'Campanha processada com sucesso',
+        campaign_id: campaignData.campaign_id,
+        instance_name: campaignData.instance_name,
+        total_recipients: decryptedRecipients.length,
+        recipients_data: decryptedRecipients
       }),
       { 
         headers: { 
