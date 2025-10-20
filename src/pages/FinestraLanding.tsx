@@ -7,10 +7,9 @@ import { StarBorder } from "@/components/ui/star-border";
 import { RainbowButton } from "@/components/ui/rainbow-button";
 import { useCampaignCounter } from "@/hooks/useCampaignCounter";
 import { testimonials, tiltedScrollItems, timelineData, displayCardsData } from "@/data/finestraData";
-import { OptimizedImage } from "@/components/OptimizedImage";
 import { SpotlightCard } from "@/components/ui/spotlight-card";
 
-// Lazy load heavy components
+// Lazy load heavy components - defer non-critical
 const DisplayCards = lazy(() => import("@/components/ui/display-cards"));
 const TestimonialsColumn = lazy(() => import("@/components/ui/testimonials-columns-1").then(m => ({ default: m.TestimonialsColumn })));
 const TiltedScroll = lazy(() => import("@/components/ui/tilted-scroll").then(m => ({ default: m.TiltedScroll })));
@@ -19,7 +18,7 @@ const Features = lazy(() => import("@/components/ui/features-6").then(m => ({ de
 const RadialOrbitalTimeline = lazy(() => import("@/components/ui/radial-orbital-timeline"));
 const MorphPanel = lazy(() => import("@/components/ui/ai-input").then(m => ({ default: m.MorphPanel })));
 
-const LoadingFallback = () => <div className="w-full h-32 animate-pulse bg-gray-100 rounded-lg" />;
+const LoadingFallback = () => <div className="w-full h-32 bg-gray-100/50 rounded-lg" />;
 export default function FinestraLanding() {
   const [titleNumber, setTitleNumber] = useState(0);
   const campaignCount = useCampaignCounter();
@@ -48,13 +47,14 @@ export default function FinestraLanding() {
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-3 bg-white/60 backdrop-blur-md">
         <div className="flex items-center gap-3">
-          <OptimizedImage 
+          <img 
             src={finestraLogo} 
             alt="Finestra Logo" 
             className="h-8 w-auto" 
-            width={120} 
-            height={32}
-            priority
+            width="120" 
+            height="32"
+            loading="eager"
+            fetchPriority="high"
           />
         </div>
 
