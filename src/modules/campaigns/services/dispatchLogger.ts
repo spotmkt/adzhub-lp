@@ -80,20 +80,18 @@ export const logDispatch = async (
       console.warn('Failed to track campaign creation:', trackError);
     }
 
-    // Add recipients if provided
+    // Add recipients if provided (usando função RPC para criptografar)
     if (recipients && recipients.length > 0) {
-      const { error: recipientsError } = await supabase
-        .from('campaign_recipients')
-        .insert(
-          recipients.map(recipient => ({
-            campaign_id: campaign.id,
-            name: recipient.name,
-            phone: recipient.phone,
-            status: 'pending' as const,
-            scheduler: formData.data_agendamento?.toISOString() || new Date().toISOString(),
-            metadata: recipient.metadata || {},
-          }))
-        );
+      const { error: recipientsError } = await supabase.rpc('insert_encrypted_recipients', {
+        p_campaign_id: campaign.id,
+        p_recipients: recipients.map(recipient => ({
+          name: recipient.name,
+          phone: recipient.phone,
+          status: 'pending',
+          scheduler: formData.data_agendamento?.toISOString() || new Date().toISOString(),
+          metadata: recipient.metadata || {},
+        }))
+      });
 
       if (recipientsError) {
         console.error('Error adding recipients:', recipientsError);
