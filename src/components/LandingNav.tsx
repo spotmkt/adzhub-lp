@@ -6,7 +6,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
-import adzHubLogo from "@/assets/adzhub-logo-final.png";
+import adzHubLogo from "@/assets/adzhub-logo-white.png";
 
 interface LandingNavProps {
   activeSection?: string;
