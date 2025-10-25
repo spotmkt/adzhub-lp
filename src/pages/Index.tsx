@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { MessageSquare, Bot, Calendar as CalendarIcon, FileText, Palette, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import { MorphPanel } from '@/components/ui/ai-input';
+import { AnimatedCard, CardBody, CardTitle as AnimatedCardTitle, CardDescription as AnimatedCardDescription, CardVisual, Visual3 } from '@/components/ui/animated-card-chart';
 
 const Index = () => {
   const [date, setDate] = useState<Date | undefined>(new Date());
@@ -111,6 +112,24 @@ const Index = () => {
                     </Card>
                   );
                 })}
+              </div>
+            </div>
+
+            {/* Analytics Section */}
+            <div>
+              <h2 className="text-2xl lg:text-3xl font-semibold mb-6 text-foreground">Análises de Desempenho</h2>
+              <div className="flex justify-center">
+                <AnimatedCard>
+                  <CardVisual>
+                    <Visual3 mainColor="#ff6900" secondaryColor="#f54900" />
+                  </CardVisual>
+                  <CardBody>
+                    <AnimatedCardTitle>Estatísticas em Tempo Real</AnimatedCardTitle>
+                    <AnimatedCardDescription>
+                      Acompanhe o crescimento e engajamento das suas campanhas
+                    </AnimatedCardDescription>
+                  </CardBody>
+                </AnimatedCard>
               </div>
             </div>
           </div>
