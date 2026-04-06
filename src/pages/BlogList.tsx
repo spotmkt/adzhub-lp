@@ -7,7 +7,8 @@ import { Badge } from '@/components/ui/badge';
 import { Calendar, Clock, ArrowRight } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import adzhubLogo from '@/assets/adzhub-logo-final.png';
+import { LandingNav } from '@/components/LandingNav';
+import { Footer } from '@/components/Footer';
 
 interface BlogPost {
   id: string;
@@ -49,27 +50,15 @@ export default function BlogList() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border bg-background/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <Link to="/" className="flex items-center gap-3">
-              <img src={adzhubLogo} alt="AdzHub" className="h-8 w-auto" />
-            </Link>
-            <Button variant="outline" asChild>
-              <Link to="/chat">Acessar Plataforma</Link>
-            </Button>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-white">
+      <LandingNav />
 
       {/* Hero Section */}
-      <section className="py-16 bg-gradient-to-b from-muted/50 to-background">
-        <div className="container mx-auto px-6">
+      <section className="pt-[83px] py-16 bg-gradient-to-b from-[#F8F8F8] to-white">
+        <div className="container mx-auto px-6 pt-10">
           <div className="max-w-3xl mx-auto text-center space-y-4">
-            <h1 className="text-5xl font-bold tracking-tight">Blog</h1>
-            <p className="text-xl text-muted-foreground">
+            <h1 className="text-5xl font-bold tracking-tight text-[#08080C]">Blog</h1>
+            <p className="text-xl text-[#6B7280]">
               Insights, estratégias e tendências sobre marketing digital e gestão criativa
             </p>
           </div>
@@ -154,6 +143,8 @@ export default function BlogList() {
           )}
         </div>
       </section>
+
+      <Footer />
     </div>
   );
 }

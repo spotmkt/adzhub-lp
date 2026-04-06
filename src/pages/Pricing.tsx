@@ -4,8 +4,9 @@ import { Helmet } from "react-helmet-async";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { RainbowButton } from "@/components/ui/rainbow-button";
-import finestraLogo from "@/assets/finestra-logo.png";
 import { testimonials } from "@/data/finestraData";
+import { LandingNav } from "@/components/LandingNav";
+import { Footer } from "@/components/Footer";
 
 const TestimonialsColumn = lazy(() =>
   import("@/components/ui/testimonials-columns-1").then((module) => ({
@@ -26,9 +27,9 @@ const pricingPlans = [
     period: "/mês",
     description: "Perfeito para começar sua jornada",
     features: [
-      "Até 1.000 mensagens/mês",
+      "Até 10 artigos/mês com IA",
       "1 usuário",
-      "Relatórios básicos",
+      "Blog integrado",
       "Suporte por email",
       "Templates básicos",
     ],
@@ -41,13 +42,13 @@ const pricingPlans = [
     period: "/mês",
     description: "Para equipes que querem crescer",
     features: [
-      "Até 10.000 mensagens/mês",
+      "Artigos ilimitados com IA",
       "Até 5 usuários",
-      "Relatórios avançados",
+      "SEO automático",
       "Suporte prioritário",
-      "Templates premium",
-      "Integração com CRM",
-      "API de acesso",
+      "Calendário editorial",
+      "Redes sociais integradas",
+      "Relatórios avançados",
     ],
     cta: "Começar Agora",
     highlighted: true,
@@ -58,11 +59,11 @@ const pricingPlans = [
     period: "",
     description: "Soluções personalizadas para grandes empresas",
     features: [
-      "Mensagens ilimitadas",
+      "Tudo do Professional",
       "Usuários ilimitados",
-      "Relatórios personalizados",
+      "IA com tom de voz personalizado",
       "Suporte 24/7",
-      "Templates customizados",
+      "API de acesso",
       "Integrações avançadas",
       "Gerente de conta dedicado",
       "Treinamento personalizado",
@@ -93,7 +94,7 @@ export default function Pricing() {
   return (
     <>
       <Helmet>
-        <title>Preços - Finestra | Planos para todos os tamanhos</title>
+        <title>Preços - AdzHub | Planos para todos os tamanhos</title>
         <meta
           name="description"
           content="Escolha o plano ideal para sua empresa. Preços transparentes e sem surpresas."
@@ -101,37 +102,11 @@ export default function Pricing() {
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
-        {/* Header */}
-        <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-background/80 border-b border-border/50">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <nav className="flex items-center justify-between h-16">
-              <Link to="/finestra" className="flex items-center space-x-2">
-                <img
-                  src={finestraLogo}
-                  alt="Finestra Logo"
-                  className="h-8 w-auto"
-                  width="120"
-                  height="32"
-                  loading="eager"
-                />
-              </Link>
-
-              <div className="flex items-center gap-4">
-                <Link to="/finestra">
-                  <Button variant="ghost">Início</Button>
-                </Link>
-                <Link to="/campaigns">
-                  <RainbowButton>Entrar</RainbowButton>
-                </Link>
-              </div>
-            </nav>
-          </div>
-        </header>
+        <LandingNav activeSection="" />
 
         {/* Pricing Section */}
         <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
           <div className="container mx-auto max-w-7xl">
-            {/* Header */}
             <div className="text-center mb-16">
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent">
                 Planos que Crescem com Você
@@ -141,7 +116,6 @@ export default function Pricing() {
               </p>
             </div>
 
-            {/* Pricing Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
               {pricingPlans.map((plan, index) => (
                 <div
@@ -180,7 +154,7 @@ export default function Pricing() {
                     ))}
                   </ul>
 
-                  <Link to="/campaigns" className="block">
+                  <a href="https://app.adzhub.com.br" className="block">
                     {plan.highlighted ? (
                       <RainbowButton className="w-full">{plan.cta}</RainbowButton>
                     ) : (
@@ -188,7 +162,7 @@ export default function Pricing() {
                         {plan.cta}
                       </Button>
                     )}
-                  </Link>
+                  </a>
                 </div>
               ))}
             </div>
@@ -203,7 +177,7 @@ export default function Pricing() {
                 O Que Nossos Clientes Dizem
               </h2>
               <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto">
-                Empresas de todos os tamanhos confiam na Finestra para suas campanhas
+                Empresas de todos os tamanhos confiam na AdzHub para suas campanhas
               </p>
             </div>
 
@@ -225,73 +199,7 @@ export default function Pricing() {
           </div>
         </section>
 
-        {/* Footer */}
-        <footer className="border-t border-border/50 py-12 px-4 sm:px-6 lg:px-8">
-          <div className="container mx-auto max-w-7xl">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-              <div className="md:col-span-2">
-                <img
-                  src={finestraLogo}
-                  alt="Finestra Logo"
-                  className="h-8 w-auto mb-4"
-                  width="120"
-                  height="32"
-                  loading="lazy"
-                />
-                <p className="text-muted-foreground text-sm max-w-md">
-                  Transforme suas campanhas de WhatsApp com automação inteligente e
-                  resultados mensuráveis.
-                </p>
-              </div>
-
-              <div>
-                <h3 className="font-semibold mb-4">Produto</h3>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li>
-                    <Link to="/finestra" className="hover:text-primary transition-colors">
-                      Recursos
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="/pricing" className="hover:text-primary transition-colors">
-                      Preços
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="/campaigns" className="hover:text-primary transition-colors">
-                      Login
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-
-              <div>
-                <h3 className="font-semibold mb-4">Empresa</h3>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li>
-                    <a href="#" className="hover:text-primary transition-colors">
-                      Sobre
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" className="hover:text-primary transition-colors">
-                      Blog
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" className="hover:text-primary transition-colors">
-                      Contato
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            <div className="border-t border-border/50 pt-8 text-center text-sm text-muted-foreground">
-              <p>&copy; 2024 Finestra. Todos os direitos reservados.</p>
-            </div>
-          </div>
-        </footer>
+        <Footer />
       </div>
     </>
   );

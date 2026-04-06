@@ -1,28 +1,27 @@
 import { useEffect, useMemo, useState, lazy, Suspense } from "react";
+import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { Play, Star, ChevronRight, TrendingUp, Shield, Zap, Rocket, Users, Target } from "lucide-react";
+import { Play, Star, TrendingUp, Shield, Zap, Rocket, Target, BarChart3, PenTool, Search, Sparkles, ArrowRight, Brain, Layers } from "lucide-react";
 import { StarBorder } from "@/components/ui/star-border";
-import { RainbowButton } from "@/components/ui/rainbow-button";
-import { useCampaignCounter } from "@/hooks/useCampaignCounter";
-import { testimonials, tiltedScrollItems, timelineData, displayCardsData } from "@/data/finestraData";
+import { testimonials, tiltedScrollItems, timelineData } from "@/data/finestraData";
 import { SpotlightCard } from "@/components/ui/spotlight-card";
 import { LandingNav } from "@/components/LandingNav";
+import { Footer } from "@/components/Footer";
+import { DashboardMockup } from "@/components/DashboardMockup";
 
-// Lazy load ALL heavy components for better performance
 const DisplayCards = lazy(() => import("@/components/ui/display-cards"));
 const TestimonialsColumn = lazy(() => import("@/components/ui/testimonials-columns-1").then(m => ({ default: m.TestimonialsColumn })));
 const TiltedScroll = lazy(() => import("@/components/ui/tilted-scroll").then(m => ({ default: m.TiltedScroll })));
 const Features = lazy(() => import("@/components/ui/features-6").then(m => ({ default: m.Features })));
 const RadialOrbitalTimeline = lazy(() => import("@/components/ui/radial-orbital-timeline"));
-const MorphPanel = lazy(() => import("@/components/ui/ai-input").then(m => ({ default: m.MorphPanel })));
 
 const LoadingFallback = () => <div className="w-full h-32 bg-muted/30 rounded-lg" />;
+
 export default function FinestraLanding() {
   const [titleNumber, setTitleNumber] = useState(0);
-  const campaignCount = useCampaignCounter();
   
   const titles = useMemo(
-    () => ["+Inteligente", "+lucrativo", "+simples", "+personalizado", "+estratégico"],
+    () => ["+Inteligente", "+Estratégico", "+Criativo", "+Otimizado", "+Profissional"],
     []
   );
 
@@ -41,15 +40,25 @@ export default function FinestraLanding() {
   const secondColumn = useMemo(() => testimonials.slice(3, 6), []);
   const thirdColumn = useMemo(() => testimonials.slice(6, 9), []);
 
-  return <div className="min-h-screen bg-white">
-      <LandingNav activeSection="whatsapp" />
+  return (
+    <div className="min-h-screen bg-white">
+      <Helmet>
+        <title>Blog - AdzHub | Conteúdo com IA</title>
+        <meta name="description" content="Crie, gerencie e publique conteúdo profissional com inteligência artificial. Blog, redes sociais e SEO integrados em uma única plataforma." />
+      </Helmet>
+
+      <LandingNav activeSection="conteudo" />
 
       {/* Hero Section */}
-      <section className="relative pt-20 pb-32 overflow-hidden bg-gradient-to-br from-[#D4EFF4]/30 via-[#F9C7B2]/20 to-[#F9B2D4]/20 rounded-[32px] mx-5 mt-[83px]">
+      <section className="relative pt-20 pb-16 overflow-hidden bg-gradient-to-br from-[#D4EFF4]/30 via-[#F9C7B2]/20 to-[#F9B2D4]/20 rounded-[32px] mx-5 mt-[83px]">
         <div className="relative max-w-5xl mx-auto px-8 z-10">
-          <div className="flex flex-col items-center text-center gap-8 max-w-[781px] mx-auto mb-12">
-            <h1 className="text-5xl md:text-7xl lg:text-[100px] font-bold leading-[100%] tracking-tight text-[#08080C]">
-              <span className="block mb-2">Whatsapp Comercial 10x</span>
+          <div className="flex flex-col items-center text-center gap-6 max-w-[781px] mx-auto mb-10">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/70 backdrop-blur-sm border border-[#37489d]/10 text-sm font-medium text-[#37489d]">
+              <Layers className="w-4 h-4" />
+              Módulo do Ecossistema AdzHub — Powered by IA
+            </div>
+            <h1 className="text-5xl md:text-7xl lg:text-[90px] font-bold leading-[100%] tracking-tight text-[#08080C]">
+              <span className="block mb-2">Blog</span>
               <span className="relative inline-block min-w-[280px] md:min-w-[420px] lg:min-w-[600px] text-center h-[1.2em]">
                 <span 
                   key={titleNumber}
@@ -59,171 +68,136 @@ export default function FinestraLanding() {
                 </span>
               </span>
             </h1>
-            <p className="text-lg text-[#08080C] opacity-80 max-w-[566px]">
-              A ferramenta de campanhas de disparo de whatsapp em massa que substitui todas as outras. Comece grátis agora mesmo
+            <p className="text-lg text-[#08080C] opacity-80 max-w-[600px]">
+              O primeiro módulo da Plataforma de Inteligência em Marketing. Crie, gerencie e publique conteúdo profissional com IA — blog, redes sociais e SEO integrados ao Supercérebro AdzHub.
             </p>
           </div>
 
-          <div className="flex items-center justify-center gap-4 mb-6 flex-wrap">
-            <Link to="/auth">
+          <div className="flex items-center justify-center gap-4 mb-5 flex-wrap">
+            <a href="https://app.adzhub.com.br">
               <StarBorder color="hsl(224, 47%, 42%)" speed="8s">
                 Começar Grátis
               </StarBorder>
-            </Link>
+            </a>
             <button className="flex items-center gap-2 text-[#37489d] hover:text-[#37489d]/80 transition-colors">
               <Play className="w-5 h-5" />
               Ver Demonstração
             </button>
           </div>
 
-          <div className="flex items-center justify-center gap-5 flex-wrap">
+          <div className="flex items-center justify-center gap-5 flex-wrap mb-14">
             <div className="flex items-center gap-2 min-h-[28px]">
-              <span className="text-lg font-medium text-[#08080C]">
-                Campanhas criadas: {campaignCount.toLocaleString('pt-BR')}
+              <span className="text-sm font-medium text-[#08080C]/70">
+                Conteúdo gerado por IA e especialistas
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="flex gap-1">
-                {[...Array(5)].map((_, i) => <Star key={i} className="w-5 h-5 fill-[hsl(41,100%,58%)] text-[hsl(41,100%,58%)]" />)}
+              <div className="flex gap-0.5">
+                {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-[hsl(41,100%,58%)] text-[hsl(41,100%,58%)]" />)}
               </div>
-              <span className="text-base font-medium text-[#08080C]">+100</span>
+              <span className="text-sm font-medium text-[#08080C]/70">+100 empresas</span>
             </div>
           </div>
+        </div>
+
+        {/* Dashboard Preview */}
+        <div className="relative max-w-6xl mx-auto px-8">
+          <DashboardMockup />
         </div>
       </section>
 
-      {/* Trusted By Section */}
-      <section className="pt-8 -mb-16 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-8">
-          <div className="text-center mb-8">
-            <span className="text-[#6B7280] text-lg font-medium">
-              Trusted by experts.
-            </span>
-            <br />
-            <span className="text-[#08080C] text-lg font-medium">
-              Used by the leaders.
-            </span>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-8 text-[#08080C] mb-8">
-            <div className="flex items-center justify-center">
-              <svg viewBox="0 0 120 40" fill="currentColor" className="w-full h-8">
-                <text x="10" y="25" fontSize="18" fontWeight="600">Circooles</text>
-              </svg>
-            </div>
-            <div className="flex items-center justify-center">
-              <svg viewBox="0 0 120 40" fill="currentColor" className="w-full h-8">
-                <text x="10" y="25" fontSize="18" fontWeight="600">Quotient</text>
-              </svg>
-            </div>
-            <div className="flex items-center justify-center">
-              <svg viewBox="0 0 120 40" fill="currentColor" className="w-full h-8">
-                <text x="10" y="25" fontSize="18" fontWeight="600">Hourglass</text>
-              </svg>
-            </div>
-            <div className="flex items-center justify-center">
-              <svg viewBox="0 0 120 40" fill="currentColor" className="w-full h-8">
-                <text x="15" y="25" fontSize="18" fontWeight="600">Catalog</text>
-              </svg>
-            </div>
-            <div className="flex items-center justify-center col-span-2 md:col-span-1">
-              <svg viewBox="0 0 120 40" fill="currentColor" className="w-full h-8">
-                <text x="20" y="25" fontSize="18" fontWeight="600">Layers</text>
-              </svg>
-            </div>
-          </div>
-        </div>
-
-        <div className="relative h-64 w-full overflow-hidden [mask-image:radial-gradient(50%_50%,white,transparent)]">
-          <div className="absolute inset-0 before:absolute before:inset-0 before:bg-[radial-gradient(circle_at_bottom_center,hsl(224,47%,42%),transparent_70%)] before:opacity-40" />
-          <div className="absolute -left-1/2 top-1/2 aspect-[1/0.7] z-10 w-[200%] rounded-[100%] border-t border-[#08080C]/20 bg-white" />
-          {/* Sparkles removed for performance - add back if needed */}
-        </div>
-      </section>
+      {/* Spacer */}
+      <div className="h-16" />
 
       {/* Features Section */}
       <Suspense fallback={<LoadingFallback />}>
         <Features />
       </Suspense>
 
-      {/* Manage Money Wisely Section */}
+      {/* Como Funciona Section */}
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-8">
           <div className="flex flex-col lg:flex-row justify-between items-end mb-16 gap-8">
             <div className="max-w-[649px]">
               <h2 className="text-4xl md:text-6xl lg:text-[72px] font-medium leading-[100%] tracking-tight text-[#08080C] mb-6">
-                Faça um envio teste abaixo
+                Simples de usar, poderoso nos resultados
               </h2>
               <p className="text-lg font-medium text-[#6B7280] leading-[170%]">
-                Master the Art of Financial Management: Strategies and Tools to Optimize Your Budget, Build Wealth, and Secure a Stable Financial Future
+                Em apenas 3 passos você cria e publica conteúdo profissional para blog e redes sociais com ajuda da IA
               </p>
             </div>
             <div className="flex flex-col gap-2">
-              <Link to="/auth">
+              <a href="https://app.adzhub.com.br">
                 <StarBorder color="hsl(224, 47%, 42%)" speed="8s">
                   Começar Grátis
                 </StarBorder>
-              </Link>
+              </a>
               <p className="text-base font-medium text-[#6B7280] capitalize">
-                saiba mais sobre nós
+                sem cartão de crédito
               </p>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <div className="rounded-3xl bg-[#F6F6F6] p-8 md:p-14">
-              <div className="bg-white rounded-3xl p-6 mb-8">
-                <p className="text-base text-[#000] mb-4">Connected Account</p>
-                <div className="bg-[#F6F8FA] rounded-lg p-3">
-                  <p className="text-sm font-medium text-[#08080C] mb-2">USD Account</p>
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <p className="text-base font-medium text-[#08080C]">Visa</p>
-                      <p className="text-xs font-semibold text-[#6B7280]">**** ****   ****  1990</p>
-                    </div>
-                    <p className="text-xl font-medium tracking-[-0.8px]">
-                      <span className="text-[#08080C]">$28,390.</span>
-                      <span className="text-[#6B7280]">20</span>
-                    </p>
-                  </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div className="rounded-3xl bg-[#F6F6F6] p-8 md:p-10">
+              <div className="bg-white rounded-3xl p-6 mb-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-full bg-[#37489d] flex items-center justify-center text-white font-bold text-lg">1</div>
+                  <p className="text-lg font-semibold text-[#08080C]">Escolha o tema</p>
                 </div>
+                <p className="text-sm text-[#6B7280]">
+                  Defina o assunto, palavras-chave e o tom de voz. A IA pesquisa referências e sugere estruturas otimizadas.
+                </p>
               </div>
-              <div className="bg-white rounded-3xl p-6">
-                <p className="text-base text-[#000] mb-4">Expense Breakdown</p>
-                <div className="flex gap-4">
+              <div className="bg-white rounded-3xl p-4">
+                <div className="flex items-center gap-3">
+                  <Search className="w-5 h-5 text-[#37489d]" />
                   <div>
-                    <p className="text-xs font-medium text-[#6B7280] mb-1">Subscriptions</p>
-                    <p className="text-sm font-medium text-[#000]">65.8%</p>
+                    <p className="text-sm font-medium text-[#08080C]">Pesquisa inteligente</p>
+                    <p className="text-xs text-[#6B7280]">5 referências encontradas • SEO analisado</p>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="rounded-3xl bg-[#F6F6F6] p-6">
-              <h3 className="text-[28px] font-normal capitalize text-[#08080C] mb-6">Quick Transfer</h3>
-              <div className="flex gap-4 mb-6">
-                <button className="px-3 py-2 rounded-full bg-[hsl(224,47%,42%)]/20 text-[#08080C] text-lg font-medium">
-                  Contacts
-                </button>
-                <button className="text-lg font-medium text-[#08080C]">All</button>
+            <div className="rounded-3xl bg-[#F6F6F6] p-8 md:p-10">
+              <div className="bg-white rounded-3xl p-6 mb-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-full bg-[hsl(41,100%,58%)] flex items-center justify-center text-white font-bold text-lg">2</div>
+                  <p className="text-lg font-semibold text-[#08080C]">Gere o conteúdo</p>
+                </div>
+                <p className="text-sm text-[#6B7280]">
+                  A IA cria artigos, posts e legendas personalizados. Edite, ajuste o tom e adicione sua identidade visual.
+                </p>
               </div>
-              <div className="flex gap-4 mb-8">
-                <div className="text-center">
-                  <div className="w-20 h-20 rounded-full border border-dashed border-[#898989] mb-2 flex items-center justify-center">
-                    <span className="text-2xl">+</span>
+              <div className="bg-white rounded-3xl p-4">
+                <div className="flex items-center gap-3">
+                  <PenTool className="w-5 h-5 text-[hsl(41,100%,58%)]" />
+                  <div>
+                    <p className="text-sm font-medium text-[#08080C]">Artigo gerado</p>
+                    <p className="text-xs text-[#6B7280]">1.200 palavras • SEO otimizado</p>
                   </div>
-                  <p className="text-lg capitalize text-[#08080C]">Add New</p>
                 </div>
               </div>
-              <div className="border-t border-[rgba(8,8,12,0.16)] pt-6">
-                <div className="flex justify-between items-end">
-                  <p className="text-4xl md:text-[56px] font-medium leading-[26px] tracking-[-2px]">
-                    <span className="text-[rgba(33,33,33,0.6)]">$349.</span>
-                    <span className="text-[rgba(33,33,33,0.6)]">00</span>
-                  </p>
-                  <RainbowButton>
-                    Enviar
-                  </RainbowButton>
+            </div>
+
+            <div className="rounded-3xl bg-[#F6F6F6] p-8 md:p-10">
+              <div className="bg-white rounded-3xl p-6 mb-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-full bg-emerald-500 flex items-center justify-center text-white font-bold text-lg">3</div>
+                  <p className="text-lg font-semibold text-[#08080C]">Publique e acompanhe</p>
+                </div>
+                <p className="text-sm text-[#6B7280]">
+                  Publique direto no blog ou agende para redes sociais. Acompanhe métricas de engajamento e tráfego.
+                </p>
+              </div>
+              <div className="bg-white rounded-3xl p-4">
+                <div className="flex items-center gap-3">
+                  <BarChart3 className="w-5 h-5 text-emerald-500" />
+                  <div>
+                    <p className="text-sm font-medium text-[#08080C]">Post publicado</p>
+                    <p className="text-xs text-[#6B7280]">340 visualizações • 12% engajamento</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -231,15 +205,15 @@ export default function FinestraLanding() {
         </div>
       </section>
 
-      {/* Key Reasons Section */}
+      {/* Números Section */}
       <section className="py-24 bg-[#F8F8F8] rounded-3xl mx-5">
         <div className="max-w-7xl mx-auto px-8">
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-16 gap-8">
             <h2 className="text-4xl md:text-6xl lg:text-[72px] font-medium leading-[100%] tracking-tight text-[#08080C] max-w-[600px]">
-              Key Reasons to Choose Us
+              Por que escolher a AdzHub
             </h2>
             <p className="text-lg font-medium text-[#6B7280] leading-[150%] max-w-[363px]">
-              Whatever your customers' payment preferences, we'll help you find the right solution for your business.
+              Números que comprovam a eficiência da nossa plataforma de criação de conteúdo.
             </p>
           </div>
 
@@ -247,57 +221,57 @@ export default function FinestraLanding() {
             <div className="bg-white rounded-3xl p-6">
               <div className="inline-flex items-center gap-2 px-2 py-1 rounded bg-[hsl(224,47%,42%)]/10 mb-4">
                 <div className="w-6 h-6 rounded-full bg-[hsl(224,47%,42%)]"></div>
-                <span className="text-base font-medium text-[hsl(224,47%,42%)]">Customers</span>
+                <span className="text-base font-medium text-[hsl(224,47%,42%)]">Conteúdos</span>
               </div>
               <div className="flex items-start mb-8">
-                <span className="text-6xl md:text-[100px] font-normal leading-[120%] tracking-tight text-[#1F2937]">20K</span>
+                <span className="text-6xl md:text-[100px] font-normal leading-[120%] tracking-tight text-[#1F2937]">10K</span>
                 <span className="text-3xl md:text-[50px] font-medium leading-[120%] tracking-tight text-[#1F2937]">+</span>
               </div>
-              <p className="text-lg font-normal text-[#6B7280] leading-[150%] capitalize">
-                In 38 countries, we work as one global team to help clients
+              <p className="text-lg font-normal text-[#6B7280] leading-[150%]">
+                Artigos e posts criados por mês com ajuda da IA e publicados diretamente na plataforma
               </p>
             </div>
 
             <div className="bg-white rounded-3xl p-6">
               <div className="inline-flex items-center gap-2 px-2 py-1 rounded bg-[hsl(41,100%,58%)]/10 mb-4">
                 <div className="w-6 h-6 rounded-full bg-[hsl(41,100%,58%)]"></div>
-                <span className="text-base font-medium text-[hsl(41,100%,58%)]">Impact</span>
+                <span className="text-base font-medium text-[hsl(41,100%,58%)]">Economia</span>
               </div>
               <div className="flex items-start mb-8">
-                <span className="text-6xl md:text-[100px] font-normal leading-[120%] tracking-tight text-[#1F2937]">98</span>
+                <span className="text-6xl md:text-[100px] font-normal leading-[120%] tracking-tight text-[#1F2937]">80</span>
                 <span className="text-3xl md:text-[40px] font-medium leading-[120%] tracking-tight text-[#1F2937]">%</span>
               </div>
-              <p className="text-lg font-normal text-[#6B7280] leading-[150%] capitalize">
-                We have worked with 89% of the Global 500 companies.
+              <p className="text-lg font-normal text-[#6B7280] leading-[150%]">
+                Redução no tempo de criação de conteúdo comparado ao processo manual tradicional
               </p>
             </div>
 
             <div className="bg-white rounded-3xl p-6">
               <div className="inline-flex items-center gap-2 px-2 py-1 rounded bg-[hsl(224,47%,42%)]/10 mb-4">
                 <div className="w-6 h-6 rounded-full bg-[hsl(224,47%,42%)]"></div>
-                <span className="text-base font-medium text-[hsl(224,47%,42%)]">Experience</span>
+                <span className="text-base font-medium text-[hsl(224,47%,42%)]">Satisfação</span>
               </div>
               <div className="flex items-start mb-8">
-                <span className="text-6xl md:text-[100px] font-normal leading-[120%] tracking-tight text-[#1F2937]">89</span>
-                <span className="text-3xl md:text-[40px] font-medium leading-[120%] tracking-tight text-[#1F2937]">%</span>
+                <span className="text-6xl md:text-[100px] font-normal leading-[120%] tracking-tight text-[#1F2937]">4.9</span>
+                <span className="text-3xl md:text-[40px] font-medium leading-[120%] tracking-tight text-[#1F2937]">★</span>
               </div>
-              <p className="text-lg font-normal text-[#6B7280] leading-[150%] capitalize">
-                We started with a rebellious mindset and set ourselves the challenge
+              <p className="text-lg font-normal text-[#6B7280] leading-[150%]">
+                Avaliação média dos nossos clientes que utilizam a plataforma diariamente
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Display Cards Section */}
+      {/* Funcionalidades Section */}
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-6xl lg:text-[72px] font-medium leading-[100%] tracking-tight text-[#08080C] mb-6">
-              Discover Our Features
+              Conheça as Funcionalidades
             </h2>
             <p className="text-lg font-medium text-[#6B7280] leading-[170%] max-w-[600px] mx-auto">
-              Experience the power of smart financial management with our innovative solutions
+              Tudo que você precisa para criar, gerenciar e publicar conteúdo de alta qualidade
             </p>
           </div>
           
@@ -307,9 +281,9 @@ export default function FinestraLanding() {
                 cards={[
                   {
                     icon: <TrendingUp className="size-4 text-emerald-300" />,
-                    title: "Growth",
-                    description: "Maximize your investments",
-                    date: "Active",
+                    title: "Crescimento",
+                    description: "Mais tráfego orgânico",
+                    date: "Ativo",
                     iconClassName: "text-emerald-500",
                     titleClassName: "text-emerald-500",
                     className:
@@ -317,9 +291,9 @@ export default function FinestraLanding() {
                   },
                   {
                     icon: <Shield className="size-4 text-blue-300" />,
-                    title: "Security",
-                    description: "Bank-level protection",
-                    date: "24/7",
+                    title: "Qualidade",
+                    description: "Conteúdo profissional",
+                    date: "IA + Humano",
                     iconClassName: "text-blue-500",
                     titleClassName: "text-blue-500",
                     className:
@@ -327,9 +301,9 @@ export default function FinestraLanding() {
                   },
                   {
                     icon: <Zap className="size-4 text-amber-300" />,
-                    title: "Speed",
-                    description: "Instant transactions",
-                    date: "Real-time",
+                    title: "Velocidade",
+                    description: "Publicação instantânea",
+                    date: "Tempo real",
                     iconClassName: "text-amber-500",
                     titleClassName: "text-amber-500",
                     className:
@@ -347,10 +321,10 @@ export default function FinestraLanding() {
             >
               <div className="text-2xl font-bold flex items-center gap-2">
                 <Rocket className="text-yellow-500 w-8 h-8" />
-                <span className="text-[#08080C]">Rápido e Eficiente</span>
+                <span className="text-[#08080C]">Criação com IA</span>
               </div>
               <div className="text-[#6B7280]">
-                Envie milhares de mensagens em minutos com nossa plataforma otimizada para alta performance e velocidade.
+                Gere artigos, posts para redes sociais e legendas em minutos com inteligência artificial treinada para marketing.
               </div>
             </SpotlightCard>
 
@@ -359,11 +333,11 @@ export default function FinestraLanding() {
               spotlightColor="#ff006630"
             >
               <div className="text-2xl font-bold flex items-center gap-2">
-                <Users className="text-yellow-500 w-8 h-8" />
-                <span className="text-[#08080C]">Gestão Inteligente</span>
+                <Sparkles className="text-yellow-500 w-8 h-8" />
+                <span className="text-[#08080C]">SEO Automático</span>
               </div>
               <div className="text-[#6B7280]">
-                Organize seus contatos, campanhas e templates em um só lugar. Interface intuitiva e fácil de usar.
+                Otimização automática para mecanismos de busca. Palavras-chave, meta tags e estrutura gerados pela IA.
               </div>
             </SpotlightCard>
 
@@ -373,25 +347,25 @@ export default function FinestraLanding() {
             >
               <div className="text-2xl font-bold flex items-center gap-2">
                 <Target className="text-yellow-500 w-8 h-8" />
-                <span className="text-[#08080C]">Resultados Garantidos</span>
+                <span className="text-[#08080C]">Resultados Mensuráveis</span>
               </div>
               <div className="text-[#6B7280]">
-                Acompanhe suas campanhas em tempo real com análises detalhadas e métricas de desempenho.
+                Acompanhe tráfego, engajamento e conversões em tempo real com dashboards detalhados.
               </div>
             </SpotlightCard>
           </div>
         </div>
       </section>
 
-      {/* Platform Features Section */}
+      {/* Atributos da Plataforma */}
       <section className="py-24 bg-[#F8F8F8] rounded-3xl mx-5">
         <div className="max-w-7xl mx-auto px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-6xl lg:text-[72px] font-medium leading-[100%] tracking-tight text-[#08080C] mb-6">
-              Platform Attributes
+              Recursos da Plataforma
             </h2>
             <p className="text-lg font-medium text-[#6B7280] leading-[170%] max-w-[600px] mx-auto">
-              Everything you need to manage your campaigns efficiently and effectively
+              Tudo que você precisa para gerenciar sua estratégia de conteúdo com eficiência
             </p>
           </div>
           
@@ -414,79 +388,18 @@ export default function FinestraLanding() {
         </div>
       </section>
 
-      {/* Testimonials Section */}
-      <section className="py-24 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-8 text-center mb-16">
-          <div className="flex flex-wrap justify-center gap-8 md:gap-20 mb-8">
-            <span className="text-lg font-medium text-[#344054]">Our Customers</span>
-            <span className="text-lg font-medium text-[#344054]">Talk About IT</span>
-            <span className="text-lg font-medium text-[#344054]">Better Than Us</span>
-          </div>
-          <h2 className="text-4xl md:text-6xl lg:text-[72px] font-medium leading-[100%] tracking-tight text-[#08080C] mb-8 max-w-[687px] mx-auto">
-            Hear What Customer Have to Say
-          </h2>
-          <p className="text-lg font-normal text-[#6B7280] leading-[150%] capitalize max-w-[467px] mx-auto">
-            See your whole financial picture in one place, alongside a smarter approach to investing and real human.
-          </p>
-        </div>
-
-        <div className="max-w-7xl mx-auto px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="bg-[#F0E6E0] rounded-xl p-8">
-              <div className="flex gap-4 mb-4">
-                <div className="w-16 h-16 rounded-full bg-black/20"></div>
-                <div>
-                  <p className="text-xl font-medium text-[#08080C] mb-1">Megan</p>
-                  <p className="text-base text-[#656565]">Student at New York University</p>
-                </div>
-              </div>
-              <p className="text-base text-[#08080C] leading-[150%]">
-                "This cup is fantastic! It is so well insulated. I live in the desert, and it keeps my cold drinks cold in the heat"
-              </p>
-            </div>
-
-            <div className="bg-[#F0E6E0] rounded-xl p-8">
-              <div className="flex gap-4 mb-4">
-                <div className="w-16 h-16 rounded-full bg-black/20"></div>
-                <div>
-                  <p className="text-xl font-medium text-[#08080C] mb-1">Jerry Tang</p>
-                  <p className="text-base text-[#656565]">Recent graduate, Marketing at Sweatpals</p>
-                </div>
-              </div>
-              <p className="text-base text-[#08080C] leading-[170%]">
-                "Joining Mate community is the best thing I have ever done. The projects I worked on gave me the experience I needed in content Marketing"
-              </p>
-            </div>
-
-            <div className="bg-[#F0E6E0] rounded-xl p-8">
-              <div className="flex gap-4 mb-4">
-                <div className="w-16 h-16 rounded-full bg-black/20"></div>
-                <div>
-                  <p className="text-xl font-medium text-[#08080C] mb-1">David K.</p>
-                  <p className="text-base text-[#656565]">Recent graduate</p>
-                </div>
-              </div>
-              <p className="text-base text-[#08080C] leading-[150%]">
-                "I absolutely love this cup. I've bought several different brands and there's always something"
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Animated Testimonials Section */}
-      <section className="bg-white py-20 relative">
+      {/* Depoimentos Section */}
+      <section className="py-24 bg-white relative">
         <div className="container z-10 mx-auto">
-          <div className="flex flex-col items-center justify-center max-w-[540px] mx-auto animate-fade-in">
-            <div className="flex justify-center">
-              <div className="border py-1 px-4 rounded-lg bg-white">Testimonials</div>
+          <div className="flex flex-col items-center justify-center max-w-[600px] mx-auto mb-4">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#37489d]/5 border border-[#37489d]/10 text-sm font-medium text-[#37489d] mb-6">
+              Depoimentos
             </div>
-
-            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tighter mt-5 text-[#08080C]">
-              What our users say
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-center text-[#08080C] mb-4">
+              O que nossos clientes dizem
             </h2>
-            <p className="text-center mt-5 opacity-75 text-[#6B7280]">
-              See what our customers have to say about us.
+            <p className="text-center text-[#6B7280] text-lg">
+              Empresas de todos os tamanhos confiam na AdzHub para transformar sua estratégia de conteúdo em resultados reais.
             </p>
           </div>
 
@@ -500,75 +413,53 @@ export default function FinestraLanding() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-white rounded-t-[40px] pt-24 pb-12 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-8">
-          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-24 gap-8">
-            <h2 className="text-4xl md:text-6xl lg:text-[80px] font-medium leading-[100%] tracking-tight text-[#08080C]">
-              Let's Sit &Talk
+      {/* Parte do Ecossistema AdzHub */}
+      <section className="py-24 bg-[#F8F8F8] rounded-3xl mx-5">
+        <div className="max-w-5xl mx-auto px-8">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[#37489d]/10 text-sm font-medium text-[#37489d] mb-6">
+              Ecossistema AdzHub
+            </div>
+            <h2 className="text-3xl md:text-5xl lg:text-6xl font-medium leading-[100%] tracking-tight text-[#08080C] mb-6">
+              O Blog é apenas o começo
             </h2>
-            <div className="w-full lg:w-[469px]">
-              <div className="flex items-center justify-between mb-9">
-                <input type="email" placeholder="Enter Your Email" className="text-2xl md:text-[40px] font-normal leading-[120%] tracking-tight text-[#1F2937] opacity-20 bg-transparent border-none outline-none flex-1" />
-                <ChevronRight className="w-10 h-10 text-[#1F2937]" />
-              </div>
-              <div className="h-px bg-[#6B7280]"></div>
+            <p className="text-lg font-medium text-[#6B7280] leading-[170%] max-w-[650px] mx-auto">
+              Este módulo faz parte de uma plataforma maior: a AdzHub, que combina Supercérebro (IA contextual), 
+              módulos integrados e metodologia aplicada para transformar o marketing de PMEs.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
+            <div className="bg-white rounded-2xl p-6 border-2 border-[#37489d]/20 relative">
+              <div className="absolute -top-3 left-4 px-3 py-0.5 bg-[#37489d] text-white text-xs font-medium rounded-full">Atual</div>
+              <Sparkles className="w-8 h-8 text-[#37489d] mb-3" />
+              <h3 className="text-base font-bold text-[#08080C] mb-1">Blog</h3>
+              <p className="text-xs text-[#6B7280]">Blog, SEO e conteúdo com IA</p>
+            </div>
+            <div className="bg-white rounded-2xl p-6 border border-[#08080C]/10 opacity-60">
+              <Zap className="w-8 h-8 text-[#6B7280] mb-3" />
+              <h3 className="text-base font-bold text-[#08080C] mb-1">Automações</h3>
+              <p className="text-xs text-[#6B7280]">Fluxos inteligentes multi-app</p>
+              <span className="text-[10px] text-[#37489d] font-medium">Em breve</span>
+            </div>
+            <div className="bg-white rounded-2xl p-6 border border-[#08080C]/10 opacity-60">
+              <Brain className="w-8 h-8 text-[#6B7280] mb-3" />
+              <h3 className="text-base font-bold text-[#08080C] mb-1">Treinamento</h3>
+              <p className="text-xs text-[#6B7280]">Trilhas personalizadas com IA</p>
+              <span className="text-[10px] text-[#37489d] font-medium">Em breve</span>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-24">
-            <div className="lg:col-span-1">
-              <h3 className="text-2xl font-normal text-[#1F2937] mb-6">Address</h3>
-              <p className="text-lg font-normal text-[#1F2937] leading-[150%] capitalize">
-                475 Cherry Dr, Troy, Michigan 48083 United States ( (248) 823-3200 )
-              </p>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-medium text-[#1F2937] mb-6">Company</h3>
-              <div className="flex flex-col gap-4">
-                <a href="#" className="text-base text-[#6B7280] hover:text-[#1F2937]">About</a>
-                <Link to="/pricing" className="text-base text-[#6B7280] hover:text-[#1F2937]">Pricing</Link>
-                <a href="#" className="text-base text-[#6B7280] hover:text-[#1F2937]">Jobs</a>
-                <a href="#" className="text-base text-[#6B7280] hover:text-[#1F2937]">Blog</a>
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-medium text-[#1F2937] mb-6">Product</h3>
-              <div className="flex flex-col gap-4">
-                <a href="#" className="text-base text-[#6B7280] hover:text-[#1F2937]">Sales Software</a>
-                <a href="#" className="text-base text-[#6B7280] hover:text-[#1F2937]">Marketplace</a>
-                <a href="#" className="text-base text-[#6B7280] hover:text-[#1F2937]">Terms & Conditions</a>
-                <a href="#" className="text-base text-[#6B7280] hover:text-[#1F2937]">Privacy Policy</a>
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-medium text-[#1F2937] mb-6">Help Center</h3>
-              <div className="flex flex-col gap-4">
-                <a href="#" className="text-base text-[#6B7280] hover:text-[#1F2937]">Community</a>
-                <a href="#" className="text-base text-[#6B7280] hover:text-[#1F2937]">Knowledge Base</a>
-                <a href="#" className="text-base text-[#6B7280] hover:text-[#1F2937]">Academy</a>
-                <a href="#" className="text-base text-[#6B7280] hover:text-[#1F2937]">Support</a>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-[#6B7280]/20 gap-4">
-            <p className="text-base text-[#1F2937]">© 2024 Copyright AdzHub - Marketing Intelligence Platform</p>
-            <div className="flex flex-wrap gap-8 justify-center">
-              <a href="#" className="text-base text-[#1F2937] hover:text-[#08080C]">Terms</a>
-              <a href="#" className="text-base text-center text-[#1F2937] hover:text-[#08080C]">Privacy</a>
-              <a href="#" className="text-base text-center text-[#1F2937] hover:text-[#08080C]">Cookies</a>
-              <a href="#" className="text-base text-center text-[#1F2937] hover:text-[#08080C]">Legal</a>
-              <a href="#" className="text-base text-center text-[#1F2937] hover:text-[#08080C]">Recalls</a>
-            </div>
+          <div className="text-center">
+            <Link to="/" className="inline-flex items-center gap-2 text-[#37489d] font-medium hover:text-[#37489d]/80 transition-colors">
+              Conheça a plataforma completa
+              <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
         </div>
-      </footer>
-      <Suspense fallback={null}>
-        <MorphPanel />
-      </Suspense>
-    </div>;
+      </section>
+
+      <Footer />
+    </div>
+  );
 }

@@ -8,6 +8,8 @@ import { Calendar, Clock, ArrowLeft, Share2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Helmet } from 'react-helmet-async';
+import { LandingNav } from '@/components/LandingNav';
+import { Footer } from '@/components/Footer';
 import adzhubLogo from '@/assets/adzhub-logo-final.png';
 
 interface BlogPost {
@@ -76,16 +78,10 @@ export default function BlogPost() {
 
   if (!post) {
     return (
-      <div className="min-h-screen bg-background">
-        <header className="border-b border-border">
-          <div className="container mx-auto px-6 py-4">
-            <Link to="/" className="flex items-center gap-3">
-              <img src={adzhubLogo} alt="AdzHub" className="h-8 w-auto" />
-            </Link>
-          </div>
-        </header>
-        <div className="container mx-auto px-6 py-16 text-center">
-          <h1 className="text-3xl font-bold mb-4">Post não encontrado</h1>
+      <div className="min-h-screen bg-white">
+        <LandingNav />
+        <div className="container mx-auto px-6 pt-[83px] py-16 text-center">
+          <h1 className="text-3xl font-bold mb-4 text-[#08080C]">Post não encontrado</h1>
           <Button asChild>
             <Link to="/blog">
               <ArrowLeft className="h-4 w-4 mr-2" />
@@ -93,6 +89,7 @@ export default function BlogPost() {
             </Link>
           </Button>
         </div>
+        <Footer />
       </div>
     );
   }
@@ -157,32 +154,26 @@ export default function BlogPost() {
         </script>
       </Helmet>
 
-      <div className="min-h-screen bg-background">
-        {/* Header */}
-        <header className="border-b border-border bg-background/80 backdrop-blur-md sticky top-0 z-50">
-          <div className="container mx-auto px-6 py-4">
-            <div className="flex items-center justify-between">
-              <Link to="/" className="flex items-center gap-3">
-                <img src={adzhubLogo} alt="AdzHub" className="h-8 w-auto" />
-              </Link>
-              <div className="flex items-center gap-3">
-                <Button variant="ghost" asChild>
-                  <Link to="/blog">
-                    <ArrowLeft className="h-4 w-4 mr-2" />
-                    Blog
-                  </Link>
-                </Button>
-                <Button variant="outline" size="icon">
-                  <Share2 className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-          </div>
-        </header>
+      <div className="min-h-screen bg-white">
+        <LandingNav />
 
         {/* Article */}
-        <article className="py-12">
+        <article className="pt-[83px] py-12">
           <div className="container mx-auto px-6 max-w-4xl">
+            {/* Breadcrumb */}
+            <div className="flex items-center gap-2 mb-8 pt-4">
+              <Link to="/blog" className="inline-flex items-center gap-1.5 text-sm text-[#37489d] hover:text-[#37489d]/80 transition-colors">
+                <ArrowLeft className="h-3.5 w-3.5" />
+                Blog
+              </Link>
+              {post.category && (
+                <>
+                  <span className="text-[#6B7280] text-sm">/</span>
+                  <span className="text-sm text-[#6B7280]">{post.category}</span>
+                </>
+              )}
+            </div>
+
             {/* Meta Information */}
             <div className="flex items-center gap-3 mb-6 flex-wrap">
               {post.category && (
@@ -267,8 +258,17 @@ export default function BlogPost() {
                 </div>
               </div>
             )}
+            {/* Back to blog */}
+            <div className="mt-12 pt-8 border-t border-[#08080C]/10">
+              <Link to="/blog" className="inline-flex items-center gap-2 text-[#37489d] font-medium hover:text-[#37489d]/80 transition-colors">
+                <ArrowLeft className="h-4 w-4" />
+                Voltar para o blog
+              </Link>
+            </div>
           </div>
         </article>
+
+        <Footer />
       </div>
     </>
   );

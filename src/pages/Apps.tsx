@@ -25,8 +25,8 @@ const apps = [
   },
   {
     id: 9,
-    name: 'Campanhas de WhatsApp',
-    description: 'Crie e gerencie campanhas de disparo em massa',
+    name: 'Blog',
+    description: 'Crie e publique conteúdo profissional com IA',
     icon: MessageCircle,
     color: 'primary',
     status: 'Ativo'
