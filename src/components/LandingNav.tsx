@@ -18,7 +18,7 @@ const NAV_ITEMS = [
   { id: "sobre", label: "Sobre", href: "/#sobre" },
   { id: "como-funciona", label: "Como Funciona", href: "/#como-funciona" },
   { id: "apps", label: "Apps", isDropdown: true },
-  { id: "contato", label: "Contato", href: "/#contato" },
+  { id: "contato", label: "Contato", to: "/contact" },
 ] as const;
 
 export const LandingNav = ({ activeSection = "home" }: LandingNavProps) => {
@@ -29,6 +29,7 @@ export const LandingNav = ({ activeSection = "home" }: LandingNavProps) => {
     if (activeSection === "conteudo" || activeSection === "adzchat") return "apps";
     const path = location.pathname;
     if (path === "/") return activeSection;
+    if (path === "/contact") return "contato";
     if (path === "/conteudo" || path === "/chat") return "apps";
     return "home";
   }, [activeSection, location.pathname]);
@@ -263,13 +264,13 @@ export const LandingNav = ({ activeSection = "home" }: LandingNavProps) => {
           >
             Preços
           </Link>
-          <a 
-            href="/#contato" 
+          <Link 
+            to="/contact" 
             className="block py-2 text-sm text-gray-700 hover:text-gray-900"
             onClick={() => setMobileOpen(false)}
           >
             Contato
-          </a>
+          </Link>
           <div className="pt-3 border-t border-gray-200 flex flex-col gap-2">
             <a href="https://app.adzhub.com.br" className="block">
               <button className="w-full px-4 py-2 rounded-full border border-[#37489d] text-[#37489d] text-sm hover:bg-[#37489d]/10 transition-colors font-medium">

@@ -71,7 +71,7 @@ export default function Contact() {
               </div>
 
               {/* Contact Form */}
-              <Card className="lg:col-span-2">
+              <Card id="contato" className="lg:col-span-2 scroll-mt-28">
                 <CardHeader>
                   <CardTitle>Envie sua mensagem</CardTitle>
                   <CardDescription>
