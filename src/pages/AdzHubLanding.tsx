@@ -534,92 +534,108 @@ export default function AdzHubLanding() {
         </div>
       </section>
 
-      {/* Números e Mercado */}
+      {/* Tração e contexto — linguagem para empresas, não investidores */}
       <section id="empresas" className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-8">
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#37489d]/5 border border-[#37489d]/10 text-sm font-medium text-[#37489d] mb-6">
-              Mercado e Oportunidade
+              Por que a AdzHub existe
             </div>
             <h2 className="text-4xl md:text-6xl lg:text-[72px] font-medium leading-[100%] tracking-tight text-[#08080C] mb-6">
-              Um mercado de R$ 63 bilhões
+              O mesmo desafio em milhões de negócios
             </h2>
             <p className="text-lg font-medium text-[#6B7280] leading-[170%] max-w-[700px] mx-auto">
-              90% das empresas ativas no Brasil são PMEs sem acesso a marketing estratégico. 
-              48% já investem em marketing digital — mas não conseguem extrair valor real.
+              A maior parte das empresas no Brasil é PME — e muitas não têm marketing estratégico de verdade. Quem já investe
+              em digital muitas vezes não vê resultado proporcional. A AdzHub existe para organizar estratégia, execução e dados
+              no ritmo da sua empresa.
             </p>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
             <div className="bg-[#F6F6F6] rounded-2xl p-6 text-center">
               <div className="text-3xl md:text-4xl font-bold text-[#37489d] mb-2">11M+</div>
-              <div className="text-sm text-[#6B7280]">CNPJs ativos no Brasil (excluindo MEIs)</div>
+              <div className="text-sm text-[#6B7280]">Empresas formais no Brasil — e a maioria sem marketing estruturado</div>
             </div>
             <div className="bg-[#F6F6F6] rounded-2xl p-6 text-center">
               <div className="text-3xl md:text-4xl font-bold text-[#37489d] mb-2">+200</div>
-              <div className="text-sm text-[#6B7280]">Empresas atendidas pela nossa metodologia</div>
+              <div className="text-sm text-[#6B7280]">Negócios que já passaram pela nossa metodologia</div>
             </div>
             <div className="bg-[#F6F6F6] rounded-2xl p-6 text-center">
               <div className="text-3xl md:text-4xl font-bold text-[#37489d] mb-2">+9</div>
-              <div className="text-sm text-[#6B7280]">Anos de experiência em marketing para PMEs</div>
+              <div className="text-sm text-[#6B7280]">Anos focados em marketing para PMEs</div>
             </div>
             <div className="bg-[#F6F6F6] rounded-2xl p-6 text-center">
               <div className="text-3xl md:text-4xl font-bold text-[#37489d] mb-2">R$ 30M+</div>
-              <div className="text-sm text-[#6B7280]">Investidos em marketing digital ao longo da operação</div>
+              <div className="text-sm text-[#6B7280]">Em campanhas e projetos que apoiamos ao longo da jornada</div>
             </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-12">
             <div className="bg-[#37489d] rounded-3xl p-8 text-white">
-              <p className="text-sm font-medium text-white/60 mb-2">TAM — Total Available Market</p>
-              <div className="text-3xl font-bold mb-3">R$ 63 bi/ano</div>
+              <p className="text-sm font-medium text-white/60 mb-2">O cenário</p>
+              <div className="text-2xl md:text-3xl font-bold mb-3 leading-tight">Marketing é grande — e fragmentado</div>
               <p className="text-sm text-white/80 leading-relaxed">
-                Todas as PMEs que investem em marketing pago no Brasil e poderiam migrar para um modelo recorrente e escalável.
+                Muita verba circula em mídia e agências, mas o gestor da PME segue sem clareza: o que fazer primeiro, como medir
+                e como não depender só de terceiros opacos.
               </p>
             </div>
             <div className="bg-[#F6F6F6] rounded-3xl p-8">
-              <p className="text-sm font-medium text-[#37489d] mb-2">SAM — Serviceable Market</p>
-              <div className="text-3xl font-bold text-[#08080C] mb-3">R$ 16 bi/ano</div>
+              <p className="text-sm font-medium text-[#37489d] mb-2">Com quem falamos</p>
+              <div className="text-2xl md:text-3xl font-bold text-[#08080C] mb-3 leading-tight">PMEs que precisam de método</div>
               <p className="text-sm text-[#6B7280] leading-relaxed">
-                PMEs de serviços, comércio e indústria leve sem marketing interno estruturado, com ticket até R$ 3-5k/mês.
+                Serviços, comércio e indústria leve — times enxutos que querem processo, transparência e execução sem montar um
+                departamento de marketing do zero.
               </p>
             </div>
             <div className="bg-[#F6F6F6] rounded-3xl p-8">
-              <p className="text-sm font-medium text-[#37489d] mb-2">SOM — Obtainable Market</p>
-              <div className="text-3xl font-bold text-[#08080C] mb-3">R$ 120M ARR</div>
+              <p className="text-sm font-medium text-[#37489d] mb-2">O que entregamos</p>
+              <div className="text-2xl md:text-3xl font-bold text-[#08080C] mb-3 leading-tight">Metodologia + plataforma</div>
               <p className="text-sm text-[#6B7280] leading-relaxed">
-                Meta de 10.000 clientes recorrentes em 4 anos. O maior player atual opera 5.000 clientes via franquias.
+                Anos de operação com PMEs viraram fluxo, rituais e ferramentas em um só lugar — para você avançar com
+                consistência, não no improviso.
               </p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-[#F6F6F6] rounded-3xl p-8">
-              <h3 className="text-xl font-bold text-[#08080C] mb-4">Premissas do Modelo</h3>
+              <h3 className="text-xl font-bold text-[#08080C] mb-4">O que muda no dia a dia</h3>
               <div className="space-y-3">
                 <div className="flex items-start gap-3">
                   <div className="w-2 h-2 rounded-full bg-[#37489d] mt-2 flex-shrink-0"></div>
-                  <p className="text-sm text-[#6B7280]"><span className="font-semibold text-[#08080C]">Escala:</span> Modelo Plataforma (produtor/consumidor) + IA, dissociação entre ativo de tempo e valor gerado</p>
+                  <p className="text-sm text-[#6B7280]">
+                    <span className="font-semibold text-[#08080C]">Um só lugar:</span> estratégia e execução alinhadas — menos retrabalho
+                    e menos ferramentas soltas.
+                  </p>
                 </div>
                 <div className="flex items-start gap-3">
                   <div className="w-2 h-2 rounded-full bg-[#37489d] mt-2 flex-shrink-0"></div>
-                  <p className="text-sm text-[#6B7280]"><span className="font-semibold text-[#08080C]">Fosso:</span> Camada de Metodologia integrada — única e não replicável</p>
+                  <p className="text-sm text-[#6B7280]">
+                    <span className="font-semibold text-[#08080C]">Metodologia clara:</span> decisões guiadas por processo, não só por achismo
+                    ou briefing vago.
+                  </p>
                 </div>
                 <div className="flex items-start gap-3">
                   <div className="w-2 h-2 rounded-full bg-[#37489d] mt-2 flex-shrink-0"></div>
-                  <p className="text-sm text-[#6B7280]"><span className="font-semibold text-[#08080C]">Retenção:</span> Dados de estratégia e contexto gerados dentro da plataforma como mecanismo orgânico</p>
+                  <p className="text-sm text-[#6B7280]">
+                    <span className="font-semibold text-[#08080C]">Memória da marca:</span> contexto e histórico de estratégia ficam registrados
+                    na plataforma.
+                  </p>
                 </div>
                 <div className="flex items-start gap-3">
                   <div className="w-2 h-2 rounded-full bg-[#37489d] mt-2 flex-shrink-0"></div>
-                  <p className="text-sm text-[#6B7280]"><span className="font-semibold text-[#08080C]">Flywheel:</span> Módulos geram sinergia, aumentando aquisição, upsell e valor gerado</p>
+                  <p className="text-sm text-[#6B7280]">
+                    <span className="font-semibold text-[#08080C]">Módulos integrados:</span> time, conteúdo, mídia e análise conversando entre si
+                    — o trabalho flui melhor.
+                  </p>
                 </div>
               </div>
             </div>
 
             <div className="bg-[#F6F6F6] rounded-3xl p-8">
-              <h3 className="text-xl font-bold text-[#08080C] mb-4">Caso de Validação: SPOT MKT</h3>
+              <h3 className="text-xl font-bold text-[#08080C] mb-4">Resultados na prática — SPOT MKT</h3>
               <p className="text-sm text-[#6B7280] mb-4">
-                Resultados após implementação da metodologia AdzHub na operação da agência SPOT MKT (2024-2025):
+                Indicadores após aplicar a metodologia AdzHub na operação da agência SPOT MKT (2024–2025):
               </p>
               <div className="grid grid-cols-2 gap-3">
                 <div className="bg-white rounded-xl p-4 text-center">
@@ -646,7 +662,7 @@ export default function AdzHubLanding() {
             <Link to="/contact">
               <button className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-[#37489d] text-white hover:bg-[#37489d]/90 transition-colors font-medium">
                 <Mail className="w-5 h-5" />
-                Solicite nossa apresentação
+                Fale com a equipe
               </button>
             </Link>
           </div>
