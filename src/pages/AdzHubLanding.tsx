@@ -75,7 +75,7 @@ export default function AdzHubLanding() {
             <Link to="/conteudo">
               <button className="flex items-center gap-2 text-[#37489d] hover:text-[#37489d]/80 transition-colors">
                 <Play className="w-5 h-5" />
-                Ver Blog
+                Ver Vídeo
               </button>
             </Link>
           </div>
