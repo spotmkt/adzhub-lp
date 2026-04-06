@@ -77,6 +77,13 @@ export const LandingNav = ({ activeSection = "home" }: LandingNavProps) => {
     itemRefs.current[id] = el;
   };
 
+  const handleLogoClick = () => {
+    setMobileOpen(false);
+    if (location.pathname === "/") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50">
       {/* Gradient blur background */}
@@ -93,7 +100,7 @@ export const LandingNav = ({ activeSection = "home" }: LandingNavProps) => {
       />
       <div className="relative flex items-center justify-between px-6 py-3">
         <div className="flex items-center gap-3">
-          <Link to="/">
+          <Link to="/" onClick={handleLogoClick} className="flex shrink-0">
             <img 
               src={adzHubLogo} 
               alt="Adzhub Logo" 

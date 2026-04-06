@@ -1,7 +1,14 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import adzHubLogo from "@/assets/adzhub-logo-final.png";
 
 export function Footer() {
+  const location = useLocation();
+
+  const handleLogoClick = () => {
+    if (location.pathname === "/") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
   return (
     <footer className="bg-white rounded-t-[40px] pt-24 pb-12 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-8">
@@ -24,11 +31,13 @@ export function Footer() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-24">
           <div className="lg:col-span-1">
-            <img 
-              src={adzHubLogo} 
-              alt="AdzHub" 
-              className="h-8 w-auto mb-4"
-            />
+            <Link to="/" onClick={handleLogoClick} className="inline-block mb-4">
+              <img 
+                src={adzHubLogo} 
+                alt="AdzHub" 
+                className="h-8 w-auto"
+              />
+            </Link>
             <p className="text-sm text-[#6B7280] max-w-sm">
               Acelerando o desenvolvimento empresarial através do marketing inteligente.
             </p>
