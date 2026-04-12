@@ -9,7 +9,7 @@ All colors MUST be HSL.
 @layer base {
   :root {
     /* Light theme - AdzHub brand colors */
-    --background: 38 33% 96%;
+    --background: 0 0% 100%;
     --foreground: 224 47% 25%;
 
     --card: 0 0% 100%;
