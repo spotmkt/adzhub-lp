@@ -1,19 +1,15 @@
 import { useMemo, lazy, Suspense } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { Play, Star, TrendingUp, Shield, Zap, Rocket, Target, BarChart3, PenTool, Search, Sparkles, ArrowRight, Brain } from "lucide-react";
+import { Star, BarChart3, PenTool, Search, Sparkles, Zap, ArrowRight, Brain } from "lucide-react";
 import { StarBorder } from "@/components/ui/star-border";
-import { testimonials, tiltedScrollItems, timelineData } from "@/data/finestraData";
-import { SpotlightCard } from "@/components/ui/spotlight-card";
+import { testimonials } from "@/data/finestraData";
 import { LandingNav } from "@/components/LandingNav";
 import { Footer } from "@/components/Footer";
 import { ConteudoMotionShowcase } from "@/components/motion-showcase";
 
-const DisplayCards = lazy(() => import("@/components/ui/display-cards"));
 const TestimonialsColumn = lazy(() => import("@/components/ui/testimonials-columns-1").then(m => ({ default: m.TestimonialsColumn })));
-const TiltedScroll = lazy(() => import("@/components/ui/tilted-scroll").then(m => ({ default: m.TiltedScroll })));
 const Features = lazy(() => import("@/components/ui/features-6").then(m => ({ default: m.Features })));
-const RadialOrbitalTimeline = lazy(() => import("@/components/ui/radial-orbital-timeline"));
 
 const LoadingFallback = () => <div className="w-full h-32 bg-muted/30 rounded-lg" />;
 
@@ -52,16 +48,12 @@ export default function FinestraLanding() {
             </p>
           </div>
 
-          <div className="flex items-center justify-center gap-4 mb-5 flex-wrap">
+          <div className="flex items-center justify-center mb-5">
             <a href="https://app.adzhub.com.br">
               <StarBorder color="hsl(224, 47%, 42%)" speed="8s">
                 Começar Grátis
               </StarBorder>
             </a>
-            <button className="flex items-center gap-2 text-[#37489d] hover:text-[#37489d]/80 transition-colors">
-              <Play className="w-5 h-5" />
-              Ver Demonstração
-            </button>
           </div>
 
           <div className="flex items-center justify-center gap-5 flex-wrap mb-14">
@@ -191,8 +183,9 @@ export default function FinestraLanding() {
             <h2 className="text-4xl md:text-6xl lg:text-[72px] font-medium leading-[100%] tracking-tight text-[#08080C] max-w-[600px]">
               Por que escolher a AdzHub
             </h2>
-            <p className="text-lg font-medium text-[#6B7280] leading-[150%] max-w-[363px]">
-              Números que comprovam a eficiência da nossa plataforma de criação de conteúdo.
+            <p className="text-lg font-medium text-[#6B7280] leading-[150%] max-w-[420px]">
+              Um chat genérico entrega texto solto. A AdzHub entrega <strong className="font-semibold text-[#08080C]">blog com método</strong>: estratégia, SEO, publicação no seu site e leitura em dados — sem você virar ponte entre
+              ferramentas e planilhas.
             </p>
           </div>
 
@@ -200,168 +193,49 @@ export default function FinestraLanding() {
             <div className="bg-white rounded-3xl p-6">
               <div className="inline-flex items-center gap-2 px-2 py-1 rounded bg-[hsl(224,47%,42%)]/10 mb-4">
                 <div className="w-6 h-6 rounded-full bg-[hsl(224,47%,42%)]"></div>
-                <span className="text-base font-medium text-[hsl(224,47%,42%)]">Conteúdos</span>
+                <span className="text-base font-medium text-[hsl(224,47%,42%)]">Do rascunho ao ar</span>
               </div>
               <div className="flex items-start mb-8">
-                <span className="text-6xl md:text-[100px] font-normal leading-[120%] tracking-tight text-[#1F2937]">10K</span>
-                <span className="text-3xl md:text-[50px] font-medium leading-[120%] tracking-tight text-[#1F2937]">+</span>
+                <span className="text-6xl md:text-[100px] font-normal leading-[120%] tracking-tight text-[#1F2937]">1</span>
+                <span className="text-3xl md:text-[50px] font-medium leading-[120%] tracking-tight text-[#1F2937] pl-1 pt-4 md:pt-8">
+                  fluxo
+                </span>
               </div>
               <p className="text-lg font-normal text-[#6B7280] leading-[150%]">
-                Artigos e posts criados por mês com ajuda da IA e publicados diretamente na plataforma
+                Copiar um artigo do ChatGPT ainda deixa para você o CMS, imagens, calendário e o “colar no site”. Na AdzHub, produção e <strong className="font-medium text-[#1F2937]">publicação</strong> conversam no mesmo ambiente da sua
+                operação.
               </p>
             </div>
 
             <div className="bg-white rounded-3xl p-6">
               <div className="inline-flex items-center gap-2 px-2 py-1 rounded bg-[hsl(41,100%,58%)]/10 mb-4">
                 <div className="w-6 h-6 rounded-full bg-[hsl(41,100%,58%)]"></div>
-                <span className="text-base font-medium text-[hsl(41,100%,58%)]">Economia</span>
+                <span className="text-base font-medium text-[hsl(41,100%,58%)]">Marca &amp; SEO</span>
               </div>
               <div className="flex items-start mb-8">
-                <span className="text-6xl md:text-[100px] font-normal leading-[120%] tracking-tight text-[#1F2937]">80</span>
-                <span className="text-3xl md:text-[40px] font-medium leading-[120%] tracking-tight text-[#1F2937]">%</span>
+                <span className="text-6xl md:text-[100px] font-normal leading-[120%] tracking-tight text-[#1F2937]">0</span>
+                <span className="text-3xl md:text-[40px] font-medium leading-[120%] tracking-tight text-[#1F2937] pl-1 pt-4 md:pt-10">
+                  genérico
+                </span>
               </div>
               <p className="text-lg font-normal text-[#6B7280] leading-[150%]">
-                Redução no tempo de criação de conteúdo comparado ao processo manual tradicional
+                Prompt em ferramenta aberta não guarda seu posicionamento nem sua linha editorial. Aqui a IA trabalha com o <strong className="font-medium text-[#1F2937]">contexto da sua empresa</strong> e com regras de SEO e GEO, não com
+                respostas “para qualquer um”.
               </p>
             </div>
 
             <div className="bg-white rounded-3xl p-6">
               <div className="inline-flex items-center gap-2 px-2 py-1 rounded bg-[hsl(224,47%,42%)]/10 mb-4">
                 <div className="w-6 h-6 rounded-full bg-[hsl(224,47%,42%)]"></div>
-                <span className="text-base font-medium text-[hsl(224,47%,42%)]">Satisfação</span>
+                <span className="text-base font-medium text-[hsl(224,47%,42%)]">Resultado mensurável</span>
               </div>
               <div className="flex items-start mb-8">
-                <span className="text-6xl md:text-[100px] font-normal leading-[120%] tracking-tight text-[#1F2937]">4.9</span>
-                <span className="text-3xl md:text-[40px] font-medium leading-[120%] tracking-tight text-[#1F2937]">★</span>
+                <span className="text-6xl md:text-[100px] font-normal leading-[120%] tracking-tight text-[#1F2937]">100</span>
+                <span className="text-3xl md:text-[40px] font-medium leading-[120%] tracking-tight text-[#1F2937]">%</span>
               </div>
               <p className="text-lg font-normal text-[#6B7280] leading-[150%]">
-                Avaliação média dos nossos clientes que utilizam a plataforma diariamente
+                Artigo solto no site não mostra se funcionou. Na AdzHub você acompanha desempenho e evolução <strong className="font-medium text-[#1F2937]">no mesmo lugar</strong> em que estratégia, produção e publicação acontecem — menos achismo, mais leitura de dados.
               </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Funcionalidades Section */}
-      <section className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-6xl lg:text-[72px] font-medium leading-[100%] tracking-tight text-[#08080C] mb-6">
-              Conheça as Funcionalidades
-            </h2>
-            <p className="text-lg font-medium text-[#6B7280] leading-[170%] max-w-[600px] mx-auto">
-              Tudo que você precisa para criar, gerenciar e publicar conteúdo de alta qualidade
-            </p>
-          </div>
-          
-          <div className="flex justify-center items-center min-h-[400px] mb-16">
-            <Suspense fallback={<LoadingFallback />}>
-              <DisplayCards
-                cards={[
-                  {
-                    icon: <TrendingUp className="size-4 text-emerald-300" />,
-                    title: "Crescimento",
-                    description: "Mais tráfego orgânico",
-                    date: "Ativo",
-                    iconClassName: "text-emerald-500",
-                    titleClassName: "text-emerald-500",
-                    className:
-                      "[grid-area:stack] hover:-translate-y-10 before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0",
-                  },
-                  {
-                    icon: <Shield className="size-4 text-blue-300" />,
-                    title: "Qualidade",
-                    description: "Conteúdo profissional",
-                    date: "IA + Humano",
-                    iconClassName: "text-blue-500",
-                    titleClassName: "text-blue-500",
-                    className:
-                      "[grid-area:stack] translate-x-16 translate-y-10 hover:-translate-y-1 before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0",
-                  },
-                  {
-                    icon: <Zap className="size-4 text-amber-300" />,
-                    title: "Velocidade",
-                    description: "Publicação instantânea",
-                    date: "Tempo real",
-                    iconClassName: "text-amber-500",
-                    titleClassName: "text-amber-500",
-                    className:
-                      "[grid-area:stack] translate-x-32 translate-y-20 hover:translate-y-10",
-                  },
-                ]}
-              />
-            </Suspense>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            <SpotlightCard
-              className="flex flex-col gap-4 rounded-3xl !bg-white !border-primary/10 shadow-2xl"
-              spotlightColor="#6300ff30"
-            >
-              <div className="text-2xl font-bold flex items-center gap-2">
-                <Rocket className="text-yellow-500 w-8 h-8" />
-                <span className="text-[#08080C]">Criação com IA</span>
-              </div>
-              <div className="text-[#6B7280]">
-                Gere artigos, posts para redes sociais e legendas em minutos com inteligência artificial treinada para marketing.
-              </div>
-            </SpotlightCard>
-
-            <SpotlightCard
-              className="flex flex-col gap-4 rounded-3xl !bg-white !border-primary/10 shadow-2xl"
-              spotlightColor="#ff006630"
-            >
-              <div className="text-2xl font-bold flex items-center gap-2">
-                <Sparkles className="text-yellow-500 w-8 h-8" />
-                <span className="text-[#08080C]">SEO Automático</span>
-              </div>
-              <div className="text-[#6B7280]">
-                Otimização automática para mecanismos de busca. Palavras-chave, meta tags e estrutura gerados pela IA.
-              </div>
-            </SpotlightCard>
-
-            <SpotlightCard
-              className="flex flex-col gap-4 rounded-3xl !bg-white !border-primary/10 shadow-2xl"
-              spotlightColor="#6300ff30"
-            >
-              <div className="text-2xl font-bold flex items-center gap-2">
-                <Target className="text-yellow-500 w-8 h-8" />
-                <span className="text-[#08080C]">Resultados Mensuráveis</span>
-              </div>
-              <div className="text-[#6B7280]">
-                Acompanhe tráfego, engajamento e conversões em tempo real com dashboards detalhados.
-              </div>
-            </SpotlightCard>
-          </div>
-        </div>
-      </section>
-
-      {/* Atributos da Plataforma */}
-      <section className="py-24 bg-[#F8F8F8] rounded-3xl mx-5">
-        <div className="max-w-7xl mx-auto px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-6xl lg:text-[72px] font-medium leading-[100%] tracking-tight text-[#08080C] mb-6">
-              Recursos da Plataforma
-            </h2>
-            <p className="text-lg font-medium text-[#6B7280] leading-[170%] max-w-[600px] mx-auto">
-              Tudo que você precisa para gerenciar sua estratégia de conteúdo com eficiência
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-            <div>
-              <Suspense fallback={<LoadingFallback />}>
-                <TiltedScroll
-                  items={tiltedScrollItems}
-                  className="mt-8"
-                />
-              </Suspense>
-            </div>
-            
-            <div>
-              <Suspense fallback={<LoadingFallback />}>
-                <RadialOrbitalTimeline timelineData={timelineData} />
-              </Suspense>
             </div>
           </div>
         </div>
