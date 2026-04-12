@@ -154,7 +154,7 @@ export default function Auth() {
               <CardHeader>
                 <CardTitle>Bem-vindo de volta</CardTitle>
                 <CardDescription>
-                  Entre com suas credenciais para acessar sua conta
+                  Acesse a plataforma AdzHub com seu email e senha
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -264,7 +264,7 @@ export default function Auth() {
               <CardHeader>
                 <CardTitle>Criar sua conta</CardTitle>
                 <CardDescription>
-                  Preencha os dados abaixo para começar
+                  Crie sua conta para entrar na operação de marketing da AdzHub
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">

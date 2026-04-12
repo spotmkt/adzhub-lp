@@ -1,13 +1,13 @@
-import { useEffect, useMemo, useState, lazy, Suspense } from "react";
+import { useMemo, lazy, Suspense } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { Play, Star, TrendingUp, Shield, Zap, Rocket, Target, BarChart3, PenTool, Search, Sparkles, ArrowRight, Brain, Layers } from "lucide-react";
+import { Play, Star, TrendingUp, Shield, Zap, Rocket, Target, BarChart3, PenTool, Search, Sparkles, ArrowRight, Brain } from "lucide-react";
 import { StarBorder } from "@/components/ui/star-border";
 import { testimonials, tiltedScrollItems, timelineData } from "@/data/finestraData";
 import { SpotlightCard } from "@/components/ui/spotlight-card";
 import { LandingNav } from "@/components/LandingNav";
 import { Footer } from "@/components/Footer";
-import { DashboardMockup } from "@/components/DashboardMockup";
+import { ConteudoMotionShowcase } from "@/components/motion-showcase";
 
 const DisplayCards = lazy(() => import("@/components/ui/display-cards"));
 const TestimonialsColumn = lazy(() => import("@/components/ui/testimonials-columns-1").then(m => ({ default: m.TestimonialsColumn })));
@@ -18,24 +18,6 @@ const RadialOrbitalTimeline = lazy(() => import("@/components/ui/radial-orbital-
 const LoadingFallback = () => <div className="w-full h-32 bg-muted/30 rounded-lg" />;
 
 export default function FinestraLanding() {
-  const [titleNumber, setTitleNumber] = useState(0);
-  
-  const titles = useMemo(
-    () => ["+Inteligente", "+Estratégico", "+Criativo", "+Otimizado", "+Profissional"],
-    []
-  );
-
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      if (titleNumber === titles.length - 1) {
-        setTitleNumber(0);
-      } else {
-        setTitleNumber(titleNumber + 1);
-      }
-    }, 2000);
-    return () => clearTimeout(timeoutId);
-  }, [titleNumber, titles]);
-
   const firstColumn = useMemo(() => testimonials.slice(0, 3), []);
   const secondColumn = useMemo(() => testimonials.slice(3, 6), []);
   const thirdColumn = useMemo(() => testimonials.slice(6, 9), []);
@@ -43,8 +25,11 @@ export default function FinestraLanding() {
   return (
     <div className="min-h-screen bg-white">
       <Helmet>
-        <title>Blog - AdzHub | Conteúdo com IA</title>
-        <meta name="description" content="Crie, gerencie e publique conteúdo profissional com inteligência artificial. Blog, redes sociais e SEO integrados em uma única plataforma." />
+        <title>SEO, GEO e posicionamento no Google e em IAs - AdzHub</title>
+        <meta
+          name="description"
+          content="Estratégia de posicionamento orgânico no Google e em IAs (ChatGPT, Claude, Gemini). Da estratégia à execução, com acompanhamento na plataforma AdzHub."
+        />
       </Helmet>
 
       <LandingNav activeSection="conteudo" />
@@ -54,22 +39,16 @@ export default function FinestraLanding() {
         <div className="relative max-w-5xl mx-auto px-8 z-10">
           <div className="flex flex-col items-center text-center gap-6 max-w-[781px] mx-auto mb-10">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/70 backdrop-blur-sm border border-[#37489d]/10 text-sm font-medium text-[#37489d]">
-              <Layers className="w-4 h-4" />
-              Módulo do Ecossistema AdzHub — Powered by IA
+              <Search className="w-4 h-4 shrink-0" />
+              Estratégias de SEO e GEO para aumentar suas vendas
             </div>
-            <h1 className="text-5xl md:text-7xl lg:text-[90px] font-bold leading-[100%] tracking-tight text-[#08080C]">
-              <span className="block mb-2">Blog</span>
-              <span className="relative inline-block min-w-[280px] md:min-w-[420px] lg:min-w-[600px] text-center h-[1.2em]">
-                <span 
-                  key={titleNumber}
-                  className="absolute left-0 right-0 font-bold text-[#37489d] animate-fade-in"
-                >
-                  {titles[titleNumber]}
-                </span>
-              </span>
+            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-[3.25rem] xl:text-[3.75rem] font-bold leading-[1.08] tracking-tight text-[#08080C] max-w-4xl mx-auto">
+              Sua marca no topo do Google e das{" "}
+              <span className="text-[#37489d]">recomendações das AI</span>
             </h1>
-            <p className="text-lg text-[#08080C] opacity-80 max-w-[600px]">
-              O primeiro módulo da Plataforma de Inteligência em Marketing. Crie, gerencie e publique conteúdo profissional com IA — blog, redes sociais e SEO integrados ao Supercérebro AdzHub.
+            <p className="text-lg text-[#08080C] opacity-80 max-w-[640px] leading-relaxed">
+              A estratégia de posicionamento da sua marca nas recomendações orgânicas do Google e de AIs (como ChatGPT,
+              Claude, Gemini…). Da estratégia até execução, nós fazemos tudo por você e você acompanha tudo pela plataforma!
             </p>
           </div>
 
@@ -100,9 +79,9 @@ export default function FinestraLanding() {
           </div>
         </div>
 
-        {/* Dashboard Preview */}
-        <div className="relative max-w-6xl mx-auto px-8">
-          <DashboardMockup />
+        {/* Motion: dashboard → postagens → edição */}
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-8">
+          <ConteudoMotionShowcase />
         </div>
       </section>
 

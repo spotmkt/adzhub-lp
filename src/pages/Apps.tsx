@@ -122,7 +122,7 @@ const apps = [
   },
   {
     id: 8,
-    name: 'Mais Apps',
+    name: 'Mais ferramentas',
     description: 'Novos aplicativos em desenvolvimento',
     icon: AppWindow,
     color: 'muted',
@@ -177,9 +177,9 @@ const Apps = () => {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Aplicações</h1>
+          <h1 className="text-3xl font-bold mb-2">Ferramentas</h1>
           <p className="text-muted-foreground">
-            Explore todos os aplicativos disponíveis na plataforma AdzHub
+            Módulos que sustentam a operação de marketing na plataforma AdzHub
           </p>
         </div>
 

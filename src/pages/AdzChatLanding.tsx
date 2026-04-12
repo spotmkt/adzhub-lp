@@ -18,7 +18,6 @@ import {
   Megaphone,
   Search,
   Lightbulb,
-  Send,
   Bot,
   CheckCircle2,
 } from "lucide-react";
@@ -26,6 +25,7 @@ import { StarBorder } from "@/components/ui/star-border";
 import { SpotlightCard } from "@/components/ui/spotlight-card";
 import { LandingNav } from "@/components/LandingNav";
 import { Footer } from "@/components/Footer";
+import { AdzChatMotionHero } from "@/components/motion-showcase";
 
 const agents = [
   {
@@ -114,116 +114,6 @@ const agents = [
   },
 ];
 
-function ChatMockup() {
-  return (
-    <div className="bg-[#0f1117] rounded-2xl border border-white/10 overflow-hidden shadow-2xl max-w-3xl mx-auto">
-      {/* Window bar */}
-      <div className="flex items-center gap-2 px-4 py-3 bg-[#161822] border-b border-white/5">
-        <div className="flex gap-1.5">
-          <div className="w-3 h-3 rounded-full bg-[#ff5f57]" />
-          <div className="w-3 h-3 rounded-full bg-[#febc2e]" />
-          <div className="w-3 h-3 rounded-full bg-[#28c840]" />
-        </div>
-        <div className="flex-1 text-center">
-          <span className="text-xs text-white/40">AdzChat — Painel Principal</span>
-        </div>
-      </div>
-
-      <div className="flex h-[380px]">
-        {/* Sidebar */}
-        <div className="w-48 bg-[#12141e] border-r border-white/5 p-3 hidden md:block">
-          <div className="text-[10px] text-white/30 uppercase tracking-wider mb-3 px-2">Agentes</div>
-          {[
-            { name: "Meta Ads", color: "#1877F2", active: false },
-            { name: "Google Ads", color: "#4285F4", active: false },
-            { name: "Briefing", color: "#37489d", active: true },
-            { name: "Estratégia", color: "#10B981", active: false },
-            { name: "Analytics", color: "#F59E0B", active: false },
-            { name: "Conteúdo", color: "#8B5CF6", active: false },
-          ].map((agent) => (
-            <div
-              key={agent.name}
-              className={`flex items-center gap-2 px-2 py-1.5 rounded-lg mb-1 text-xs ${
-                agent.active ? "bg-white/10 text-white" : "text-white/50"
-              }`}
-            >
-              <div
-                className="w-2 h-2 rounded-full flex-shrink-0"
-                style={{ backgroundColor: agent.color }}
-              />
-              {agent.name}
-            </div>
-          ))}
-        </div>
-
-        {/* Chat area */}
-        <div className="flex-1 flex flex-col">
-          <div className="flex-1 p-4 space-y-4 overflow-hidden">
-            {/* Bot message */}
-            <div className="flex gap-2">
-              <div className="w-7 h-7 rounded-lg bg-[#37489d] flex items-center justify-center flex-shrink-0">
-                <Bot className="w-3.5 h-3.5 text-white" />
-              </div>
-              <div className="bg-[#1a1d2e] rounded-xl rounded-tl-sm px-3.5 py-2.5 max-w-[85%]">
-                <p className="text-xs text-white/80 leading-relaxed">
-                  Olá! Sou o Agente de Briefing. Vou te guiar pelo processo de mapeamento
-                  estratégico da sua empresa. Primeiro, me conte: qual é o principal produto
-                  ou serviço que você oferece?
-                </p>
-              </div>
-            </div>
-
-            {/* User message */}
-            <div className="flex gap-2 justify-end">
-              <div className="bg-[#37489d] rounded-xl rounded-tr-sm px-3.5 py-2.5 max-w-[75%]">
-                <p className="text-xs text-white leading-relaxed">
-                  Somos uma clínica de estética focada em procedimentos faciais e corporais premium.
-                </p>
-              </div>
-            </div>
-
-            {/* Bot response */}
-            <div className="flex gap-2">
-              <div className="w-7 h-7 rounded-lg bg-[#37489d] flex items-center justify-center flex-shrink-0">
-                <Bot className="w-3.5 h-3.5 text-white" />
-              </div>
-              <div className="bg-[#1a1d2e] rounded-xl rounded-tl-sm px-3.5 py-2.5 max-w-[85%]">
-                <p className="text-xs text-white/80 leading-relaxed">
-                  Excelente! Identifiquei que você está no segmento de{" "}
-                  <span className="text-[#37489d] font-medium">Saúde & Estética</span>.
-                  Agora preciso entender seus diferenciais. O que faz o seu cliente escolher
-                  você e não o concorrente?
-                </p>
-                <div className="mt-2 flex flex-wrap gap-1.5">
-                  <span className="px-2 py-0.5 rounded-full bg-[#37489d]/20 text-[#7b8ed8] text-[10px]">
-                    ICP detectado
-                  </span>
-                  <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px]">
-                    Supercérebro atualizado
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Input */}
-          <div className="p-3 border-t border-white/5">
-            <div className="flex items-center gap-2 bg-[#1a1d2e] rounded-xl px-3 py-2">
-              <input
-                type="text"
-                placeholder="Digite sua mensagem..."
-                className="flex-1 bg-transparent text-xs text-white/60 placeholder:text-white/30 outline-none"
-                readOnly
-              />
-              <Send className="w-3.5 h-3.5 text-[#37489d]" />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export default function AdzChatLanding() {
   const [titleNumber, setTitleNumber] = useState(0);
 
@@ -246,11 +136,13 @@ export default function AdzChatLanding() {
   return (
     <div className="min-h-screen bg-white">
       <Helmet>
-        <title>AdzChat - AdzHub | Agentes de IA para Marketing</title>
+        <title>AdzChat - IA dentro da agência AdzHub</title>
         <meta
           name="description"
-          content="Converse com agentes especializados de IA: Meta Ads, Google Ads, Briefing, Estratégia e Analytics. Marketing inteligente guiado por conversas."
+          content="Agentes de IA para tráfego, briefing, estratégia e conteúdo — integrados à operação de marketing da plataforma AdzHub, não como ferramenta solta."
         />
+        <meta name="robots" content="noindex, nofollow" />
+        <meta name="googlebot" content="noindex, nofollow" />
       </Helmet>
 
       <LandingNav activeSection="adzchat" />
@@ -261,7 +153,7 @@ export default function AdzChatLanding() {
           <div className="flex flex-col items-center text-center gap-6 max-w-[781px] mx-auto mb-10">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/70 backdrop-blur-sm border border-[#37489d]/10 text-sm font-medium text-[#37489d]">
               <MessageSquare className="w-4 h-4" />
-              Módulo do Ecossistema AdzHub — Agentes de IA
+              Camada de IA da sua agência na plataforma
             </div>
             <h1 className="text-5xl md:text-7xl lg:text-[90px] font-bold leading-[100%] tracking-tight text-[#08080C]">
               <span className="block mb-2">AdzChat</span>
@@ -275,9 +167,9 @@ export default function AdzChatLanding() {
               </span>
             </h1>
             <p className="text-lg text-[#08080C] opacity-80 max-w-[600px]">
-              Agentes especializados de IA que entendem o contexto do seu negócio. Converse
-              com especialistas em Meta Ads, Google Ads, briefing, estratégia e muito mais —
-              tudo conectado ao Supercérebro AdzHub.
+              O AdzChat não substitui a agência: acelera diagnósticos, sugestões e rotinas que uma operação de marketing
+              madura faria — com o contexto do seu negócio preservado no Supercérebro e alinhado aos serviços que você
+              contrata na AdzHub.
             </p>
           </div>
 
@@ -318,9 +210,9 @@ export default function AdzChatLanding() {
           </div>
         </div>
 
-        {/* Chat Mockup */}
-        <div className="relative max-w-6xl mx-auto px-8">
-          <ChatMockup />
+        {/* Showcase animado — interface AdzChat */}
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-8">
+          <AdzChatMotionHero />
         </div>
       </section>
 

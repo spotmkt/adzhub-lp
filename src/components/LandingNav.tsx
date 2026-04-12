@@ -4,10 +4,12 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown, Menu, X } from "lucide-react";
 import adzHubLogo from "@/assets/adzhub-logo-new.svg";
+import { useWaitlistDialog } from "@/components/WaitlistDialogProvider";
 
 interface LandingNavProps {
   activeSection?: string;
@@ -17,20 +19,33 @@ const NAV_ITEMS = [
   { id: "home", label: "Home", to: "/" },
   { id: "sobre", label: "Sobre", href: "/#sobre" },
   { id: "como-funciona", label: "Como Funciona", href: "/#como-funciona" },
-  { id: "apps", label: "Apps", isDropdown: true },
+  { id: "servicos", label: "Serviços", isDropdown: true },
+  { id: "blog", label: "Blog", to: "/blog" },
   { id: "contato", label: "Contato", to: "/contact" },
 ] as const;
+
+type ServicoDropdownItem =
+  | { type: "text"; label: string }
+  | { type: "link"; label: string; to: string };
+
+const SERVICOS_ITEMS: ServicoDropdownItem[] = [
+  { type: "text", label: "Gestão de Tráfego Pago" },
+  { type: "link", label: "SEO e GEO", to: "/conteudo" },
+  { type: "text", label: "Social Mídia" },
+];
 
 export const LandingNav = ({ activeSection = "home" }: LandingNavProps) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
+  const { openWaitlist } = useWaitlistDialog();
 
   const resolveActive = useCallback((): string => {
-    if (activeSection === "conteudo" || activeSection === "adzchat") return "apps";
+    if (activeSection === "conteudo" || activeSection === "adzchat") return "servicos";
     const path = location.pathname;
     if (path === "/") return activeSection;
     if (path === "/contact") return "contato";
-    if (path === "/conteudo" || path === "/chat") return "apps";
+    if (path === "/blog") return "blog";
+    if (path === "/conteudo" || path === "/chat") return "servicos";
     return "home";
   }, [activeSection, location.pathname]);
 
@@ -145,17 +160,37 @@ export const LandingNav = ({ activeSection = "home" }: LandingNavProps) => {
                     {item.label}
                     <ChevronDown className="w-3 h-3" />
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="bg-white z-50 shadow-lg">
-                    <DropdownMenuItem asChild>
-                      <Link to="/chat" className="cursor-pointer">
-                        AdzChat
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link to="/conteudo" className="cursor-pointer">
-                        Blog
-                      </Link>
-                    </DropdownMenuItem>
+                  <DropdownMenuContent className="bg-white z-50 shadow-lg min-w-[240px]">
+                    {SERVICOS_ITEMS.map((item) =>
+                      item.type === "link" ? (
+                        <DropdownMenuItem key={item.label} asChild>
+                          <Link to={item.to} className="cursor-pointer text-[#37489d] font-medium">
+                            {item.label}
+                          </Link>
+                        </DropdownMenuItem>
+                      ) : (
+                        <div
+                          key={item.label}
+                          className="px-2 py-1.5 text-sm text-gray-500 cursor-default select-none"
+                        >
+                          {item.label}
+                        </div>
+                      )
+                    )}
+                    <DropdownMenuSeparator className="bg-gray-200/80" />
+                    <div
+                      className="pointer-events-none select-none mx-0.5 my-1 rounded-lg border border-gray-200/80 bg-gradient-to-br from-gray-100/95 via-white/60 to-gray-50/40 px-2.5 py-2 backdrop-blur-[2px] opacity-[0.72]"
+                      aria-disabled="true"
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-sm text-gray-500 [text-shadow:0_0_12px_rgba(255,255,255,0.9)]">
+                          AdzChat (IA)
+                        </span>
+                        <span className="text-[10px] uppercase tracking-wide font-semibold px-2 py-0.5 rounded-full bg-amber-100/90 text-amber-900 border border-amber-200/90 whitespace-nowrap shrink-0">
+                          Em breve
+                        </span>
+                      </div>
+                    </div>
                   </DropdownMenuContent>
                 </DropdownMenu>
               );
@@ -204,11 +239,13 @@ export const LandingNav = ({ activeSection = "home" }: LandingNavProps) => {
               Entrar
             </button>
           </a>
-          <a href="https://app.adzhub.com.br">
-            <button className="px-4 py-1.5 rounded-full bg-[#37489d] text-white text-sm hover:bg-[#37489d]/90 transition-colors font-medium">
-              Começar Grátis
-            </button>
-          </a>
+          <button
+            type="button"
+            onClick={openWaitlist}
+            className="px-4 py-1.5 rounded-full bg-[#37489d] text-white text-sm hover:bg-[#37489d]/90 transition-colors font-medium"
+          >
+            Começar grátis
+          </button>
         </div>
 
         <button
@@ -243,20 +280,34 @@ export const LandingNav = ({ activeSection = "home" }: LandingNavProps) => {
           >
             Como Funciona
           </a>
-          <Link 
-            to="/chat" 
-            className="block py-2 text-sm text-gray-700 hover:text-gray-900"
-            onClick={() => setMobileOpen(false)}
+          <p className="pt-2 text-xs font-semibold uppercase tracking-wide text-gray-500">Serviços</p>
+          {SERVICOS_ITEMS.map((item) =>
+            item.type === "link" ? (
+              <Link
+                key={item.label}
+                to={item.to}
+                className="block py-1.5 pl-2 text-sm font-medium text-[#37489d] hover:text-[#2d3a7e]"
+                onClick={() => setMobileOpen(false)}
+              >
+                {item.label}
+              </Link>
+            ) : (
+              <div key={item.label} className="py-1.5 pl-2 text-sm text-gray-500 cursor-default select-none">
+                {item.label}
+              </div>
+            )
+          )}
+          <div
+            className="pointer-events-none select-none mx-0.5 my-1 rounded-lg border border-gray-200/80 bg-gradient-to-br from-gray-100/95 via-white/60 to-gray-50/40 px-2.5 py-2 backdrop-blur-[2px] opacity-[0.72]"
+            aria-disabled="true"
           >
-            AdzChat
-          </Link>
-          <Link 
-            to="/conteudo" 
-            className="block py-2 text-sm text-gray-700 hover:text-gray-900"
-            onClick={() => setMobileOpen(false)}
-          >
-            Blog
-          </Link>
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-sm text-gray-500">AdzChat (IA)</span>
+              <span className="text-[10px] uppercase tracking-wide font-semibold px-2 py-0.5 rounded-full bg-amber-100/90 text-amber-900 border border-amber-200/90 whitespace-nowrap shrink-0">
+                Em breve
+              </span>
+            </div>
+          </div>
           <Link 
             to="/pricing" 
             className="block py-2 text-sm text-gray-700 hover:text-gray-900"
@@ -277,11 +328,16 @@ export const LandingNav = ({ activeSection = "home" }: LandingNavProps) => {
                 Entrar
               </button>
             </a>
-            <a href="https://app.adzhub.com.br" className="block">
-              <button className="w-full px-4 py-2 rounded-full bg-[#37489d] text-white text-sm hover:bg-[#37489d]/90 transition-colors font-medium">
-                Começar Grátis
-              </button>
-            </a>
+            <button
+              type="button"
+              className="w-full px-4 py-2 rounded-full bg-[#37489d] text-white text-sm hover:bg-[#37489d]/90 transition-colors font-medium"
+              onClick={() => {
+                setMobileOpen(false);
+                openWaitlist();
+              }}
+            >
+              Começar grátis
+            </button>
           </div>
         </div>
       )}

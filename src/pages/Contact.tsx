@@ -3,7 +3,6 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Mail, Phone, MapPin } from 'lucide-react';
 import { LandingNav } from '@/components/LandingNav';
 import { Footer } from '@/components/Footer';
 
@@ -22,56 +21,13 @@ export default function Contact() {
             <div className="text-center mb-12">
               <h1 className="text-4xl sm:text-5xl font-bold mb-4 text-[#08080C]">Entre em Contato</h1>
               <p className="text-xl text-[#6B7280]">
-                Estamos aqui para ajudar. Envie sua mensagem e responderemos o mais breve possível.
+                Fale com o time da AdzHub sobre planos, serviços na plataforma ou suporte — retornamos o mais breve
+                possível.
               </p>
             </div>
 
-            <div className="grid lg:grid-cols-3 gap-8">
-              {/* Contact Information */}
-              <div className="space-y-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Mail className="h-5 w-5" />
-                      Email
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground">contato@adzhub.com.br</p>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Phone className="h-5 w-5" />
-                      Telefone
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground">+55 (11) 9999-9999</p>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <MapPin className="h-5 w-5" />
-                      Endereço
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground">
-                      São Paulo, SP
-                      <br />
-                      Brasil
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* Contact Form */}
-              <Card id="contato" className="lg:col-span-2 scroll-mt-28">
+            <div className="max-w-2xl mx-auto">
+              <Card id="contato" className="scroll-mt-28">
                 <CardHeader>
                   <CardTitle>Envie sua mensagem</CardTitle>
                   <CardDescription>

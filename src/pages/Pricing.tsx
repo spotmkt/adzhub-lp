@@ -25,11 +25,11 @@ const pricingPlans = [
     name: "Starter",
     price: "R$ 97",
     period: "/mês",
-    description: "Perfeito para começar sua jornada",
+    description: "Entrada na plataforma e primeiras entregas com apoio de IA",
     features: [
-      "Até 10 artigos/mês com IA",
+      "Até 10 conteúdos/mês na central editorial (com apoio de IA)",
       "1 usuário",
-      "Blog integrado",
+      "Blog integrado à operação",
       "Suporte por email",
       "Templates básicos",
     ],
@@ -40,14 +40,14 @@ const pricingPlans = [
     name: "Professional",
     price: "R$ 297",
     period: "/mês",
-    description: "Para equipes que querem crescer",
+    description: "Operação de marketing mais completa na mesma estrutura",
     features: [
-      "Artigos ilimitados com IA",
+      "Produção editorial ilimitada na central de conteúdo",
       "Até 5 usuários",
-      "SEO automático",
+      "SEO e otimização contínua",
       "Suporte prioritário",
       "Calendário editorial",
-      "Redes sociais integradas",
+      "Redes sociais integradas à operação",
       "Relatórios avançados",
     ],
     cta: "Começar Agora",
@@ -57,11 +57,11 @@ const pricingPlans = [
     name: "Enterprise",
     price: "Customizado",
     period: "",
-    description: "Soluções personalizadas para grandes empresas",
+    description: "Profundidade e customização para marcas em escala",
     features: [
       "Tudo do Professional",
       "Usuários ilimitados",
-      "IA com tom de voz personalizado",
+      "Tom de voz e marca consistentes (IA configurável)",
       "Suporte 24/7",
       "API de acesso",
       "Integrações avançadas",
@@ -94,10 +94,10 @@ export default function Pricing() {
   return (
     <>
       <Helmet>
-        <title>Preços - AdzHub | Planos para todos os tamanhos</title>
+        <title>Preços - AdzHub | Profundidade da operação de marketing</title>
         <meta
           name="description"
-          content="Escolha o plano ideal para sua empresa. Preços transparentes e sem surpresas."
+          content="Planos conforme o estágio do marketing da sua empresa — da entrada à operação completa na plataforma de agência AdzHub."
         />
       </Helmet>
 
@@ -109,10 +109,11 @@ export default function Pricing() {
           <div className="container mx-auto max-w-7xl">
             <div className="text-center mb-16">
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent">
-                Planos que Crescem com Você
+                Planos que acompanham a maturidade do seu marketing
               </h1>
               <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto">
-                Escolha o plano ideal para sua empresa. Sem surpresas, sem taxas escondidas.
+                Você não compra só software: escolhe o nível de estrutura, serviços e automação que a plataforma entrega
+                para a sua operação — com transparência de preço.
               </p>
             </div>
 

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -51,15 +52,23 @@ export default function BlogList() {
 
   return (
     <div className="min-h-screen bg-white">
+      <Helmet>
+        <title>Blog AdzHub | Marketing e operação de agência</title>
+        <meta
+          name="description"
+          content="Artigos sobre marketing digital, conteúdo e gestão criativa alinhados à plataforma de agência AdzHub."
+        />
+      </Helmet>
       <LandingNav />
 
       {/* Hero Section */}
       <section className="pt-[83px] py-16 bg-gradient-to-b from-[#F8F8F8] to-white">
         <div className="container mx-auto px-6 pt-10">
           <div className="max-w-3xl mx-auto text-center space-y-4">
-            <h1 className="text-5xl font-bold tracking-tight text-[#08080C]">Blog</h1>
+            <h1 className="text-5xl font-bold tracking-tight text-[#08080C]">Blog AdzHub</h1>
             <p className="text-xl text-[#6B7280]">
-              Insights, estratégias e tendências sobre marketing digital e gestão criativa
+              Conteúdo para quem leva marketing a sério — alinhado à operação de agência e à central de conteúdo da
+              plataforma AdzHub.
             </p>
           </div>
         </div>

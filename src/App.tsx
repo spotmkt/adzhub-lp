@@ -17,6 +17,7 @@ import Pricing from "./pages/Pricing";
 import AdzChatLanding from "./pages/AdzChatLanding";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
+import { WaitlistDialogProvider } from "@/components/WaitlistDialogProvider";
 
 // Create QueryClient outside of component to avoid recreation on each render
 // Updated to fix caching issue
@@ -43,27 +44,29 @@ function App(): React.ReactElement {
     <QueryClientProvider client={queryClient}>
       <HelmetProvider>
         <BrowserRouter>
-          <ScrollToTop />
-          <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-            <TooltipProvider>
-              <Toaster />
-              <Sonner />
-              <Routes>
-                {/* Landing page routes */}
-                <Route path="/" element={<AdzHubLanding />} />
-                <Route path="/conteudo" element={<FinestraLanding />} />
-                <Route path="/chat" element={<AdzChatLanding />} />
-                <Route path="/blog" element={<BlogList />} />
-                <Route path="/blog/:slug" element={<BlogPost />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/auth" element={<Auth />} />
-                <Route path="/pricing" element={<Pricing />} />
-                <Route path="/termos" element={<Terms />} />
-                <Route path="/privacidade" element={<Privacy />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </TooltipProvider>
-          </ThemeProvider>
+          <WaitlistDialogProvider>
+            <ScrollToTop />
+            <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+              <TooltipProvider>
+                <Toaster />
+                <Sonner />
+                <Routes>
+                  {/* Landing page routes */}
+                  <Route path="/" element={<AdzHubLanding />} />
+                  <Route path="/conteudo" element={<FinestraLanding />} />
+                  <Route path="/chat" element={<AdzChatLanding />} />
+                  <Route path="/blog" element={<BlogList />} />
+                  <Route path="/blog/:slug" element={<BlogPost />} />
+                  <Route path="/contact" element={<Contact />} />
+                  <Route path="/auth" element={<Auth />} />
+                  <Route path="/pricing" element={<Pricing />} />
+                  <Route path="/termos" element={<Terms />} />
+                  <Route path="/privacidade" element={<Privacy />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </TooltipProvider>
+            </ThemeProvider>
+          </WaitlistDialogProvider>
         </BrowserRouter>
       </HelmetProvider>
     </QueryClientProvider>

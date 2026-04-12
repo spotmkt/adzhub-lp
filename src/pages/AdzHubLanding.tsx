@@ -1,147 +1,195 @@
-import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { Play, Star, Brain, Target, Users, Sparkles, TrendingUp, Zap, Mail, ArrowRight, Layers, BookOpen } from "lucide-react";
+import {
+  Star,
+  Brain,
+  Target,
+  Users,
+  Sparkles,
+  TrendingUp,
+  Zap,
+  ArrowRight,
+  Layers,
+  BookOpen,
+  Megaphone,
+  Search,
+  Share2,
+  FileText,
+  ShieldCheck,
+  LayoutGrid,
+  LineChart,
+} from "lucide-react";
 import { StarBorder } from "@/components/ui/star-border";
 import { SpotlightCard } from "@/components/ui/spotlight-card";
-import { RainbowButton } from "@/components/ui/rainbow-button";
 import { LandingNav } from "@/components/LandingNav";
 import { Footer } from "@/components/Footer";
-import { DashboardMockup } from "@/components/DashboardMockup";
+import { MotionHeroShowcase } from "@/components/motion-showcase";
+import { useWaitlistDialog } from "@/components/WaitlistDialogProvider";
 
 export default function AdzHubLanding() {
-  const [titleNumber, setTitleNumber] = useState(0);
-  
-  const titles = useMemo(
-    () => ["+Inteligente", "+Estratégico", "+Simples", "+Acessível", "+Eficiente"],
-    []
-  );
-
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      if (titleNumber === titles.length - 1) {
-        setTitleNumber(0);
-      } else {
-        setTitleNumber(titleNumber + 1);
-      }
-    }, 2000);
-    return () => clearTimeout(timeoutId);
-  }, [titleNumber, titles]);
-
+  const { openWaitlist } = useWaitlistDialog();
   return (
     <div className="min-h-screen bg-white">
       <Helmet>
-        <title>AdzHub - Plataforma de Inteligência em Marketing | AI-First para PMEs</title>
-        <meta name="description" content="A infraestrutura AI-First que conecta profissionais de marketing e PMEs com metodologias, automações e inteligência artificial integrada — tornando serviços de marketing acessíveis e escaláveis." />
-        <meta property="og:title" content="AdzHub - Plataforma de Inteligência em Marketing AI-First" />
-        <meta property="og:description" content="Conectamos profissionais e PMEs com metodologia, automação e IA para acelerar o desenvolvimento empresarial." />
+        <title>AdzHub - Sua agência de marketing em uma única plataforma</title>
+        <meta
+          name="description"
+          content="Planejamento, execução e evolução contínua do marketing em uma única plataforma. Entre na lista de espera e comece grátis quando liberarmos o acesso."
+        />
+        <meta property="og:title" content="AdzHub - Sua agência de marketing em uma única plataforma" />
+        <meta
+          property="og:description"
+          content="Centralize seu marketing, ganhe continuidade e acompanhe resultados. Feito para donos de PMEs com operação comercial ativa."
+        />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://adzhub.com.br/" />
       </Helmet>
 
       <LandingNav activeSection="home" />
 
-      {/* Hero Section */}
-      <section className="relative pt-20 pb-32 overflow-hidden bg-gradient-to-br from-[#D4EFF4]/30 via-[#F9C7B2]/20 to-[#F9B2D4]/20 rounded-[32px] mx-5 mt-[83px]">
-        <div className="relative max-w-5xl mx-auto px-8 z-10">
-          <div className="flex flex-col items-center text-center gap-6 max-w-[781px] mx-auto mb-10">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/70 backdrop-blur-sm border border-[#37489d]/10 text-sm font-medium text-[#37489d]">
-              <Sparkles className="w-4 h-4" />
-              A IA de marketing que substitui todas as outras
-            </div>
-            <h1 className="text-5xl md:text-7xl lg:text-[90px] font-bold leading-[100%] tracking-tight text-[#08080C]">
-              <span className="block mb-2">Marketing</span>
-              <span className="relative inline-block min-w-[280px] md:min-w-[420px] lg:min-w-[600px] text-center h-[1.2em]">
-                <span 
-                  key={titleNumber}
-                  className="absolute left-0 right-0 font-bold text-[#37489d] animate-fade-in"
-                >
-                  {titles[titleNumber]}
-                </span>
-              </span>
-            </h1>
-            <p className="text-lg text-[#08080C] opacity-80 max-w-[600px]">
-              A infraestrutura AI-First que conecta profissionais de marketing e PMEs com metodologias, 
-              automações e inteligência artificial integrada — tornando serviços de marketing acessíveis e escaláveis.
-            </p>
-          </div>
-
-          <div className="flex items-center justify-center gap-4 mb-5 flex-wrap">
-            <a href="#sobre">
-              <StarBorder color="hsl(224, 47%, 42%)" speed="8s">
-                Conheça a Plataforma
-              </StarBorder>
-            </a>
-            <Link to="/conteudo">
-              <button className="flex items-center gap-2 text-[#37489d] hover:text-[#37489d]/80 transition-colors">
-                <Play className="w-5 h-5" />
-                Ver Vídeo
-              </button>
-            </Link>
-          </div>
-
-          <div className="flex items-center justify-center gap-5 flex-wrap">
-            <div className="flex items-center gap-2 min-h-[28px]">
-              <span className="text-sm font-medium text-[#08080C]/70">
-                +200 empresas atendidas
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="flex gap-0.5">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-[hsl(41,100%,58%)] text-[hsl(41,100%,58%)]" />
-                ))}
+      {/* Hero — plataforma em uso + conversão */}
+      <section className="relative mt-[83px] mx-4 sm:mx-5 rounded-[28px] md:rounded-[32px] overflow-hidden border border-[#08080C]/[0.06] bg-gradient-to-br from-slate-50 via-white to-[#D4EFF4]/40">
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.35]"
+          style={{
+            backgroundImage: `linear-gradient(rgba(55, 72, 157, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(55, 72, 157, 0.04) 1px, transparent 1px)`,
+            backgroundSize: "48px 48px",
+          }}
+        />
+        <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 pt-14 pb-16 lg:pt-20 lg:pb-24">
+          <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] gap-12 lg:gap-14 items-center">
+            <div className="text-center lg:text-left">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/90 backdrop-blur-sm border border-[#37489d]/15 text-sm font-medium text-[#37489d] shadow-sm">
+                <Sparkles className="w-4 h-4 shrink-0" />
+                Gerencie todos os seus serviços de marketing de forma simples
               </div>
-              <span className="text-sm font-medium text-[#08080C]/70">+9 anos de experiência</span>
+              <h1 className="mt-6 text-[1.65rem] sm:text-4xl md:text-5xl lg:text-[2.65rem] font-bold leading-[1.12] tracking-tight text-[#08080C]">
+                <span className="block">
+                  Sua <span className="text-[#37489d]">agência de marketing</span>
+                </span>
+                <span className="block">em uma única plataforma</span>
+              </h1>
+              <p className="mt-5 text-lg sm:text-xl text-[#4B5563] leading-relaxed max-w-xl mx-auto lg:mx-0">
+                Centralize seu marketing em uma única plataforma e veja seu negócio crescer.
+              </p>
+              <div className="mt-8 flex flex-col sm:flex-row items-center lg:items-stretch justify-center lg:justify-start gap-3 sm:gap-4">
+                <div className="w-full sm:w-auto flex justify-center lg:justify-start">
+                  <StarBorder
+                    as="button"
+                    type="button"
+                    onClick={openWaitlist}
+                    color="hsl(224, 47%, 42%)"
+                    speed="8s"
+                    className="w-full max-w-sm sm:max-w-none sm:w-auto text-center"
+                  >
+                    Começar grátis
+                  </StarBorder>
+                </div>
+                <a
+                  href="#como-funciona"
+                  className="inline-flex h-12 w-full sm:w-auto items-center justify-center rounded-2xl border-2 border-[#37489d]/25 bg-white px-8 text-sm font-semibold text-[#37489d] hover:bg-[#37489d]/5 transition-colors"
+                >
+                  Descubra como funciona
+                </a>
+              </div>
+              <div className="mt-8 flex flex-wrap items-center justify-center lg:justify-start gap-x-6 gap-y-2 text-sm text-[#6B7280]">
+                <span className="font-medium text-[#08080C]/80">+200 empresas atendidas</span>
+                <span className="hidden sm:inline text-[#08080C]/20" aria-hidden>
+                  |
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="flex gap-0.5">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-4 h-4 fill-[hsl(41,100%,58%)] text-[hsl(41,100%,58%)]" />
+                    ))}
+                  </span>
+                  +9 anos com PMEs
+                </span>
+              </div>
+            </div>
+            <div className="relative">
+              <div className="absolute -inset-1 rounded-3xl bg-gradient-to-tr from-[#37489d]/10 via-transparent to-[#F9C7B2]/25 blur-xl" aria-hidden />
+              <div className="relative scale-[0.97] sm:scale-100 origin-top lg:origin-center">
+                <MotionHeroShowcase />
+              </div>
             </div>
           </div>
         </div>
       </section>
 
+      {/* Benefícios — primeira dobra estendida */}
+      <section className="py-14 sm:py-16 bg-white" aria-labelledby="beneficios-heading">
+        <div className="max-w-7xl mx-auto px-5 sm:px-8">
+          <div className="max-w-3xl mx-auto text-center mb-10 sm:mb-12">
+            <h2 id="beneficios-heading" className="text-2xl sm:text-3xl font-semibold text-[#08080C] tracking-tight">
+              Transforme seu marketing em um sistema de crescimento previsível.
+            </h2>
+          </div>
+          <div className="grid sm:grid-cols-3 gap-5 sm:gap-6">
+            {[
+              {
+                Icon: LayoutGrid,
+                title: "Centralização",
+                desc: "Organize seu marketing em uma única plataforma.",
+              },
+              {
+                Icon: Zap,
+                title: "Execução eficiente",
+                desc: "Acesse uma operação de marketing mais madura sem complexidade.",
+              },
+              {
+                Icon: LineChart,
+                title: "Evolução contínua",
+                desc: "Melhore continuamente com relatórios e acompanhamento.",
+              },
+            ].map(({ Icon, title, desc }) => (
+              <div
+                key={title}
+                className="rounded-2xl border border-[#08080C]/8 bg-[#FAFAFA] p-6 sm:p-7 text-center sm:text-left hover:border-[#37489d]/20 transition-colors"
+              >
+                <div className="inline-flex rounded-xl bg-white p-3 shadow-sm border border-[#08080C]/6 mx-auto sm:mx-0 mb-4">
+                  <Icon className="w-6 h-6 text-[#37489d]" aria-hidden />
+                </div>
+                <h3 className="text-lg font-semibold text-[#08080C] mb-2">{title}</h3>
+                <p className="text-sm sm:text-base text-[#6B7280] leading-relaxed">{desc}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-10 flex justify-center">
+            <StarBorder as="button" type="button" onClick={openWaitlist} color="hsl(224, 47%, 42%)" speed="8s">
+              Começar grátis
+            </StarBorder>
+          </div>
+        </div>
+      </section>
+
       {/* Palavras-chave da Tese */}
-      <section className="pt-8 -mb-16 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-8">
+      <section className="pt-4 pb-8 -mb-12 overflow-hidden bg-white">
+        <div className="max-w-7xl mx-auto px-5 sm:px-8">
           <div className="text-center mb-8">
-            <span className="text-[#6B7280] text-lg font-medium">
-              Construída sobre quase uma década de experiência real.
-            </span>
-            <br />
-            <span className="text-[#08080C] text-lg font-medium">
-              Validada com +200 PMEs brasileiras.
-            </span>
+            <p className="text-[#6B7280] text-base sm:text-lg font-medium max-w-3xl mx-auto leading-relaxed">
+              Mais do que uma agência, uma plataforma que centraliza tudo que você precisa para crescer — com método,
+              transparência e preço alinhado ao estágio do seu negócio.
+            </p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-8 text-[#08080C] mb-8">
-            <div className="flex items-center justify-center">
-              <div className="text-center">
-                <Brain className="w-10 h-10 mx-auto mb-2 text-[#37489d]" />
-                <p className="text-sm font-semibold">AI-First</p>
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-6 text-[#08080C] mb-8">
+            {[
+              { Icon: Layers, label: "Estruturada" },
+              { Icon: Brain, label: "Inteligente" },
+              { Icon: Zap, label: "Prática" },
+              { Icon: Target, label: "Especialista" },
+              { Icon: ShieldCheck, label: "Confiável" },
+              { Icon: Users, label: "Acessível" },
+              { Icon: TrendingUp, label: "Crescimento" },
+            ].map(({ Icon, label }) => (
+              <div key={label} className="flex items-center justify-center">
+                <div className="text-center">
+                  <Icon className="w-10 h-10 mx-auto mb-2 text-[#37489d]" />
+                  <p className="text-sm font-semibold">{label}</p>
+                </div>
               </div>
-            </div>
-            <div className="flex items-center justify-center">
-              <div className="text-center">
-                <Target className="w-10 h-10 mx-auto mb-2 text-[#37489d]" />
-                <p className="text-sm font-semibold">Metodologia</p>
-              </div>
-            </div>
-            <div className="flex items-center justify-center">
-              <div className="text-center">
-                <Layers className="w-10 h-10 mx-auto mb-2 text-[#37489d]" />
-                <p className="text-sm font-semibold">Plataforma</p>
-              </div>
-            </div>
-            <div className="flex items-center justify-center">
-              <div className="text-center">
-                <Zap className="w-10 h-10 mx-auto mb-2 text-[#37489d]" />
-                <p className="text-sm font-semibold">SaaS Vertical</p>
-              </div>
-            </div>
-            <div className="flex items-center justify-center col-span-2 md:col-span-1">
-              <div className="text-center">
-                <TrendingUp className="w-10 h-10 mx-auto mb-2 text-[#37489d]" />
-                <p className="text-sm font-semibold">Sócio-Econômico</p>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
 
@@ -160,12 +208,15 @@ export default function AdzHubLanding() {
                 O problema que resolvemos
               </div>
               <h2 className="text-4xl md:text-6xl lg:text-[72px] font-medium leading-[100%] tracking-tight text-[#08080C] mb-6">
-                75% das PMEs não atingem suas metas de marketing
+                O marketing vira sistema de crescimento — ou vira ruído
               </h2>
               <p className="text-lg font-medium text-[#6B7280] leading-[170%]">
-                As empresas não fracassam por uma segmentação errada ou copy ruim. Fracassam porque não têm 
-                clareza sobre seus diferenciais, competidores, perfil de cliente ideal e como realmente geram valor. 
-                O marketing deveria ser o motor estratégico da empresa — não apenas compra de mídia.
+                A maior parte das PMEs não falha por falta de post ou anúncio: falha por{" "}
+                <strong className="text-[#08080C] font-semibold">fragmentação</strong> (muitos fornecedores sem integração),{" "}
+                <strong className="text-[#08080C] font-semibold">falta de direção</strong> e{" "}
+                <strong className="text-[#08080C] font-semibold">ferramentas sem método</strong>. O resultado são ações soltas,
+                custo de coordenação alto e dificuldade de provar retorno. A AdzHub existe para substituir esse padrão por
+                uma operação centralizada, com continuidade.
               </p>
             </div>
             <div className="flex flex-col gap-2">
@@ -247,8 +298,11 @@ export default function AdzHubLanding() {
                 </div>
               </div>
               <div className="bg-[#37489d] rounded-2xl p-5 text-white">
-                <p className="text-sm font-medium mb-1">A AdzHub nasce para corrigir esse gargalo</p>
-                <p className="text-xs text-white/70">Padronizando e multiplicando o conhecimento aplicado em um sistema inteligente e escalável</p>
+                <p className="text-sm font-medium mb-1">A AdzHub é a plataforma da sua agência de marketing</p>
+                <p className="text-xs text-white/70">
+                  Um único lugar para diagnóstico, plano, execução e evolução — sem depender de dezenas de peças
+                  desconectadas.
+                </p>
               </div>
             </div>
           </div>
@@ -261,14 +315,15 @@ export default function AdzHubLanding() {
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-16 gap-8">
             <div className="max-w-[600px]">
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[#37489d]/10 text-sm font-medium text-[#37489d] mb-6">
-                Arquitetura da Plataforma
+                Como funciona
               </div>
               <h2 className="text-4xl md:text-6xl lg:text-[72px] font-medium leading-[100%] tracking-tight text-[#08080C]">
-                O sistema operacional do marketing
+                Da leitura do negócio à operação contínua
               </h2>
             </div>
             <p className="text-lg font-medium text-[#6B7280] leading-[150%] max-w-[400px]">
-              Substituímos planilhas, múltiplos softwares e dependência de terceiros por um sistema que pensa, executa e aprende junto com o negócio.
+              Diagnóstico, plano de sucesso, kickoff, campanhas e relatórios — a mesma lógica de uma agência madura,
+              executada com método e tecnologia dentro da plataforma.
             </p>
           </div>
 
@@ -360,18 +415,119 @@ export default function AdzHubLanding() {
         </div>
       </section>
 
-      {/* Nossos Produtos */}
+      {/* Serviços de agência (âncoras do menu) */}
+      <section id="servicos" className="py-24 bg-white scroll-mt-28">
+        <div className="max-w-7xl mx-auto px-8">
+          <div className="text-center mb-16 max-w-3xl mx-auto">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#37489d]/5 border border-[#37489d]/10 text-sm font-medium text-[#37489d] mb-6">
+              Serviços
+            </div>
+            <h2 className="text-4xl md:text-6xl lg:text-[64px] font-medium leading-[100%] tracking-tight text-[#08080C] mb-6">
+              O que uma agência faz — com a escala de uma plataforma
+            </h2>
+            <p className="text-lg font-medium text-[#6B7280] leading-[170%]">
+              Acesso a uma plataforma de marketing digital que integra inteligência, organização e execução. Você contrata
+              uma estrutura completa — não peças avulsas — com metodologia e acompanhamento na AdzHub.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div
+              id="trafego-pago"
+              className="rounded-3xl border border-[#08080C]/10 bg-[#F6F6F6] p-8 md:p-10 scroll-mt-28"
+            >
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 rounded-xl bg-[#37489d] flex items-center justify-center">
+                  <Megaphone className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-[#08080C]">Gestão de tráfego pago</h3>
+              </div>
+              <p className="text-[#6B7280] leading-relaxed">
+                Planejamento, estrutura de campanhas, criativos, orçamentos e otimização contínua em Google Ads, Meta
+                Ads e demais canais pagos — com relatórios e decisões alinhadas ao plano de sucesso do seu negócio.
+              </p>
+            </div>
+
+            <div id="seo-geo" className="rounded-3xl border border-[#08080C]/10 bg-white p-8 md:p-10 scroll-mt-28">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 rounded-xl bg-[#37489d]/15 flex items-center justify-center">
+                  <Search className="w-6 h-6 text-[#37489d]" />
+                </div>
+                <h3 className="text-xl font-bold text-[#08080C]">SEO e GEO</h3>
+              </div>
+              <p className="text-[#6B7280] leading-relaxed">
+                Presença orgânica e busca local: conteúdo orientado a intenção, otimização técnica, performance no Search
+                Console e presença em mapas e buscas locais — integrados à narrativa e às metas da empresa.
+              </p>
+            </div>
+
+            <div id="social-midia" className="rounded-3xl border border-[#08080C]/10 bg-white p-8 md:p-10 scroll-mt-28">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 rounded-xl bg-[hsl(41,100%,58%)]/20 flex items-center justify-center">
+                  <Share2 className="w-6 h-6 text-[hsl(41,100%,48%)]" />
+                </div>
+                <h3 className="text-xl font-bold text-[#08080C]">Social mídia</h3>
+              </div>
+              <p className="text-[#6B7280] leading-relaxed">
+                Calendário, produção, publicação e acompanhamento de redes no mesmo fluxo da operação — sem perder o
+                fio da estratégia entre agência, cliente e ferramentas soltas.
+              </p>
+            </div>
+
+            <div
+              id="conteudo-seo"
+              className="rounded-3xl border border-[#08080C]/10 bg-[#F6F6F6] p-8 md:p-10 scroll-mt-28"
+            >
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 rounded-xl bg-emerald-600/15 flex items-center justify-center">
+                  <FileText className="w-6 h-6 text-emerald-700" />
+                </div>
+                <h3 className="text-xl font-bold text-[#08080C]">Conteúdo, blog e performance editorial</h3>
+              </div>
+              <p className="text-[#6B7280] leading-relaxed mb-4">
+                Produção editorial com foco em SEO e consistência — no padrão de plataformas de conteúdo orientadas a
+                resultado, integrada ao restante da operação de marketing.
+              </p>
+              <Link to="/conteudo" className="inline-flex items-center gap-2 text-[#37489d] font-medium text-sm">
+                Ver central de conteúdo
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </div>
+
+          <div className="mt-10 text-center">
+            <p className="text-sm text-[#6B7280] mb-4">
+              Outras frentes (e-mail, CRM, criativo, automações) entram conforme o estágio do contrato e a maturidade
+              do marketing — sempre dentro da mesma estrutura.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+              <StarBorder as="button" type="button" onClick={openWaitlist} color="hsl(224, 47%, 42%)" speed="8s">
+                Começar grátis
+              </StarBorder>
+              <a
+                href="https://app.adzhub.com.br"
+                className="inline-flex h-11 items-center justify-center rounded-xl border-2 border-[#37489d]/25 bg-white px-8 py-2 text-sm font-semibold text-[#37489d] hover:bg-[#37489d]/5 transition-colors"
+              >
+                Acessar a plataforma
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Ferramentas na plataforma */}
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-8">
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#37489d]/5 border border-[#37489d]/10 text-sm font-medium text-[#37489d] mb-6">
-              Módulos da Plataforma
+              Na plataforma
             </div>
             <h2 className="text-4xl md:text-6xl lg:text-[72px] font-medium leading-[100%] tracking-tight text-[#08080C] mb-6">
-              Nossos Produtos
+              Ferramentas que sustentam a operação
             </h2>
             <p className="text-lg font-medium text-[#6B7280] leading-[170%] max-w-[650px] mx-auto">
-              Cada módulo funciona de forma integrada ao Supercérebro e pode ser utilizado de forma independente ou junto ao ecossistema completo.
+              IA, conteúdo e automações não são o “produto” isolado — são camadas que permitem executar os serviços com
+              consistência, velocidade e histórico preservado no Supercérebro.
             </p>
           </div>
 
@@ -384,7 +540,7 @@ export default function AdzHubLanding() {
                 </div>
                 <div>
                   <h3 className="text-2xl font-bold text-[#08080C]">AdzChat</h3>
-                  <p className="text-sm text-[#6B7280]">Agentes de IA especializados</p>
+                  <p className="text-sm text-[#6B7280]">IA aplicada à rotina da agência na plataforma</p>
                 </div>
               </div>
               <p className="text-[#6B7280] leading-relaxed mb-6">
@@ -417,8 +573,8 @@ export default function AdzHubLanding() {
                   <Sparkles className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold text-[#08080C]">Blog</h3>
-                  <p className="text-sm text-[#6B7280]">Blog, SEO e conteúdo com IA</p>
+                  <h3 className="text-2xl font-bold text-[#08080C]">Central de conteúdo</h3>
+                  <p className="text-sm text-[#6B7280]">Blog, SEO e editorial com IA</p>
                 </div>
               </div>
               <p className="text-[#6B7280] leading-relaxed mb-6">
@@ -439,16 +595,12 @@ export default function AdzHubLanding() {
                 </div>
               </div>
               <Link to="/conteudo" className="inline-flex items-center gap-2 text-[#37489d] font-medium hover:text-[#37489d]/80 transition-colors">
-                Conhecer Blog
+                Conhecer central de conteúdo
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
           </div>
 
-          {/* Dashboard Mockup */}
-          <div className="mt-8">
-            <DashboardMockup />
-          </div>
         </div>
       </section>
 
@@ -460,11 +612,12 @@ export default function AdzHubLanding() {
               Modelo Plataforma
             </div>
             <h2 className="text-4xl md:text-6xl lg:text-[72px] font-medium leading-[100%] tracking-tight text-[#08080C] mb-6">
-              Um ecossistema, dois beneficiados
+              Uma plataforma, foco na sua empresa
             </h2>
             <p className="text-lg font-medium text-[#6B7280] leading-[170%] max-w-[700px] mx-auto">
-              Conectamos profissionais de marketing e PMEs em um ambiente unificado. O resultado: 
-              serviços de marketing acessíveis, escaláveis e orientados a resultados.
+              Do lado da PME, você ganha uma operação de marketing mais madura sem montar equipe completa internamente.
+              Do lado dos profissionais, a mesma infraestrutura permite entregar com método e escala. Tudo conectado na
+              mesma lógica de crescimento.
             </p>
           </div>
 
@@ -475,8 +628,8 @@ export default function AdzHubLanding() {
                   <Users className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-[#08080C]">Para Profissionais</h3>
-                  <p className="text-sm text-[#6B7280]">A melhor infraestrutura de IA para marketing</p>
+                  <h3 className="text-xl font-bold text-[#08080C]">Para profissionais e parceiros</h3>
+                  <p className="text-sm text-[#6B7280]">Infraestrutura para executar com método e consistência</p>
                 </div>
               </div>
               <div className="space-y-3">
@@ -542,12 +695,12 @@ export default function AdzHubLanding() {
               Por que a AdzHub existe
             </div>
             <h2 className="text-4xl md:text-6xl lg:text-[72px] font-medium leading-[100%] tracking-tight text-[#08080C] mb-6">
-              O mesmo desafio em milhões de negócios
+              Veja como ajudamos empresas como a sua a alcançar resultados extraordinários.
             </h2>
             <p className="text-lg font-medium text-[#6B7280] leading-[170%] max-w-[700px] mx-auto">
-              A maior parte das empresas no Brasil é PME — e muitas não têm marketing estratégico de verdade. Quem já investe
-              em digital muitas vezes não vê resultado proporcional. A AdzHub existe para organizar estratégia, execução e dados
-              no ritmo da sua empresa.
+              Donos de PME com operação comercial ativa costumam reconhecer a necessidade de um marketing mais estruturado —
+              mas sofrem com fragmentação, falta de continuidade e dificuldade de provar ROI. A AdzHub organiza estratégia,
+              execução e dados em um só lugar.
             </p>
           </div>
 
@@ -658,13 +811,18 @@ export default function AdzHubLanding() {
             </div>
           </div>
 
-          <div className="text-center mt-12">
-            <Link to="/contact">
-              <button className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-[#37489d] text-white hover:bg-[#37489d]/90 transition-colors font-medium">
-                <Mail className="w-5 h-5" />
-                Fale com a equipe
-              </button>
-            </Link>
+          <div className="text-center mt-14 rounded-3xl border border-[#37489d]/15 bg-gradient-to-b from-[#37489d]/[0.06] to-white px-6 py-12 sm:py-14 max-w-3xl mx-auto">
+            <p className="text-sm font-medium uppercase tracking-wider text-[#37489d] mb-3">Próximo passo</p>
+            <h3 className="text-2xl sm:text-3xl font-semibold text-[#08080C] mb-6 leading-tight">
+              Vamos começar?
+            </h3>
+            <p className="text-[#6B7280] mb-8 max-w-lg mx-auto">
+              Entre na lista de espera, solicite um convite e suba de prioridade indicando amigos — liberamos o acesso em
+              ondas, como nas melhores plataformas de produto.
+            </p>
+            <StarBorder as="button" type="button" onClick={openWaitlist} color="hsl(224, 47%, 42%)" speed="8s">
+              Começar grátis
+            </StarBorder>
           </div>
         </div>
       </section>
