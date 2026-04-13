@@ -101,6 +101,8 @@ export default function Pricing() {
           name="description"
           content="Planos conforme o estágio do marketing da sua empresa — da entrada à operação completa na plataforma de agência AdzHub."
         />
+        <meta name="robots" content="noindex, nofollow" />
+        <meta name="googlebot" content="noindex, nofollow" />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">

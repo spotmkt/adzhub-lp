@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import adzHubLogo from "@/assets/adzhub-logo-final.png";
+import adzHubLogo from "@/assets/adzhub-logo-new.svg";
 import { useWaitlistDialog } from "@/components/WaitlistDialogProvider";
 
 export function Footer() {
@@ -44,7 +44,14 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-24">
           <div className="lg:col-span-1">
             <Link to="/" onClick={handleLogoClick} className="inline-block mb-4">
-              <img src={adzHubLogo} alt="AdzHub" className="h-8 w-auto" />
+              <img
+                src={adzHubLogo}
+                alt="AdzHub"
+                className="h-8 w-auto"
+                width={120}
+                height={32}
+                loading="lazy"
+              />
             </Link>
             <p className="text-sm text-[#6B7280] max-w-sm">
               Plataforma de agência de marketing digital para PMEs que precisam estruturar e escalar o marketing sem
@@ -58,7 +65,7 @@ export function Footer() {
               <Link to="/#trafego-pago" className="text-base text-[#6B7280] hover:text-[#1F2937]">
                 Gestão de tráfego pago
               </Link>
-              <Link to="/#seo-geo" className="text-base text-[#6B7280] hover:text-[#1F2937]">
+              <Link to="/seo" className="text-base text-[#6B7280] hover:text-[#1F2937]">
                 SEO e GEO
               </Link>
               <Link to="/#social-midia" className="text-base text-[#6B7280] hover:text-[#1F2937]">
@@ -76,17 +83,11 @@ export function Footer() {
           <div>
             <h3 className="text-lg font-medium text-[#1F2937] mb-6">Plataforma</h3>
             <div className="flex flex-col gap-4">
-              <Link to="/chat" className="text-base text-[#6B7280] hover:text-[#1F2937]">
-                AdzChat
-              </Link>
-              <Link to="/seo" className="text-base text-[#6B7280] hover:text-[#1F2937]">
-                Central de conteúdo
-              </Link>
+              <span className="text-base text-[#6B7280]">
+                AdzChat <span className="text-[#9CA3AF] font-normal">em breve</span>
+              </span>
               <Link to="/blog" className="text-base text-[#6B7280] hover:text-[#1F2937]">
                 Blog
-              </Link>
-              <Link to="/pricing" className="text-base text-[#6B7280] hover:text-[#1F2937]">
-                Preços
               </Link>
             </div>
           </div>
@@ -106,8 +107,8 @@ export function Footer() {
               >
                 Acessar plataforma
               </a>
-              <a href="mailto:contato@adzhub.com.br" className="text-base text-[#6B7280] hover:text-[#1F2937]">
-                contato@adzhub.com.br
+              <a href="mailto:team@adzhub.com.br" className="text-base text-[#6B7280] hover:text-[#1F2937]">
+                team@adzhub.com.br
               </a>
             </div>
           </div>
