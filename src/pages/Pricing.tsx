@@ -7,6 +7,7 @@ import { RainbowButton } from "@/components/ui/rainbow-button";
 import { testimonials } from "@/data/finestraData";
 import { LandingNav } from "@/components/LandingNav";
 import { Footer } from "@/components/Footer";
+import { useWaitlistDialog } from "@/components/WaitlistDialogProvider";
 
 const TestimonialsColumn = lazy(() =>
   import("@/components/ui/testimonials-columns-1").then((module) => ({
@@ -74,6 +75,7 @@ const pricingPlans = [
 ];
 
 export default function Pricing() {
+  const { openWaitlist } = useWaitlistDialog();
   const firstColumn = useMemo(
     () => testimonials.slice(0, Math.ceil(testimonials.length / 3)),
     []
@@ -155,15 +157,15 @@ export default function Pricing() {
                     ))}
                   </ul>
 
-                  <a href="https://app.adzhub.com.br" className="block">
-                    {plan.highlighted ? (
-                      <RainbowButton className="w-full">{plan.cta}</RainbowButton>
-                    ) : (
-                      <Button className="w-full" variant="outline">
-                        {plan.cta}
-                      </Button>
-                    )}
-                  </a>
+                  {plan.highlighted ? (
+                    <RainbowButton type="button" className="w-full" onClick={openWaitlist}>
+                      {plan.cta}
+                    </RainbowButton>
+                  ) : (
+                    <Button type="button" className="w-full" variant="outline" onClick={openWaitlist}>
+                      {plan.cta}
+                    </Button>
+                  )}
                 </div>
               ))}
             </div>

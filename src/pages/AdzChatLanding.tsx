@@ -25,6 +25,7 @@ import { StarBorder } from "@/components/ui/star-border";
 import { SpotlightCard } from "@/components/ui/spotlight-card";
 import { LandingNav } from "@/components/LandingNav";
 import { Footer } from "@/components/Footer";
+import { useWaitlistDialog } from "@/components/WaitlistDialogProvider";
 import { AdzChatMotionHero } from "@/components/motion-showcase";
 
 const agents = [
@@ -115,6 +116,7 @@ const agents = [
 ];
 
 export default function AdzChatLanding() {
+  const { openWaitlist } = useWaitlistDialog();
   const [titleNumber, setTitleNumber] = useState(0);
 
   const titles = useMemo(
@@ -174,11 +176,9 @@ export default function AdzChatLanding() {
           </div>
 
           <div className="flex items-center justify-center gap-4 mb-5 flex-wrap">
-            <a href="https://app.adzhub.com.br">
-              <StarBorder color="hsl(224, 47%, 42%)" speed="8s">
-                Experimentar Grátis
-              </StarBorder>
-            </a>
+            <StarBorder as="button" type="button" onClick={openWaitlist} color="hsl(224, 47%, 42%)" speed="8s">
+              Experimentar Grátis
+            </StarBorder>
             <a
               href="#agentes"
               className="flex items-center gap-2 text-[#37489d] hover:text-[#37489d]/80 transition-colors"
@@ -236,11 +236,9 @@ export default function AdzChatLanding() {
               </p>
             </div>
             <div className="flex flex-col gap-2">
-              <a href="https://app.adzhub.com.br">
-                <StarBorder color="hsl(224, 47%, 42%)" speed="8s">
-                  Começar Agora
-                </StarBorder>
-              </a>
+              <StarBorder as="button" type="button" onClick={openWaitlist} color="hsl(224, 47%, 42%)" speed="8s">
+                Começar Agora
+              </StarBorder>
               <p className="text-base font-medium text-[#6B7280]">sem cartão de crédito</p>
             </div>
           </div>

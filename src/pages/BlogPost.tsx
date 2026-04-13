@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,8 @@ import { Helmet } from 'react-helmet-async';
 import { LandingNav } from '@/components/LandingNav';
 import { Footer } from '@/components/Footer';
 import adzhubLogo from '@/assets/adzhub-logo-final.png';
+import { prepareBlogBodyHtml } from '@/lib/blogContent';
+import { cn } from '@/lib/utils';
 
 interface BlogPost {
   id: string;
@@ -117,6 +119,8 @@ export default function BlogPost() {
   };
 
   const currentUrl = window.location.href;
+
+  const bodyHtml = useMemo(() => prepareBlogBodyHtml(post.content), [post.content]);
 
   return (
     <>
@@ -241,11 +245,39 @@ export default function BlogPost() {
               </div>
             )}
 
-            {/* Content */}
-            <div 
-              className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-bold prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-6 prose-h3:text-2xl prose-h3:mt-8 prose-h3:mb-4 prose-p:text-foreground prose-p:leading-relaxed prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-img:rounded-lg prose-code:bg-muted prose-code:px-1 prose-code:py-0.5 prose-code:rounded"
-              dangerouslySetInnerHTML={{ __html: post.content }}
-            />
+            {/* Conteúdo rico: HTML (WordPress/CMS) ou Markdown — estilos via @tailwindcss/typography */}
+            {bodyHtml ? (
+              <div
+                className={cn(
+                  "blog-body prose prose-lg max-w-none overflow-x-auto",
+                  "text-[#374151] prose-headings:text-[#08080C] prose-headings:font-bold prose-headings:tracking-tight",
+                  "prose-h1:text-3xl sm:prose-h1:text-4xl prose-h1:mt-10 prose-h1:mb-5 prose-h1:scroll-mt-28",
+                  "prose-h2:text-2xl sm:prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-5 prose-h2:scroll-mt-28 prose-h2:pb-1 prose-h2:border-b prose-h2:border-[#E5E7EB]",
+                  "prose-h3:text-xl sm:prose-h3:text-2xl prose-h3:mt-10 prose-h3:mb-4",
+                  "prose-h4:text-lg prose-h4:mt-8 prose-h4:mb-3",
+                  "prose-h5:text-base prose-h5:mt-6 prose-h5:mb-2",
+                  "prose-h6:text-sm prose-h6:uppercase prose-h6:tracking-wide prose-h6:text-[#6B7280] prose-h6:mt-6 prose-h6:mb-2",
+                  "prose-p:leading-[1.8] prose-p:my-5",
+                  "prose-a:text-[#37489d] prose-a:font-medium prose-a:no-underline hover:prose-a:underline",
+                  "prose-strong:text-[#08080C] prose-strong:font-semibold",
+                  "prose-ul:my-5 prose-ol:my-5 prose-li:my-1.5 prose-li:marker:text-[#37489d]",
+                  "prose-blockquote:border-l-[#37489d] prose-blockquote:border-l-[3px] prose-blockquote:pl-5 prose-blockquote:italic prose-blockquote:text-[#4B5563] prose-blockquote:bg-[#F9FAFB]/80 prose-blockquote:py-1 prose-blockquote:my-6",
+                  "prose-hr:border-[#E5E7EB] prose-hr:my-12",
+                  "prose-code:text-[#37489d] prose-code:bg-[#F3F4F6] prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-code:text-[0.9em] prose-code:font-medium prose-code:before:content-none prose-code:after:content-none",
+                  "prose-pre:bg-[#1a1d2e] prose-pre:text-zinc-100 prose-pre:rounded-xl prose-pre:shadow-inner prose-pre:border prose-pre:border-[#37489d]/20",
+                  "prose-img:rounded-xl prose-img:shadow-md prose-img:my-8 prose-img:border prose-img:border-[#E5E7EB]",
+                  "prose-figure:my-8 prose-figcaption:text-center prose-figcaption:text-sm prose-figcaption:text-[#6B7280] prose-figcaption:mt-2",
+                  "prose-table:w-full prose-table:text-sm prose-table:my-8",
+                  "prose-thead:border-b prose-thead:border-[#E5E7EB]",
+                  "prose-th:bg-[#F9FAFB] prose-th:text-left prose-th:font-semibold prose-th:text-[#08080C] prose-th:p-3 prose-th:border prose-th:border-[#E5E7EB]",
+                  "prose-td:p-3 prose-td:border prose-td:border-[#E5E7EB] prose-tr:border-[#E5E7EB]",
+                  "prose-dl:my-5 prose-dt:font-semibold prose-dt:text-[#08080C] prose-dd:ml-4 prose-dd:text-[#4B5563]"
+                )}
+                dangerouslySetInnerHTML={{ __html: bodyHtml }}
+              />
+            ) : (
+              <p className="text-muted-foreground">Sem conteúdo para exibir.</p>
+            )}
 
             {/* Tags */}
             {post.tags && post.tags.length > 0 && (

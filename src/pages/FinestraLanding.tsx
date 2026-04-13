@@ -6,6 +6,7 @@ import { StarBorder } from "@/components/ui/star-border";
 import { testimonials } from "@/data/finestraData";
 import { LandingNav } from "@/components/LandingNav";
 import { Footer } from "@/components/Footer";
+import { useWaitlistDialog } from "@/components/WaitlistDialogProvider";
 import { ConteudoMotionShowcase } from "@/components/motion-showcase";
 
 const TestimonialsColumn = lazy(() => import("@/components/ui/testimonials-columns-1").then(m => ({ default: m.TestimonialsColumn })));
@@ -14,6 +15,7 @@ const Features = lazy(() => import("@/components/ui/features-6").then(m => ({ de
 const LoadingFallback = () => <div className="w-full h-32 bg-muted/30 rounded-lg" />;
 
 export default function FinestraLanding() {
+  const { openWaitlist } = useWaitlistDialog();
   const firstColumn = useMemo(() => testimonials.slice(0, 3), []);
   const secondColumn = useMemo(() => testimonials.slice(3, 6), []);
   const thirdColumn = useMemo(() => testimonials.slice(6, 9), []);
@@ -49,11 +51,9 @@ export default function FinestraLanding() {
           </div>
 
           <div className="flex items-center justify-center mb-5">
-            <a href="https://app.adzhub.com.br">
-              <StarBorder color="hsl(224, 47%, 42%)" speed="8s">
-                Começar Grátis
-              </StarBorder>
-            </a>
+            <StarBorder as="button" type="button" onClick={openWaitlist} color="hsl(224, 47%, 42%)" speed="8s">
+              Começar Grátis
+            </StarBorder>
           </div>
 
           <div className="flex items-center justify-center gap-5 flex-wrap mb-14">
@@ -98,11 +98,9 @@ export default function FinestraLanding() {
               </p>
             </div>
             <div className="flex flex-col gap-2">
-              <a href="https://app.adzhub.com.br">
-                <StarBorder color="hsl(224, 47%, 42%)" speed="8s">
-                  Começar Grátis
-                </StarBorder>
-              </a>
+              <StarBorder as="button" type="button" onClick={openWaitlist} color="hsl(224, 47%, 42%)" speed="8s">
+                Começar Grátis
+              </StarBorder>
               <p className="text-base font-medium text-[#6B7280] capitalize">
                 sem cartão de crédito
               </p>

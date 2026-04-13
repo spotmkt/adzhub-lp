@@ -817,8 +817,7 @@ export default function AdzHubLanding() {
               Vamos começar?
             </h3>
             <p className="text-[#6B7280] mb-8 max-w-lg mx-auto">
-              Entre na lista de espera, solicite um convite e suba de prioridade indicando amigos — liberamos o acesso em
-              ondas, como nas melhores plataformas de produto.
+              Entre na lista de espera e solicite um convite. Liberamos o acesso em ondas conforme a capacidade da equipe.
             </p>
             <StarBorder as="button" type="button" onClick={openWaitlist} color="hsl(224, 47%, 42%)" speed="8s">
               Começar grátis
