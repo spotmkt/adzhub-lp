@@ -79,7 +79,7 @@ export function Footer() {
               <Link to="/chat" className="text-base text-[#6B7280] hover:text-[#1F2937]">
                 AdzChat
               </Link>
-              <Link to="/conteudo" className="text-base text-[#6B7280] hover:text-[#1F2937]">
+              <Link to="/seo" className="text-base text-[#6B7280] hover:text-[#1F2937]">
                 Central de conteúdo
               </Link>
               <Link to="/blog" className="text-base text-[#6B7280] hover:text-[#1F2937]">

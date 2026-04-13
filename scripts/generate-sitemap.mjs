@@ -46,7 +46,7 @@ const SITE_URL = (process.env.PUBLIC_SITE_URL || "https://adzhub.com.br").replac
 
 const staticPaths = [
   { path: "/", changefreq: "weekly", priority: "1.0" },
-  { path: "/conteudo", changefreq: "weekly", priority: "0.9" },
+  { path: "/seo", changefreq: "weekly", priority: "0.9" },
   { path: "/chat", changefreq: "weekly", priority: "0.9" },
   { path: "/blog", changefreq: "daily", priority: "0.9" },
   { path: "/contact", changefreq: "monthly", priority: "0.8" },

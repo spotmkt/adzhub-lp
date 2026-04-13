@@ -30,7 +30,7 @@ type ServicoDropdownItem =
 
 const SERVICOS_ITEMS: ServicoDropdownItem[] = [
   { type: "text", label: "Gestão de Tráfego Pago" },
-  { type: "link", label: "SEO e GEO", to: "/conteudo" },
+  { type: "link", label: "SEO e GEO", to: "/seo" },
   { type: "text", label: "Social Mídia" },
 ];
 
@@ -45,7 +45,7 @@ export const LandingNav = ({ activeSection = "home" }: LandingNavProps) => {
     if (path === "/") return activeSection;
     if (path === "/contact") return "contato";
     if (path === "/blog") return "blog";
-    if (path === "/conteudo" || path === "/chat") return "servicos";
+    if (path === "/seo" || path === "/chat") return "servicos";
     return "home";
   }, [activeSection, location.pathname]);
 

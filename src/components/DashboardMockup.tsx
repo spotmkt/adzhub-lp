@@ -15,7 +15,7 @@ export function DashboardMockup() {
           </div>
           <div className="flex-1 flex justify-center">
             <div className="bg-white rounded-md px-4 py-1 text-xs text-gray-400 border border-gray-200 min-w-[200px] text-center">
-              app.adzhub.com.br/conteudo
+              app.adzhub.com.br/seo
             </div>
           </div>
         </div>

@@ -488,7 +488,7 @@ export default function AdzHubLanding() {
                 Produção editorial com foco em SEO e consistência — no padrão de plataformas de conteúdo orientadas a
                 resultado, integrada ao restante da operação de marketing.
               </p>
-              <Link to="/conteudo" className="inline-flex items-center gap-2 text-[#37489d] font-medium text-sm">
+              <Link to="/seo" className="inline-flex items-center gap-2 text-[#37489d] font-medium text-sm">
                 Ver central de conteúdo
                 <ArrowRight className="w-4 h-4" />
               </Link>
@@ -594,7 +594,7 @@ export default function AdzHubLanding() {
                   <span className="font-medium text-[#08080C]">Métricas</span> — Performance em tempo real
                 </div>
               </div>
-              <Link to="/conteudo" className="inline-flex items-center gap-2 text-[#37489d] font-medium hover:text-[#37489d]/80 transition-colors">
+              <Link to="/seo" className="inline-flex items-center gap-2 text-[#37489d] font-medium hover:text-[#37489d]/80 transition-colors">
                 Conhecer central de conteúdo
                 <ArrowRight className="w-4 h-4" />
               </Link>

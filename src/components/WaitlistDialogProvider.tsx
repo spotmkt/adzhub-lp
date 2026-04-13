@@ -64,6 +64,7 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
     const trimmedName = name.trim();
     const trimmed = email.trim();
     const trimmedPhone = phone.trim();
+    const trimmedCompany = company.trim();
 
     if (!trimmedName) {
       toast.error("Informe seu nome.");
@@ -82,6 +83,10 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
       toast.error("Selecione se você é profissional de marketing ou empresário(a).");
       return;
     }
+    if (!trimmedCompany) {
+      toast.error("Informe o nome da empresa.");
+      return;
+    }
 
     const lines = [
       "Olá, equipe AdzHub —",
@@ -92,10 +97,8 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
       `E-mail: ${trimmed}`,
       `Telefone: ${trimmedPhone}`,
       `Perfil: ${ROLE_LABEL[role]}`,
+      `Empresa: ${trimmedCompany}`,
     ];
-    if (company.trim()) {
-      lines.push(`Empresa: ${company.trim()}`);
-    }
     lines.push("", "Obrigado!");
 
     const body = encodeURIComponent(lines.join("\n"));
@@ -116,8 +119,8 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
             <DialogTitle className="text-xl sm:text-2xl font-semibold text-[#37489d]">
               Lista de espera
             </DialogTitle>
-            <DialogDescription className="text-[#4B5563] text-sm leading-relaxed">
-              Preencha os dados abaixo. Enviaremos sua solicitação por e-mail para nossa equipe.
+            <DialogDescription className="sr-only">
+              Formulário de inscrição na lista de espera da plataforma AdzHub.
             </DialogDescription>
           </DialogHeader>
 
@@ -193,10 +196,11 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
 
             <div className="space-y-2">
               <Label htmlFor="waitlist-company" className="text-[#37489d]">
-                Nome da empresa <span className="text-[#6B7280] font-normal">(opcional)</span>
+                Nome da empresa
               </Label>
               <Input
                 id="waitlist-company"
+                required
                 value={company}
                 onChange={(ev) => setCompany(ev.target.value)}
                 placeholder="Nome fantasia ou razão social"
@@ -208,10 +212,6 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
             <Button type="submit" className="w-full rounded-xl bg-[#37489d] hover:bg-[#37489d]/90 text-white">
               Enviar solicitação
             </Button>
-            <p className="text-xs text-[#6B7280] leading-relaxed">
-              Abriremos seu cliente de e-mail com a mensagem para contato@adzhub.com.br. Nada é salvo neste site até
-              integrarmos o cadastro automático.
-            </p>
           </form>
         </DialogContent>
       </Dialog>
