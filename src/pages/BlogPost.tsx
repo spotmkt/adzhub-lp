@@ -52,6 +52,11 @@ export default function BlogPost() {
     }
   }, [slug]);
 
+  const bodyHtml = useMemo(
+    () => (post?.content != null ? prepareBlogBodyHtml(post.content) : ""),
+    [post?.content]
+  );
+
   const fetchPost = async () => {
     try {
       const { data, error } = await supabase
@@ -119,8 +124,6 @@ export default function BlogPost() {
   };
 
   const currentUrl = window.location.href;
-
-  const bodyHtml = useMemo(() => prepareBlogBodyHtml(post.content), [post.content]);
 
   return (
     <>
