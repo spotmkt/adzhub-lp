@@ -6,6 +6,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { LandingNav } from '@/components/LandingNav';
 import { Footer } from '@/components/Footer';
 
+const contactFieldClassName =
+  "border border-[#C9B8A4]/70 bg-[#FAF6EF] text-[#08080C] placeholder:text-[#6B7280]/80 shadow-sm focus-visible:border-[#37489d]/45 focus-visible:ring-[#37489d]/25";
+
 export default function Contact() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,31 +42,32 @@ export default function Contact() {
                     <div className="grid sm:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="name">Nome</Label>
-                        <Input id="name" placeholder="Seu nome" required />
+                        <Input id="name" placeholder="Seu nome" required className={contactFieldClassName} />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="email">Email</Label>
-                        <Input id="email" type="email" placeholder="seu@email.com" required />
+                        <Input id="email" type="email" placeholder="seu@email.com" required className={contactFieldClassName} />
                       </div>
                     </div>
 
                     <div className="space-y-2">
                       <Label htmlFor="phone">Telefone</Label>
-                      <Input id="phone" type="tel" placeholder="(11) 99999-9999" />
+                      <Input id="phone" type="tel" placeholder="(11) 99999-9999" className={contactFieldClassName} />
                     </div>
 
                     <div className="space-y-2">
                       <Label htmlFor="subject">Assunto</Label>
-                      <Input id="subject" placeholder="Sobre o que você gostaria de falar?" required />
+                      <Input id="subject" placeholder="Sobre o que você gostaria de falar?" required className={contactFieldClassName} />
                     </div>
 
                     <div className="space-y-2">
                       <Label htmlFor="message">Mensagem</Label>
-                      <Textarea 
-                        id="message" 
+                      <Textarea
+                        id="message"
                         placeholder="Conte-nos mais detalhes..."
                         rows={6}
                         required
+                        className={contactFieldClassName}
                       />
                     </div>
 
