@@ -45,8 +45,8 @@ export default function FinestraLanding() {
               <span className="text-[#37489d]">recomendações das AI</span>
             </h1>
             <p className="text-lg text-[#08080C] opacity-80 max-w-[640px] leading-relaxed">
-              A estratégia de posicionamento da sua marca nas recomendações orgânicas do Google e de AIs (como ChatGPT,
-              Claude, Gemini…). Da estratégia até execução, nós fazemos tudo por você e você acompanha tudo pela plataforma!
+              Posicione sua marca nas recomendações orgânicas do Google e de AIs (como ChatGPT, Claude, Gemini…). Da
+              estratégia até a execução, nós fazemos por você e você acompanha tudo pela plataforma!
             </p>
           </div>
 

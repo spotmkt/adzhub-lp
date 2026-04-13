@@ -180,8 +180,17 @@ const POSTS = [
 
 export function ConteudoMotionShowcase() {
   const [stepIndex, setStepIndex] = useState(0);
+  const [isNarrowViewport, setIsNarrowViewport] = useState(false);
   const step = STEPS[stepIndex] ?? STEPS[0];
   const caption = CAPTIONS[stepIndex] ?? CAPTIONS[0];
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 639px)");
+    const update = () => setIsNarrowViewport(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
 
   useEffect(() => {
     const t = setTimeout(() => {
@@ -190,8 +199,13 @@ export function ConteudoMotionShowcase() {
     return () => clearTimeout(t);
   }, [stepIndex, step.duration]);
 
-  const showCursor = step.cursorX >= 0 && step.cursorY >= 0;
+  const showCursor =
+    !isNarrowViewport && step.cursorX >= 0 && step.cursorY >= 0;
   const view = step.view;
+
+  const listScrollPx = isNarrowViewport
+    ? Math.round(step.listTranslateY * 0.45)
+    : step.listTranslateY;
 
   return (
     <motion.div
@@ -204,7 +218,7 @@ export function ConteudoMotionShowcase() {
 
       <div className="relative w-full">
         {/* Shell alinhado ao MockInterface da Home (motion hero) */}
-        <div className="w-full min-h-[420px] sm:h-[500px] bg-white rounded-2xl shadow-2xl overflow-hidden border border-border/30 relative">
+        <div className="w-full h-[min(440px,82dvh)] min-h-[380px] sm:h-[500px] sm:min-h-[500px] bg-white rounded-2xl shadow-2xl overflow-hidden border border-border/30 relative">
           <motion.div
             className="h-12 border-b border-border/30 flex items-center px-3 sm:px-4 gap-2 sm:gap-4 bg-white"
             initial={{ opacity: 0, y: -12 }}
@@ -296,6 +310,25 @@ export function ConteudoMotionShowcase() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.15, duration: 0.4 }}
             >
+              <div
+                className="flex sm:hidden items-center gap-1 px-2 py-1.5 border-b border-border/20 bg-[hsl(40,30%,96%)] overflow-x-auto shrink-0"
+                aria-label="Navegação do módulo Conteúdo"
+              >
+                <MobileNavPill
+                  icon={<LayoutDashboard className="w-3 h-3 shrink-0" />}
+                  label="Visão geral"
+                  active={view === "dashboard"}
+                />
+                <MobileNavPill
+                  icon={<FileText className="w-3 h-3 shrink-0" />}
+                  label="Postagens"
+                  active={view === "posts" || view === "editor"}
+                  pulse={step.highlight === "postagens"}
+                />
+                <MobileNavPill icon={<Calendar className="w-3 h-3 shrink-0" />} label="Calendário" />
+                <MobileNavPill icon={<BarChart3 className="w-3 h-3 shrink-0" />} label="Métricas" />
+              </div>
+
               <div className="h-10 flex items-center px-3 sm:px-4 gap-2 flex-wrap shrink-0 border-b border-border/20">
                 <div className="flex items-center gap-2 text-xs">
                   <span className="text-foreground font-medium">Cliente Demo</span>
@@ -436,7 +469,7 @@ export function ConteudoMotionShowcase() {
                       <div className="flex-1 min-h-0 overflow-hidden relative p-2">
                         <motion.div
                           className="space-y-2"
-                          animate={{ y: step.listTranslateY }}
+                          animate={{ y: listScrollPx }}
                           transition={{
                             duration: stepIndex === 4 ? 2.2 : 0.35,
                             ease: "easeInOut",
@@ -608,6 +641,33 @@ export function ConteudoMotionShowcase() {
           {caption}
         </motion.p>
       </div>
+    </motion.div>
+  );
+}
+
+function MobileNavPill({
+  icon,
+  label,
+  active,
+  pulse,
+}: {
+  icon: ReactNode;
+  label: string;
+  active?: boolean;
+  pulse?: boolean;
+}) {
+  return (
+    <motion.div
+      className={`flex shrink-0 items-center gap-1 rounded-lg px-2 py-1 text-[10px] font-medium whitespace-nowrap ${
+        active
+          ? "bg-primary text-primary-foreground"
+          : "bg-white/80 text-muted-foreground border border-border/40"
+      } ${pulse ? "ring-2 ring-primary/45 ring-offset-1" : ""}`}
+      animate={pulse ? { scale: [1, 1.03, 1] } : {}}
+      transition={{ duration: 0.55, repeat: pulse ? Infinity : 0, repeatDelay: 0.35 }}
+    >
+      {icon}
+      <span>{label}</span>
     </motion.div>
   );
 }
