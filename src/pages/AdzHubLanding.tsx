@@ -14,7 +14,6 @@ import {
   Megaphone,
   Search,
   Share2,
-  FileText,
   ShieldCheck,
   LayoutGrid,
   LineChart,
@@ -406,12 +405,6 @@ export default function AdzHubLanding() {
               </div>
             </div>
           </div>
-
-          <div className="mt-10 bg-white rounded-2xl p-6 border border-[#37489d]/10 max-w-3xl mx-auto">
-            <p className="text-center text-[#6B7280] text-sm leading-relaxed">
-              <span className="font-semibold text-[#37489d]">Na prática:</span> quando o módulo de Treinamento for implementado, o Supercérebro identifica lacunas de aprendizado e sugere trilhas personalizadas. Cada módulo amplia a inteligência de todo o ecossistema.
-            </p>
-          </div>
         </div>
       </section>
 
@@ -475,31 +468,23 @@ export default function AdzHubLanding() {
             </div>
 
             <div
-              id="conteudo-seo"
+              id="dashboard-crm"
               className="rounded-3xl border border-[#08080C]/10 bg-[#F6F6F6] p-8 md:p-10 scroll-mt-28"
             >
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 rounded-xl bg-emerald-600/15 flex items-center justify-center">
-                  <FileText className="w-6 h-6 text-emerald-700" />
+                <div className="w-12 h-12 rounded-xl bg-slate-600/15 flex items-center justify-center">
+                  <LayoutGrid className="w-6 h-6 text-slate-700" />
                 </div>
-                <h3 className="text-xl font-bold text-[#08080C]">Conteúdo, blog e performance editorial</h3>
+                <h3 className="text-xl font-bold text-[#08080C]">Dashboard e CRM</h3>
               </div>
-              <p className="text-[#6B7280] leading-relaxed mb-4">
-                Produção editorial com foco em SEO e consistência — no padrão de plataformas de conteúdo orientadas a
-                resultado, integrada ao restante da operação de marketing.
+              <p className="text-[#6B7280] leading-relaxed">
+                Painéis executivos, indicadores da operação e gestão de leads e contatos no mesmo fluxo — com histórico e
+                contexto alinhados ao plano de sucesso, sem planilhas soltas nem ferramentas desconectadas.
               </p>
-              <Link to="/seo" className="inline-flex items-center gap-2 text-[#37489d] font-medium text-sm">
-                Ver central de conteúdo
-                <ArrowRight className="w-4 h-4" />
-              </Link>
             </div>
           </div>
 
           <div className="mt-10 text-center">
-            <p className="text-sm text-[#6B7280] mb-4">
-              Outras frentes (e-mail, CRM, criativo, automações) entram conforme o estágio do contrato e a maturidade
-              do marketing — sempre dentro da mesma estrutura.
-            </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               <StarBorder as="button" type="button" onClick={openWaitlist} color="hsl(224, 47%, 42%)" speed="8s">
                 Começar grátis
@@ -560,10 +545,12 @@ export default function AdzHubLanding() {
                   <span className="font-medium text-[#08080C]">Analytics</span> — Insights de dados
                 </div>
               </div>
-              <Link to="/chat" className="inline-flex items-center gap-2 text-[#37489d] font-medium hover:text-[#37489d]/80 transition-colors">
-                Conhecer o AdzChat
-                <ArrowRight className="w-4 h-4" />
-              </Link>
+              <span
+                className="inline-flex items-center rounded-full border border-[#37489d]/20 bg-[#37489d]/8 px-3 py-1.5 text-sm font-semibold text-[#37489d]"
+                role="status"
+              >
+                Em breve
+              </span>
             </div>
 
             {/* Blog Card */}
@@ -615,64 +602,9 @@ export default function AdzHubLanding() {
               Uma plataforma, foco na sua empresa
             </h2>
             <p className="text-lg font-medium text-[#6B7280] leading-[170%] max-w-[700px] mx-auto">
-              Do lado da PME, você ganha uma operação de marketing mais madura sem montar equipe completa internamente.
-              Do lado dos profissionais, a mesma infraestrutura permite entregar com método e escala. Tudo conectado na
+              você ganha uma operação de marketing mais madura sem montar equipe completa internamente. Tudo conectado na
               mesma lógica de crescimento.
             </p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
-            <div className="bg-white rounded-3xl p-8 md:p-10 border border-[#37489d]/10">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 rounded-xl bg-[#37489d] flex items-center justify-center">
-                  <Users className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-[#08080C]">Para profissionais e parceiros</h3>
-                  <p className="text-sm text-[#6B7280]">Infraestrutura para executar com método e consistência</p>
-                </div>
-              </div>
-              <div className="space-y-3">
-                <div className="flex items-center gap-3 p-3 bg-[#37489d]/5 rounded-xl">
-                  <ArrowRight className="w-4 h-4 text-[#37489d] flex-shrink-0" />
-                  <span className="text-sm text-[#08080C]">Alta remuneração prestando serviços de forma autônoma</span>
-                </div>
-                <div className="flex items-center gap-3 p-3 bg-[#37489d]/5 rounded-xl">
-                  <ArrowRight className="w-4 h-4 text-[#37489d] flex-shrink-0" />
-                  <span className="text-sm text-[#08080C]">Automações de IA que eliminam tarefas operacionais</span>
-                </div>
-                <div className="flex items-center gap-3 p-3 bg-[#37489d]/5 rounded-xl">
-                  <ArrowRight className="w-4 h-4 text-[#37489d] flex-shrink-0" />
-                  <span className="text-sm text-[#08080C]">Metodologia guiada para executar com consistência</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-3xl p-8 md:p-10 border border-[hsl(41,100%,58%)]/30">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 rounded-xl bg-[hsl(41,100%,58%)] flex items-center justify-center">
-                  <Target className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-[#08080C]">Para Empresas</h3>
-                  <p className="text-sm text-[#6B7280]">Marketing estratégico acessível e escalável</p>
-                </div>
-              </div>
-              <div className="space-y-3">
-                <div className="flex items-center gap-3 p-3 bg-[hsl(41,100%,58%)]/5 rounded-xl">
-                  <ArrowRight className="w-4 h-4 text-[hsl(41,100%,58%)] flex-shrink-0" />
-                  <span className="text-sm text-[#08080C]">Acesso a serviços especializados com baixo custo</span>
-                </div>
-                <div className="flex items-center gap-3 p-3 bg-[hsl(41,100%,58%)]/5 rounded-xl">
-                  <ArrowRight className="w-4 h-4 text-[hsl(41,100%,58%)] flex-shrink-0" />
-                  <span className="text-sm text-[#08080C]">Motor de execução estratégica para o negócio</span>
-                </div>
-                <div className="flex items-center gap-3 p-3 bg-[hsl(41,100%,58%)]/5 rounded-xl">
-                  <ArrowRight className="w-4 h-4 text-[hsl(41,100%,58%)] flex-shrink-0" />
-                  <span className="text-sm text-[#08080C]">Dados e contexto que nunca se perdem</span>
-                </div>
-              </div>
-            </div>
           </div>
 
           <div className="bg-white rounded-3xl p-8 md:p-12 border border-[#08080C]/10 max-w-4xl mx-auto text-center">
@@ -704,25 +636,6 @@ export default function AdzHubLanding() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
-            <div className="bg-[#F6F6F6] rounded-2xl p-6 text-center">
-              <div className="text-3xl md:text-4xl font-bold text-[#37489d] mb-2">11M+</div>
-              <div className="text-sm text-[#6B7280]">Empresas formais no Brasil — e a maioria sem marketing estruturado</div>
-            </div>
-            <div className="bg-[#F6F6F6] rounded-2xl p-6 text-center">
-              <div className="text-3xl md:text-4xl font-bold text-[#37489d] mb-2">+200</div>
-              <div className="text-sm text-[#6B7280]">Negócios que já passaram pela nossa metodologia</div>
-            </div>
-            <div className="bg-[#F6F6F6] rounded-2xl p-6 text-center">
-              <div className="text-3xl md:text-4xl font-bold text-[#37489d] mb-2">+9</div>
-              <div className="text-sm text-[#6B7280]">Anos focados em marketing para PMEs</div>
-            </div>
-            <div className="bg-[#F6F6F6] rounded-2xl p-6 text-center">
-              <div className="text-3xl md:text-4xl font-bold text-[#37489d] mb-2">R$ 30M+</div>
-              <div className="text-sm text-[#6B7280]">Em campanhas e projetos que apoiamos ao longo da jornada</div>
-            </div>
-          </div>
-
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-12">
             <div className="bg-[#37489d] rounded-3xl p-8 text-white">
               <p className="text-sm font-medium text-white/60 mb-2">O cenário</p>
@@ -747,67 +660,6 @@ export default function AdzHubLanding() {
                 Anos de operação com PMEs viraram fluxo, rituais e ferramentas em um só lugar — para você avançar com
                 consistência, não no improviso.
               </p>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-[#F6F6F6] rounded-3xl p-8">
-              <h3 className="text-xl font-bold text-[#08080C] mb-4">O que muda no dia a dia</h3>
-              <div className="space-y-3">
-                <div className="flex items-start gap-3">
-                  <div className="w-2 h-2 rounded-full bg-[#37489d] mt-2 flex-shrink-0"></div>
-                  <p className="text-sm text-[#6B7280]">
-                    <span className="font-semibold text-[#08080C]">Um só lugar:</span> estratégia e execução alinhadas — menos retrabalho
-                    e menos ferramentas soltas.
-                  </p>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-2 h-2 rounded-full bg-[#37489d] mt-2 flex-shrink-0"></div>
-                  <p className="text-sm text-[#6B7280]">
-                    <span className="font-semibold text-[#08080C]">Metodologia clara:</span> decisões guiadas por processo, não só por achismo
-                    ou briefing vago.
-                  </p>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-2 h-2 rounded-full bg-[#37489d] mt-2 flex-shrink-0"></div>
-                  <p className="text-sm text-[#6B7280]">
-                    <span className="font-semibold text-[#08080C]">Memória da marca:</span> contexto e histórico de estratégia ficam registrados
-                    na plataforma.
-                  </p>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-2 h-2 rounded-full bg-[#37489d] mt-2 flex-shrink-0"></div>
-                  <p className="text-sm text-[#6B7280]">
-                    <span className="font-semibold text-[#08080C]">Módulos integrados:</span> time, conteúdo, mídia e análise conversando entre si
-                    — o trabalho flui melhor.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-[#F6F6F6] rounded-3xl p-8">
-              <h3 className="text-xl font-bold text-[#08080C] mb-4">Resultados na prática — SPOT MKT</h3>
-              <p className="text-sm text-[#6B7280] mb-4">
-                Indicadores após aplicar a metodologia AdzHub na operação da agência SPOT MKT (2024–2025):
-              </p>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="bg-white rounded-xl p-4 text-center">
-                  <div className="text-2xl font-bold text-emerald-600">+74%</div>
-                  <div className="text-xs text-[#6B7280]">Receita</div>
-                </div>
-                <div className="bg-white rounded-xl p-4 text-center">
-                  <div className="text-2xl font-bold text-emerald-600">+20%</div>
-                  <div className="text-xs text-[#6B7280]">Novos clientes</div>
-                </div>
-                <div className="bg-white rounded-xl p-4 text-center">
-                  <div className="text-2xl font-bold text-emerald-600">-38%</div>
-                  <div className="text-xs text-[#6B7280]">Redução de churn</div>
-                </div>
-                <div className="bg-white rounded-xl p-4 text-center">
-                  <div className="text-2xl font-bold text-[#37489d]">-50%</div>
-                  <div className="text-xs text-[#6B7280]">Equipe (mais generalista)</div>
-                </div>
-              </div>
             </div>
           </div>
 

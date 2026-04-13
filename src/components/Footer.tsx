@@ -64,8 +64,8 @@ export function Footer() {
               <Link to="/#social-midia" className="text-base text-[#6B7280] hover:text-[#1F2937]">
                 Social mídia
               </Link>
-              <Link to="/#conteudo-seo" className="text-base text-[#6B7280] hover:text-[#1F2937]">
-                Conteúdo e blog
+              <Link to="/#dashboard-crm" className="text-base text-[#6B7280] hover:text-[#1F2937]">
+                Dashboard e CRM
               </Link>
               <Link to="/#servicos" className="text-base text-[#6B7280] hover:text-[#1F2937]">
                 Ver todos
