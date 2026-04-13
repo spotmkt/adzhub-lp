@@ -9,6 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useCampaignsAuth } from '../contexts/CampaignsAuthContext';
 import { EmailVerificationModal } from './EmailVerificationModal';
 import { ForgotPasswordModal } from './ForgotPasswordModal';
+import adzhubMark from '@/assets/adzhub-logo-final.png';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
@@ -116,11 +117,7 @@ const LoginScreen = () => {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-4 mb-6">
             <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg overflow-hidden">
-              <img 
-                src="/lovable-uploads/acd49d0d-27bb-409a-a755-9e6bb75616fa.png" 
-                alt="Adz Hub Logo" 
-                className="w-10 h-10 object-contain"
-              />
+              <img src={adzhubMark} alt="AdzHub" className="w-10 h-10 object-contain" />
             </div>
             <div>
               <h1 className="text-3xl font-bold text-dark-primary">Adz Hub</h1>

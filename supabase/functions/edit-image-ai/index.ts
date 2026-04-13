@@ -12,18 +12,19 @@ serve(async (req) => {
 
   try {
     const { imageData, prompt } = await req.json();
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    const apiKey = Deno.env.get("AI_IMAGE_API_KEY");
+    const gatewayUrl = Deno.env.get("AI_IMAGE_GATEWAY_URL");
 
-    if (!LOVABLE_API_KEY) {
-      throw new Error("LOVABLE_API_KEY is not configured");
+    if (!apiKey || !gatewayUrl) {
+      throw new Error("AI_IMAGE_API_KEY and AI_IMAGE_GATEWAY_URL must be configured");
     }
 
     console.log("Editing image with prompt:", prompt);
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const response = await fetch(gatewayUrl, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -58,7 +59,7 @@ serve(async (req) => {
       }
       if (response.status === 402) {
         return new Response(
-          JSON.stringify({ error: "Payment required. Please add credits to your Lovable AI workspace." }),
+          JSON.stringify({ error: "Payment required. Add credits to the configured AI image service." }),
           { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }

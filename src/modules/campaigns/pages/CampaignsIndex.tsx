@@ -17,6 +17,7 @@ import SummaryScreen from '../components/SummaryScreen';
 import UserHeader from '../components/UserHeader';
 import { readFile, extractMappedData } from '../utils/fileReader';
 import { format } from 'date-fns';
+import adzhubMark from '@/assets/adzhub-logo-final.png';
 
 export interface FormData {
   instanceName: string;
@@ -414,11 +415,7 @@ const CampaignsIndex = () => {
           <div className="text-center space-y-2">
             <div className="flex items-center justify-center gap-3 mb-4">
               <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-                <img 
-                  src="/lovable-uploads/acd49d0d-27bb-409a-a755-9e6bb75616fa.png" 
-                  alt="Adz Hub Logo" 
-                  className="w-8 h-8 object-contain"
-                />
+                <img src={adzhubMark} alt="AdzHub" className="w-8 h-8 object-contain" />
               </div>
             </div>
             <h1 className="text-2xl font-bold text-foreground">Adz Hub</h1>

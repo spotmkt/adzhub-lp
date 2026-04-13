@@ -11,6 +11,7 @@ import type { FormData } from '../pages/CampaignsIndex';
 import { truncateFileName } from '../services/imageUpload';
 import { supabase } from '@/integrations/supabase/client';
 import { encryptData, encryptJSON } from '../services/encryption';
+import adzhubMark from '@/assets/adzhub-logo-final.png';
 
 interface SummaryScreenProps {
   formData: FormData;
@@ -377,11 +378,7 @@ const SummaryScreen = ({ formData, onBack }: SummaryScreenProps) => {
           <div className="text-center">
             <div className="flex items-center justify-center gap-4 mb-4">
               <div className="w-12 h-12 bg-card rounded-full flex items-center justify-center shadow-lg">
-                <img 
-                  src="/lovable-uploads/acd49d0d-27bb-409a-a755-9e6bb75616fa.png" 
-                  alt="Adz Hub Logo" 
-                  className="w-8 h-8 object-contain"
-                />
+                <img src={adzhubMark} alt="AdzHub" className="w-8 h-8 object-contain" />
               </div>
               <h1 className="text-3xl font-bold">
                 {isEditing ? 'Atualizar Campanha' : 'Resumo da Campanha'}

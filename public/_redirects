@@ -1,3 +1,6 @@
+# Ícone legado: alguns clientes ainda pedem /favicon.ico
+/favicon.ico  /favicon.png  302
+
 # SPA fallback: entrega index.html para qualquer rota que não seja arquivo estático.
 # Necessário para /blog/:slug, /termos, /privacidade etc. ao abrir URL direta ou F5.
 /*    /index.html   200

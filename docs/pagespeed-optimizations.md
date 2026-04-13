@@ -124,7 +124,7 @@ Hospedar assets estáticos em CDN (Cloudflare, etc)
 
 ## 🛠️ Como Testar
 
-1. **Publicar as mudanças** no Lovable
+1. **Publicar as mudanças** (deploy na hospedagem)
 2. **Aguardar deploy** completo
 3. **Testar no PageSpeed Insights**:
    - Mobile: https://pagespeed.web.dev/
@@ -140,7 +140,7 @@ Hospedar assets estáticos em CDN (Cloudflare, etc)
 ## 📝 Notas Importantes
 
 1. **Server Response Time (890ms)**
-   - Isso é controlado pela hospedagem do Lovable
+   - Isso é controlado pela configuração da hospedagem/CDN
    - Não pode ser otimizado no código
    - É um valor aceitável para a maioria dos casos
 

@@ -59,7 +59,7 @@ export const useImageEditor = () => {
         } else if (error.message.includes('402') || error.message.includes('Payment')) {
           toast({
             title: 'Créditos necessários',
-            description: 'Adicione créditos à sua workspace do Lovable AI.',
+            description: 'Adicione créditos ao serviço de IA configurado para edição de imagens.',
             variant: 'destructive'
           });
         } else {

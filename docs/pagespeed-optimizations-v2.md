@@ -215,7 +215,7 @@ Após publicar, verificar:
 
 ## 🛠️ Como Testar
 
-1. **Publicar no Lovable**
+1. **Publicar** (deploy em produção)
 2. **Aguardar deploy completo** (verificar no painel)
 3. **Teste PageSpeed**: https://pagespeed.web.dev/
 4. **Teste GTmetrix**: https://gtmetrix.com/
