@@ -1,0 +1,53 @@
+services:
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - ENABLE_PERSISTENT_CONFIG=true
+      - WEBUI_NAME=Adzhub
+      # Sem isto, GET /static/* vem de /app/backend/open_webui/static (cópia interna), não dos volumes em /app/build/static
+      - STATIC_DIR=/app/build/static
+      - OPENAI_API_BASE_URLS=${OPENAI_API_BASE_URLS}
+      - OPENAI_API_KEYS=${OPENAI_API_KEYS}
+      - IMAGES_OPENAI_API_KEY=${IMAGES_OPENAI_API_KEY:-${OPENAI_API_KEYS}}
+      - IMAGES_OPENAI_API_BASE_URL=${IMAGES_OPENAI_API_BASE_URL:-https://api.openai.com/v1}
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - TAVILY_API_KEY=${TAVILY_API_KEY}
+      - ONBOARDING_REPORT_UPLOAD_URL=${ONBOARDING_REPORT_UPLOAD_URL}
+      - ONBOARDING_REPORT_UPLOAD_SECRET=${ONBOARDING_REPORT_UPLOAD_SECRET}
+      - ADZHUB_PUBLIC_ORIGIN=${ADZHUB_PUBLIC_ORIGIN}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - APIFY_API_TOKEN=${APIFY_API_TOKEN}
+      - ADZHUB_RSS_SUPABASE_URL=${ADZHUB_RSS_SUPABASE_URL}
+      - ADZHUB_RSS_ANON_KEY=${ADZHUB_RSS_ANON_KEY}
+      - ADZHUB_RSS_SHARED_KEY=${ADZHUB_RSS_SHARED_KEY}
+    command:
+      - bash
+      - -c
+      - python3 -m pip install -q fpdf2 && python3 /usr/local/lib/adzhub-branding-patch.py && exec bash start.sh
+    volumes:
+      - open-webui:/app/backend/data
+      - ./custom/custom.css:/app/build/static/custom.css:ro
+      - ./custom/symbol_final.png:/app/build/static/favicon.png:ro
+      - ./custom/symbol_final.png:/app/build/static/favicon-96x96.png:ro
+      - ./custom/symbol_final.png:/app/build/static/apple-touch-icon.png:ro
+      - ./custom/symbol_final.png:/app/build/static/splash.png:ro
+      - ./custom/symbol_final.png:/app/build/static/splash-dark.png:ro
+      - ./custom/symbol_final.png:/app/build/static/logo.png:ro
+      - ./custom/symbol_final.png:/app/build/static/web-app-manifest-192x192.png:ro
+      - ./custom/symbol_final.png:/app/build/static/web-app-manifest-512x512.png:ro
+      - ./custom/symbol_final.png:/app/build/static/favicon-dark.png:ro
+      - ./custom/favicon_real.svg:/app/build/static/favicon.svg:ro
+      - ./custom/favicon_real.ico:/app/build/static/favicon.ico:ro
+      - ./custom/branding_patch.py:/usr/local/lib/adzhub-branding-patch.py:ro
+      - ./custom/pwa-icons:/usr/local/share/adzhub-pwa-icons:ro
+      - ./custom/rss-materials.js:/app/build/static/rss-materials.js:ro
+      - ./custom/mask-editor.js:/app/build/static/mask-editor.js:ro
+      - ./custom/auth-login-ui.js:/app/build/static/auth-login-ui.js:ro
+      - ./custom/adzhub-logo.png:/app/build/static/adzhub-logo.png:ro
+
+volumes:
+  open-webui:

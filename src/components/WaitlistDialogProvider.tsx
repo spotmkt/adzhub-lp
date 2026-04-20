@@ -103,7 +103,7 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
 
     const body = encodeURIComponent(lines.join("\n"));
     const subject = encodeURIComponent("Lista de espera — AdzHub");
-    window.location.href = `mailto:contato@adzhub.com.br?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:team@adzhub.com.br?subject=${subject}&body=${body}`;
     toast.success("Abrimos seu app de e-mail com a mensagem pronta. É só enviar.");
     handleOpenChange(false);
   };

@@ -6,7 +6,6 @@ import {
   OPERATOR_ADDRESS,
   OPERATOR_CNPJ,
   OPERATOR_CONTACT_EMAIL,
-  OPERATOR_DPO_EMAIL,
   OPERATOR_LEGAL_NAME,
   PRODUCT_BRAND,
   SITE_ORIGIN,
@@ -30,7 +29,7 @@ export default function Terms() {
 
       <main className="pt-[83px] py-16">
         <div className="max-w-3xl mx-auto px-6 pt-8">
-          <article className="prose prose-lg max-w-none prose-headings:text-[#08080C] prose-p:text-[#6B7280] prose-li:text-[#6B7280] prose-strong:text-[#08080C] prose-a:text-[#37489d]">
+          <article className="prose prose-lg max-w-none prose-headings:text-[#08080C] prose-headings:font-bold prose-p:text-[#6B7280] prose-li:text-[#6B7280] prose-strong:text-[#08080C] prose-a:text-[#37489d]">
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-[#08080C] mb-2">
               Termos de Uso
             </h1>
@@ -38,10 +37,9 @@ export default function Terms() {
 
             <p className="text-sm border border-[#37489d]/20 bg-[#37489d]/5 rounded-xl p-4 text-[#08080C] not-prose mb-10">
               <strong className="text-[#08080C]">Marca e operação:</strong> a plataforma <strong>{PRODUCT_BRAND}</strong>{" "}
-              é operada por <strong>{OPERATOR_LEGAL_NAME}</strong>, CNPJ {OPERATOR_CNPJ}, sede em {OPERATOR_ADDRESS}. A
-              marca {PRODUCT_BRAND} pode ser comercializada antes de existir pessoa jurídica com o mesmo nome; o que importa
-              para transparência e revisão de apps é que o <strong>CNPJ e a razão social da operadora responsável</strong>{" "}
-              coincidam com o cadastro do desenvolvedor e apareçam claramente aqui e na Política de Privacidade.
+              é desenvolvida e operada por <strong>{OPERATOR_LEGAL_NAME}</strong>, CNPJ {OPERATOR_CNPJ}, sede em{" "}
+              {OPERATOR_ADDRESS}. O CNPJ e a razão social acima são os dados da responsável legal pelos serviços e
+              aparecem também na <Link to="/privacidade">Política de Privacidade</Link>.
             </p>
 
             <h2>1. Aceitação e documentos relacionados</h2>
@@ -105,14 +103,12 @@ export default function Terms() {
 
             <h2>3. Descrição dos Serviços</h2>
             <p>
-              A {PRODUCT_BRAND} oferece plataforma de agência de marketing digital com inteligência integrada, incluindo,
-              conforme o plano ou produto contratado, recursos como agentes de IA (AdzChat), blog/conteúdo, automações,
-              metodologias e{" "}
-              <strong>integrações com contas Google e Meta</strong>, tais como: Google Ads, YouTube, Google Tag Manager,
-              Google Analytics, Google Search Console, Perfil da Empresa no Google (Google Meu Negócio / Business Profile)
-              e, na Meta, APIs Graph / Marketing para leitura e edição de campanhas e ativos de mídia que você autorizar. A
-              disponibilidade exata de módulos e escopos pode variar; descrições comerciais no site ou no aplicativo
-              prevalecem para fins ilustrativos até a contratação.
+              A {PRODUCT_BRAND} é uma plataforma de marketing digital com IA integrada. Conforme o plano, podem estar
+              disponíveis recursos como agentes (AdzChat), conteúdo, automações e{" "}
+              <strong>conexão com contas Google e Meta</strong> para leitura de dados de Google Ads, Meta Ads, YouTube
+              Analytics, Google Tag Manager, Google Analytics (GA4), Google Search Console e Google Perfil da Empresa,
+              com foco em relatórios e dashboards. Módulos e escopos exatos seguem o que estiver contratado e habilitado no
+              aplicativo e na tela de consentimento de cada provedor.
             </p>
 
             <h2>4. Cadastro, conta e login social</h2>
@@ -130,18 +126,17 @@ export default function Terms() {
             <h2>5. Integrações Google e Meta — sua autorização e responsabilidade</h2>
             <p>
               Ao conectar contas Google ou Meta, você declara que é titular ou possui autorização legal e contratual
-              suficiente para permitir que a {PRODUCT_BRAND} acesse, armazene em cache, processe e, quando aplicável,{" "}
-              <strong>crie ou altere</strong> campanhas, tags, propriedades de analytics, dados do Search Console, fichas de
-              negócio, canais do YouTube e demais recursos disponibilizados pelas APIs, estritamente para prestação dos
-              Serviços. Você é responsável pelo cumprimento das políticas de anúncios, de dados e de marca de cada
-              plataforma.
+              suficiente para permitir que a {PRODUCT_BRAND} <strong>leia, armazene em cache e processe</strong> os dados
+              permitidos nas telas de consentimento — em geral para relatórios e dashboards —, estritamente para prestação
+              dos Serviços. Se, no futuro, forem oferecidas ações de criação ou edição nas plataformas de terceiros, isso
+              dependerá de novos escopos e de consentimento explícito. Você é responsável pelo cumprimento das políticas de
+              anúncios, de dados e de marca de cada plataforma.
             </p>
             <p>
-              A {PRODUCT_BRAND} <strong>não é afiliada</strong> ao Google, Meta, Facebook, Instagram, YouTube ou outras
-              plataformas cujas APIs ou logins possam ser integrados. Funcionalidades que dependam de terceiros estão
-              sujeitas às políticas, disponibilidade e alterações desses terceiros. Se um terceiro alterar APIs, preços ou
-              termos de modo a impactar integrações, poderemos ajustar ou descontinuar recursos afetados para preservar a
-              operação da Plataforma.
+              A plataforma {PRODUCT_BRAND} integra-se com serviços de terceiros (Google, Meta etc.).{" "}
+              <strong>Não temos controle sobre a disponibilidade dessas APIs</strong> e não nos responsabilizamos por
+              mudanças de políticas ou interrupções nos serviços prestados por essas empresas. Se um terceiro alterar APIs
+              ou termos de forma a impactar integrações, poderemos ajustar ou descontinuar recursos afetados.
             </p>
             <p>
               O uso e a transferência de informações recebidas das APIs do Google para qualquer outro aplicativo seguirão a{" "}
@@ -172,10 +167,11 @@ export default function Terms() {
             <h2>7. Propriedade intelectual</h2>
             <p>
               Software, design, marcas, documentação e demais materiais da Plataforma são de titularidade da operadora ou
-              licenciadores. Conteúdos que você insere permanece seu, na medida em que você detenha direitos sobre eles,
-              concedendo à {PRODUCT_BRAND} licença necessária para hospedar, processar e exibir esse conteúdo para prestação dos
-              Serviços. Saídas de modelos de IA podem estar sujeitas a termos de provedores de modelo; você deve revisar
-              material gerado antes de uso público.
+              de licenciadores. Conteúdos que você insere permanecem seus, na medida em que você detenha direitos sobre
+              eles, com licença à {PRODUCT_BRAND} apenas para hospedar, processar e exibir esse conteúdo na prestação dos
+              Serviços. O {PRODUCT_BRAND} <strong>não reivindica propriedade</strong> sobre textos, peças ou estratégias
+              gerados pela IA para você; cabe a você revisar e validar a precisão de qualquer conteúdo antes de publicar
+              ou usar em campanhas.
             </p>
 
             <h2>8. Planos e pagamento</h2>
@@ -187,23 +183,38 @@ export default function Terms() {
 
             <h2>9. Cancelamento e suspensão</h2>
             <p>
-              Você pode solicitar cancelamento conforme opções disponíveis na Plataforma ou pelos canais de suporte. Após o
-              cancelamento, funcionalidades pagas podem permanecer ativas até o fim do período já pago. Podemos suspender
-              ou encerrar Conta em caso de violação destes Termos, fraude ou exigência legal.
+              Você pode solicitar cancelamento conforme as opções na Plataforma ou pelos canais de suporte. Quando você
+              encerra a assinatura ou a conta, <strong>não há novas cobranças</strong> após o processamento do pedido;
+              o que já estiver pago no ciclo vigente segue as regras do plano (acesso até o fim do período contratado,
+              quando for o caso). Podemos suspender ou encerrar a Conta em caso de violação destes Termos, fraude ou
+              exigência legal.
             </p>
             <p>
-              Retenção e exclusão de dados pessoais seguem a <Link to="/privacidade">Política de Privacidade</Link> e a
-              legislação. Em regra, após o encerramento da conta, dados são mantidos por até <strong>90 (noventa) dias</strong>{" "}
-              para exportação, resolução de pendências e cumprimento legal; findo esse prazo, promovemos eliminação ou
-              anonimização, salvo base legal para conservação.
+              Retenção e exclusão de dados seguem a <Link to="/privacidade">Política de Privacidade</Link> e a legislação.
+              Os <strong>90 (noventa) dias</strong> após o fim do uso são, em regra, um prazo de carência para você exportar
+              dados, reativar o serviço ou concluir pendências — não uma retenção “punitiva”. Findo esse prazo, promovemos
+              eliminação ou anonimização, salvo base legal para conservação. Se você pedir exclusão de dados com fundamento
+              na LGPD, aplicamos o prazo previsto na Política (em geral imediato após validação do pedido, ressalvadas
+              obrigações legais de guarda).
+            </p>
+            <p>
+              <strong>
+                Para excluir seus dados e sua conta definitivamente, acesse as configurações do seu perfil na plataforma ou
+                envie um e-mail para{" "}
+              </strong>
+              <a href={`mailto:${OPERATOR_CONTACT_EMAIL}`}>
+                <strong>{OPERATOR_CONTACT_EMAIL}</strong>
+              </a>
+              .
             </p>
 
             <h2>10. Limitação de responsabilidade</h2>
             <p>
               Os Serviços e sugestões de IA são ferramentas de apoio. Você permanece responsável por decisões de negócio,
               campanhas publicitárias e conformidade com leis aplicáveis (incluindo proteção de dados de terceiros que
-              tratar na Plataforma). Na extensão máxima permitida pela lei, não nos responsabilizamos por lucros cessantes,
-              danos indiretos ou resultados decorrentes do uso de integrações de terceiros ou indisponibilidade destes.
+              tratar na Plataforma). Conforme permitido pela legislação brasileira, não nos responsabilizamos por lucros
+              cessantes, danos indiretos ou resultados decorrentes do uso de integrações de terceiros ou da
+              indisponibilidade destes.
             </p>
 
             <h2>11. Disponibilidade</h2>
@@ -231,7 +242,8 @@ export default function Terms() {
               <a href={`mailto:${OPERATOR_CONTACT_EMAIL}`}>{OPERATOR_CONTACT_EMAIL}</a>
             </p>
             <p>
-              Privacidade e dados pessoais: <a href={`mailto:${OPERATOR_DPO_EMAIL}`}>{OPERATOR_DPO_EMAIL}</a>
+              Privacidade e dados pessoais:{" "}
+              <a href={`mailto:${OPERATOR_CONTACT_EMAIL}`}>{OPERATOR_CONTACT_EMAIL}</a>
             </p>
             <p>Endereço: {OPERATOR_ADDRESS}</p>
           </article>

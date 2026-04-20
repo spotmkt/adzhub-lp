@@ -6,7 +6,6 @@ import {
   OPERATOR_ADDRESS,
   OPERATOR_CNPJ,
   OPERATOR_CONTACT_EMAIL,
-  OPERATOR_DPO_EMAIL,
   OPERATOR_LEGAL_NAME,
   PRODUCT_BRAND,
   SITE_ORIGIN,
@@ -30,24 +29,23 @@ export default function Privacy() {
 
       <main className="pt-[83px] py-16">
         <div className="max-w-3xl mx-auto px-6 pt-8">
-          <article className="prose prose-lg max-w-none prose-headings:text-[#08080C] prose-p:text-[#6B7280] prose-li:text-[#6B7280] prose-strong:text-[#08080C] prose-a:text-[#37489d]">
+          <article className="prose prose-lg max-w-none prose-headings:text-[#08080C] prose-headings:font-bold prose-p:text-[#6B7280] prose-li:text-[#6B7280] prose-strong:text-[#08080C] prose-a:text-[#37489d]">
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-[#08080C] mb-2">
               Política de Privacidade
             </h1>
             <p className="text-sm text-[#6B7280] mb-6">Última atualização: abril de 2026</p>
 
             <p className="text-sm border border-[#37489d]/20 bg-[#37489d]/5 rounded-xl p-4 text-[#08080C] not-prose mb-10">
-              <strong className="text-[#08080C]">Marca e operação:</strong> a plataforma de software identificada como{" "}
-              <strong>{PRODUCT_BRAND}</strong> é operada pela pessoa jurídica <strong>{OPERATOR_LEGAL_NAME}</strong>,
-              inscrita no CNPJ sob o nº {OPERATOR_CNPJ}, com sede em {OPERATOR_ADDRESS}. Até a constituição de pessoa
-              jurídica específica para a marca {PRODUCT_BRAND}, a responsabilidade contratual e de proteção de dados
-              perante esta Política recai sobre essa operadora (por exemplo, grupo empresarial SPOT MKT).
+              <strong className="text-[#08080C]">Marca e operação:</strong> a plataforma <strong>{PRODUCT_BRAND}</strong>{" "}
+              é desenvolvida e operada por <strong>{OPERATOR_LEGAL_NAME}</strong>, inscrita no CNPJ {OPERATOR_CNPJ}, com
+              sede em {OPERATOR_ADDRESS}. Esta sociedade é a responsável pelo tratamento de dados descrito nesta Política.
             </p>
 
             <h2>1. O que você precisa saber antes de ler</h2>
             <p>
               A {PRODUCT_BRAND}, operada por {OPERATOR_LEGAL_NAME}, está comprometida com a privacidade e com o tratamento
-              lawful de dados pessoais, em conformidade com a Lei Geral de Proteção de Dados (Lei nº 13.709/2018 — LGPD).
+              ético e legal de dados pessoais, em conformidade com a Lei Geral de Proteção de Dados (Lei nº 13.709/2018 —
+              LGPD).
               Esta Política explica como tratamos dados quando você acessa o site, cria conta, utiliza a plataforma em{" "}
               <a href="https://app.adzhub.com.br" target="_blank" rel="noopener noreferrer">
                 app.adzhub.com.br
@@ -103,7 +101,7 @@ export default function Privacy() {
             </p>
 
             <h2>3. Quais dados coletamos</h2>
-            <p>Dependendo de como você utiliza a {PRODUCT_BRAND}, podemos tratar:</p>
+            <p>Na utilização da {PRODUCT_BRAND}, podemos tratar:</p>
             <ul>
               <li>
                 <strong>Dados de cadastro e conta:</strong> nome, e-mail, telefone, cargo, nome da empresa, senha
@@ -136,50 +134,43 @@ export default function Privacy() {
 
             <h2>4. Integrações Google, YouTube e Meta (contas que você conecta)</h2>
             <p>
-              Quando você autoriza na tela de consentimento do Google ou da Meta, a Plataforma pode acessar — conforme os
-              escopos exibidos e aceitos por você — dados das contas e propriedades vinculadas, para{" "}
-              <strong>leitura e, onde aplicável, criação/edição</strong> de recursos de marketing e mídia, sempre no
-              limite necessário à funcionalidade contratada. Isso inclui, de forma exemplificativa:
+              Ao autorizar a conexão na tela de consentimento, a Plataforma acessará — conforme os escopos de{" "}
+              <strong>leitura</strong> exibidos — os dados de suas propriedades vinculadas para consolidar{" "}
+              <strong>relatórios e dashboards</strong>. Isso inclui:
             </p>
             <ul>
               <li>
-                <strong>Google Ads API:</strong> contas, campanhas, grupos de anúncios, anúncios, palavras-chave,
-                orçamentos, extensões, públicos, conversões e relatórios de desempenho, para gestão e otimização de mídia
-                paga no ecossistema Google.
+                <strong>Google Ads e Meta Ads:</strong> dados de performance (impressões, cliques, CTR, ROAS), orçamentos
+                e estrutura de campanhas para análise de ROI.
               </li>
               <li>
-                <strong>YouTube (APIs / escopos relacionados ao YouTube):</strong> canais, vídeos, métricas e recursos
-                associados que você autorizar, para relatórios, publicação ou gestão conforme disponível na Plataforma.
+                <strong>Google Analytics (GA4):</strong> métricas de tráfego, eventos e conversões para monitoramento de
+                funil.
               </li>
               <li>
-                <strong>Google Tag Manager (GTM):</strong> contêineres, tags, acionadores e variáveis, para leitura e
-                configuração de medição e disparo de tags conforme sua autorização.
+                <strong>YouTube Analytics:</strong> estatísticas de visualização e engajamento de vídeos e canais.
               </li>
               <li>
-                <strong>Google Analytics (GA4 / Admin / Reporting):</strong> propriedades, fluxos de dados, definições,
-                audiências e relatórios de uso e conversão, para análise de desempenho e suporte à tomada de decisão.
+                <strong>Google Search Console:</strong> dados de impressões orgânicas e termos de pesquisa para análise de
+                SEO.
               </li>
               <li>
-                <strong>Google Search Console:</strong> propriedades, URLs, desempenho de busca, cobertura e recursos
-                correlatos que a API permitir, para SEO e monitoramento orgânico.
+                <strong>Google Perfil da Empresa:</strong> métricas de interação local (chamadas, rotas e avaliações).
               </li>
               <li>
-                <strong>Google Meu Negócio / Perfil da Empresa no Google (Business Profile / GMN):</strong> fichas de
-                estabelecimento, informações de negócio, avaliações e demais dados disponibilizados pela API, para gestão
-                de presença local, conforme escopos concedidos.
-              </li>
-              <li>
-                <strong>Meta (API Graph / Marketing API):</strong> contas de anúncios, campanhas, conjuntos de anúncios,
-                anúncios, criativos, orçamentos, públicos e métricas de desempenho, para leitura e edição de campanhas nas
-                plataformas Meta que você conectar (por exemplo, Facebook e Instagram Ads), nos limites dos escopos
-                aprovados para o aplicativo.
+                <strong>Google Tag Manager:</strong> leitura de contêineres e configurações de tags para auditoria de
+                medição.
               </li>
             </ul>
             <p>
-              Os <strong>escopos OAuth exatos</strong> (strings técnicas) solicitados pelo aplicativo podem variar conforme
-              a evolução do produto e as APIs; a lista completa e atualizada é sempre a exibida na tela de permissão do
-              Google ou da Meta no momento da conexão. Revogar o acesso nas configurações da sua conta Google/Meta
-              interrompe novas coletas via essa integração.
+              <strong>Nota sobre permissões:</strong> a {PRODUCT_BRAND} prioriza o acesso de somente leitura. Caso
+              funcionalidades futuras exijam criação ou edição (como ajuste de lances ou publicação de conteúdo), uma nova
+              tela de consentimento será apresentada para sua aprovação explícita.
+            </p>
+            <p>
+              Os escopos OAuth solicitados em cada momento são sempre os indicados na tela de permissão do Google ou da
+              Meta ao conectar. Você pode revogar o acesso nas configurações da sua conta Google ou Meta; isso interrompe
+              novas coletas via essa integração.
             </p>
 
             <h3>4.1. Uso limitado dos dados do Google (API Services User Data Policy)</h3>
@@ -204,14 +195,14 @@ export default function Privacy() {
               <strong>Não utilizamos</strong> esses dados para treinar modelos de inteligência artificial ou de machine
               learning de propósito geral não relacionado à prestação do serviço {PRODUCT_BRAND}.{" "}
               <strong>Não utilizamos</strong> dados obtidos das APIs Google para veicular anúncios personalizados de
-              terceiros fora do escopo da gestão de mídia que <strong>você</strong> instrui na própria conta Google/Meta
-              conectada.
+              terceiros fora do necessário à prestação dos Serviços descritos nesta Política (relatórios, dashboards e
+              funcionalidades que você autorizou).
             </p>
 
             <h3>4.2. Dados da Meta</h3>
             <p>
-              Dados obtidos via Meta são tratados para as mesmas finalidades descritas acima (gestão de campanhas,
-              relatórios e operação da Plataforma), em conformidade com esta Política, com os{" "}
+              Dados obtidos via Meta são tratados para as mesmas finalidades da seção 4 (consolidação em relatórios e
+              dashboards e operação da Plataforma), em conformidade com esta Política, com os{" "}
               <Link to="/termos">Termos de Uso</Link> e com as políticas da Meta aplicáveis ao desenvolvedor e ao app.
             </p>
 
@@ -234,10 +225,7 @@ export default function Privacy() {
                 Por meio de provedores de login (Google, Meta), quando você autoriza explicitamente essa forma de
                 autenticação;
               </li>
-              <li>
-                Por integrações que você conectar voluntariamente (por exemplo, contas de anúncios ou outras APIs), quando
-                disponíveis nos serviços.
-              </li>
+              <li>Por integrações que você conectar (por exemplo, contas de anúncios).</li>
             </ul>
 
             <h2>7. Base legal (LGPD)</h2>
@@ -262,17 +250,13 @@ export default function Privacy() {
 
             <h2>8. Controladora e operadora</h2>
             <p>
-              A {OPERATOR_LEGAL_NAME} atua predominantemente como <strong>controladora</strong> dos dados dos usuários da
-              {PRODUCT_BRAND}. Em cenários em que a Plataforma processe dados pessoais <strong>em nome e sob instruções</strong> do
-              cliente (por exemplo, dados de terceiros que o cliente armazena para sua operação de marketing), o cliente
-              pode ser controlador e nós operadores para esse tratamento específico, conforme contrato e legislação.
+              A {OPERATOR_LEGAL_NAME} é, em geral, a <strong>controladora</strong> dos dados dos usuários da {PRODUCT_BRAND}.
+              Quando você armazena dados de terceiros (por exemplo, lista de contatos) para sua operação, você pode ser o
+              controlador desses dados e nós atuamos como operador, conforme combinado e exigido pela LGPD.
             </p>
 
             <h2>9. Com quem compartilhamos</h2>
-            <p>
-              Não vendemos dados pessoais. Podemos compartilhar com categorias de destinatários, sempre com base legal e
-              contratos adequados quando necessário:
-            </p>
+            <p>Não vendemos dados pessoais. Compartilhamos apenas o necessário com:</p>
             <ul>
               <li>
                 <strong>Provedores de infraestrutura e hospedagem</strong> (por exemplo, serviços de nuvem e banco de
@@ -314,11 +298,16 @@ export default function Privacy() {
 
             <h2>11. Retenção</h2>
             <p>
-              Mantemos dados pelo tempo necessário para cumprir as finalidades descritas, respeitar prazos legais e
-              resolver disputas. Após o encerramento da conta, em regra mantemos dados por até{" "}
-              <strong>90 (noventa) dias</strong>, alinhado aos <Link to="/termos">Termos de Uso</Link>, para permitir
-              exportação, suporte e obrigações legais; em seguida eliminamos ou anonimizamos, salvo quando a lei exigir
-              conservação por prazo superior.
+              Mantemos dados pelo tempo necessário para as finalidades desta Política e para cumprir prazos legais. Se
+              você apenas <strong>cancela a assinatura</strong> ou encerra o uso sem pedir exclusão imediata, podemos
+              manter cópias por até <strong>90 (noventa) dias</strong> (alinhado aos{" "}
+              <Link to="/termos">Termos de Uso</Link>) para você exportar informações, retomar o serviço ou concluir
+              pendências — prazo findo, eliminamos ou anonimizamos, salvo quando a lei exigir guarda por mais tempo.
+            </p>
+            <p>
+              Se você solicitar <strong>exclusão de conta e dados</strong> com base na LGPD, tratamos o pedido com remoção
+              definitiva o mais rápido possível, em geral de forma imediata após confirmarmos sua identidade, ressalvadas
+              apenas as informações que a lei obrigue a manter (por exemplo, registros fiscais ou defesa em processos).
             </p>
 
             <h2>12. Cookies e tecnologias similares</h2>
@@ -368,13 +357,20 @@ export default function Privacy() {
             </p>
             <p>
               <strong>Como solicitar:</strong> envie e-mail para{" "}
-              <a href={`mailto:${OPERATOR_DPO_EMAIL}`}>{OPERATOR_DPO_EMAIL}</a> com assunto “LGPD — [seu pedido]” e
-              informações que nos permitam confirmar sua identidade com segurança.
+              <a href={`mailto:${OPERATOR_CONTACT_EMAIL}`}>{OPERATOR_CONTACT_EMAIL}</a> com assunto “LGPD — [seu pedido]”
+              e informações que nos permitam confirmar sua identidade com segurança.
             </p>
             <p>
               <strong>Exclusão de dados e conta:</strong> você pode pedir o encerramento da conta e a eliminação de dados
-              pessoais, observadas as exceções legais de retenção. Para revisões de aplicativos Meta, mantenha este canal
-              funcional e informe prazos razoáveis de resposta na prática operacional da empresa.
+              pessoais, observadas as exceções legais de retenção.{" "}
+              <strong>
+                Para excluir seus dados e sua conta definitivamente, acesse as configurações do seu perfil na plataforma
+                ou envie um e-mail para{" "}
+              </strong>
+              <a href={`mailto:${OPERATOR_CONTACT_EMAIL}`}>
+                <strong>{OPERATOR_CONTACT_EMAIL}</strong>
+              </a>
+              .
             </p>
 
             <h2>14. Segurança</h2>
@@ -396,19 +392,16 @@ export default function Privacy() {
               classificados como sensíveis ou restritos), conforme também descrito nas seções 1 e 4 desta Política.
             </p>
             <p>
-              <strong>Memória e contexto empresarial:</strong> informações de contexto do negócio utilizadas pelos recursos
-              de inteligência artificial da Plataforma podem ser processadas e armazenadas em{" "}
-              <strong>infraestrutura de terceiros</strong> contratada como encarregada de tratamento (subprocessador),
-              com segregação lógica, controles de acesso e cláusulas compatíveis com a LGPD. A lista atualizada de
-              subprocessadores relevantes poderá ser disponibilizada mediante solicitação ou em canal dedicado à medida
-              que a operação comercial evoluir.
+              Utilizamos serviços de inteligência artificial de parceiros para processar os dados que você insere. Seus
+              dados são processados de forma isolada e{" "}
+              <strong>não são utilizados por esses parceiros para treinar modelos públicos de IA</strong>.
             </p>
 
             <h2>15. Menores de idade</h2>
             <p>
               A Plataforma não se destina a menores de 18 anos. Não coletamos intencionalmente dados de menores. Se você
               tomar conhecimento de cadastro indevido, contate{" "}
-              <a href={`mailto:${OPERATOR_DPO_EMAIL}`}>{OPERATOR_DPO_EMAIL}</a>.
+              <a href={`mailto:${OPERATOR_CONTACT_EMAIL}`}>{OPERATOR_CONTACT_EMAIL}</a>.
             </p>
 
             <h2>16. Alterações</h2>
@@ -420,11 +413,8 @@ export default function Privacy() {
 
             <h2>17. Encarregado (DPO) e contato</h2>
             <p>
-              Dúvidas sobre privacidade e exercício de direitos:{" "}
-              <a href={`mailto:${OPERATOR_DPO_EMAIL}`}>{OPERATOR_DPO_EMAIL}</a>
-            </p>
-            <p>
-              Contato geral: <a href={`mailto:${OPERATOR_CONTACT_EMAIL}`}>{OPERATOR_CONTACT_EMAIL}</a>
+              Dúvidas sobre privacidade, exercício de direitos da LGPD e contato geral:{" "}
+              <a href={`mailto:${OPERATOR_CONTACT_EMAIL}`}>{OPERATOR_CONTACT_EMAIL}</a>
             </p>
             <p>
               Endereço para correspondência: {OPERATOR_ADDRESS}

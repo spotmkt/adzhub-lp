@@ -21,5 +21,6 @@ export const OPERATOR_ADDRESS =
 export const OPERATOR_COMPANY_EMAIL = "adm@spotmidiadigital.com.br";
 
 export const OPERATOR_DPO_EMAIL = "privacidade@adzhub.com.br";
-export const OPERATOR_CONTACT_EMAIL = "contato@adzhub.com.br";
+/** Contato geral comercial e suporte (referência nas páginas legais). */
+export const OPERATOR_CONTACT_EMAIL = "team@adzhub.com.br";
 export const SITE_ORIGIN = "https://adzhub.com.br";

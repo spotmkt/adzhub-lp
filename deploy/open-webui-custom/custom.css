@@ -1,0 +1,251 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+
+* { font-family: "Inter", sans-serif !important; }
+
+/* ===== LIGHT MODE ===== */
+.light, html.light {
+  --color-gray-50: #F7F4EF;
+  --color-gray-100: #EDE8DF;
+  --color-gray-200: #DDD9D0;
+  --color-gray-300: #B5AFA5;
+  --color-gray-400: #8A8479;
+  --color-gray-500: #6B6560;
+  --color-gray-600: #3960A5;
+  --color-gray-700: #2D4E8A;
+  --color-gray-800: #243360;
+  --color-gray-850: #1A2544;
+  --color-gray-900: #152040;
+  --color-gray-950: #0B1121;
+}
+
+/* ===== SIDEBAR LOGO - Force replace OI with AdzHub symbol ===== */
+img.sidebar-new-chat-icon {
+  content: url("/static/favicon.png") !important;
+  object-fit: contain !important;
+}
+
+/* ===== BUTTONS ===== */
+button[type="submit"] {
+  background-color: #3960A5 !important;
+  color: white !important;
+  border-radius: 12px !important;
+  font-weight: 600 !important;
+  font-size: 1.05rem !important;
+  padding: 14px 24px !important;
+}
+button[type="submit"]:hover {
+  background-color: #2D4E8A !important;
+}
+
+/* Botao enviar mensagem: laranja */
+#send-message-button,
+button[aria-label="Send message"] {
+  background-color: #FF9900 !important;
+  color: #0B1121 !important;
+}
+
+/* Voice mode + Call + Dictate + Stop: gerenciados pelo branding_patch.py (index.html <style>) */
+
+[role="switch"][aria-checked="true"] {
+  background-color: #FF9900 !important;
+}
+
+*:focus-visible { outline-color: #3960A5 !important; }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #3960A5; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #FF9900; }
+
+
+/* ================================================================
+   AUTH / LOGIN PAGE — replica app.adzhub.com.br/login
+   ================================================================ */
+
+/* Hide the small fixed logo on auth page */
+div.fixed.m-10.z-50 {
+  display: none !important;
+}
+
+/* Background (camadas Tailwind: fundo branco + overlay absoluto) */
+#auth-page {
+  background-color: #f5f0eb !important;
+}
+#auth-page > .absolute.bg-white,
+#auth-page .absolute.bg-white,
+html.adzhub-auth-page #auth-page .bg-white {
+  background-color: #f5f0eb !important;
+}
+html.adzhub-auth-page,
+html.adzhub-auth-page body {
+  background-color: #f5f0eb !important;
+}
+
+/* #splash-screen do Open WebUI usa z-index:100; o login usa z-50 — o splash pode
+   permanecer no DOM (transparente) e capturar todos os cliques na /auth */
+#auth-container {
+  background-color: transparent !important;
+  z-index: 120 !important;
+}
+
+/* Na rota /auth o splash pode continuar no DOM por cima do formulário */
+body:has(#auth-page) #splash-screen {
+  pointer-events: none !important;
+}
+
+/* Form container */
+#auth-container .sm\:max-w-md {
+  max-width: 520px !important;
+}
+
+/* --- Logo --- */
+.adzhub-auth-logo {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 20px;
+}
+.adzhub-auth-logo img {
+  height: 52px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* --- Tabs --- */
+.adzhub-auth-tabs {
+  display: flex;
+  background: #ede8df;
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 28px;
+  gap: 0;
+}
+.adzhub-tab {
+  flex: 1;
+  padding: 12px 24px;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  color: #8A8479;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: "Inter", sans-serif !important;
+}
+.adzhub-tab:hover {
+  color: #3960A5;
+}
+.adzhub-tab.active {
+  background: #ffffff;
+  color: #1a1a1a;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* --- Heading --- */
+#auth-container form .text-2xl {
+  color: #1a1a1a !important;
+  font-weight: 700 !important;
+  font-size: 1.75rem !important;
+  text-align: left !important;
+  margin-bottom: 8px;
+}
+
+/* --- Labels --- */
+#auth-container form label {
+  color: #3960A5 !important;
+  font-weight: 500 !important;
+  font-size: 0.875rem !important;
+  margin-bottom: 4px !important;
+}
+
+/* --- Inputs --- */
+#auth-container form input[type="email"],
+#auth-container form input[type="password"],
+#auth-container form input[type="text"],
+#auth-container form input[name="email"],
+#auth-container form input[name="password"],
+#auth-container form input[name="username"],
+#auth-container form input[id="name"] {
+  background-color: #ede8df !important;
+  border: 1.5px solid #DDD9D0 !important;
+  border-radius: 10px !important;
+  padding: 14px 16px !important;
+  font-size: 0.95rem !important;
+  color: #1a1a1a !important;
+  transition: border-color 0.2s ease !important;
+}
+#auth-container form input:focus {
+  border-color: #3960A5 !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(57, 96, 165, 0.15) !important;
+}
+#auth-container form input::placeholder {
+  color: #B5AFA5 !important;
+}
+
+/* --- Submit button --- */
+#auth-container form button[type="submit"] {
+  background-color: #3960A5 !important;
+  color: #ffffff !important;
+  border-radius: 14px !important;
+  font-weight: 600 !important;
+  font-size: 1.05rem !important;
+  padding: 14px 24px !important;
+  width: 100% !important;
+  transition: background-color 0.2s ease !important;
+  border: none !important;
+}
+#auth-container form button[type="submit"]:hover {
+  background-color: #2D4E8A !important;
+}
+
+/* --- Forgot password --- */
+.adzhub-forgot-password {
+  text-align: center;
+  margin-top: 16px;
+}
+.adzhub-forgot-password a {
+  color: #3960A5;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.adzhub-forgot-password a:hover {
+  color: #2D4E8A;
+  text-decoration: underline;
+}
+
+/* --- Footer --- */
+.adzhub-auth-footer {
+  position: fixed;
+  bottom: 32px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  z-index: 51;
+}
+.adzhub-auth-footer a {
+  color: #8A8479;
+  font-size: 0.82rem;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.adzhub-auth-footer a:hover {
+  color: #3960A5;
+  text-decoration: underline;
+}
+.adzhub-footer-dot {
+  color: #B5AFA5;
+  margin: 0 8px;
+}
+
+/* --- Hide the default info text about auth_trusted_header, etc. --- */
+#auth-container .text-xs.font-medium.text-gray-600 {
+  display: none !important;
+}
+
+/* --- mb-1 spacing on auth page --- */
+#auth-container form .mb-1 {
+  margin-bottom: 0.25rem !important;
+}
