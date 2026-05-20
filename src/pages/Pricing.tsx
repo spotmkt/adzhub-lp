@@ -117,7 +117,7 @@ export default function Pricing() {
               </h1>
               <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto">
                 Você não compra só software: escolhe o nível de estrutura, serviços e automação que a plataforma entrega
-                para a sua operação — com transparência de preço.
+                para a sua operação, com transparência de preço.
               </p>
             </div>
 

@@ -31,7 +31,7 @@ const TABS: Tab[] = [
     icon: LayoutDashboard,
     title: "Monitore no Search Console",
     description:
-      "Cliques, impressões, CTR e posição média com dicas por página — igual ao dashboard SEO do MVP.",
+      "Cliques, impressões, CTR e posição média com dicas por página, igual ao dashboard SEO do MVP.",
     view: "gsc",
     phases: [
       { duration: 2800, listScrollY: 0, highlightNav: null, highlightEditIndex: null },
@@ -130,7 +130,7 @@ export function SeoInteractiveMotion({ embedded = false, id }: SeoInteractiveMot
               Conteúdo que trabalha por você
             </h2>
             <p className="text-sm text-[#6B7280] mt-3 leading-relaxed">
-              Da leitura do Search Console à publicação no blog — com método e dados no mesmo lugar.
+              Da leitura do Search Console à publicação no blog, com método e dados no mesmo lugar.
             </p>
           </motion.div>
         )}

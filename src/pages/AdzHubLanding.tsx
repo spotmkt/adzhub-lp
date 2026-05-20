@@ -151,42 +151,6 @@ export default function AdzHubLanding() {
         </div>
       </section>
 
-      {/* Palavras-chave da Tese */}
-      <section className="pt-4 pb-8 -mb-12 overflow-hidden bg-white">
-        <div className="max-w-7xl mx-auto px-5 sm:px-8">
-          <div className="text-center mb-8">
-            <p className="text-[#6B7280] text-base sm:text-lg font-medium max-w-3xl mx-auto leading-relaxed">
-              Mais do que uma agência, uma plataforma que centraliza tudo que você precisa para crescer — com método,
-              transparência e preço alinhado ao estágio do seu negócio.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-6 text-[#08080C] mb-8">
-            {[
-              { Icon: Layers, label: "Estruturada" },
-              { Icon: Brain, label: "Inteligente" },
-              { Icon: Zap, label: "Prática" },
-              { Icon: Target, label: "Especialista" },
-              { Icon: ShieldCheck, label: "Confiável" },
-              { Icon: Users, label: "Acessível" },
-              { Icon: TrendingUp, label: "Crescimento" },
-            ].map(({ Icon, label }) => (
-              <div key={label} className="flex items-center justify-center">
-                <div className="text-center">
-                  <Icon className="w-10 h-10 mx-auto mb-2 text-[#37489d]" />
-                  <p className="text-sm font-semibold">{label}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="relative h-64 w-full overflow-hidden [mask-image:radial-gradient(50%_50%,white,transparent)]">
-          <div className="absolute inset-0 before:absolute before:inset-0 before:bg-[radial-gradient(circle_at_bottom_center,hsl(224,47%,42%),transparent_70%)] before:opacity-40" />
-          <div className="absolute -left-1/2 top-1/2 aspect-[1/0.7] z-10 w-[200%] rounded-[100%] border-t border-[#08080C]/20 bg-white" />
-        </div>
-      </section>
-
       {/* O Problema */}
       <section id="sobre" className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-8">
@@ -196,7 +160,7 @@ export default function AdzHubLanding() {
                 O problema que resolvemos
               </div>
               <h2 className="text-4xl md:text-6xl lg:text-[72px] font-medium leading-[100%] tracking-tight text-[#08080C] mb-6">
-                O marketing vira sistema de crescimento — ou vira ruído
+                O marketing vira sistema de crescimento, ou vira ruído
               </h2>
               <p className="text-lg font-medium text-[#6B7280] leading-[170%]">
                 A maior parte das PMEs não falha por falta de post ou anúncio: falha por{" "}
@@ -288,7 +252,7 @@ export default function AdzHubLanding() {
               <div className="bg-[#37489d] rounded-2xl p-5 text-white">
                 <p className="text-sm font-medium mb-1">A AdzHub é a plataforma da sua agência de marketing</p>
                 <p className="text-xs text-white/70">
-                  Um único lugar para diagnóstico, plano, execução e evolução — sem depender de dezenas de peças
+                  Um único lugar para diagnóstico, plano, execução e evolução, sem depender de dezenas de peças
                   desconectadas.
                 </p>
               </div>
@@ -310,7 +274,7 @@ export default function AdzHubLanding() {
               </h2>
             </div>
             <p className="text-lg font-medium text-[#6B7280] leading-[150%] max-w-[400px]">
-              Diagnóstico, plano de sucesso, kickoff, campanhas e relatórios — a mesma lógica de uma agência madura,
+              Diagnóstico, plano de sucesso, kickoff, campanhas e relatórios: a mesma lógica de uma agência madura,
               executada com método e tecnologia dentro da plataforma.
             </p>
           </div>
@@ -405,11 +369,11 @@ export default function AdzHubLanding() {
               Serviços
             </div>
             <h2 className="text-4xl md:text-6xl lg:text-[64px] font-medium leading-[100%] tracking-tight text-[#08080C] mb-6">
-              O que uma agência faz — com a escala de uma plataforma
+              O que uma agência faz, com a escala de uma plataforma
             </h2>
             <p className="text-lg font-medium text-[#6B7280] leading-[170%]">
               Acesso a uma plataforma de marketing digital que integra inteligência, organização e execução. Você contrata
-              uma estrutura completa — não peças avulsas — com metodologia e acompanhamento na AdzHub.
+              uma estrutura completa, com metodologia e acompanhamento na AdzHub.
             </p>
           </div>
 
@@ -426,7 +390,7 @@ export default function AdzHubLanding() {
               </div>
               <p className="text-[#6B7280] leading-relaxed">
                 Planejamento, estrutura de campanhas, criativos, orçamentos e otimização contínua em Google Ads, Meta
-                Ads e demais canais pagos — com relatórios e decisões alinhadas ao plano de sucesso do seu negócio.
+                Ads e demais canais pagos, com relatórios e decisões alinhadas ao plano de sucesso do seu negócio.
               </p>
             </div>
 
@@ -439,7 +403,7 @@ export default function AdzHubLanding() {
               </div>
               <p className="text-[#6B7280] leading-relaxed">
                 Presença orgânica e busca local: conteúdo orientado a intenção, otimização técnica, performance no Search
-                Console e presença em mapas e buscas locais — integrados à narrativa e às metas da empresa.
+                Console e presença em mapas e buscas locais, integrados à narrativa e às metas da empresa.
               </p>
             </div>
 
@@ -451,7 +415,7 @@ export default function AdzHubLanding() {
                 <h3 className="text-xl font-bold text-[#08080C]">Social mídia</h3>
               </div>
               <p className="text-[#6B7280] leading-relaxed">
-                Calendário, produção, publicação e acompanhamento de redes no mesmo fluxo da operação — sem perder o
+                Calendário, produção, publicação e acompanhamento de redes no mesmo fluxo da operação, sem perder o
                 fio da estratégia entre agência, cliente e ferramentas soltas.
               </p>
             </div>
@@ -467,7 +431,7 @@ export default function AdzHubLanding() {
                 <h3 className="text-xl font-bold text-[#08080C]">Dashboard e CRM</h3>
               </div>
               <p className="text-[#6B7280] leading-relaxed">
-                Painéis executivos, indicadores da operação e gestão de leads e contatos no mesmo fluxo — com histórico e
+                Painéis executivos, indicadores da operação e gestão de leads e contatos no mesmo fluxo, com histórico e
                 contexto alinhados ao plano de sucesso, sem planilhas soltas nem ferramentas desconectadas.
               </p>
             </div>
@@ -500,7 +464,7 @@ export default function AdzHubLanding() {
               Ferramentas que sustentam a operação
             </h2>
             <p className="text-lg font-medium text-[#6B7280] leading-[170%] max-w-[650px] mx-auto">
-              IA, conteúdo e automações não são o “produto” isolado — são camadas que permitem executar os serviços com
+              IA, conteúdo e automações não são o “produto” isolado: são camadas que permitem executar os serviços com
               consistência, velocidade e histórico preservado no Supercérebro.
             </p>
           </div>
@@ -522,16 +486,16 @@ export default function AdzHubLanding() {
               </p>
               <div className="grid grid-cols-2 gap-2 mb-6">
                 <div className="bg-white/80 rounded-xl px-3 py-2 text-xs text-[#6B7280]">
-                  <span className="font-medium text-[#08080C]">Meta Ads</span> — Otimização de campanhas
+                  <span className="font-medium text-[#08080C]">Meta Ads</span>: Otimização de campanhas
                 </div>
                 <div className="bg-white/80 rounded-xl px-3 py-2 text-xs text-[#6B7280]">
-                  <span className="font-medium text-[#08080C]">Google Ads</span> — Pesquisa e display
+                  <span className="font-medium text-[#08080C]">Google Ads</span>: Pesquisa e display
                 </div>
                 <div className="bg-white/80 rounded-xl px-3 py-2 text-xs text-[#6B7280]">
-                  <span className="font-medium text-[#08080C]">Briefing</span> — Mapeamento estratégico
+                  <span className="font-medium text-[#08080C]">Briefing</span>: Mapeamento estratégico
                 </div>
                 <div className="bg-white/80 rounded-xl px-3 py-2 text-xs text-[#6B7280]">
-                  <span className="font-medium text-[#08080C]">Analytics</span> — Insights de dados
+                  <span className="font-medium text-[#08080C]">Analytics</span>: Insights de dados
                 </div>
               </div>
               <span
@@ -558,16 +522,16 @@ export default function AdzHubLanding() {
               </p>
               <div className="grid grid-cols-2 gap-2 mb-6">
                 <div className="bg-white/80 rounded-xl px-3 py-2 text-xs text-[#6B7280]">
-                  <span className="font-medium text-[#08080C]">Criação com IA</span> — Artigos em minutos
+                  <span className="font-medium text-[#08080C]">Criação com IA</span>: Artigos em minutos
                 </div>
                 <div className="bg-white/80 rounded-xl px-3 py-2 text-xs text-[#6B7280]">
-                  <span className="font-medium text-[#08080C]">SEO</span> — Otimização automática
+                  <span className="font-medium text-[#08080C]">SEO</span>: Otimização automática
                 </div>
                 <div className="bg-white/80 rounded-xl px-3 py-2 text-xs text-[#6B7280]">
-                  <span className="font-medium text-[#08080C]">Calendário</span> — Planejamento editorial
+                  <span className="font-medium text-[#08080C]">Calendário</span>: Planejamento editorial
                 </div>
                 <div className="bg-white/80 rounded-xl px-3 py-2 text-xs text-[#6B7280]">
-                  <span className="font-medium text-[#08080C]">Métricas</span> — Performance em tempo real
+                  <span className="font-medium text-[#08080C]">Métricas</span>: Performance em tempo real
                 </div>
               </div>
               <Link to="/seo" className="inline-flex items-center gap-2 text-[#37489d] font-medium hover:text-[#37489d]/80 transition-colors">
@@ -619,7 +583,7 @@ export default function AdzHubLanding() {
               Veja como ajudamos empresas como a sua a alcançar resultados extraordinários.
             </h2>
             <p className="text-lg font-medium text-[#6B7280] leading-[170%] max-w-[700px] mx-auto">
-              Donos de PME com operação comercial ativa costumam reconhecer a necessidade de um marketing mais estruturado —
+              Donos de PME com operação comercial ativa costumam reconhecer a necessidade de um marketing mais estruturado,
               mas sofrem com fragmentação, falta de continuidade e dificuldade de provar ROI. A AdzHub organiza estratégia,
               execução e dados em um só lugar.
             </p>
@@ -628,7 +592,7 @@ export default function AdzHubLanding() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-12">
             <div className="bg-[#37489d] rounded-3xl p-8 text-white">
               <p className="text-sm font-medium text-white/60 mb-2">O cenário</p>
-              <div className="text-2xl md:text-3xl font-bold mb-3 leading-tight">Marketing é grande — e fragmentado</div>
+              <div className="text-2xl md:text-3xl font-bold mb-3 leading-tight">Marketing é grande e fragmentado</div>
               <p className="text-sm text-white/80 leading-relaxed">
                 Muita verba circula em mídia e agências, mas o gestor da PME segue sem clareza: o que fazer primeiro, como medir
                 e como não depender só de terceiros opacos.
@@ -638,7 +602,7 @@ export default function AdzHubLanding() {
               <p className="text-sm font-medium text-[#37489d] mb-2">Com quem falamos</p>
               <div className="text-2xl md:text-3xl font-bold text-[#08080C] mb-3 leading-tight">PMEs que precisam de método</div>
               <p className="text-sm text-[#6B7280] leading-relaxed">
-                Serviços, comércio e indústria leve — times enxutos que querem processo, transparência e execução sem montar um
+                Serviços, comércio e indústria leve: times enxutos que querem processo, transparência e execução sem montar um
                 departamento de marketing do zero.
               </p>
             </div>
@@ -646,7 +610,7 @@ export default function AdzHubLanding() {
               <p className="text-sm font-medium text-[#37489d] mb-2">O que entregamos</p>
               <div className="text-2xl md:text-3xl font-bold text-[#08080C] mb-3 leading-tight">Metodologia + plataforma</div>
               <p className="text-sm text-[#6B7280] leading-relaxed">
-                Anos de operação com PMEs viraram fluxo, rituais e ferramentas em um só lugar — para você avançar com
+                Anos de operação com PMEs viraram fluxo, rituais e ferramentas em um só lugar, para você avançar com
                 consistência, não no improviso.
               </p>
             </div>

@@ -178,7 +178,7 @@ export default function FinestraLanding() {
               Por que escolher a AdzHub
             </h2>
             <p className="text-lg font-medium text-[#6B7280] leading-[150%] max-w-[420px]">
-              Um chat genérico entrega texto solto. A AdzHub entrega <strong className="font-semibold text-[#08080C]">blog com método</strong>: estratégia, SEO, publicação no seu site e leitura em dados — sem você virar ponte entre
+              Um chat genérico entrega texto solto. A AdzHub entrega <strong className="font-semibold text-[#08080C]">blog com método</strong>: estratégia, SEO, publicação no seu site e leitura em dados, sem você virar ponte entre
               ferramentas e planilhas.
             </p>
           </div>
@@ -228,7 +228,7 @@ export default function FinestraLanding() {
                 <span className="text-3xl md:text-[40px] font-medium leading-[120%] tracking-tight text-[#1F2937]">%</span>
               </div>
               <p className="text-lg font-normal text-[#6B7280] leading-[150%]">
-                Artigo solto no site não mostra se funcionou. Na AdzHub você acompanha desempenho e evolução <strong className="font-medium text-[#1F2937]">no mesmo lugar</strong> em que estratégia, produção e publicação acontecem — menos achismo, mais leitura de dados.
+                Artigo solto no site não mostra se funcionou. Na AdzHub você acompanha desempenho e evolução <strong className="font-medium text-[#1F2937]">no mesmo lugar</strong> em que estratégia, produção e publicação acontecem. Menos achismo, mais leitura de dados.
               </p>
             </div>
           </div>

@@ -290,8 +290,8 @@ const TABS: Tab[] = [
         },
       },
       {
-        duration: 700,
-        clicking: true,
+        duration: 900,
+        clicking: false,
         cursorTarget: "chat-scroll-handle",
         mockOverrides: {
           selectedAppName: "Orquestrador de Tráfego",

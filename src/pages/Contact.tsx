@@ -24,7 +24,7 @@ export default function Contact() {
             <div className="text-center mb-12">
               <h1 className="text-4xl sm:text-5xl font-bold mb-4 text-[#08080C]">Entre em Contato</h1>
               <p className="text-xl text-[#6B7280]">
-                Fale com o time da AdzHub sobre planos, serviços na plataforma ou suporte — retornamos o mais breve
+                Fale com o time da AdzHub sobre planos, serviços na plataforma ou suporte. Retornamos o mais breve
                 possível.
               </p>
             </div>

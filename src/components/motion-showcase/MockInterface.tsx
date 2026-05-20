@@ -249,10 +249,34 @@ export const MockInterface = ({
           </div>
 
           <motion.div
-            className="flex-1 flex justify-center p-3 sm:p-4 overflow-y-auto min-h-0"
+            className="flex-1 flex relative overflow-hidden min-h-0"
             data-cursor-target="explore-chat"
           >
-            <div className="w-full max-w-2xl">
+            {showChatScrollbar && (
+              <motion.div
+                className="absolute right-1.5 top-0 bottom-0 w-2.5 flex flex-col py-2 z-10"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+              >
+                <div className="flex-1 relative rounded-full bg-muted/30">
+                  <motion.div
+                    data-cursor-target="chat-scroll-handle"
+                    className="absolute left-0 w-full rounded-full bg-[#37489d]/40 cursor-pointer"
+                    style={{ height: 28 }}
+                    animate={{ top: scrollThumbY }}
+                    transition={{ duration: 0.85, ease: [0.25, 0.1, 0.25, 1] }}
+                  />
+                </div>
+              </motion.div>
+            )}
+            <motion.div
+              className="flex-1 flex justify-center p-3 sm:p-4 overflow-hidden min-h-0"
+            >
+            <motion.div
+              className="w-full max-w-2xl"
+              animate={{ y: -chatScrollY }}
+              transition={{ duration: 0.85, ease: [0.25, 0.1, 0.25, 1] }}
+            >
               <motion.div
                 className="mb-4"
                 initial={{ opacity: 0, y: 20 }}
@@ -338,7 +362,8 @@ export const MockInterface = ({
                   </div>
                 </motion.div>
               )}
-            </div>
+            </motion.div>
+            </motion.div>
           </motion.div>
 
           <motion.div

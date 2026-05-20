@@ -170,7 +170,7 @@ export default function AdzChatLanding() {
             </h1>
             <p className="text-lg text-[#08080C] opacity-80 max-w-[600px]">
               O AdzChat não substitui a agência: acelera diagnósticos, sugestões e rotinas que uma operação de marketing
-              madura faria — com o contexto do seu negócio preservado no Supercérebro e alinhado aos serviços que você
+              madura faria, com o contexto do seu negócio preservado no Supercérebro e alinhado aos serviços que você
               contrata na AdzHub.
             </p>
           </div>
@@ -232,7 +232,7 @@ export default function AdzChatLanding() {
               </h2>
               <p className="text-lg font-medium text-[#6B7280] leading-[170%]">
                 Cada agente é especialista em uma área do marketing. Você conversa, ele
-                executa — com o contexto completo do seu negócio alimentando cada resposta.
+                executa, com o contexto completo do seu negócio alimentando cada resposta.
               </p>
             </div>
             <div className="flex flex-col gap-2">
@@ -417,7 +417,7 @@ export default function AdzChatLanding() {
               </div>
               <div className="text-[#6B7280]">
                 Cada agente segue processos validados com +200 empresas ao longo de 9 anos.
-                Não são respostas genéricas — são recomendações estratégicas.
+                Não são respostas genéricas: são recomendações estratégicas.
               </div>
             </SpotlightCard>
 

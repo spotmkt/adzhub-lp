@@ -119,7 +119,7 @@ const STEPS: MotionStep[] = [
 ];
 
 const CAPTIONS: string[] = [
-  "Dashboard Search Console: cliques, impressões e dicas por página — no mesmo perfil do cliente.",
+  "Dashboard Search Console: cliques, impressões e dicas por página, no mesmo perfil do cliente.",
   "Em Big Ideas, a IA sugere temas com palavra-chave e intenção de busca alinhados à sua marca.",
   "Navegue até Postagens para ver o pipeline editorial integrado ao blog.",
   "Um clique leva da estratégia à lista de artigos prontos para revisão.",

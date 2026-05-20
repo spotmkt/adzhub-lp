@@ -67,7 +67,7 @@ export default function BlogList() {
           <div className="max-w-3xl mx-auto text-center space-y-4">
             <h1 className="text-5xl font-bold tracking-tight text-[#08080C]">Blog AdzHub</h1>
             <p className="text-xl text-[#6B7280]">
-              Conteúdo para quem leva marketing a sério — alinhado à operação de agência e à central de conteúdo da
+              Conteúdo para quem leva marketing a sério, alinhado à operação de agência e à central de conteúdo da
               plataforma AdzHub.
             </p>
           </div>
