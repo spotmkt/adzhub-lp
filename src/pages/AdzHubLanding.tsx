@@ -22,7 +22,7 @@ import { StarBorder } from "@/components/ui/star-border";
 import { SpotlightCard } from "@/components/ui/spotlight-card";
 import { LandingNav } from "@/components/LandingNav";
 import { Footer } from "@/components/Footer";
-import { MotionHeroShowcase } from "@/components/motion-showcase";
+import { HomeInteractiveMotion } from "@/components/platform-motion";
 import { useWaitlistDialog } from "@/components/WaitlistDialogProvider";
 
 export default function AdzHubLanding() {
@@ -46,7 +46,7 @@ export default function AdzHubLanding() {
 
       <LandingNav activeSection="home" />
 
-      {/* Hero — plataforma em uso + conversão */}
+      {/* Hero */}
       <section className="relative mt-[83px] mx-4 sm:mx-5 rounded-[28px] md:rounded-[32px] overflow-hidden border border-[#08080C]/[0.06] bg-gradient-to-br from-slate-50 via-white to-[#D4EFF4]/40">
         <div
           className="pointer-events-none absolute inset-0 opacity-[0.35]"
@@ -55,66 +55,55 @@ export default function AdzHubLanding() {
             backgroundSize: "48px 48px",
           }}
         />
-        <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 pt-14 pb-16 lg:pt-20 lg:pb-24">
-          <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] gap-12 lg:gap-14 items-center">
-            <div className="text-center lg:text-left">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/90 backdrop-blur-sm border border-[#37489d]/15 text-sm font-medium text-[#37489d] shadow-sm">
-                <Sparkles className="w-4 h-4 shrink-0" />
-                Gerencie todos os seus serviços de marketing de forma simples
-              </div>
-              <h1 className="mt-6 text-[1.65rem] sm:text-4xl md:text-5xl lg:text-[2.65rem] font-bold leading-[1.12] tracking-tight text-[#08080C]">
-                <span className="block">
-                  Sua <span className="text-[#37489d]">agência de marketing</span>
-                </span>
-                <span className="block">em uma única plataforma</span>
-              </h1>
-              <p className="mt-5 text-lg sm:text-xl text-[#4B5563] leading-relaxed max-w-xl mx-auto lg:mx-0">
-                Centralize seu marketing em uma única plataforma e veja seu negócio crescer.
-              </p>
-              <div className="mt-8 flex flex-col sm:flex-row items-center lg:items-stretch justify-center lg:justify-start gap-3 sm:gap-4">
-                <div className="w-full sm:w-auto flex justify-center lg:justify-start">
-                  <StarBorder
-                    as="button"
-                    type="button"
-                    onClick={openWaitlist}
-                    color="hsl(224, 47%, 42%)"
-                    speed="8s"
-                    className="w-full max-w-sm sm:max-w-none sm:w-auto text-center"
-                  >
-                    Começar grátis
-                  </StarBorder>
-                </div>
-                <a
-                  href="#como-funciona"
-                  className="inline-flex h-12 w-full sm:w-auto items-center justify-center rounded-2xl border-2 border-[#37489d]/25 bg-white px-8 text-sm font-semibold text-[#37489d] hover:bg-[#37489d]/5 transition-colors"
-                >
-                  Descubra como funciona
-                </a>
-              </div>
-              <div className="mt-8 flex flex-wrap items-center justify-center lg:justify-start gap-x-6 gap-y-2 text-sm text-[#6B7280]">
-                <span className="font-medium text-[#08080C]/80">+200 empresas atendidas</span>
-                <span className="hidden sm:inline text-[#08080C]/20" aria-hidden>
-                  |
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <span className="flex gap-0.5">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-[hsl(41,100%,58%)] text-[hsl(41,100%,58%)]" />
-                    ))}
-                  </span>
-                  +9 anos com PMEs
-                </span>
-              </div>
+        <div className="relative z-10 max-w-5xl mx-auto px-5 sm:px-8 pt-14 pb-8 lg:pt-20 lg:pb-10">
+          <div className="flex flex-col items-center text-center gap-6 max-w-[781px] mx-auto">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/90 backdrop-blur-sm border border-[#37489d]/15 text-sm font-medium text-[#37489d] shadow-sm">
+              <Sparkles className="w-4 h-4 shrink-0" />
+              Gerencie todos os seus serviços de marketing de forma simples
             </div>
-            <div className="relative">
-              <div className="absolute -inset-1 rounded-3xl bg-gradient-to-tr from-[#37489d]/10 via-transparent to-[#F9C7B2]/25 blur-xl" aria-hidden />
-              <div className="relative scale-[0.97] sm:scale-100 origin-top lg:origin-center">
-                <MotionHeroShowcase />
-              </div>
+            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-[3.25rem] xl:text-[3.75rem] font-bold leading-[1.08] tracking-tight text-[#08080C] max-w-4xl mx-auto">
+              Sua <span className="text-[#37489d]">agência de marketing</span> em uma única plataforma
+            </h1>
+            <p className="text-lg text-[#08080C]/80 max-w-[640px] leading-relaxed">
+              Centralize seu marketing em uma única plataforma e veja seu negócio crescer.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 w-full">
+              <StarBorder
+                as="button"
+                type="button"
+                onClick={openWaitlist}
+                color="hsl(224, 47%, 42%)"
+                speed="8s"
+                className="w-full max-w-sm sm:w-auto text-center"
+              >
+                Começar grátis
+              </StarBorder>
+              <a
+                href="#como-funciona"
+                className="inline-flex h-12 w-full sm:w-auto items-center justify-center rounded-2xl border-2 border-[#37489d]/25 bg-white px-8 text-sm font-semibold text-[#37489d] hover:bg-[#37489d]/5 transition-colors"
+              >
+                Descubra como funciona
+              </a>
+            </div>
+            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-[#6B7280]">
+              <span className="font-medium text-[#08080C]/80">+200 empresas atendidas</span>
+              <span className="hidden sm:inline text-[#08080C]/20" aria-hidden>|</span>
+              <span className="flex items-center gap-1.5">
+                <span className="flex gap-0.5">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-4 h-4 fill-[hsl(41,100%,58%)] text-[hsl(41,100%,58%)]" />
+                  ))}
+                </span>
+                +9 anos com PMEs
+              </span>
             </div>
           </div>
         </div>
+
+        <HomeInteractiveMotion id="como-funciona" embedded />
       </section>
+
+      <div className="h-8" aria-hidden />
 
       {/* Benefícios — primeira dobra estendida */}
       <section className="py-14 sm:py-16 bg-white" aria-labelledby="beneficios-heading">
@@ -219,7 +208,7 @@ export default function AdzHubLanding() {
               </p>
             </div>
             <div className="flex flex-col gap-2">
-              <a href="#como-funciona">
+              <a href="#metodologia">
                 <StarBorder color="hsl(224, 47%, 42%)" speed="8s">
                   Saiba Como Funciona
                 </StarBorder>
@@ -309,7 +298,7 @@ export default function AdzHubLanding() {
       </section>
 
       {/* Arquitetura da Plataforma - 3 Componentes */}
-      <section id="como-funciona" className="py-24 bg-[#F8F8F8] rounded-3xl mx-5">
+      <section id="metodologia" className="py-24 bg-[#F8F8F8] rounded-3xl mx-5 scroll-mt-28">
         <div className="max-w-7xl mx-auto px-8">
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-16 gap-8">
             <div className="max-w-[600px]">

@@ -44,6 +44,7 @@ export const FormDialogue = ({ data, highlightedButton }: FormDialogueProps) => 
       <div className="flex gap-2">
         <motion.button
           type="button"
+          data-cursor-target="confirm-btn"
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
             highlightedButton
               ? "bg-primary text-primary-foreground ring-2 ring-primary/40 scale-105"

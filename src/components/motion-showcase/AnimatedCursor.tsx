@@ -9,7 +9,7 @@ interface AnimatedCursorProps {
 export const AnimatedCursor = ({ x, y, clicking = false }: AnimatedCursorProps) => {
   return (
     <motion.div
-      className="absolute pointer-events-none z-50"
+      className="absolute top-0 left-0 pointer-events-none z-50"
       animate={{
         x,
         y,

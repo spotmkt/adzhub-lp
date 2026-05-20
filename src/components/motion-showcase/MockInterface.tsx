@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { motion } from "framer-motion";
 import {
   Calendar,
@@ -19,9 +20,20 @@ import {
   MessageSquare,
   Lightbulb,
   GraduationCap,
+  FileBarChart,
+  AlertCircle,
+  Check,
 } from "lucide-react";
 import adzhubLogo from "@/assets/adzhub-logo-new.svg";
 import { FormDialogue, FormDialogueData } from "./FormDialogue";
+import { MockPendingPanel } from "./MockPendingPanel";
+
+export interface MockPendingItem {
+  id: string;
+  title: string;
+  subtitle: string;
+  kind: "report" | "reminder" | "alert";
+}
 
 interface MockInterfaceProps {
   typedText: string;
@@ -37,7 +49,21 @@ interface MockInterfaceProps {
   formDialogueData?: FormDialogueData;
   showUserMessage?: boolean;
   userMessageText?: string;
+  pendingItems?: MockPendingItem[];
+  approvedPendingIds?: string[];
+  /** Barra central de pendências expandida (false = faixa colapsada). */
+  pendingPanelOpen?: boolean;
+  /** Tela inicial do Adz Chat no lugar do chat padrão. */
+  welcomeSlot?: ReactNode;
+  /** Deslocamento vertical do conteúdo do chat (simula rolagem). */
+  chatScrollY?: number;
 }
+
+const pendingKindIcon = {
+  report: FileBarChart,
+  reminder: Bell,
+  alert: AlertCircle,
+} as const;
 
 const sidebarApps = [
   { icon: Calendar, label: "Agenda" },
@@ -69,7 +95,18 @@ export const MockInterface = ({
   formDialogueData,
   showUserMessage,
   userMessageText,
+  pendingItems,
+  approvedPendingIds = [],
+  pendingPanelOpen = false,
+  welcomeSlot,
+  chatScrollY = 0,
 }: MockInterfaceProps) => {
+  const hasPending = Boolean(pendingItems?.length);
+  const visiblePendingItems =
+    pendingItems?.filter((item) => !approvedPendingIds.includes(item.id)) ?? [];
+  const pendingCount = visiblePendingItems.length;
+  const showChatScrollbar = showFormDialogue || chatScrollY > 0;
+  const scrollThumbY = 10 + Math.min(chatScrollY * 0.55, 95);
   const currentAppName = selectedAppName || "Adz Chat v1.0";
   const CurrentAppIcon = selectedAppName === "Orquestrador de Tráfego" ? Target : MessageSquare;
 
@@ -99,7 +136,7 @@ export const MockInterface = ({
           </span>
         </div>
 
-        <div className="relative shrink-0">
+        <motion.div className="relative shrink-0" data-cursor-target="app-selector">
           <motion.div
             className={`px-2 sm:px-3 py-1 rounded-lg text-[10px] sm:text-xs font-medium flex items-center gap-1 transition-colors border cursor-pointer max-w-[140px] sm:max-w-none truncate ${
               highlightedElement === "app-selector"
@@ -123,6 +160,7 @@ export const MockInterface = ({
               {appOptions.map((app) => (
                 <motion.div
                   key={app.id}
+                  data-cursor-target={`app-${app.id}`}
                   className={`flex items-center gap-2 text-xs py-2 px-3 cursor-pointer transition-colors ${
                     highlightedElement === `app-${app.id}`
                       ? "bg-primary text-primary-foreground"
@@ -136,7 +174,7 @@ export const MockInterface = ({
               ))}
             </motion.div>
           )}
-        </div>
+        </motion.div>
 
         <motion.div
           className={`hidden sm:flex w-7 h-7 rounded-full items-center justify-center transition-colors shrink-0 ${
@@ -175,26 +213,23 @@ export const MockInterface = ({
           ))}
         </motion.div>
 
-        <motion.div
-          className="hidden sm:flex w-44 bg-[hsl(40,30%,96%)] flex-col rounded-2xl m-2 shrink-0 min-h-0"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
-        >
-          <div className="flex-1 flex flex-col items-center justify-center text-muted-foreground p-4 pt-6">
-            <div className="w-10 h-10 rounded-full bg-muted/30 flex items-center justify-center mb-2">
-              <span className="text-lg">!</span>
-            </div>
-            <span className="text-[10px] text-center leading-relaxed">Nenhum item em pendentes.</span>
-          </div>
-        </motion.div>
+        <MockPendingPanel
+          pendingPanelOpen={pendingPanelOpen}
+          pendingItems={pendingItems}
+          approvedPendingIds={approvedPendingIds}
+          highlightedElement={highlightedElement}
+        />
 
         <motion.div
-          className="flex-1 flex flex-col bg-[hsl(40,20%,97%)] min-h-0 min-w-0"
+          className={`flex-1 flex flex-col min-h-0 min-w-0 ${welcomeSlot ? "bg-[#FAFAF8]" : "bg-[hsl(40,20%,97%)]"}`}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3, duration: 0.5 }}
         >
+          {welcomeSlot ? (
+            welcomeSlot
+          ) : (
+            <>
           <div className="h-10 flex items-center px-3 sm:px-4 gap-2 flex-wrap">
             <div className="flex items-center gap-2 text-xs">
               <span className="text-foreground font-medium">Cliente Demo</span>
@@ -213,7 +248,10 @@ export const MockInterface = ({
             </button>
           </div>
 
-          <div className="flex-1 flex justify-center p-3 sm:p-4 overflow-y-auto min-h-0">
+          <motion.div
+            className="flex-1 flex justify-center p-3 sm:p-4 overflow-y-auto min-h-0"
+            data-cursor-target="explore-chat"
+          >
             <div className="w-full max-w-2xl">
               <motion.div
                 className="mb-4"
@@ -231,28 +269,6 @@ export const MockInterface = ({
                   </div>
                 </div>
               </motion.div>
-
-              {typedText && !showUserMessage && (
-                <motion.div
-                  className="flex justify-end mb-4"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                >
-                  <div className="flex flex-col gap-1 max-w-sm">
-                    <div className="bg-[#2D4A8C] text-white rounded-2xl px-3 py-2">
-                      <p className="text-xs">
-                        {typedText}
-                        <motion.span
-                          animate={{ opacity: [1, 0] }}
-                          transition={{ repeat: Infinity, duration: 0.8 }}
-                          className="inline-block w-0.5 h-3 bg-white ml-0.5 align-middle"
-                        />
-                      </p>
-                    </div>
-                    <span className="text-[9px] text-muted-foreground text-right">10:30</span>
-                  </div>
-                </motion.div>
-              )}
 
               {showUserMessage && userMessageText && (
                 <motion.div
@@ -323,7 +339,7 @@ export const MockInterface = ({
                 </motion.div>
               )}
             </div>
-          </div>
+          </motion.div>
 
           <motion.div
             className="p-2 sm:p-3 flex justify-center shrink-0"
@@ -333,6 +349,7 @@ export const MockInterface = ({
           >
             <div className="w-full max-w-2xl">
               <motion.div
+                data-cursor-target="input"
                 className={`flex flex-col gap-2 bg-white rounded-xl border-2 transition-all ${
                   highlightedElement === "input"
                     ? "border-primary ring-2 ring-primary/20"
@@ -340,15 +357,23 @@ export const MockInterface = ({
                 }`}
                 animate={{ scale: highlightedElement === "input" ? 1.01 : 1 }}
               >
-                <div className="flex items-center gap-2 px-3 pt-2">
-                  <div className="w-5 h-5 rounded-full bg-gradient-to-br from-pink-400 to-purple-500 shrink-0" />
-                  <input
-                    type="text"
-                    placeholder="Comece sua solicitação..."
-                    className="flex-1 min-w-0 bg-transparent text-xs text-foreground placeholder:text-muted-foreground outline-none"
-                    readOnly
-                  />
-                </div>
+                <motion.div className="flex items-center gap-2 px-3 pt-2 min-h-[36px]">
+                  <motion.div className="w-5 h-5 rounded-full bg-gradient-to-br from-pink-400 to-purple-500 shrink-0" />
+                  <motion.div className="flex-1 min-w-0 text-xs text-foreground leading-relaxed">
+                    {typedText && !showUserMessage ? (
+                      <>
+                        {typedText}
+                        <motion.span
+                          animate={{ opacity: [1, 0] }}
+                          transition={{ repeat: Infinity, duration: 0.75 }}
+                          className="inline-block w-0.5 h-3.5 bg-foreground/70 ml-0.5 align-middle rounded-sm"
+                        />
+                      </>
+                    ) : (
+                      <span className="text-muted-foreground">Comece sua solicitação...</span>
+                    )}
+                  </motion.div>
+                </motion.div>
 
                 <div className="flex items-center gap-1 sm:gap-2 px-3 pb-2 flex-wrap">
                   <button type="button" className="text-muted-foreground hover:text-foreground">
@@ -374,6 +399,7 @@ export const MockInterface = ({
                   </button>
                   <motion.button
                     type="button"
+                    data-cursor-target="send-button"
                     className={`w-6 h-6 rounded-lg flex items-center justify-center transition-colors ${
                       highlightedElement === "send-button"
                         ? "bg-primary text-primary-foreground"
@@ -391,6 +417,8 @@ export const MockInterface = ({
               </p>
             </div>
           </motion.div>
+            </>
+          )}
         </motion.div>
       </div>
     </div>

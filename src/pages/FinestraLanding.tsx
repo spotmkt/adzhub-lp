@@ -7,7 +7,7 @@ import { testimonials } from "@/data/finestraData";
 import { LandingNav } from "@/components/LandingNav";
 import { Footer } from "@/components/Footer";
 import { useWaitlistDialog } from "@/components/WaitlistDialogProvider";
-import { ConteudoMotionShowcase } from "@/components/motion-showcase";
+import { SeoInteractiveMotion } from "@/components/platform-motion";
 
 const TestimonialsColumn = lazy(() => import("@/components/ui/testimonials-columns-1").then(m => ({ default: m.TestimonialsColumn })));
 const Features = lazy(() => import("@/components/ui/features-6").then(m => ({ default: m.Features })));
@@ -71,14 +71,10 @@ export default function FinestraLanding() {
           </div>
         </div>
 
-        {/* Motion: dashboard → postagens → edição */}
-        <div className="relative max-w-6xl mx-auto px-4 sm:px-8">
-          <ConteudoMotionShowcase />
-        </div>
+        <SeoInteractiveMotion id="demo-plataforma" embedded />
       </section>
 
-      {/* Spacer */}
-      <div className="h-16" />
+      <div className="h-8" />
 
       {/* Features Section */}
       <Suspense fallback={<LoadingFallback />}>
