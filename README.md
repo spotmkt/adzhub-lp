@@ -22,7 +22,19 @@ O servidor de desenvolvimento sobe em `http://localhost:8080` (ver `vite.config.
 npm run build
 ```
 
-Gera o sitemap (`scripts/generate-sitemap.mjs`) e o bundle de produção em `dist/`.
+Gera o bundle de produção em `dist/`.
+
+### Sitemap (`/sitemap.xml`)
+
+Em produção (Vercel), o sitemap é **dinâmico**: a rota consulta `blog_posts` no Supabase a cada requisição (cache CDN ~15 min). Novos posts publicados entram no sitemap sem redeploy.
+
+Para gerar um arquivo local (dev/preview):
+
+```bash
+npm run sitemap
+```
+
+Isso cria `public/sitemap.xml` (ignorado pelo git).
 
 ## Variáveis de ambiente
 

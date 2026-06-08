@@ -13,6 +13,7 @@ import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import FinestraLanding from "./pages/FinestraLanding";
 import AdzHubLanding from "./pages/AdzHubLanding";
+import AdzHubLanding2 from "./pages/AdzHubLanding2";
 import Pricing from "./pages/Pricing";
 import AdzChatLanding from "./pages/AdzChatLanding";
 import Terms from "./pages/Terms";
@@ -54,6 +55,7 @@ function App(): React.ReactElement {
                 <Routes>
                   {/* Landing page routes */}
                   <Route path="/" element={<AdzHubLanding />} />
+                  <Route path="/home-2" element={<AdzHubLanding2 />} />
                   <Route path="/seo" element={<FinestraLanding />} />
                   <Route path="/conteudo" element={<Navigate to="/seo" replace />} />
                   <Route path="/chat" element={<AdzChatLanding />} />

@@ -6,7 +6,7 @@
 
 2. **Descoberta** — O Google pode encontrar o subdomínio por DNS público, links externos, menções ou histórico de rastreamento.
 
-3. **Este repositório (landing / app)** — O `sitemap.xml` gerado por `scripts/generate-sitemap.mjs` lista apenas URLs em `https://adzhub.com.br/...`. **Não** inclui `n8n.adzhub.com.br`.
+3. **Este repositório (landing / app)** — O `/sitemap.xml` é gerado **dinamicamente** (`api/sitemap.mjs`): rotas estáticas + posts publicados em `blog_posts` (Supabase). Novos posts entram automaticamente (cache CDN ~15 min). **Não** inclui `n8n.adzhub.com.br`.
 
 ## O que fazer se não quiser esse subdomínio na busca
 

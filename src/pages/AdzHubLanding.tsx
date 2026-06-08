@@ -185,7 +185,7 @@ export default function AdzHubLanding() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <div className="rounded-3xl bg-[#F6F6F6] p-8 md:p-10">
-              <h3 className="text-lg font-semibold text-[#08080C] mb-6">Nas empresas</h3>
+              <h3 className="text-lg font-semibold text-[#08080C] mb-6">No negócio</h3>
               <div className="space-y-4">
                 <div className="bg-white rounded-2xl p-5">
                   <div className="flex items-start gap-3">
@@ -224,7 +224,7 @@ export default function AdzHubLanding() {
             </div>
 
             <div className="rounded-3xl bg-[#F6F6F6] p-8 md:p-10">
-              <h3 className="text-lg font-semibold text-[#08080C] mb-6">Nos profissionais</h3>
+              <h3 className="text-lg font-semibold text-[#08080C] mb-6">Equipe de marketing</h3>
               <div className="space-y-4 mb-6">
                 <div className="bg-white rounded-2xl p-5">
                   <div className="flex items-start gap-3">
@@ -552,7 +552,7 @@ export default function AdzHubLanding() {
               Modelo Plataforma
             </div>
             <h2 className="text-4xl md:text-6xl lg:text-[72px] font-medium leading-[100%] tracking-tight text-[#08080C] mb-6">
-              Uma plataforma, foco na sua empresa
+              Tenha uma operação enxuta e otimizada com foco no seu resultado
             </h2>
             <p className="text-lg font-medium text-[#6B7280] leading-[170%] max-w-[700px] mx-auto">
               você ganha uma operação de marketing mais madura sem montar equipe completa internamente. Tudo conectado na
