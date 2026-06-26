@@ -57,8 +57,7 @@ export default function AdzHubLanding() {
         />
         <div className="relative z-10 max-w-5xl mx-auto px-5 sm:px-8 pt-14 pb-8 lg:pt-20 lg:pb-10">
           <div className="flex flex-col items-center text-center gap-6 max-w-[781px] mx-auto">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/90 backdrop-blur-sm border border-[#37489d]/15 text-sm font-medium text-[#37489d] shadow-sm">
-              <Sparkles className="w-4 h-4 shrink-0" />
+            <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-white/90 backdrop-blur-sm border border-[#37489d]/15 text-sm font-medium text-[#37489d] shadow-sm">
               Gerencie todos os seus serviços de marketing de forma simples
             </div>
             <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-[3.25rem] xl:text-[3.75rem] font-bold leading-[1.08] tracking-tight text-[#08080C] max-w-4xl mx-auto">
