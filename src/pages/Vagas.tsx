@@ -793,7 +793,7 @@ export default function Vagas() {
           layout
           className={
             applicationOpen
-              ? "relative max-h-full w-full max-w-3xl overflow-y-auto overscroll-contain rounded-3xl bg-[#F8F8F8] px-5 py-8 shadow-2xl sm:px-8 sm:py-10"
+              ? "vagas-modal-scroll relative max-h-full w-full max-w-3xl overflow-y-auto overscroll-contain rounded-3xl bg-[#F8F8F8] px-5 py-8 shadow-2xl sm:px-8 sm:py-10"
               : "max-w-7xl mx-auto px-5 sm:px-8"
           }
           initial={applicationOpen ? { opacity: 0, y: 24, scale: 0.97 } : false}
@@ -868,10 +868,10 @@ export default function Vagas() {
               Candidatura
             </div>
             <h2 className="text-3xl sm:text-4xl font-medium text-[#08080C] mb-3 leading-tight">
-              Quer entrar no núcleo da AdzHub?
+              Entre para a o núcleo de desenvolvimento da AdzHub.
             </h2>
             <p className="text-[#6B7280] mb-10 leading-relaxed">
-              Conte quem você é e o que já construiu. Buscamos histórico intraempreendedor ou empreendedor validado, vibecoding + marketing e ambição de partnership, não só um currículo bonito.
+              Conte quem você é e o que já construiu. Buscamos histórico intra/empreendedor, code ou vibecoding + marketing e muita ambição, não só um currículo bonito.
             </p>
 
             {submitted ? (
