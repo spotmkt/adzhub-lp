@@ -136,6 +136,9 @@ export function Footer() {
               <Link to="/contact" className="text-base text-[#6B7280] hover:text-[#1F2937]">
                 Contato
               </Link>
+              <Link to="/vagas" className="text-base text-[#6B7280] hover:text-[#1F2937]">
+                Vagas
+              </Link>
               <a
                 href="https://app.adzhub.com.br"
                 className="text-base text-[#6B7280] hover:text-[#1F2937]"

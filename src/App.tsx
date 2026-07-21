@@ -19,6 +19,7 @@ import AdzChatLanding from "./pages/AdzChatLanding";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import MotionLab from "./pages/MotionLab";
+import Vagas from "./pages/Vagas";
 import { WaitlistDialogProvider } from "@/components/WaitlistDialogProvider";
 
 // Create QueryClient outside of component to avoid recreation on each render
@@ -67,6 +68,7 @@ function App(): React.ReactElement {
                   <Route path="/termos" element={<Terms />} />
                   <Route path="/privacidade" element={<Privacy />} />
                   <Route path="/motion-lab" element={<MotionLab />} />
+                  <Route path="/vagas" element={<Vagas />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </TooltipProvider>

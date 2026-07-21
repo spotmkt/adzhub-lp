@@ -47,6 +47,7 @@ export const staticPaths = [
   { path: "/contact", changefreq: "monthly", priority: "0.8" },
   { path: "/termos", changefreq: "yearly", priority: "0.3" },
   { path: "/privacidade", changefreq: "yearly", priority: "0.3" },
+  { path: "/vagas", changefreq: "monthly", priority: "0.7" },
 ];
 
 export function escapeXml(str) {
