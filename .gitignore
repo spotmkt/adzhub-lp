@@ -11,7 +11,12 @@ node_modules
 dist
 dist-ssr
 *.local
+.env
+.env.*
+!.env.example
+.infisical.json
 public/sitemap.xml
+.vercel
 
 # Editor directories and files
 .vscode/*

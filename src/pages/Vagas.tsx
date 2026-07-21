@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -38,6 +38,7 @@ import { FadeIn, Stagger, StaggerItem } from "@/components/vagas/MotionReveal";
 import { VagasPlatformMotion } from "@/components/vagas/VagasPlatformMotion";
 import { GrowthFlywheel } from "@/components/vagas/GrowthFlywheel";
 import { VagasSpotlightCard } from "@/components/vagas/VagasSpotlightCard";
+import { VagasCardStack } from "@/components/vagas/VagasCardStack";
 import { BorderBeamCard } from "@/components/vagas/BorderBeamCard";
 
 const inputCls =
@@ -75,24 +76,24 @@ const spotStats = [
 
 const dailyTasks = [
   {
-    Icon: Puzzle,
-    text: "Desenvolver e evoluir extensões para navegadores utilizando Manifest V3.",
-  },
-  {
-    Icon: Bot,
-    text: "Criar automações para interagir com páginas e interfaces web.",
-  },
-  {
     Icon: Layers,
-    text: "Mapear elementos do DOM e tornar as interações mais confiáveis.",
+    text: "Construir e evoluir os módulos da plataforma em React + TypeScript: painéis, dashboards e AdzChat.",
   },
   {
     Icon: Zap,
-    text: "Integrar ferramentas com APIs da Meta, Google e outras plataformas.",
+    text: "Integrar as APIs da Meta e do Google Ads: campanhas, métricas e relatórios.",
   },
   {
     Icon: Database,
-    text: "Conectar a aplicação a serviços como Supabase, Node.js, n8n e Make.",
+    text: "Modelar dados e regras no Supabase: Postgres, RLS, migrations e Edge Functions.",
+  },
+  {
+    Icon: Bot,
+    text: "Desenvolver agentes e frameworks dentro do produto (AdzChat e Pergunte ao Adz).",
+  },
+  {
+    Icon: Puzzle,
+    text: "Criar automações de operação com n8n, workers e rotinas agendadas.",
   },
   {
     Icon: Cpu,
@@ -104,29 +105,29 @@ const dailyTasks = [
   },
   {
     Icon: ShieldCheck,
-    text: "Implementar autenticação, tratamento de erros, controle de acesso e proteção de credenciais.",
+    text: "Implementar autenticação, controle de acesso e proteção de credenciais (JWT, RLS, secrets).",
   },
   {
     Icon: LineChart,
-    text: "Desenvolver automações resilientes, com filas, tentativas, intervalos, monitoramento e respeito aos limites das plataformas.",
+    text: "Desenvolver automações resilientes: filas, retries, monitoramento e respeito aos limites das plataformas.",
   },
 ];
 
 const requirements = [
   "Histórico intraempreendedor ou empreendedor validado: já construiu algo de verdade.",
-  "Domínio prático de programação / vibecoding (JS, HTML, CSS e autonomia com ferramentas modernas).",
+  "Domínio prático de programação / vibecoding (TypeScript, React, Supabase e VPS).",
   "Experiência profissional em marketing digital ou em produto ligado a marketing.",
-  "Capacidade de ler, ajustar e evoluir código de extensões, automações e integrações.",
-  "Familiaridade com Manifest V3, DOM, APIs e fluxos com espera/timeout.",
-  "Uso avançado de IA (Cursor, Composer ou similares) no dia a dia de construção.",
+  "Capacidade de ler, ajustar e evoluir código existente: integrações, automações e agentes de IA.",
+  "Familiaridade com APIs REST, webhooks e fluxos assíncronos (retry, timeout, rate limit).",
+  "Uso avançado de IA (Cursor, N8N, Fluxos de IA e outras ferramentas) no dia a dia de construção.",
   "Ambiente presencial em Belo Horizonte, sede da SPOT MKT no P7 Criativo.",
   "Ambição clara de construir algo grande, com ownership e velocidade.",
 ];
 
 const differentials = [
-  "Já lançou produto, SaaS, extensão ou automação com usuários reais.",
+  "Já lançou produto, SaaS ou automação com usuários reais.",
   "Experiência com funis, leads, métricas e campanhas (Meta / Google).",
-  "Node.js, Supabase, n8n, Make ou backends similares em produção.",
+  "Node.js, Supabase, n8n ou backends similares em produção.",
   "Portfólio forte em GitHub / projetos pessoais com evidência de execução.",
   "Noções de segurança, autenticação e proteção de dados.",
   "Perfil de partnership: pensa em equity, escala e impacto, não só em salário.",
@@ -199,13 +200,168 @@ const emptyForm: FormFields = {
   lgpd: false,
 };
 
+const APPLICATION_DRAFT_KEY = "adzhub:vagas:candidatura-draft";
+
+type ApplicationDraft = {
+  form: FormFields;
+  selectedCityId: number | null;
+};
+
+function loadApplicationDraft(): ApplicationDraft | null {
+  try {
+    const saved = sessionStorage.getItem(APPLICATION_DRAFT_KEY);
+    if (!saved) return null;
+    const draft = JSON.parse(saved) as Partial<ApplicationDraft>;
+    return {
+      form: { ...emptyForm, ...draft.form },
+      selectedCityId:
+        typeof draft.selectedCityId === "number" ? draft.selectedCityId : null,
+    };
+  } catch {
+    return null;
+  }
+}
+
+const MAX_PDF_BYTES = 3 * 1024 * 1024;
+
+type BrazilCity = {
+  id: number;
+  nome: string;
+  microrregiao?: { mesorregiao?: { UF?: { sigla?: string } } };
+  "regiao-imediata"?: { "regiao-intermediaria"?: { UF?: { sigla?: string } } };
+};
+
+function normalizeSearch(value: string) {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
+}
+
+function cityLabel(city: BrazilCity) {
+  const uf =
+    city.microrregiao?.mesorregiao?.UF?.sigla ??
+    city["regiao-imediata"]?.["regiao-intermediaria"]?.UF?.sigla ??
+    "";
+  return `${city.nome}${uf ? `, ${uf}` : ""}`;
+}
+
+function formatBrazilPhone(value: string) {
+  const digits = value.replace(/\D/g, "").replace(/^55(?=\d{10,11}$)/, "").slice(0, 11);
+  if (!digits) return "";
+  if (digits.length <= 2) return `(${digits}`;
+  const ddd = digits.slice(0, 2);
+  const local = digits.slice(2);
+  if (local.length <= 4) return `(${ddd}) ${local}`;
+  if (local.length <= 8) return `(${ddd}) ${local.slice(0, 4)}-${local.slice(4)}`;
+  return `(${ddd}) ${local.slice(0, 5)}-${local.slice(5)}`;
+}
+
+function isFullName(value: string) {
+  return value.trim().split(/\s+/).filter((part) => part.length >= 2).length >= 2;
+}
+
+function isValidBrazilPhone(value: string) {
+  const digits = value.replace(/\D/g, "");
+  return digits.length === 10 || digits.length === 11;
+}
+
+function profileUsername(value: string, platform: "linkedin" | "github") {
+  const withoutProtocol = value.trim().replace(/^https?:\/\//i, "").replace(/^www\./i, "");
+  const withoutHostname =
+    platform === "linkedin"
+      ? withoutProtocol.replace(/^linkedin\.com\/(?:in\/)?/i, "")
+      : withoutProtocol.replace(/^github\.com\//i, "");
+  return withoutHostname.split(/[/?#]/)[0];
+}
+
+function fileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result || ""));
+    reader.onerror = () => reject(reader.error ?? new Error("Falha ao ler o PDF"));
+    reader.readAsDataURL(file);
+  });
+}
+
 export default function Vagas() {
-  const [form, setForm] = useState<FormFields>(emptyForm);
+  const [initialDraft] = useState(loadApplicationDraft);
+  const [form, setForm] = useState<FormFields>(initialDraft?.form ?? emptyForm);
   const [fileName, setFileName] = useState("");
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [applicationOpen, setApplicationOpen] = useState(false);
   const [applicationReady, setApplicationReady] = useState(false);
+  const [cities, setCities] = useState<BrazilCity[]>([]);
+  const [citiesLoading, setCitiesLoading] = useState(false);
+  const [citiesError, setCitiesError] = useState<string | null>(null);
+  const [cityOpen, setCityOpen] = useState(false);
+  const [selectedCityId, setSelectedCityId] = useState<number | null>(
+    initialDraft?.selectedCityId ?? null,
+  );
+  const [fileError, setFileError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const citiesRequestRef = useRef<Promise<void> | null>(null);
+
+  const cityOptions = useMemo(() => {
+    const query = normalizeSearch(form.cidade);
+    if (query.length < 2) return [];
+    return cities
+      .filter((city) => normalizeSearch(cityLabel(city)).includes(query))
+      .sort((a, b) => {
+        if (a.id === 3106200) return -1;
+        if (b.id === 3106200) return 1;
+        return cityLabel(a).localeCompare(cityLabel(b), "pt-BR");
+      })
+      .slice(0, 8);
+  }, [cities, form.cidade]);
+
+  function loadCities() {
+    if (cities.length > 0) return Promise.resolve();
+    if (citiesRequestRef.current) return citiesRequestRef.current;
+
+    setCitiesLoading(true);
+    setCitiesError(null);
+
+    citiesRequestRef.current = (async () => {
+      try {
+        const response = await fetch(
+          "https://servicodados.ibge.gov.br/api/v1/localidades/municipios?orderBy=nome",
+        );
+        if (!response.ok) throw new Error("IBGE indisponível");
+        const data = (await response.json()) as BrazilCity[];
+        if (!Array.isArray(data) || data.length === 0) {
+          throw new Error("Lista de cidades vazia");
+        }
+        setCities(data);
+      } catch {
+        citiesRequestRef.current = null;
+        setCitiesError("Não foi possível carregar as cidades. Clique e tente de novo.");
+      } finally {
+        setCitiesLoading(false);
+      }
+    })();
+
+    return citiesRequestRef.current;
+  }
+
+  useEffect(() => {
+    void loadCities();
+  }, []);
+
+  useEffect(() => {
+    try {
+      sessionStorage.setItem(
+        APPLICATION_DRAFT_KEY,
+        JSON.stringify({ form, selectedCityId } satisfies ApplicationDraft),
+      );
+    } catch {
+      // O formulário continua funcionando mesmo se o storage estiver indisponível.
+    }
+  }, [form, selectedCityId]);
 
   useEffect(() => {
     if (!applicationOpen) {
@@ -237,9 +393,80 @@ export default function Vagas() {
     setForm((prev) => ({ ...prev, [field]: value }));
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setSubmitted(true);
+    if (submitting) return;
+
+    setSubmitError(null);
+    setSubmitting(true);
+
+    try {
+      if (!isFullName(form.nome)) {
+        throw new Error("Informe seu nome e sobrenome.");
+      }
+      if (!isValidBrazilPhone(form.whatsapp)) {
+        throw new Error("Informe um WhatsApp brasileiro válido, com DDD.");
+      }
+      if (!selectedCityId) {
+        throw new Error("Selecione sua cidade na lista de municípios do IBGE.");
+      }
+
+      let curriculoBase64: string | undefined;
+      let curriculoNome: string | undefined;
+
+      if (pdfFile) {
+        if (pdfFile.size > MAX_PDF_BYTES) {
+          throw new Error("O PDF precisa ter no máximo 3 MB.");
+        }
+        if (pdfFile.type && pdfFile.type !== "application/pdf") {
+          throw new Error("Envie o currículo em PDF.");
+        }
+        curriculoBase64 = await fileToBase64(pdfFile);
+        curriculoNome = pdfFile.name;
+      }
+
+      const resp = await fetch("/api/vagas-candidatura", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...form,
+          linkedin: form.linkedin ? `https://linkedin.com/in/${form.linkedin}` : "",
+          github: form.github ? `https://github.com/${form.github}` : "",
+          cidadeIbgeId: selectedCityId,
+          curriculoBase64,
+          curriculoNome,
+        }),
+      });
+
+      const data = (await resp.json().catch(() => ({}))) as {
+        ok?: boolean;
+        message?: string;
+      };
+
+      if (!resp.ok || !data.ok) {
+        throw new Error(
+          data.message ||
+            "Não conseguimos concluir o envio agora. Tente novamente em instantes ou fale com a gente pelo WhatsApp.",
+        );
+      }
+
+      sessionStorage.removeItem(APPLICATION_DRAFT_KEY);
+      setSubmitted(true);
+    } catch (err) {
+      const raw = err instanceof Error ? err.message : "";
+      const isNetwork =
+        raw === "Failed to fetch" ||
+        raw === "NetworkError when attempting to fetch resource." ||
+        raw.toLowerCase().includes("network");
+      setSubmitError(
+        isNetwork
+          ? "Não conseguimos conectar ao servidor. Recarregue a página e tente de novo."
+          : raw ||
+              "Não conseguimos concluir o envio agora. Tente novamente em instantes.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -315,7 +542,7 @@ export default function Vagas() {
             >
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/90 backdrop-blur-sm border border-[#37489d]/15 text-sm font-medium text-[#37489d] shadow-sm">
                 <MapPin className="w-4 h-4 shrink-0" />
-                Vaga presencial em Belo Horizonte · na sede da SPOT MKT
+                Presencial em BH/MG - sede da SPOT MKT
               </div>
 
               <h1 className="text-3xl sm:text-4xl md:text-[2.55rem] lg:text-[2.75rem] xl:text-[3.05rem] font-bold leading-[1.08] tracking-tight text-[#08080C]">
@@ -484,8 +711,8 @@ export default function Vagas() {
               Seu código no mundo real
             </h2>
             <p className="text-lg text-[#6B7280] leading-[170%]">
-              Extensões, APIs, automações e vibecoding aplicados a marketing de verdade: a
-              camada que faz a AdzHub executar com continuidade para PMEs.
+              Plataforma, APIs de mídia paga, agentes de IA e automações aplicados a marketing
+              de verdade: a camada que faz a AdzHub executar com continuidade para PMEs.
             </p>
           </FadeIn>
 
@@ -511,14 +738,14 @@ export default function Vagas() {
       </section>
 
       {/* PLATAFORMA — AdzChat motion */}
-      <section className="py-20 sm:py-24 bg-[#F8F8F8] rounded-3xl mx-4 sm:mx-5 overflow-x-clip">
+      <section className="py-20 sm:py-24 bg-white overflow-x-clip">
         <div className="max-w-7xl mx-auto px-5 sm:px-8 overflow-x-clip">
           <FadeIn className="max-w-3xl mx-auto text-center mb-10 sm:mb-12">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[#37489d]/10 text-sm font-medium text-[#37489d] mb-6">
               O produto que você acelera
             </div>
             <h2 className="text-3xl sm:text-4xl md:text-[44px] font-medium leading-[110%] tracking-tight text-[#08080C] mb-4">
-              Da jornada do cliente à operação no AdzChat
+              Do painel do cliente à operação através do AdzChat
             </h2>
           </FadeIn>
 
@@ -542,100 +769,61 @@ export default function Vagas() {
             </h2>
           </FadeIn>
 
-          <FadeIn delay={0.08} className="max-w-3xl mx-auto">
-            <div className="rounded-2xl border border-[#08080C]/8 bg-white shadow-[0_20px_50px_-28px_rgba(8,8,12,0.35)] overflow-hidden">
-              {/* Cabeçalho estilo CV */}
-              <div className="flex flex-col sm:flex-row sm:items-center gap-4 px-5 sm:px-7 py-5 sm:py-6 border-b border-[#08080C]/8 bg-gradient-to-br from-[#37489d]/[0.06] to-white">
-                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-[#37489d] flex items-center justify-center shrink-0 shadow-md">
-                  <User className="w-7 h-7 text-white" aria-hidden />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="text-[11px] font-semibold uppercase tracking-wider text-[#37489d] mb-0.5">
-                    Vaga · Núcleo Fundacional
-                  </p>
-                  <h3 className="text-xl sm:text-2xl font-semibold text-[#08080C] leading-tight">
-                    Perfil de quem já constrói
-                  </h3>
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    {["Vibecoding", "Marketing", "Presencial BH", "Partnership"].map((tag) => (
-                      <span
-                        key={tag}
-                        className="inline-flex items-center px-2.5 py-0.5 rounded-md bg-white border border-[#08080C]/8 text-[11px] font-medium text-[#6B7280]"
-                      >
-                        {tag}
-                      </span>
-                    ))}
+          <FadeIn delay={0.08} className="max-w-6xl mx-auto">
+            <div className="rounded-3xl border border-[#08080C]/8 bg-white p-4 shadow-[0_20px_50px_-28px_rgba(8,8,12,0.35)] sm:p-6">
+              <div className="mb-6 flex flex-col gap-4 rounded-2xl bg-gradient-to-br from-[#37489d]/[0.07] to-white p-4 sm:flex-row sm:items-center sm:p-5">
+                <div className="flex min-w-0 flex-1 items-center gap-3">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#37489d] shadow-md">
+                    <User className="h-5 w-5 text-white" aria-hidden />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-[10px] font-semibold uppercase tracking-wider text-[#37489d]">
+                      Vaga · Núcleo Fundacional
+                    </p>
+                    <h3 className="text-lg font-semibold leading-tight text-[#08080C] sm:text-xl">
+                      Perfil de quem já constrói
+                    </h3>
                   </div>
                 </div>
-                <div className="hidden sm:flex flex-col items-end gap-1 text-right shrink-0">
-                  <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-100 px-2.5 py-1 rounded-full">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                    Aberto
-                  </span>
-                  <span className="text-[11px] text-[#9CA3AF]">P7 Criativo · SPOT MKT</span>
-                </div>
-              </div>
-
-              {/* Corpo do CV */}
-              <div className="grid md:grid-cols-5">
-                {/* Requisitos */}
-                <div className="md:col-span-3 p-5 sm:p-7 border-b md:border-b-0 md:border-r border-[#08080C]/8">
-                  <div className="flex items-center justify-between gap-3 mb-4">
-                    <p className="text-[11px] font-bold uppercase tracking-wider text-[#37489d]">
-                      Experiência exigida
-                    </p>
-                    <span className="text-[10px] font-medium text-[#9CA3AF] tabular-nums">
-                      {requirements.length} itens
+                <div className="flex flex-wrap items-center gap-2">
+                  {["Marketing", "Presencial BH", "Vibe"].map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-full border border-[#37489d]/10 bg-white px-2.5 py-1 text-[10px] font-medium text-[#6B7280]"
+                    >
+                      {tag}
                     </span>
-                  </div>
-                  <ul className="space-y-0 divide-y divide-[#08080C]/6">
-                    {requirements.map((item, i) => (
-                      <li key={item} className="flex items-start gap-3 py-3 first:pt-0 last:pb-0">
-                        <span className="mt-0.5 w-5 h-5 rounded-md bg-[#37489d]/10 flex items-center justify-center shrink-0">
-                          <Check className="w-3 h-3 text-[#37489d]" aria-hidden />
-                        </span>
-                        <div className="min-w-0">
-                          <p className="text-[10px] font-semibold uppercase tracking-wide text-[#9CA3AF] mb-0.5">
-                            Req. {String(i + 1).padStart(2, "0")}
-                          </p>
-                          <p className="text-sm text-[#374151] leading-relaxed">{item}</p>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Diferenciais */}
-                <div className="md:col-span-2 p-5 sm:p-7 bg-[#FAFAFA]">
-                  <div className="flex items-center justify-between gap-3 mb-4">
-                    <p className="text-[11px] font-bold uppercase tracking-wider text-[#37489d]">
-                      Diferenciais
-                    </p>
-                    <span className="text-[10px] font-medium text-[#9CA3AF]">+ pontos</span>
-                  </div>
-                  <ul className="space-y-2.5">
-                    {differentials.map((item) => (
-                      <li
-                        key={item}
-                        className="rounded-xl border border-[#08080C]/8 bg-white px-3 py-2.5 shadow-sm"
-                      >
-                        <p className="text-[12px] sm:text-[13px] text-[#374151] leading-snug">{item}</p>
-                      </li>
-                    ))}
-                  </ul>
+                  ))}
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-100 bg-emerald-50 px-2.5 py-1 text-[10px] font-semibold text-emerald-700">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                    Ativo
+                  </span>
                 </div>
               </div>
 
-              {/* Rodapé do CV */}
-              <div className="px-5 sm:px-7 py-4 border-t border-[#08080C]/8 bg-white flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
-                <p className="flex-1 text-sm text-[#6B7280] leading-relaxed">
-                  Se o checklist acima te descreve e você tem histórico para provar, queremos conversar, mesmo
-                  que falte um diferencial.
+              <div className="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-10">
+                <VagasCardStack
+                  label="Experiência exigida"
+                  items={requirements}
+                  itemPrefix="Req."
+                  Icon={Check}
+                />
+                <VagasCardStack
+                  label="Diferenciais"
+                  meta="+ pontos"
+                  items={differentials}
+                  Icon={Sparkles}
+                />
+              </div>
+
+              <div className="mt-6 flex flex-col items-center justify-between gap-3 border-t border-[#08080C]/8 pt-5 sm:flex-row">
+                <p className="text-center text-sm leading-relaxed text-[#6B7280] sm:text-left">
+                  Se esse perfil te descreve e você tem histórico para provar, queremos conversar.
                 </p>
                 <button
                   type="button"
                   onClick={openApplication}
-                  className="inline-flex h-10 shrink-0 items-center justify-center rounded-xl bg-[#37489d] px-4 text-sm font-semibold text-white hover:bg-[#2f3d86] transition-colors"
+                  className="hidden h-10 w-full shrink-0 items-center justify-center rounded-xl bg-[#37489d] px-5 text-sm font-semibold text-white transition-colors hover:bg-[#2f3d86] sm:w-auto md:inline-flex"
                 >
                   Enviar currículo
                 </button>
@@ -760,16 +948,9 @@ export default function Vagas() {
             <h2 className="text-3xl sm:text-4xl font-medium text-[#08080C] mb-8 leading-tight">
               Essa oportunidade combina com você se…
             </h2>
-            <Stagger className="grid sm:grid-cols-2 gap-3">
-              {profileChecks.map((item) => (
-                <StaggerItem key={item}>
-                  <div className="flex items-start gap-3 text-[#6B7280] leading-relaxed rounded-xl border border-[#08080C]/6 bg-[#FAFAFA] px-4 py-3">
-                    <Check className="w-5 h-5 text-[#37489d] shrink-0 mt-0.5" />
-                    <span className="text-sm sm:text-base">{item}</span>
-                  </div>
-                </StaggerItem>
-              ))}
-            </Stagger>
+            <div className="max-w-xl">
+              <VagasCardStack label="Checklist do perfil" items={profileChecks} Icon={Check} />
+            </div>
           </FadeIn>
         </div>
       </section>
@@ -881,18 +1062,19 @@ export default function Vagas() {
                 </div>
                 <h3 className="text-xl font-semibold text-[#08080C] mb-2">Recebemos seu interesse!</h3>
                 <p className="text-[#6B7280] mb-1">
-                  Em breve o envio estará totalmente ativo, ou fale diretamente com a gente:
+                  Sua candidatura foi enviada para o nosso time.
                 </p>
-                <a href="mailto:team@adzhub.com.br" className="text-[#37489d] font-medium hover:underline">
-                  team@adzhub.com.br
-                </a>
                 <div className="mt-6">
                   <button
                     type="button"
                     onClick={() => {
                       setSubmitted(false);
+                      setSubmitError(null);
                       setForm(emptyForm);
                       setFileName("");
+                      setPdfFile(null);
+                      setFileError(null);
+                      setSelectedCityId(null);
                     }}
                     className="text-sm text-[#6B7280] underline underline-offset-2 hover:text-[#08080C]"
                   >
@@ -909,7 +1091,32 @@ export default function Vagas() {
                       <User className="w-3.5 h-3.5" /> Nome completo *
                     </span>
                   </label>
-                  <input id="nome" type="text" required placeholder="Seu nome" value={form.nome} onChange={(e) => update("nome", e.target.value)} className={inputCls} />
+                  <input
+                    id="nome"
+                    type="text"
+                    required
+                    autoComplete="name"
+                    minLength={5}
+                    placeholder="Nome e sobrenome"
+                    value={form.nome}
+                    onChange={(e) => {
+                      update("nome", e.target.value);
+                      e.target.setCustomValidity("");
+                    }}
+                    onInvalid={(e) => {
+                      const input = e.currentTarget;
+                      input.setCustomValidity(
+                        isFullName(input.value) ? "" : "Informe seu nome e sobrenome.",
+                      );
+                    }}
+                    onBlur={(e) => {
+                      if (e.target.value && !isFullName(e.target.value)) {
+                        e.target.setCustomValidity("Informe seu nome e sobrenome.");
+                        e.target.reportValidity();
+                      }
+                    }}
+                    className={inputCls}
+                  />
                 </div>
 
                 <div className="grid sm:grid-cols-2 gap-4">
@@ -919,15 +1126,111 @@ export default function Vagas() {
                         <Phone className="w-3.5 h-3.5" /> WhatsApp *
                       </span>
                     </label>
-                    <input id="whatsapp" type="tel" required placeholder="(31) 99999-9999" value={form.whatsapp} onChange={(e) => update("whatsapp", e.target.value)} className={inputCls} />
+                    <div className="flex rounded-xl border border-[#08080C]/12 bg-[#FAFAFA] focus-within:border-[#37489d]/40 focus-within:ring-2 focus-within:ring-[#37489d]/10">
+                      <span
+                        className="flex shrink-0 items-center gap-1.5 border-r border-[#08080C]/8 px-3 text-sm text-[#374151]"
+                        aria-label="Brasil, código 55"
+                      >
+                        <span aria-hidden>🇧🇷</span>
+                        <span>+55</span>
+                      </span>
+                      <input
+                        id="whatsapp"
+                        type="tel"
+                        required
+                        autoComplete="tel-national"
+                        inputMode="numeric"
+                        placeholder="(31) 99999-9999"
+                        value={form.whatsapp}
+                        onChange={(e) => {
+                          update("whatsapp", formatBrazilPhone(e.target.value));
+                          e.target.setCustomValidity("");
+                        }}
+                        onInvalid={(e) =>
+                          e.currentTarget.setCustomValidity(
+                            "Informe um telefone válido com DDD.",
+                          )
+                        }
+                        pattern="\(\d{2}\) \d{4,5}-\d{4}"
+                        className="min-w-0 flex-1 bg-transparent px-3 py-3 text-sm text-[#08080C] outline-none placeholder:text-[#6B7280]/70"
+                      />
+                    </div>
                   </div>
-                  <div>
+                  <div className="relative">
                     <label htmlFor="cidade" className={labelCls}>
                       <span className="flex items-center gap-1.5">
                         <MapPin className="w-3.5 h-3.5" /> Cidade onde mora *
                       </span>
                     </label>
-                    <input id="cidade" type="text" required placeholder="Belo Horizonte, MG" value={form.cidade} onChange={(e) => update("cidade", e.target.value)} className={inputCls} />
+                    <input
+                      id="cidade"
+                      type="text"
+                      required
+                      autoComplete="off"
+                      role="combobox"
+                      aria-autocomplete="list"
+                      aria-expanded={cityOpen && cityOptions.length > 0}
+                      aria-controls="cidade-opcoes"
+                      placeholder="Digite sua cidade"
+                      value={form.cidade}
+                      onFocus={() => {
+                        setCityOpen(true);
+                        void loadCities();
+                      }}
+                      onChange={(e) => {
+                        update("cidade", e.target.value);
+                        setSelectedCityId(null);
+                        setCityOpen(true);
+                        void loadCities();
+                        e.target.setCustomValidity("");
+                      }}
+                      onInvalid={(e) =>
+                        e.currentTarget.setCustomValidity(
+                          selectedCityId ? "" : "Selecione uma cidade da lista.",
+                        )
+                      }
+                      onBlur={() => window.setTimeout(() => setCityOpen(false), 150)}
+                      className={inputCls}
+                    />
+                    {cityOpen &&
+                      (citiesLoading || citiesError || form.cidade.trim().length >= 2) && (
+                      <div
+                        id="cidade-opcoes"
+                        role="listbox"
+                        className="absolute z-40 mt-1 max-h-56 w-full overflow-y-auto rounded-xl border border-[#08080C]/10 bg-white p-1.5 shadow-xl"
+                      >
+                        {citiesLoading ? (
+                          <p className="px-3 py-2 text-sm text-[#6B7280]">Carregando cidades…</p>
+                        ) : citiesError ? (
+                          <p className="px-3 py-2 text-sm text-red-600">{citiesError}</p>
+                        ) : cityOptions.length === 0 ? (
+                          <p className="px-3 py-2 text-sm text-[#6B7280]">
+                            Nenhuma cidade encontrada. Digite pelo menos 2 letras.
+                          </p>
+                        ) : (
+                          cityOptions.map((city) => {
+                            const label = cityLabel(city);
+                            return (
+                              <button
+                                key={city.id}
+                                type="button"
+                                role="option"
+                                aria-selected={selectedCityId === city.id}
+                                onMouseDown={(event) => event.preventDefault()}
+                                onClick={() => {
+                                  update("cidade", label);
+                                  setSelectedCityId(city.id);
+                                  setCityOpen(false);
+                                }}
+                                className="block w-full rounded-lg px-3 py-2 text-left text-sm text-[#374151] hover:bg-[#37489d]/[0.06]"
+                              >
+                                {label}
+                              </button>
+                            );
+                          })
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -938,7 +1241,20 @@ export default function Vagas() {
                         <Linkedin className="w-3.5 h-3.5" /> LinkedIn <span className="text-[#9CA3AF] font-normal">(opcional)</span>
                       </span>
                     </label>
-                    <input id="linkedin" type="url" placeholder="linkedin.com/in/seuperfil" value={form.linkedin} onChange={(e) => update("linkedin", e.target.value)} className={inputCls} />
+                    <div className="flex rounded-xl border border-[#08080C]/12 bg-[#FAFAFA] focus-within:border-[#37489d]/40 focus-within:ring-2 focus-within:ring-[#37489d]/10">
+                      <span className="flex shrink-0 items-center border-r border-[#08080C]/8 pl-3 pr-2 text-sm text-[#6B7280]">
+                        linkedin.com/in/
+                      </span>
+                      <input
+                        id="linkedin"
+                        type="text"
+                        autoComplete="off"
+                        placeholder="seuperfil"
+                        value={form.linkedin}
+                        onChange={(e) => update("linkedin", profileUsername(e.target.value, "linkedin"))}
+                        className="min-w-0 flex-1 bg-transparent px-2 py-3 text-sm text-[#08080C] outline-none placeholder:text-[#6B7280]/70"
+                      />
+                    </div>
                   </div>
                   <div>
                     <label htmlFor="github" className={labelCls}>
@@ -946,7 +1262,20 @@ export default function Vagas() {
                         <Github className="w-3.5 h-3.5" /> GitHub ou portfólio <span className="text-[#9CA3AF] font-normal">(opcional)</span>
                       </span>
                     </label>
-                    <input id="github" type="text" placeholder="github.com/seuperfil" value={form.github} onChange={(e) => update("github", e.target.value)} className={inputCls} />
+                    <div className="flex rounded-xl border border-[#08080C]/12 bg-[#FAFAFA] focus-within:border-[#37489d]/40 focus-within:ring-2 focus-within:ring-[#37489d]/10">
+                      <span className="flex shrink-0 items-center border-r border-[#08080C]/8 pl-3 pr-2 text-sm text-[#6B7280]">
+                        github.com/
+                      </span>
+                      <input
+                        id="github"
+                        type="text"
+                        autoComplete="off"
+                        placeholder="seuperfil"
+                        value={form.github}
+                        onChange={(e) => update("github", profileUsername(e.target.value, "github"))}
+                        className="min-w-0 flex-1 bg-transparent px-2 py-3 text-sm text-[#08080C] outline-none placeholder:text-[#6B7280]/70"
+                      />
+                    </div>
                   </div>
                 </div>
 
@@ -1009,7 +1338,7 @@ export default function Vagas() {
                 <div>
                   <label htmlFor="curriculo" className={labelCls}>
                     <span className="flex items-center gap-1.5">
-                      <FileText className="w-3.5 h-3.5" /> Currículo <span className="text-[#9CA3AF] font-normal">(PDF, até 5 MB)</span>
+                      <FileText className="w-3.5 h-3.5" /> Currículo <span className="text-[#9CA3AF] font-normal">(PDF, até 3 MB)</span>
                     </span>
                   </label>
                   <button
@@ -1027,8 +1356,61 @@ export default function Vagas() {
                     type="file"
                     accept=".pdf,application/pdf"
                     className="sr-only"
-                    onChange={(e) => setFileName(e.target.files?.[0]?.name ?? "")}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0] ?? null;
+                      setFileError(null);
+                      if (!file) {
+                        setPdfFile(null);
+                        setFileName("");
+                        return;
+                      }
+                      if (
+                        (file.type && file.type !== "application/pdf") ||
+                        !file.name.toLowerCase().endsWith(".pdf")
+                      ) {
+                        setPdfFile(null);
+                        setFileName("");
+                        setFileError("Selecione um arquivo PDF válido.");
+                        e.target.value = "";
+                        return;
+                      }
+                      if (file.size > MAX_PDF_BYTES) {
+                        setPdfFile(null);
+                        setFileName("");
+                        setFileError("O PDF precisa ter no máximo 3 MB.");
+                        e.target.value = "";
+                        return;
+                      }
+                      void file
+                        .slice(0, 5)
+                        .arrayBuffer()
+                        .then((buffer) => {
+                          const signature = new TextDecoder().decode(buffer);
+                          if (signature !== "%PDF-") {
+                            setPdfFile(null);
+                            setFileName("");
+                            setFileError("Arquivo inválido: o conteúdo não é um PDF.");
+                            e.target.value = "";
+                            return;
+                          }
+                          setPdfFile(file);
+                          setFileName(file.name);
+                        })
+                        .catch(() => {
+                          setPdfFile(null);
+                          setFileName("");
+                          setFileError("Não foi possível validar o PDF. Tente outro arquivo.");
+                          e.target.value = "";
+                        });
+                    }}
                   />
+                  {fileError ? (
+                    <p className="mt-1.5 text-xs text-red-600">{fileError}</p>
+                  ) : pdfFile ? (
+                    <p className="mt-1.5 text-xs text-emerald-700">
+                      PDF validado · {(pdfFile.size / 1024 / 1024).toFixed(2)} MB
+                    </p>
+                  ) : null}
                 </div>
 
                 <div className="flex items-start gap-3 pt-1">
@@ -1045,9 +1427,22 @@ export default function Vagas() {
                   </label>
                 </div>
 
+                {submitError && (
+                  <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                    {submitError}
+                  </p>
+                )}
+
                 <div className="pt-2">
-                  <StarBorder as="button" type="submit" color="hsl(224, 47%, 42%)" speed="8s" className="w-full">
-                    Enviar minha candidatura
+                  <StarBorder
+                    as="button"
+                    type="submit"
+                    disabled={submitting}
+                    color="hsl(224, 47%, 42%)"
+                    speed="8s"
+                    className="w-full"
+                  >
+                    {submitting ? "Enviando…" : "Enviar minha candidatura"}
                   </StarBorder>
                 </div>
               </form>

@@ -13,58 +13,60 @@ type Scene = {
   lines: CodeLine[];
 };
 
-/** Cada cena = um fluxo real da vaga. Caption e código andam juntos. */
+/** Cada cena = um fluxo real do MVP (pseudo-código legível, sem API inventada). */
 const SCENES: Scene[] = [
   {
-    file: "adzhub · content-script.ts",
-    caption: "Extensão Manifest V3: lê a UI do Ads e devolve dados estruturados.",
+    file: "adzhub · google-ads-agent.ts",
+    caption: "Edge Function: GAQL via googleAds:search na Google Ads API.",
     lines: [
-      { kind: "comment", text: "// content-script.ts — captura no DOM" },
+      { kind: "comment", text: "// google-ads-agent — Edge Function" },
       {
         kind: "code",
         parts: [
           { text: "const", tone: "kw" },
-          { text: " rows", tone: "ident" },
-          { text: " = ", tone: "muted" },
-          { text: "document", tone: "key" },
-          { text: ".", tone: "punct" },
-          { text: "queryAll", tone: "ident" },
+          { text: " { data }", tone: "ident" },
+          { text: " = await ", tone: "muted" },
+          { text: "googleAdsFetch", tone: "key" },
           { text: "(", tone: "punct" },
-          { text: '".campaign-row"', tone: "string" },
-          { text: ")", tone: "punct" },
         ],
       },
       {
         kind: "code",
         parts: [
-          { text: "return", tone: "kw" },
-          { text: " rows", tone: "ident" },
-          { text: ".", tone: "punct" },
-          { text: "map", tone: "ident" },
-          { text: "(", tone: "punct" },
-          { text: "parseCampaign", tone: "ident" },
+          { text: "  `/customers/${id}/googleAds:search`", tone: "string" },
+          { text: ",", tone: "punct" },
+        ],
+      },
+      {
+        kind: "code",
+        parts: [
+          { text: "  { query: ", tone: "muted" },
+          { text: "GAQL", tone: "ident" },
+          { text: " }", tone: "muted" },
           { text: ")", tone: "punct" },
         ],
       },
       { kind: "blank" },
-      { kind: "tags", tags: ["Manifest V3", "DOM", "Extensão"] },
+      { kind: "tags", tags: ["Google Ads API", "GAQL", "Edge Function"] },
     ],
   },
   {
-    file: "adzhub · sync-campaigns.ts",
-    caption: "API Meta → Supabase: campanhas e leads no mesmo fluxo, sem planilha.",
+    file: "adzhub · meta-reports-admin.ts",
+    caption: "Meta Graph API → Postgres: insights de campanha syncados no Supabase.",
     lines: [
-      { kind: "comment", text: "// sync-campaigns.ts" },
+      { kind: "comment", text: "// meta-reports-admin — Graph → Postgres" },
       {
         kind: "code",
         parts: [
           { text: "const", tone: "kw" },
-          { text: " campaigns", tone: "ident" },
+          { text: " insights", tone: "ident" },
           { text: " = await ", tone: "muted" },
-          { text: "meta", tone: "key" },
+          { text: "graph", tone: "key" },
           { text: ".", tone: "punct" },
-          { text: "getCampaigns", tone: "ident" },
-          { text: "()", tone: "punct" },
+          { text: "get", tone: "ident" },
+          { text: "(", tone: "punct" },
+          { text: "`/act_${id}/insights`", tone: "string" },
+          { text: ")", tone: "punct" },
         ],
       },
       {
@@ -75,32 +77,28 @@ const SCENES: Scene[] = [
           { text: ".", tone: "punct" },
           { text: "from", tone: "ident" },
           { text: "(", tone: "punct" },
-          { text: '"campaigns"', tone: "string" },
+          { text: '"campaign_metrics"', tone: "string" },
           { text: ").", tone: "punct" },
           { text: "upsert", tone: "ident" },
-          { text: "(campaigns)", tone: "punct" },
+          { text: "(insights)", tone: "punct" },
         ],
       },
       { kind: "blank" },
-      { kind: "tags", tags: ["Meta API", "Supabase", "Sync"] },
+      { kind: "tags", tags: ["Meta Graph", "Supabase", "Sync"] },
     ],
   },
   {
-    file: "adzhub · agent-run.ts",
-    caption: "Agente no AdzChat: tarefa da reunião vira ação na plataforma.",
+    file: "adzhub · ask-adz-tools.ts",
+    caption: "AdzChat: tools no Supercérebro — contexto da reunião e métricas na mesma conversa.",
     lines: [
-      { kind: "comment", text: "// agent-run.ts — vibecoding + operação" },
+      { kind: "comment", text: "// ask-adz — tool calls (AI SDK)" },
       {
         kind: "code",
         parts: [
-          { text: "const", tone: "kw" },
-          { text: " task", tone: "ident" },
-          { text: " = await ", tone: "muted" },
-          { text: "agent", tone: "key" },
-          { text: ".", tone: "punct" },
-          { text: "fromMeeting", tone: "ident" },
+          { text: "await ", tone: "muted" },
+          { text: "search_client_context", tone: "key" },
           { text: "(", tone: "punct" },
-          { text: '"Ômega 3"', tone: "string" },
+          { text: '"tarefas da reunião Spot"', tone: "string" },
           { text: ")", tone: "punct" },
         ],
       },
@@ -108,16 +106,16 @@ const SCENES: Scene[] = [
         kind: "code",
         parts: [
           { text: "await ", tone: "muted" },
-          { text: "adzchat", tone: "key" },
-          { text: ".", tone: "punct" },
-          { text: "execute", tone: "ident" },
-          { text: "(", tone: "punct" },
-          { text: "task", tone: "ident" },
-          { text: ")", tone: "punct" },
+          { text: "get_campaign_metrics", tone: "key" },
+          { text: "({ ", tone: "punct" },
+          { text: "campaign_name", tone: "ident" },
+          { text: ": ", tone: "punct" },
+          { text: '"Ômega 3"', tone: "string" },
+          { text: " })", tone: "punct" },
         ],
       },
       { kind: "blank" },
-      { kind: "tags", tags: ["AdzChat", "IA", "Vibecoding"] },
+      { kind: "tags", tags: ["AdzChat", "AI SDK", "Tools"] },
     ],
   },
 ];
@@ -135,7 +133,7 @@ const LINE_MS = 380;
 const HOLD_MS = 2600;
 const FADE_MS = 320;
 
-/** Terminal em loop: 3 cenas alinhadas à vaga (extensão → API → agente). */
+/** Terminal em loop: 3 cenas do MVP (Google Ads GAQL → Meta Graph sync → tools do AdzChat). */
 export function VagasTerminalMotion() {
   const [sceneIndex, setSceneIndex] = useState(0);
   const [visibleCount, setVisibleCount] = useState(0);
@@ -172,13 +170,8 @@ export function VagasTerminalMotion() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.55, ease: "easeOut", delay: 0.1 }}
     >
-      <div
-        className="absolute -inset-3 bg-gradient-to-br from-[#37489d]/15 via-[#F9C7B2]/12 to-[#D4EFF4]/30 rounded-[28px] blur-2xl pointer-events-none"
-        aria-hidden
-      />
-
-      <div className="relative rounded-2xl bg-white/80 backdrop-blur-md border border-[#08080C]/10 shadow-[0_20px_50px_-24px_rgba(8,8,12,0.35)] overflow-hidden text-[11px] sm:text-xs font-mono leading-relaxed">
-        <div className="flex items-center justify-between gap-3 px-4 py-2.5 bg-[#F8F8F8]/90 border-b border-[#08080C]/8">
+      <div className="relative overflow-hidden rounded-2xl border border-[#08080C]/10 bg-white shadow-[0_20px_50px_-28px_rgba(8,8,12,0.28)] text-[11px] sm:text-xs font-mono leading-relaxed">
+        <div className="flex items-center justify-between gap-3 border-b border-[#08080C]/8 bg-white px-4 py-2.5">
           <AnimatePresence mode="wait">
             <motion.span
               key={scene.file}
@@ -199,7 +192,7 @@ export function VagasTerminalMotion() {
           </span>
         </div>
 
-        <div className="px-4 sm:px-5 py-4 min-h-[200px] sm:min-h-[220px] bg-gradient-to-b from-white/40 to-[#F7F7F5]/50">
+        <div className="min-h-[220px] bg-white px-4 py-4 sm:min-h-[240px] sm:px-5">
           <motion.div
             className="space-y-1"
             animate={{ opacity: phase === "fadeout" ? 0 : 1 }}
@@ -249,7 +242,7 @@ export function VagasTerminalMotion() {
           </motion.div>
         </div>
 
-        <div className="px-4 sm:px-5 pb-4 pt-1 border-t border-[#08080C]/5 bg-[#F8F8F8]/60">
+        <div className="border-t border-[#08080C]/5 bg-white px-4 pb-4 pt-1 sm:px-5">
           <AnimatePresence mode="wait">
             <motion.p
               key={scene.caption}

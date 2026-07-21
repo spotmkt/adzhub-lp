@@ -318,17 +318,13 @@ export function VagasPlatformMotion() {
   }
 
   return (
-    <div
-      ref={rootRef}
-      className="relative w-full max-w-6xl mx-auto overflow-x-clip overscroll-contain"
-      style={{ contain: "layout paint" }}
-    >
-      <div
-        className="absolute -inset-4 bg-gradient-to-r from-[#37489d]/15 via-[#F9C7B2]/12 to-[#D4EFF4]/25 rounded-[32px] blur-2xl pointer-events-none"
-        aria-hidden
-      />
-
-      <div className="relative rounded-2xl border border-[#08080C]/8 bg-white shadow-2xl overflow-hidden">
+    <div ref={rootRef} className="relative w-full max-w-6xl mx-auto">
+      {/*
+        Sem glow retangular atrás do card: o blur criava uma “placa” cinza
+        que aparecia nas 4 pontas do border-radius.
+        Sombra só no miolo branco arredondado.
+      */}
+      <div className="relative overflow-hidden rounded-2xl border border-[#08080C]/8 bg-white shadow-[0_20px_50px_-28px_rgba(8,8,12,0.28)]">
         <div className="flex flex-col sm:flex-row sm:items-center gap-3 px-3 sm:px-4 py-3 border-b border-[#08080C]/8 bg-white">
           <div className="flex items-center gap-2 shrink-0">
             <img src={adzhubLogo} alt="AdzHub" className="h-6 w-auto" />
@@ -364,7 +360,7 @@ export function VagasPlatformMotion() {
           </button>
         </div>
 
-        <div className={`relative ${STAGE_H} bg-[#F8F8F8] overflow-hidden touch-pan-y`}>
+        <div className={`relative ${STAGE_H} bg-white overflow-hidden touch-pan-y`}>
           <AnimatePresence mode="wait">
             <motion.div
               key={stageKey()}
