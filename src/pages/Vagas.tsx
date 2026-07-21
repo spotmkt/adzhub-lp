@@ -1,6 +1,6 @@
-import { useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Helmet } from "react-helmet-async";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   MapPin,
   Layers,
@@ -26,10 +26,12 @@ import {
   Rocket,
   Handshake,
   Sparkles,
+  X,
 } from "lucide-react";
 import { StarBorder } from "@/components/ui/star-border";
-import { LandingNav } from "@/components/LandingNav";
+import { ColorOrb } from "@/components/ui/ColorOrb";
 import { Footer } from "@/components/Footer";
+import adzhubLogo from "@/assets/adzhub-logo-new.svg";
 import { VagasTerminalMotion } from "@/components/vagas/VagasTerminalMotion";
 import { OfficeCarousel } from "@/components/vagas/OfficeCarousel";
 import { FadeIn, Stagger, StaggerItem } from "@/components/vagas/MotionReveal";
@@ -45,6 +47,13 @@ const selectCls =
   "w-full rounded-xl border border-[#08080C]/12 bg-[#FAFAFA] px-4 py-3 text-sm text-[#08080C] focus:outline-none focus:border-[#37489d]/40 focus:ring-2 focus:ring-[#37489d]/10 transition-colors appearance-none cursor-pointer";
 
 const labelCls = "block text-sm font-medium text-[#08080C] mb-1.5";
+
+const ADZ_ORB_TONES = {
+  base: "oklch(95% 0.05 330)",
+  accent1: "oklch(70% 0.18 50)",
+  accent2: "oklch(62% 0.24 280)",
+  accent3: "oklch(40% 0.15 265)",
+};
 
 const spotStats = [
   {
@@ -194,7 +203,35 @@ export default function Vagas() {
   const [form, setForm] = useState<FormFields>(emptyForm);
   const [fileName, setFileName] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [applicationOpen, setApplicationOpen] = useState(false);
+  const [applicationReady, setApplicationReady] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!applicationOpen) {
+      setApplicationReady(false);
+      return;
+    }
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const introTimer = window.setTimeout(() => setApplicationReady(true), 750);
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setApplicationOpen(false);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.clearTimeout(introTimer);
+      window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [applicationOpen]);
+
+  function openApplication() {
+    setApplicationReady(false);
+    setApplicationOpen(true);
+  }
 
   function update(field: keyof FormFields, value: string | boolean) {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -206,7 +243,7 @@ export default function Vagas() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white pb-24 md:pb-0">
       <Helmet>
         <title>Vaga · Núcleo Fundacional · AdzHub</title>
         <meta
@@ -222,10 +259,45 @@ export default function Vagas() {
         <meta property="og:url" content="https://adzhub.com.br/vagas" />
       </Helmet>
 
-      <LandingNav activeSection="home" />
+      <header className="fixed top-0 left-0 right-0 z-50">
+        <div
+          className="absolute inset-x-0 top-0 pointer-events-none"
+          style={{
+            height: "calc(100% + 48px)",
+            backdropFilter: "blur(6px)",
+            WebkitBackdropFilter: "blur(6px)",
+            background:
+              "linear-gradient(to bottom, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.7) 50%, rgba(255,255,255,0) 100%)",
+            maskImage: "linear-gradient(to bottom, black 40%, transparent 100%)",
+            WebkitMaskImage: "linear-gradient(to bottom, black 40%, transparent 100%)",
+          }}
+        />
+        <div className="relative flex items-center justify-between px-5 sm:px-6 py-3">
+          <a href="#top" className="flex shrink-0" aria-label="AdzHub">
+            <img
+              src={adzhubLogo}
+              alt="AdzHub"
+              className="h-8 w-auto"
+              width={120}
+              height={32}
+              loading="eager"
+            />
+          </a>
+          <button
+            type="button"
+            onClick={openApplication}
+            className="hidden md:inline-flex h-10 items-center justify-center rounded-full bg-[#37489d] px-5 text-sm font-semibold text-white hover:bg-[#2f3d86] transition-colors"
+          >
+            Quero me candidatar
+          </button>
+        </div>
+      </header>
 
       {/* HERO */}
-      <section className="relative mt-[83px] mx-4 sm:mx-5 rounded-[28px] md:rounded-[32px] overflow-hidden border border-[#08080C]/[0.06] bg-gradient-to-br from-slate-50 via-white to-[#D4EFF4]/40">
+      <section
+        id="top"
+        className="relative mt-[72px] sm:mt-[76px] mx-4 sm:mx-5 rounded-[28px] md:rounded-[32px] overflow-hidden border border-[#08080C]/[0.06] bg-gradient-to-br from-slate-50 via-white to-[#D4EFF4]/40"
+      >
         <div
           className="pointer-events-none absolute inset-0 opacity-[0.35]"
           style={{
@@ -236,7 +308,7 @@ export default function Vagas() {
         <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 pt-12 pb-12 lg:pt-16 lg:pb-16">
           <div className="grid lg:grid-cols-2 gap-10 lg:gap-12 xl:gap-16 items-center">
             <motion.div
-              className="flex flex-col items-start text-left gap-5 sm:gap-6"
+              className="flex flex-col items-center text-center lg:items-start lg:text-left gap-5 sm:gap-6"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.55, ease: "easeOut" }}
@@ -251,13 +323,13 @@ export default function Vagas() {
                 marketing em todo o Brasil
               </h1>
 
-              <p className="text-base sm:text-lg text-[#08080C]/80 max-w-[540px] leading-relaxed">
+              <p className="text-base sm:text-lg text-[#08080C]/80 max-w-[540px] leading-relaxed mx-auto lg:mx-0">
                 A SPOT está formando o time de desenvolvimento da AdzHub uma plataforma AI-First para o
                 marketing empresarial criada a partir das metodologias da SPOT MKT.
               </p>
 
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
-                <StarBorder as="a" href="#candidatura" color="hsl(224, 47%, 42%)" speed="8s" className="w-full sm:w-auto text-center">
+                <StarBorder type="button" onClick={openApplication} color="hsl(224, 47%, 42%)" speed="8s" className="w-full sm:w-auto text-center">
                   Quero me candidatar
                 </StarBorder>
                 <a
@@ -268,16 +340,16 @@ export default function Vagas() {
                 </a>
               </div>
 
-              <div className="flex flex-col gap-2 text-sm text-[#6B7280] pt-1">
-                <span className="flex items-center gap-1.5">
+              <div className="flex flex-col items-center lg:items-start gap-2 text-sm text-[#6B7280] pt-1">
+                <span className="flex items-center justify-center lg:justify-start gap-1.5">
                   <Rocket className="w-4 h-4 text-[#37489d]/60 shrink-0" />
                   Faça parte do Núcleo Fundacional
                 </span>
-                <span className="flex items-center gap-1.5">
+                <span className="flex items-center justify-center lg:justify-start gap-1.5">
                   <Handshake className="w-4 h-4 text-[#37489d]/60 shrink-0" />
                   Possibilidade de partnership
                 </span>
-                <span className="flex items-center gap-1.5">
+                <span className="flex items-center justify-center lg:justify-start gap-1.5">
                   <Building2 className="w-4 h-4 text-[#37489d]/60 shrink-0" />
                   Presencial no P7 Criativo
                 </span>
@@ -417,14 +489,14 @@ export default function Vagas() {
             </p>
           </FadeIn>
 
-          <Stagger className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+          <Stagger className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
             {dailyTasks.map(({ Icon, text }) => (
               <StaggerItem key={text}>
-                <VagasSpotlightCard className="h-full p-5 sm:p-6 hover:border-[#37489d]/25 transition-colors">
-                  <div className="inline-flex rounded-xl bg-[#37489d]/10 p-2.5 mb-4">
+                <VagasSpotlightCard className="h-full p-4 sm:p-6 hover:border-[#37489d]/25 transition-colors">
+                  <div className="inline-flex rounded-xl bg-[#37489d]/10 p-2 sm:p-2.5 mb-3 sm:mb-4">
                     <Icon className="w-5 h-5 text-[#37489d]" aria-hidden />
                   </div>
-                  <p className="text-sm text-[#08080C]/80 leading-relaxed">{text}</p>
+                  <p className="text-xs sm:text-sm text-[#08080C]/80 leading-relaxed">{text}</p>
                 </VagasSpotlightCard>
               </StaggerItem>
             ))}
@@ -560,12 +632,13 @@ export default function Vagas() {
                   Se o checklist acima te descreve e você tem histórico para provar, queremos conversar, mesmo
                   que falte um diferencial.
                 </p>
-                <a
-                  href="#candidatura"
+                <button
+                  type="button"
+                  onClick={openApplication}
                   className="inline-flex h-10 shrink-0 items-center justify-center rounded-xl bg-[#37489d] px-4 text-sm font-semibold text-white hover:bg-[#2f3d86] transition-colors"
                 >
                   Enviar currículo
-                </a>
+                </button>
               </div>
             </div>
           </FadeIn>
@@ -634,10 +707,10 @@ export default function Vagas() {
                 ))}
               </div>
               <div className="mt-8">
-                <p className="text-xs uppercase tracking-wider text-[#6B7280] mb-4">
+                <p className="text-xs uppercase tracking-wider text-[#6B7280] mb-4 text-center lg:text-left">
                   Um ecossistema apoiado por
                 </p>
-                <div className="flex items-center gap-8 flex-wrap">
+                <div className="flex items-center justify-center lg:justify-start gap-6 sm:gap-8 flex-wrap">
                   <img
                     src="/vagas/logos/p7-criativo.png"
                     alt="P7 Criativo"
@@ -660,7 +733,7 @@ export default function Vagas() {
               </div>
             </FadeIn>
 
-            <FadeIn delay={0.1} className="relative rounded-2xl overflow-hidden aspect-[3/4] sm:aspect-[4/5] lg:aspect-auto lg:min-h-[520px] border border-[#08080C]/8 shadow-md">
+            <FadeIn delay={0.1} className="order-first lg:order-none relative rounded-2xl overflow-hidden aspect-[3/4] sm:aspect-[4/5] lg:aspect-auto lg:min-h-[520px] border border-[#08080C]/8 shadow-md">
               <img
                 src="/vagas/fachada.avif"
                 alt="Fachada do P7 Criativo em Belo Horizonte"
@@ -702,9 +775,95 @@ export default function Vagas() {
       </section>
 
       {/* FORM */}
-      <section id="candidatura" className="py-20 sm:py-24 bg-[#F8F8F8] rounded-3xl mx-4 sm:mx-5 scroll-mt-24">
-        <div className="max-w-7xl mx-auto px-5 sm:px-8">
-          <FadeIn className="max-w-2xl mx-auto">
+      <section
+        id="candidatura"
+        role={applicationOpen ? "dialog" : undefined}
+        aria-modal={applicationOpen ? true : undefined}
+        aria-label={applicationOpen ? "Formulário de candidatura" : undefined}
+        onMouseDown={(event) => {
+          if (applicationOpen && event.target === event.currentTarget) setApplicationOpen(false);
+        }}
+        className={
+          applicationOpen
+            ? "fixed inset-0 z-[100] m-0 flex items-center justify-center overflow-hidden bg-[#08080C]/60 p-3 backdrop-blur-sm sm:p-6"
+            : "py-20 sm:py-24 bg-[#F8F8F8] rounded-3xl mx-4 sm:mx-5 scroll-mt-24"
+        }
+      >
+        <motion.div
+          layout
+          className={
+            applicationOpen
+              ? "relative max-h-full w-full max-w-3xl overflow-y-auto overscroll-contain rounded-3xl bg-[#F8F8F8] px-5 py-8 shadow-2xl sm:px-8 sm:py-10"
+              : "max-w-7xl mx-auto px-5 sm:px-8"
+          }
+          initial={applicationOpen ? { opacity: 0, y: 24, scale: 0.97 } : false}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.35, ease: "easeOut" }}
+          onMouseDown={(event) => event.stopPropagation()}
+        >
+          {applicationOpen && (
+            <button
+              type="button"
+              onClick={() => setApplicationOpen(false)}
+              className="sticky top-0 z-20 ml-auto -mb-10 flex h-10 w-10 items-center justify-center rounded-full border border-[#08080C]/10 bg-white/90 text-[#6B7280] shadow-sm backdrop-blur transition-colors hover:text-[#08080C]"
+              aria-label="Fechar formulário"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          )}
+
+          <AnimatePresence mode="wait">
+            {applicationOpen && !applicationReady ? (
+              <motion.div
+                key="adz-intro"
+                className="flex min-h-[420px] flex-col items-center justify-center text-center"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0, scale: 0.96 }}
+                transition={{ duration: 0.25 }}
+              >
+                <motion.div
+                  initial={{ scale: 0.45, rotate: -35 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  transition={{ type: "spring", stiffness: 180, damping: 14 }}
+                  className="relative mb-7"
+                >
+                  <motion.div
+                    className="absolute inset-[-18px] rounded-full border border-[#37489d]/20"
+                    animate={{ scale: [0.85, 1.15, 0.85], opacity: [0.25, 0.65, 0.25] }}
+                    transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
+                  />
+                  <ColorOrb dimension="88px" tones={ADZ_ORB_TONES} spinDuration={5} />
+                </motion.div>
+                <motion.p
+                  className="text-sm font-semibold uppercase tracking-[0.18em] text-[#37489d]"
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.18 }}
+                >
+                  Pergunte ao Adz
+                </motion.p>
+                <motion.h2
+                  className="mt-2 text-2xl font-semibold text-[#08080C]"
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.28 }}
+                >
+                  Vamos conhecer você
+                </motion.h2>
+                <div className="mt-6 flex gap-1.5" aria-hidden>
+                  {[0, 1, 2].map((dot) => (
+                    <motion.span
+                      key={dot}
+                      className="h-2 w-2 rounded-full bg-[#37489d]"
+                      animate={{ y: [0, -6, 0], opacity: [0.35, 1, 0.35] }}
+                      transition={{ duration: 0.7, repeat: Infinity, delay: dot * 0.12 }}
+                    />
+                  ))}
+                </div>
+              </motion.div>
+            ) : (
+              <FadeIn key="application-form" className="max-w-2xl mx-auto">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[#37489d]/10 text-sm font-medium text-[#37489d] mb-6">
               Candidatura
             </div>
@@ -894,8 +1053,10 @@ export default function Vagas() {
               </form>
               </BorderBeamCard>
             )}
-          </FadeIn>
-        </div>
+              </FadeIn>
+            )}
+          </AnimatePresence>
+        </motion.div>
       </section>
 
       <div className="h-8" aria-hidden />
@@ -909,13 +1070,24 @@ export default function Vagas() {
           <p className="text-[#6B7280] mb-8 leading-relaxed">
             Se você tem histórico, vibecoding, marketing e ambição de partnership na AdzHub, envie sua candidatura.
           </p>
-          <StarBorder as="a" href="#candidatura" color="hsl(224, 47%, 42%)" speed="8s">
+          <StarBorder type="button" onClick={openApplication} color="hsl(224, 47%, 42%)" speed="8s">
             Quero fazer parte
           </StarBorder>
         </FadeIn>
       </section>
 
-      <Footer />
+      <Footer showCta={false} />
+
+      <div className="pointer-events-none fixed inset-x-0 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-50 flex justify-center px-4 md:hidden">
+        <button
+          type="button"
+          onClick={openApplication}
+          className="pointer-events-auto inline-flex h-14 items-center justify-center gap-3 rounded-full bg-[#37489d] pl-4 pr-7 text-base font-semibold text-white shadow-[0_10px_30px_-8px_rgba(55,72,157,0.55)] transition-colors active:bg-[#2f3d86]"
+        >
+          <ColorOrb dimension="28px" tones={ADZ_ORB_TONES} />
+          Quero me candidatar
+        </button>
+      </div>
     </div>
   );
 }

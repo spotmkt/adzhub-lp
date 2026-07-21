@@ -61,7 +61,7 @@ const SLIDES = [
   },
 ];
 
-const INTERVAL_MS = 4200;
+const INTERVAL_MS = 2200;
 
 /** Carrossel automático das fotos do escritório (P7 / SPOT). */
 export function OfficeCarousel() {
@@ -89,7 +89,7 @@ export function OfficeCarousel() {
 
   return (
     <div className="relative w-full">
-      <div className="relative aspect-[4/3] sm:aspect-[5/4] rounded-2xl overflow-hidden border border-[#08080C]/8 shadow-lg bg-[#F6F6F6]">
+      <div className="relative aspect-[4/3] sm:aspect-[5/4] rounded-2xl overflow-hidden border border-[#08080C]/8 shadow-lg bg-[#F8F8F8]">
         <AnimatePresence mode="wait">
           <motion.img
             key={slide.src}
@@ -99,7 +99,7 @@ export function OfficeCarousel() {
             initial={{ opacity: 0, scale: 1.04 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.55, ease: "easeOut" }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
           />
         </AnimatePresence>
 

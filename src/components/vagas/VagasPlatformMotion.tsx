@@ -334,7 +334,7 @@ export function VagasPlatformMotion() {
             <img src={adzhubLogo} alt="AdzHub" className="h-6 w-auto" />
           </div>
 
-          <div className="flex-1 flex items-center gap-1 overflow-x-auto overscroll-x-contain touch-pan-x">
+          <div className="flex-1 flex flex-nowrap items-center gap-1 overflow-x-auto overscroll-x-contain touch-pan-x [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {NAV_TABS.map((t) => {
               const Icon = t.icon;
               const active = scene.tab === t.id;
@@ -343,7 +343,7 @@ export function VagasPlatformMotion() {
                   key={t.id}
                   type="button"
                   onClick={() => goToTab(t.id)}
-                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${
+                  className={`inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-semibold whitespace-nowrap transition-colors ${
                     active ? "bg-[#37489d] text-white" : "text-[#6B7280] hover:bg-[#37489d]/8"
                   }`}
                 >
@@ -357,14 +357,14 @@ export function VagasPlatformMotion() {
           <button
             type="button"
             onClick={() => setPaused((v) => !v)}
-            className="self-end sm:self-auto inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium text-[#6B7280] hover:bg-[#F6F6F6] border border-[#08080C]/8"
+            className="hidden sm:inline-flex self-auto items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium text-[#6B7280] hover:bg-[#F6F6F6] border border-[#08080C]/8"
           >
             {paused ? <Play className="w-3.5 h-3.5" /> : <Pause className="w-3.5 h-3.5" />}
             {paused ? "Play" : "Pause"}
           </button>
         </div>
 
-        <div className={`relative ${STAGE_H} bg-[#F7F7F5] overflow-hidden touch-pan-y`}>
+        <div className={`relative ${STAGE_H} bg-[#F8F8F8] overflow-hidden touch-pan-y`}>
           <AnimatePresence mode="wait">
             <motion.div
               key={stageKey()}
@@ -971,7 +971,7 @@ function FloatingAskAdz({
               <X className="w-4 h-4 text-[#9CA3AF]" />
             </div>
 
-            <div className="px-3 py-3 space-y-2.5 min-h-[180px] max-h-[220px] overflow-hidden bg-[#FAFAF8]">
+            <div className="px-3 py-3 space-y-2.5 min-h-[180px] max-h-[220px] overflow-hidden bg-[#FAFAFA]">
               <AnimatePresence>
                 {showUserBubble && (
                   <motion.div
@@ -1020,7 +1020,7 @@ function FloatingAskAdz({
             </div>
 
             <div className="px-3 py-2.5 border-t border-[#08080C]/6">
-              <div className="rounded-md bg-[#F0F0EE] px-3 py-2.5 text-xs min-h-[40px] flex items-center">
+              <div className="rounded-md bg-[#F0F0F0] px-3 py-2.5 text-xs min-h-[40px] flex items-center">
                 {phase === "typing_input" ? (
                   <span className="text-[#08080C]">
                     {inputTw.text}

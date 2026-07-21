@@ -23,7 +23,11 @@ const SOCIAL_LINKS = [
   },
 ] as const;
 
-export function Footer() {
+interface FooterProps {
+  showCta?: boolean;
+}
+
+export function Footer({ showCta = true }: FooterProps) {
   const location = useLocation();
   const { openWaitlist } = useWaitlistDialog();
 
@@ -35,32 +39,34 @@ export function Footer() {
   return (
     <footer className="bg-white rounded-t-[40px] pt-24 pb-12 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-8">
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-24 gap-8">
-          <h2 className="text-4xl md:text-6xl lg:text-[80px] font-medium leading-[100%] tracking-tight text-[#37489d]">
-            Vamos começar?
-          </h2>
-          <div className="w-full lg:w-[469px]">
-            <p className="text-lg text-[#6B7280] mb-6">
-              Planejamento, execução e evolução contínua do marketing em uma única plataforma. Ideal para donos de PMEs que
-              querem estrutura sem fragmentar fornecedores.
-            </p>
-            <div className="flex flex-col sm:flex-row flex-wrap gap-3">
-              <button
-                type="button"
-                onClick={openWaitlist}
-                className="inline-flex h-11 items-center justify-center rounded-xl bg-[#37489d] px-8 py-2 font-medium text-white hover:bg-[#37489d]/90 transition-colors"
-              >
-                Começar grátis
-              </button>
-              <a
-                href="https://app.adzhub.com.br"
-                className="inline-flex h-11 items-center justify-center rounded-xl border border-[#37489d]/25 bg-white px-8 py-2 font-medium text-[#37489d] hover:bg-[#37489d]/5 transition-colors"
-              >
-                Acessar plataforma
-              </a>
+        {showCta && (
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-24 gap-8">
+            <h2 className="text-4xl md:text-6xl lg:text-[80px] font-medium leading-[100%] tracking-tight text-[#37489d]">
+              Vamos começar?
+            </h2>
+            <div className="w-full lg:w-[469px]">
+              <p className="text-lg text-[#6B7280] mb-6">
+                Planejamento, execução e evolução contínua do marketing em uma única plataforma. Ideal para donos de PMEs que
+                querem estrutura sem fragmentar fornecedores.
+              </p>
+              <div className="flex flex-col sm:flex-row flex-wrap gap-3">
+                <button
+                  type="button"
+                  onClick={openWaitlist}
+                  className="inline-flex h-11 items-center justify-center rounded-xl bg-[#37489d] px-8 py-2 font-medium text-white hover:bg-[#37489d]/90 transition-colors"
+                >
+                  Começar grátis
+                </button>
+                <a
+                  href="https://app.adzhub.com.br"
+                  className="inline-flex h-11 items-center justify-center rounded-xl border border-[#37489d]/25 bg-white px-8 py-2 font-medium text-[#37489d] hover:bg-[#37489d]/5 transition-colors"
+                >
+                  Acessar plataforma
+                </a>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-24">
           <div className="lg:col-span-1">

@@ -343,7 +343,7 @@ export function VagasGraphView({
                     initial={{ opacity: 0, x: 8 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.2 + i * 0.15 }}
-                    className="flex items-start gap-1.5 text-[11px] text-[#374151] bg-[#F7F7F5] rounded-lg px-2 py-1.5"
+                    className="flex items-start gap-1.5 text-[11px] text-[#374151] bg-[#F8F8F8] rounded-lg px-2 py-1.5"
                   >
                     <CheckSquare className="w-3 h-3 text-[#37489d] shrink-0 mt-0.5" />
                     {t}

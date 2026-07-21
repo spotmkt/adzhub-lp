@@ -178,7 +178,7 @@ export function VagasTerminalMotion() {
       />
 
       <div className="relative rounded-2xl bg-white/80 backdrop-blur-md border border-[#08080C]/10 shadow-[0_20px_50px_-24px_rgba(8,8,12,0.35)] overflow-hidden text-[11px] sm:text-xs font-mono leading-relaxed">
-        <div className="flex items-center justify-between gap-3 px-4 py-2.5 bg-[#F7F7F5]/90 border-b border-[#08080C]/8">
+        <div className="flex items-center justify-between gap-3 px-4 py-2.5 bg-[#F8F8F8]/90 border-b border-[#08080C]/8">
           <AnimatePresence mode="wait">
             <motion.span
               key={scene.file}
@@ -249,7 +249,7 @@ export function VagasTerminalMotion() {
           </motion.div>
         </div>
 
-        <div className="px-4 sm:px-5 pb-4 pt-1 border-t border-[#08080C]/5 bg-[#F7F7F5]/60">
+        <div className="px-4 sm:px-5 pb-4 pt-1 border-t border-[#08080C]/5 bg-[#F8F8F8]/60">
           <AnimatePresence mode="wait">
             <motion.p
               key={scene.caption}
