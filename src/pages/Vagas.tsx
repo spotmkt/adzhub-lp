@@ -729,11 +729,6 @@ export default function Vagas() {
             ))}
           </Stagger>
 
-          <FadeIn delay={0.15}>
-            <p className="text-sm text-[#6B7280] italic text-center mt-10 max-w-2xl mx-auto">
-              Procuramos quem já chega com capacidade de execução. O desafio é construção de produto e ownership, não formação do zero.
-            </p>
-          </FadeIn>
         </div>
       </section>
 
