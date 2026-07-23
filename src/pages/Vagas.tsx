@@ -551,7 +551,7 @@ export default function Vagas() {
               </h1>
 
               <p className="text-base sm:text-lg text-[#08080C]/80 max-w-[540px] leading-relaxed mx-auto lg:mx-0">
-                A SPOT está formando o time de desenvolvimento da AdzHub uma plataforma AI-First para o
+                A SPOT está formando o time de desenvolvimento da AdzHub, uma plataforma AI-First para o
                 marketing empresarial criada a partir das metodologias da SPOT MKT.
               </p>
 

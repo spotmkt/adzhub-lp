@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -68,8 +68,23 @@ export function OfficeCarousel() {
   const [index, setIndex] = useState(0);
   // Pausa o autoplay por um tempo quando o usuário navega manualmente
   const [interacted, setInteracted] = useState(false);
+  const [inView, setInView] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const node = rootRef.current;
+    if (!node) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      { threshold: 0.35 },
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!inView) return;
     if (interacted) {
       const t = setTimeout(() => setInteracted(false), INTERVAL_MS * 2);
       return () => clearTimeout(t);
@@ -78,7 +93,7 @@ export function OfficeCarousel() {
       setIndex((i) => (i + 1) % SLIDES.length);
     }, INTERVAL_MS);
     return () => clearInterval(t);
-  }, [interacted]);
+  }, [interacted, inView]);
 
   function goTo(next: number) {
     setIndex((next + SLIDES.length) % SLIDES.length);
@@ -88,7 +103,7 @@ export function OfficeCarousel() {
   const slide = SLIDES[index];
 
   return (
-    <div className="relative w-full">
+    <div ref={rootRef} className="relative w-full">
       <div className="relative aspect-[4/3] sm:aspect-[5/4] rounded-2xl overflow-hidden border border-[#08080C]/8 shadow-lg bg-[#F8F8F8]">
         <AnimatePresence mode="wait">
           <motion.img
