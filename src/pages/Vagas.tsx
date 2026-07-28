@@ -594,7 +594,30 @@ export default function Vagas() {
             </motion.div>
 
             <div className="w-full max-w-lg mx-auto lg:max-w-none lg:mx-0">
-              <VagasTerminalMotion />
+              <motion.div
+                className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-[#08080C]/8 bg-[#F8F8F8] shadow-lg lg:hidden"
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.55, delay: 0.12, ease: "easeOut" }}
+              >
+                <img
+                  src="/vagas/maps/spot-maps-3.jpg"
+                  alt="Time SPOT trabalhando no escritório"
+                  className="absolute inset-0 h-full w-full object-cover object-[center_35%]"
+                  width={1080}
+                  height={1440}
+                  loading="eager"
+                  decoding="async"
+                />
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/55 via-black/15 to-transparent px-4 pb-4 pt-16">
+                  <p className="text-xs font-medium text-white drop-shadow-sm sm:text-sm">
+                    Time SPOT trabalhando no escritório
+                  </p>
+                </div>
+              </motion.div>
+              <div className="hidden lg:block">
+                <VagasTerminalMotion />
+              </div>
             </div>
           </div>
         </div>
@@ -1240,47 +1263,41 @@ export default function Vagas() {
                 </div>
 
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <div>
+                  <div className="min-w-0">
                     <label htmlFor="linkedin" className={labelCls}>
                       <span className="flex items-center gap-1.5">
-                        <Linkedin className="w-3.5 h-3.5" /> LinkedIn <span className="text-[#9CA3AF] font-normal">(opcional)</span>
+                        <Linkedin className="w-3.5 h-3.5 shrink-0" /> LinkedIn{" "}
+                        <span className="text-[#9CA3AF] font-normal">(opcional)</span>
                       </span>
                     </label>
-                    <div className="flex rounded-xl border border-[#08080C]/12 bg-[#FAFAFA] focus-within:border-[#37489d]/40 focus-within:ring-2 focus-within:ring-[#37489d]/10">
-                      <span className="flex shrink-0 items-center border-r border-[#08080C]/8 pl-3 pr-2 text-sm text-[#6B7280]">
-                        linkedin.com/in/
-                      </span>
-                      <input
-                        id="linkedin"
-                        type="text"
-                        autoComplete="off"
-                        placeholder="seuperfil"
-                        value={form.linkedin}
-                        onChange={(e) => update("linkedin", profileUsername(e.target.value, "linkedin"))}
-                        className="min-w-0 flex-1 bg-transparent px-2 py-3 text-sm text-[#08080C] outline-none placeholder:text-[#6B7280]/70"
-                      />
-                    </div>
+                    <input
+                      id="linkedin"
+                      type="text"
+                      autoComplete="off"
+                      inputMode="url"
+                      placeholder="linkedin.com/in/seuperfil"
+                      value={form.linkedin}
+                      onChange={(e) => update("linkedin", profileUsername(e.target.value, "linkedin"))}
+                      className={inputCls}
+                    />
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <label htmlFor="github" className={labelCls}>
                       <span className="flex items-center gap-1.5">
-                        <Github className="w-3.5 h-3.5" /> GitHub ou portfólio <span className="text-[#9CA3AF] font-normal">(opcional)</span>
+                        <Github className="w-3.5 h-3.5 shrink-0" /> GitHub ou portfólio{" "}
+                        <span className="text-[#9CA3AF] font-normal">(opcional)</span>
                       </span>
                     </label>
-                    <div className="flex rounded-xl border border-[#08080C]/12 bg-[#FAFAFA] focus-within:border-[#37489d]/40 focus-within:ring-2 focus-within:ring-[#37489d]/10">
-                      <span className="flex shrink-0 items-center border-r border-[#08080C]/8 pl-3 pr-2 text-sm text-[#6B7280]">
-                        github.com/
-                      </span>
-                      <input
-                        id="github"
-                        type="text"
-                        autoComplete="off"
-                        placeholder="seuperfil"
-                        value={form.github}
-                        onChange={(e) => update("github", profileUsername(e.target.value, "github"))}
-                        className="min-w-0 flex-1 bg-transparent px-2 py-3 text-sm text-[#08080C] outline-none placeholder:text-[#6B7280]/70"
-                      />
-                    </div>
+                    <input
+                      id="github"
+                      type="text"
+                      autoComplete="off"
+                      inputMode="url"
+                      placeholder="github.com/seuperfil"
+                      value={form.github}
+                      onChange={(e) => update("github", profileUsername(e.target.value, "github"))}
+                      className={inputCls}
+                    />
                   </div>
                 </div>
 

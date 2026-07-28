@@ -3,12 +3,10 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const SLIDES = [
-  // Prédio
   {
-    src: "/vagas/p7-fachada-aerea.png",
-    alt: "Vista aérea do P7 Criativo",
+    src: "/vagas/maps/spot-maps-3.jpg",
+    alt: "Time SPOT trabalhando no escritório",
   },
-  // Equipe
   {
     src: "/vagas/time-spot-sofa.png",
     alt: "Time SPOT no P7 Criativo",
@@ -22,12 +20,13 @@ const SLIDES = [
     alt: "Time SPOT trabalhando no escritório",
   },
   {
-    src: "/vagas/maps/spot-maps-3.jpg",
-    alt: "Time SPOT trabalhando no escritório",
-  },
-  {
     src: "/vagas/maps/spot-maps-4.jpg",
     alt: "Operação da SPOT no P7 Criativo",
+  },
+  // Prédio
+  {
+    src: "/vagas/p7-fachada-aerea.png",
+    alt: "Vista aérea do P7 Criativo",
   },
   // Áreas internas
   {
