@@ -4,12 +4,20 @@ import {
   LayoutDashboard,
   ListChecks,
   List,
-  Edit,
+  CalendarDays,
   Pause,
   Play,
 } from "lucide-react";
 import { SeoBlogPlatformMock } from "./SeoBlogPlatformMock";
 import type { BlogViewId } from "./constants";
+
+interface TabPhase {
+  duration: number;
+  view?: BlogViewId;
+  listScrollY: number;
+  highlightNav: "posts" | null;
+  highlightEditIndex: number | null;
+}
 
 interface Tab {
   id: string;
@@ -17,32 +25,28 @@ interface Tab {
   title: string;
   description: string;
   view: BlogViewId;
-  phases: {
-    duration: number;
-    listScrollY: number;
-    highlightNav: "posts" | null;
-    highlightEditIndex: number | null;
-  }[];
+  phases: TabPhase[];
 }
 
 const TABS: Tab[] = [
   {
     id: "gsc",
     icon: LayoutDashboard,
-    title: "Monitoramos no Search Console",
+    title: "Acompanhe no Search Console",
     description:
-      "Cliques, impressões, CTR e posição média com prioridades por página — a leitura que guia a operação.",
+      "Cliques, impressões e oportunidades por página — a mesma leitura que guia a operação.",
     view: "gsc",
     phases: [
-      { duration: 2800, listScrollY: 0, highlightNav: null, highlightEditIndex: null },
-      { duration: 2000, listScrollY: 0, highlightNav: null, highlightEditIndex: null },
+      { duration: 3200, listScrollY: 0, highlightNav: null, highlightEditIndex: null },
+      { duration: 2200, listScrollY: 0, highlightNav: null, highlightEditIndex: null },
     ],
   },
   {
     id: "ideas",
     icon: ListChecks,
-    title: "Planejamos com Big Ideas",
-    description: "Ideias com keyword e tipo (volume/notícia) entram no pipeline da operação.",
+    title: "Pauta em Big Ideas",
+    description:
+      "Temas com keyword e intenção entram no pipeline; você aprova o que seguimos.",
     view: "ideas",
     phases: [
       { duration: 2500, listScrollY: 0, highlightNav: null, highlightEditIndex: null },
@@ -52,23 +56,32 @@ const TABS: Tab[] = [
   {
     id: "posts",
     icon: List,
-    title: "Produzimos as postagens",
-    description: "Artigos em revisão com busca, filtros e ações — você acompanha o status.",
+    title: "Postagens na operação",
+    description:
+      "Artigos em produção e revisão; status, aprovação e edição no mesmo fluxo.",
     view: "posts",
     phases: [
       { duration: 2000, listScrollY: 0, highlightNav: null, highlightEditIndex: null },
-      { duration: 2200, listScrollY: -120, highlightNav: null, highlightEditIndex: 2 },
+      { duration: 1800, listScrollY: -80, highlightNav: null, highlightEditIndex: 2 },
+      {
+        duration: 3400,
+        view: "editor",
+        listScrollY: 0,
+        highlightNav: null,
+        highlightEditIndex: null,
+      },
     ],
   },
   {
-    id: "editor",
-    icon: Edit,
-    title: "Publicamos com SEO",
-    description: "Capa, metadados e score de SEO antes de ir ao ar no seu blog.",
-    view: "editor",
+    id: "calendar",
+    icon: CalendarDays,
+    title: "Calendário e publicação",
+    description:
+      "Ritmo editorial e publicações no seu site — você vê o calendário da operação.",
+    view: "calendar",
     phases: [
-      { duration: 3200, listScrollY: 0, highlightNav: null, highlightEditIndex: null },
       { duration: 2800, listScrollY: 0, highlightNav: null, highlightEditIndex: null },
+      { duration: 2200, listScrollY: 0, highlightNav: null, highlightEditIndex: null },
     ],
   },
 ];
@@ -88,6 +101,7 @@ export function SeoInteractiveMotion({ embedded = false, id }: SeoInteractiveMot
 
   const tab = TABS[activeTab];
   const phase = tab.phases[phaseIdx] ?? tab.phases[0];
+  const activeView = phase.view ?? tab.view;
 
   const advancePhase = useCallback(() => {
     setPhaseIdx((prev) => {
@@ -124,13 +138,13 @@ export function SeoInteractiveMotion({ embedded = false, id }: SeoInteractiveMot
         {!embedded && (
           <motion.div className="text-center max-w-2xl mx-auto mb-10">
             <p className="text-sm font-semibold text-[#37489d] uppercase tracking-wider mb-2">
-              Na plataforma
+              Na operação
             </p>
             <h2 className="text-2xl sm:text-3xl font-bold text-[#08080C]">
-              Conteúdo que trabalha por você
+              Ferramenta + execução no mesmo lugar
             </h2>
             <p className="text-sm text-[#6B7280] mt-3 leading-relaxed">
-              Da leitura do Search Console à publicação no blog, com método e dados no mesmo lugar.
+              Search Console, pauta, postagens e calendário — nós operamos, você acompanha.
             </p>
           </motion.div>
         )}
@@ -143,9 +157,11 @@ export function SeoInteractiveMotion({ embedded = false, id }: SeoInteractiveMot
             {embedded && (
               <motion.div className="mb-6">
                 <p className="text-sm font-semibold text-[#37489d] uppercase tracking-wider mb-2">
-                  Na plataforma
+                  Na operação
                 </p>
-                <h2 className="text-2xl sm:text-3xl font-bold text-[#08080C]">Conteúdo que trabalha por você</h2>
+                <h2 className="text-2xl sm:text-3xl font-bold text-[#08080C]">
+                  Ferramenta + execução no mesmo lugar
+                </h2>
               </motion.div>
             )}
             <motion.div className="flex flex-col gap-1">
@@ -217,7 +233,7 @@ export function SeoInteractiveMotion({ embedded = false, id }: SeoInteractiveMot
               aria-hidden
             />
             <SeoBlogPlatformMock
-              view={tab.view}
+              view={activeView}
               listScrollY={phase.listScrollY}
               highlightNav={phase.highlightNav}
               highlightEditIndex={phase.highlightEditIndex}
