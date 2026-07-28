@@ -68,9 +68,11 @@ function buildBlocks(data) {
     ["E-mail", data.email],
     ["Telefone", data.telefone],
     ["Perfil", data.perfil],
-    ["Site", data.site],
-    ["Origem", data.pagePath || "/"],
   ];
+  if (data.site && data.site !== "—") {
+    rows.push(["Site", data.site]);
+  }
+  rows.push(["Origem", data.pagePath || "/"]);
   return [
     {
       type: "header",
@@ -138,7 +140,7 @@ export default async function handler(req, res) {
       message: "Selecione se você é profissional de marketing ou empresário(a).",
     });
   }
-  if (!site || !site.includes(".")) {
+  if (role === "entrepreneur" && (!site || !site.includes("."))) {
     return json(res, 400, { ok: false, message: "Informe o site da empresa (ex.: empresa.com.br)." });
   }
 
@@ -147,7 +149,7 @@ export default async function handler(req, res) {
     email,
     telefone,
     perfil: ROLE_LABEL[role],
-    site,
+    site: role === "entrepreneur" ? site : "—",
     pagePath,
   };
 
@@ -160,7 +162,7 @@ export default async function handler(req, res) {
   try {
     const posted = await slackApi("chat.postMessage", token, {
       channel: CHANNEL_ID,
-      text: `Nova lista de espera: ${data.nome} · ${data.email} · ${data.site}`,
+      text: `Nova lista de espera: ${data.nome} · ${data.email}${role === "entrepreneur" ? ` · ${site}` : ""}`,
       blocks: buildBlocks(data),
     });
     if (!posted.ok) throw new Error(posted.error || "slack_post_failed");

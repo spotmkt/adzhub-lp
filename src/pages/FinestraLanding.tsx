@@ -282,7 +282,7 @@ export default function FinestraLanding() {
             </div>
             <div className="rounded-2xl border border-[#08080C]/8 bg-[#F8F8F8] p-5">
               <BarChart3 className="w-6 h-6 text-[#37489d] mb-3" />
-              <h3 className="text-base font-semibold text-[#08080C] mb-2">Base técnica em ordem</h3>
+              <h3 className="text-base font-semibold text-[#08080C] mb-2">AdzSEO Analytics</h3>
               <p className="text-sm text-[#6B7280] leading-relaxed">
                 Site rápido, páginas encontradas pelo Google e acompanhamento no Search Console — o básico bem feito
                 para a marca ser encontrada.

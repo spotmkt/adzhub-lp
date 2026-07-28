@@ -85,7 +85,7 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
       toast.error("Selecione se você é profissional de marketing ou empresário(a).");
       return;
     }
-    if (!trimmedSite || !trimmedSite.includes(".")) {
+    if (role === "entrepreneur" && (!trimmedSite || !trimmedSite.includes("."))) {
       toast.error("Informe o site da empresa (ex.: empresa.com.br).");
       return;
     }
@@ -100,11 +100,22 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
           email: trimmed,
           telefone: trimmedPhone,
           role,
-          site: trimmedSite,
+          site: role === "entrepreneur" ? trimmedSite : "",
           pagePath: typeof window !== "undefined" ? window.location.pathname : "",
         }),
       });
-      const data = (await resp.json().catch(() => ({}))) as { ok?: boolean; message?: string };
+      const raw = await resp.text();
+      let data: { ok?: boolean; message?: string } = {};
+      try {
+        data = JSON.parse(raw) as { ok?: boolean; message?: string };
+      } catch {
+        toast.error(
+          resp.status === 405 || resp.status === 404
+            ? "API de lista de espera ainda não está no ar. Faça o deploy e tente de novo."
+            : "Não conseguimos concluir o envio agora. Tente novamente.",
+        );
+        return;
+      }
       if (!resp.ok || !data.ok) {
         toast.error(data.message || "Não conseguimos concluir o envio agora. Tente novamente.");
         return;
@@ -190,7 +201,11 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
               <legend className="px-1 text-sm font-medium text-[#08080C]">Eu sou</legend>
               <RadioGroup
                 value={role || undefined}
-                onValueChange={(v) => setRole(v as ProfileRole)}
+                onValueChange={(v) => {
+                  const next = v as ProfileRole;
+                  setRole(next);
+                  if (next !== "entrepreneur") setCompany("");
+                }}
                 className="gap-3"
                 disabled={submitting}
               >
@@ -209,23 +224,25 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
               </RadioGroup>
             </fieldset>
 
-            <div className="space-y-2">
-              <Label htmlFor="waitlist-company" className="text-[#37489d]">
-                Site da empresa
-              </Label>
-              <Input
-                id="waitlist-company"
-                type="text"
-                required
-                value={company}
-                onChange={(ev) => setCompany(ev.target.value)}
-                placeholder="empresa.com.br"
-                className="border-[#37489d]/20"
-                autoComplete="url"
-                inputMode="url"
-                disabled={submitting}
-              />
-            </div>
+            {role === "entrepreneur" && (
+              <div className="space-y-2">
+                <Label htmlFor="waitlist-company" className="text-[#37489d]">
+                  Site da empresa
+                </Label>
+                <Input
+                  id="waitlist-company"
+                  type="text"
+                  required
+                  value={company}
+                  onChange={(ev) => setCompany(ev.target.value)}
+                  placeholder="empresa.com.br"
+                  className="border-[#37489d]/20"
+                  autoComplete="url"
+                  inputMode="url"
+                  disabled={submitting}
+                />
+              </div>
+            )}
 
             <Button
               type="submit"
