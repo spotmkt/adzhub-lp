@@ -1264,16 +1264,23 @@ export default function Vagas() {
                         <span className="text-[#9CA3AF] font-normal">(opcional)</span>
                       </span>
                     </label>
-                    <input
-                      id="linkedin"
-                      type="text"
-                      autoComplete="off"
-                      inputMode="url"
-                      placeholder="linkedin.com/in/seuperfil"
-                      value={form.linkedin}
-                      onChange={(e) => update("linkedin", profileUsername(e.target.value, "linkedin"))}
-                      className={inputCls}
-                    />
+                    <div className="flex min-w-0 items-center rounded-xl border border-[#08080C]/12 bg-[#FAFAFA] px-3 focus-within:border-[#37489d]/40 focus-within:ring-2 focus-within:ring-[#37489d]/10">
+                      <span className="shrink-0 select-none text-sm text-[#6B7280]">
+                        linkedin.com/in/
+                      </span>
+                      <input
+                        id="linkedin"
+                        type="text"
+                        autoComplete="off"
+                        autoCapitalize="none"
+                        autoCorrect="off"
+                        spellCheck={false}
+                        placeholder="seuperfil"
+                        value={form.linkedin}
+                        onChange={(e) => update("linkedin", profileUsername(e.target.value, "linkedin"))}
+                        className="min-w-0 flex-1 bg-transparent py-3 pl-0.5 text-sm text-[#08080C] outline-none placeholder:text-[#6B7280]/70"
+                      />
+                    </div>
                   </div>
                   <div className="min-w-0">
                     <label htmlFor="github" className={labelCls}>
@@ -1282,16 +1289,23 @@ export default function Vagas() {
                         <span className="text-[#9CA3AF] font-normal">(opcional)</span>
                       </span>
                     </label>
-                    <input
-                      id="github"
-                      type="text"
-                      autoComplete="off"
-                      inputMode="url"
-                      placeholder="github.com/seuperfil"
-                      value={form.github}
-                      onChange={(e) => update("github", profileUsername(e.target.value, "github"))}
-                      className={inputCls}
-                    />
+                    <div className="flex min-w-0 items-center rounded-xl border border-[#08080C]/12 bg-[#FAFAFA] px-3 focus-within:border-[#37489d]/40 focus-within:ring-2 focus-within:ring-[#37489d]/10">
+                      <span className="shrink-0 select-none text-sm text-[#6B7280]">
+                        github.com/
+                      </span>
+                      <input
+                        id="github"
+                        type="text"
+                        autoComplete="off"
+                        autoCapitalize="none"
+                        autoCorrect="off"
+                        spellCheck={false}
+                        placeholder="seuperfil"
+                        value={form.github}
+                        onChange={(e) => update("github", profileUsername(e.target.value, "github"))}
+                        className="min-w-0 flex-1 bg-transparent py-3 pl-0.5 text-sm text-[#08080C] outline-none placeholder:text-[#6B7280]/70"
+                      />
+                    </div>
                   </div>
                 </div>
 
