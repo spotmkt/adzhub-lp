@@ -450,6 +450,16 @@ export default function Vagas() {
         );
       }
 
+      // GTM: evento personalizado → aciona tags LEAD FORM (GTM-WR3H8GCD)
+      const w = window as Window & { dataLayer?: Record<string, unknown>[] };
+      w.dataLayer = w.dataLayer || [];
+      w.dataLayer.push({
+        event: "generate_lead",
+        form_name: "vagas_candidatura",
+        form_id: "vagas",
+        page_path: "/vagas",
+      });
+
       sessionStorage.removeItem(APPLICATION_DRAFT_KEY);
       setSubmitted(true);
     } catch (err) {
