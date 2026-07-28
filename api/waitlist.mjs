@@ -124,8 +124,8 @@ export default async function handler(req, res) {
   const site = normalizeSite(payload.site);
   const pagePath = String(payload.pagePath || "").trim().slice(0, 200);
 
-  if (!nome || nome.split(/\s+/).filter((p) => p.length >= 2).length < 2) {
-    return json(res, 400, { ok: false, message: "Informe seu nome e sobrenome." });
+  if (!nome) {
+    return json(res, 400, { ok: false, message: "Informe seu nome." });
   }
   if (!email.includes("@")) {
     return json(res, 400, { ok: false, message: "Informe um e-mail válido." });

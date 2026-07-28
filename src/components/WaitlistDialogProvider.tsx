@@ -155,7 +155,7 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
                 id="waitlist-name"
                 value={name}
                 onChange={(ev) => setName(ev.target.value)}
-                placeholder="Seu nome completo"
+                placeholder="Seu nome"
                 className="border-[#37489d]/20"
                 autoComplete="name"
                 required
