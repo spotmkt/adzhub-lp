@@ -618,36 +618,45 @@ function CalendarPanel() {
   return (
     <div className="p-3 sm:p-4">
       <motion.div className="flex items-center justify-between gap-2 mb-3">
-        <div>
+        <div className="min-w-0">
           <h2 className="text-sm font-semibold text-foreground">Calendário de Postagens</h2>
-          <p className="text-[10px] text-muted-foreground">Março 2025 · ritmo editorial da operação</p>
+          <p className="text-[10px] text-muted-foreground truncate">Março 2025 · ritmo editorial</p>
         </div>
-        <span className="text-[9px] px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 font-medium">
-          4 publicações
+        <span className="shrink-0 text-[9px] px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 font-medium">
+          4 pubs
         </span>
       </motion.div>
-      <div className="grid grid-cols-7 gap-1.5">
+      <div className="grid grid-cols-7 gap-1 sm:gap-1.5">
         {CALENDAR_DAYS.map((col) => (
-          <div key={col.day} className="min-h-[88px] rounded-lg border border-border/25 bg-white p-1.5">
-            <p className="text-[9px] font-medium text-muted-foreground mb-1 truncate">{col.day}</p>
-            <div className="space-y-1">
+          <div
+            key={`${col.weekday}-${col.day}`}
+            className="min-h-[72px] sm:min-h-[88px] rounded-md sm:rounded-lg border border-border/25 bg-white p-1 flex flex-col items-center"
+          >
+            <p className="text-[8px] sm:text-[9px] font-medium text-muted-foreground leading-none">
+              {col.weekday}
+            </p>
+            <p className="text-[10px] sm:text-[11px] font-semibold text-foreground mb-1 leading-tight">
+              {col.day}
+            </p>
+            <div className="w-full space-y-1">
               {col.items.map((item) => (
                 <div
-                  key={item.title}
-                  className={`rounded px-1 py-0.5 text-[8px] font-medium leading-tight line-clamp-2 ${item.tone}`}
+                  key={item.label}
+                  className={`rounded px-0.5 py-0.5 text-[7px] sm:text-[8px] font-medium leading-none text-center truncate ${item.tone}`}
+                  title={item.label}
                 >
-                  {item.title}
+                  {item.label}
                 </div>
               ))}
             </div>
           </div>
         ))}
       </div>
-      <div className="mt-3 flex gap-2 overflow-x-auto">
+      <div className="mt-3 flex gap-2 overflow-x-auto pb-0.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {SEO_POSTS.slice(0, 3).map((post) => (
           <div
             key={post.title}
-            className="shrink-0 w-[140px] rounded-xl border border-border/30 bg-white overflow-hidden shadow-sm"
+            className="shrink-0 w-[132px] sm:w-[140px] rounded-xl border border-border/30 bg-white overflow-hidden shadow-sm"
           >
             <img src={post.image} alt="" className="h-16 w-full object-cover" loading="lazy" />
             <p className="p-2 text-[9px] font-medium text-foreground line-clamp-2 leading-snug">{post.title}</p>

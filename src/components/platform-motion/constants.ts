@@ -18,7 +18,7 @@ export const SEO_POSTS = [
     status: "Publicado",
   },
   {
-    title: "SEO local para clínicas: checklist prático em 10 passos",
+    title: "Dor crônica: quando procurar um neurologista",
     date: "08 mar 2025, 09:15",
     image: "/seo/cover-seo-clinicas.jpg",
     status: "Pendente",
@@ -30,7 +30,7 @@ export const SEO_POSTS = [
     status: "Publicado",
   },
   {
-    title: "Como estruturar um calendário editorial para PMEs",
+    title: "TDAH em adultos: sinais que passam despercebidos",
     date: "28 fev 2025, 16:20",
     image: "/seo/cover-calendario.jpg",
     status: "Publicado",
@@ -82,25 +82,25 @@ export const GSC_PAGES = [
 
 export const BIG_IDEAS = [
   {
-    title: "SEO local para clínicas em 2025",
-    keyword: "seo local clínicas",
+    title: "Dor crônica: quando procurar um neurologista",
+    keyword: "dor crônica neurologista",
     intent: "Informacional",
   },
   {
-    title: "Como aparecer nas recomendações do ChatGPT",
-    keyword: "geo marca",
-    intent: "Comercial",
+    title: "TDAH em adultos: sinais que passam despercebidos",
+    keyword: "tdah adultos sintomas",
+    intent: "Informacional",
   },
 ] as const;
 
 export const CALENDAR_DAYS = [
-  { day: "Seg 24", items: [{ title: "SEO local…", tone: "bg-emerald-100 text-emerald-800" }] },
-  { day: "Ter 25", items: [] },
-  { day: "Qua 26", items: [{ title: "Fibromialgia…", tone: "bg-sky-100 text-sky-800" }] },
-  { day: "Qui 27", items: [{ title: "GEO / ChatGPT…", tone: "bg-violet-100 text-violet-800" }] },
-  { day: "Sex 28", items: [] },
-  { day: "Sáb 29", items: [{ title: "Calendário PME…", tone: "bg-amber-100 text-amber-800" }] },
-  { day: "Dom 30", items: [] },
+  { weekday: "S", day: "24", items: [{ label: "Dor", tone: "bg-emerald-100 text-emerald-800" }] },
+  { weekday: "T", day: "25", items: [] },
+  { weekday: "Q", day: "26", items: [{ label: "Fibro", tone: "bg-sky-100 text-sky-800" }] },
+  { weekday: "Q", day: "27", items: [{ label: "TDAH", tone: "bg-violet-100 text-violet-800" }] },
+  { weekday: "S", day: "28", items: [] },
+  { weekday: "S", day: "29", items: [{ label: "Neuro", tone: "bg-amber-100 text-amber-800" }] },
+  { weekday: "D", day: "30", items: [] },
 ] as const;
 
 /** Pontos do gráfico dual (cliques × impressões) — perfil semelhante ao GSC real. */
