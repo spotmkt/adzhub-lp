@@ -3,15 +3,16 @@ import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { pathToFileURL } from "url";
 
-/** Proxy local de /api/vagas-candidatura → handler serverless (mesmo arquivo da Vercel). */
-function vagasCandidaturaApi(): Plugin {
+/** Proxy local de /api/* serverless → handlers em api/*.mjs (mesmo arquivo da Vercel). */
+function localApiHandlers(): Plugin {
   return {
-    name: "vagas-candidatura-api",
+    name: "local-api-handlers",
     configureServer(server) {
       // loadEnv não sobrescreve vars já exportadas no shell — forçamos o .env do projeto.
       const serverKeys = [
         "SLACK_BOT_TOKEN",
         "SLACK_VAGAS_CHANNEL_ID",
+        "SLACK_WAITLIST_CHANNEL_ID",
         "SUPABASE_URL",
         "SUPABASE_ANON_KEY",
         "RESEND_API_KEY",
@@ -26,16 +27,23 @@ function vagasCandidaturaApi(): Plugin {
         if (env[key]) process.env[key] = env[key];
       }
 
+      const routes: Record<string, string> = {
+        "/api/vagas-candidatura": "api/vagas-candidatura.mjs",
+        "/api/waitlist": "api/waitlist.mjs",
+      };
+
       server.middlewares.use(async (req, res, next) => {
-        if (!req.url?.startsWith("/api/vagas-candidatura")) return next();
+        const pathOnly = (req.url || "").split("?")[0];
+        const file = routes[pathOnly];
+        if (!file) return next();
 
         try {
           const mod = await import(
-            pathToFileURL(path.resolve(__dirname, "api/vagas-candidatura.mjs")).href + `?t=${Date.now()}`
+            pathToFileURL(path.resolve(__dirname, file)).href + `?t=${Date.now()}`
           );
           await mod.default(req, res);
         } catch (err) {
-          console.error("[vagas-candidatura-api]", err);
+          console.error(`[${pathOnly}]`, err);
           res.statusCode = 500;
           res.setHeader("Content-Type", "application/json");
           res.end(JSON.stringify({ ok: false, error: "local_api_failed" }));
@@ -51,7 +59,7 @@ export default defineConfig({
     host: "::",
     port: 8080,
   },
-  plugins: [react(), vagasCandidaturaApi()],
+  plugins: [react(), localApiHandlers()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

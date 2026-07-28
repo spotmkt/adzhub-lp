@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import {
   LayoutDashboard,
   ListChecks,
@@ -97,11 +96,24 @@ export function SeoInteractiveMotion({ embedded = false, id }: SeoInteractiveMot
   const [activeTab, setActiveTab] = useState(0);
   const [phaseIdx, setPhaseIdx] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [inView, setInView] = useState(true);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const rootRef = useRef<HTMLElement>(null);
 
   const tab = TABS[activeTab];
   const phase = tab.phases[phaseIdx] ?? tab.phases[0];
   const activeView = phase.view ?? tab.view;
+
+  useEffect(() => {
+    const node = rootRef.current;
+    if (!node || typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      { threshold: 0.2, rootMargin: "0px" },
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
 
   const advancePhase = useCallback(() => {
     setPhaseIdx((prev) => {
@@ -113,12 +125,12 @@ export function SeoInteractiveMotion({ embedded = false, id }: SeoInteractiveMot
   }, [activeTab]);
 
   useEffect(() => {
-    if (paused) return;
+    if (paused || !inView) return;
     timerRef.current = setTimeout(advancePhase, phase.duration);
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
-  }, [activeTab, phaseIdx, paused, phase.duration, advancePhase]);
+  }, [activeTab, phaseIdx, paused, inView, phase.duration, advancePhase]);
 
   const handleTabClick = (i: number) => {
     setActiveTab(i);
@@ -127,16 +139,17 @@ export function SeoInteractiveMotion({ embedded = false, id }: SeoInteractiveMot
 
   return (
     <section
+      ref={rootRef}
       id={id}
       className={
         embedded
-          ? "relative py-8 sm:py-12 scroll-mt-28"
-          : "relative py-12 sm:py-16 bg-[#F8F8F8] rounded-3xl mx-4 sm:mx-5 scroll-mt-28"
+          ? "relative py-8 sm:py-12 scroll-mt-28 [overflow-anchor:none]"
+          : "relative py-12 sm:py-16 bg-[#F8F8F8] rounded-3xl mx-4 sm:mx-5 scroll-mt-28 [overflow-anchor:none]"
       }
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-8">
         {!embedded && (
-          <motion.div className="text-center max-w-2xl mx-auto mb-10">
+          <div className="text-center max-w-2xl mx-auto mb-10">
             <p className="text-sm font-semibold text-[#37489d] uppercase tracking-wider mb-2">
               Na operação
             </p>
@@ -146,25 +159,25 @@ export function SeoInteractiveMotion({ embedded = false, id }: SeoInteractiveMot
             <p className="text-sm text-[#6B7280] mt-3 leading-relaxed">
               Search Console, pauta, postagens e calendário — nós operamos, você acompanha.
             </p>
-          </motion.div>
+          </div>
         )}
 
-        <motion.div className="grid lg:grid-cols-[minmax(0,320px)_1fr] gap-6 lg:gap-10 items-start">
-          <motion.div>
+        <div className="grid lg:grid-cols-[minmax(0,320px)_1fr] gap-6 lg:gap-10 items-start">
+          <div>
             {!embedded && (
               <p className="text-xs font-medium text-[#37489d] mb-6 lg:hidden">Toque para explorar</p>
             )}
             {embedded && (
-              <motion.div className="mb-6">
+              <div className="mb-6">
                 <p className="text-sm font-semibold text-[#37489d] uppercase tracking-wider mb-2">
                   Na operação
                 </p>
                 <h2 className="text-2xl sm:text-3xl font-bold text-[#08080C]">
                   Ferramenta + execução no mesmo lugar
                 </h2>
-              </motion.div>
+              </div>
             )}
-            <motion.div className="flex flex-col gap-1">
+            <div className="flex flex-col gap-1">
               {TABS.map((t, i) => {
                 const isActive = i === activeTab;
                 const Icon = t.icon;
@@ -173,50 +186,38 @@ export function SeoInteractiveMotion({ embedded = false, id }: SeoInteractiveMot
                     key={t.id}
                     type="button"
                     onClick={() => handleTabClick(i)}
-                    className={`relative text-left rounded-xl px-4 py-3 transition-all duration-300 ${
+                    className={`relative text-left rounded-xl px-4 py-3 transition-colors duration-200 ${
                       isActive
                         ? "bg-white shadow-lg border border-gray-200/80"
                         : "hover:bg-white/60 border border-transparent"
                     }`}
                   >
-                    <motion.div className="flex items-center gap-3">
-                      <motion.div
+                    {isActive && (
+                      <span className="absolute left-0 top-3 bottom-3 w-1 rounded-full bg-[#37489d]" />
+                    )}
+                    <div className="flex items-center gap-3">
+                      <div
                         className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${
                           isActive ? "bg-[#37489d] text-white" : "bg-gray-100 text-gray-500"
                         }`}
                       >
                         <Icon className="w-4 h-4" />
-                      </motion.div>
+                      </div>
                       <span
                         className={`text-sm font-semibold ${isActive ? "text-[#08080C]" : "text-gray-500"}`}
                       >
                         {t.title}
                       </span>
-                    </motion.div>
-                    <AnimatePresence>
-                      {isActive && (
-                        <motion.p
-                          initial={{ opacity: 0, height: 0, marginTop: 0 }}
-                          animate={{ opacity: 1, height: "auto", marginTop: 8 }}
-                          exit={{ opacity: 0, height: 0, marginTop: 0 }}
-                          transition={{ duration: 0.25 }}
-                          className="text-sm text-gray-500 leading-relaxed pl-11 overflow-hidden"
-                        >
-                          {t.description}
-                        </motion.p>
-                      )}
-                    </AnimatePresence>
+                    </div>
                     {isActive && (
-                      <motion.div
-                        layoutId="seo-lp-tab-indicator"
-                        className="absolute left-0 top-3 bottom-3 w-1 rounded-full bg-[#37489d]"
-                        transition={{ type: "spring", stiffness: 350, damping: 30 }}
-                      />
+                      <p className="text-sm text-gray-500 leading-relaxed pl-11 mt-2">
+                        {t.description}
+                      </p>
                     )}
                   </button>
                 );
               })}
-            </motion.div>
+            </div>
             <button
               type="button"
               onClick={() => setPaused((p) => !p)}
@@ -225,10 +226,10 @@ export function SeoInteractiveMotion({ embedded = false, id }: SeoInteractiveMot
               {paused ? <Play className="w-3.5 h-3.5" /> : <Pause className="w-3.5 h-3.5" />}
               {paused ? "Retomar animação" : "Pausar animação"}
             </button>
-          </motion.div>
+          </div>
 
-          <motion.div className="relative w-full max-w-[750px] lg:max-w-none mx-auto">
-            <motion.div
+          <div className="relative w-full max-w-[750px] lg:max-w-none mx-auto [overflow-anchor:none]">
+            <div
               className="absolute -inset-4 bg-gradient-to-br from-[#37489d]/8 via-transparent to-[#F9C7B2]/10 rounded-3xl blur-2xl pointer-events-none"
               aria-hidden
             />
@@ -238,9 +239,9 @@ export function SeoInteractiveMotion({ embedded = false, id }: SeoInteractiveMot
               highlightNav={phase.highlightNav}
               highlightEditIndex={phase.highlightEditIndex}
             />
-            <motion.div className="flex items-center justify-center gap-1.5 mt-4">
+            <div className="flex items-center justify-center gap-1.5 mt-4">
               {tab.phases.map((_, i) => (
-                <motion.div
+                <div
                   key={i}
                   className={`h-1.5 rounded-full transition-all duration-300 ${
                     i === phaseIdx
@@ -251,9 +252,9 @@ export function SeoInteractiveMotion({ embedded = false, id }: SeoInteractiveMot
                   }`}
                 />
               ))}
-            </motion.div>
-          </motion.div>
-        </motion.div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

@@ -219,7 +219,7 @@ export function SeoBlogPlatformMock({
 function Panel({ children }: { children: ReactNode }) {
   return (
     <motion.div
-      className="absolute inset-2 sm:inset-3 overflow-y-auto rounded-xl bg-white/80 border border-border/20 shadow-sm"
+      className="absolute inset-2 sm:inset-3 overflow-hidden rounded-xl bg-white/80 border border-border/20 shadow-sm"
       initial={{ opacity: 0, x: 8 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -8 }}

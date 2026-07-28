@@ -35,6 +35,7 @@ const ROLE_LABEL: Record<ProfileRole, string> = {
 
 export function WaitlistDialogProvider({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = React.useState(false);
+  const [submitting, setSubmitting] = React.useState(false);
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [phone, setPhone] = React.useState("");
@@ -53,13 +54,14 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
 
   const handleOpenChange = React.useCallback(
     (next: boolean) => {
+      if (submitting) return;
       setOpen(next);
       if (!next) resetForm();
     },
-    [resetForm]
+    [resetForm, submitting]
   );
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const trimmedName = name.trim();
     const trimmed = email.trim();
@@ -88,24 +90,33 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
       return;
     }
 
-    const lines = [
-      "Olá, equipe AdzHub —",
-      "",
-      "Quero entrar na lista de espera da plataforma.",
-      "",
-      `Nome: ${trimmedName}`,
-      `E-mail: ${trimmed}`,
-      `Telefone: ${trimmedPhone}`,
-      `Perfil: ${ROLE_LABEL[role]}`,
-      `Site da empresa: ${trimmedSite}`,
-    ];
-    lines.push("", "Obrigado!");
-
-    const body = encodeURIComponent(lines.join("\n"));
-    const subject = encodeURIComponent("Lista de espera — AdzHub");
-    window.location.href = `mailto:team@adzhub.com.br?subject=${subject}&body=${body}`;
-    toast.success("Abrimos seu app de e-mail com a mensagem pronta. É só enviar.");
-    handleOpenChange(false);
+    setSubmitting(true);
+    try {
+      const resp = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nome: trimmedName,
+          email: trimmed,
+          telefone: trimmedPhone,
+          role,
+          site: trimmedSite,
+          pagePath: typeof window !== "undefined" ? window.location.pathname : "",
+        }),
+      });
+      const data = (await resp.json().catch(() => ({}))) as { ok?: boolean; message?: string };
+      if (!resp.ok || !data.ok) {
+        toast.error(data.message || "Não conseguimos concluir o envio agora. Tente novamente.");
+        return;
+      }
+      toast.success(data.message || "Solicitação enviada!");
+      setOpen(false);
+      resetForm();
+    } catch {
+      toast.error("Não conseguimos concluir o envio agora. Tente novamente.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const value = React.useMemo(() => ({ openWaitlist }), [openWaitlist]);
@@ -137,6 +148,7 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
                 className="border-[#37489d]/20"
                 autoComplete="name"
                 required
+                disabled={submitting}
               />
             </div>
 
@@ -153,6 +165,7 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
                 placeholder="voce@empresa.com.br"
                 className="border-[#37489d]/20"
                 autoComplete="email"
+                disabled={submitting}
               />
             </div>
 
@@ -169,6 +182,7 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
                 placeholder="(11) 99999-9999"
                 className="border-[#37489d]/20"
                 autoComplete="tel"
+                disabled={submitting}
               />
             </div>
 
@@ -178,17 +192,18 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
                 value={role || undefined}
                 onValueChange={(v) => setRole(v as ProfileRole)}
                 className="gap-3"
+                disabled={submitting}
               >
                 <div className="flex items-center gap-2">
                   <RadioGroupItem value="marketing" id="waitlist-role-marketing" />
                   <Label htmlFor="waitlist-role-marketing" className="font-normal cursor-pointer text-[#37489d]">
-                    Profissional de marketing
+                    {ROLE_LABEL.marketing}
                   </Label>
                 </div>
                 <div className="flex items-center gap-2">
                   <RadioGroupItem value="entrepreneur" id="waitlist-role-entrepreneur" />
                   <Label htmlFor="waitlist-role-entrepreneur" className="font-normal cursor-pointer text-[#37489d]">
-                    Empresário(a)
+                    {ROLE_LABEL.entrepreneur}
                   </Label>
                 </div>
               </RadioGroup>
@@ -208,11 +223,16 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
                 className="border-[#37489d]/20"
                 autoComplete="url"
                 inputMode="url"
+                disabled={submitting}
               />
             </div>
 
-            <Button type="submit" className="w-full rounded-xl bg-[#37489d] hover:bg-[#37489d]/90 text-white">
-              Enviar solicitação
+            <Button
+              type="submit"
+              disabled={submitting}
+              className="w-full rounded-xl bg-[#37489d] hover:bg-[#37489d]/90 text-white"
+            >
+              {submitting ? "Enviando…" : "Enviar solicitação"}
             </Button>
           </form>
         </DialogContent>

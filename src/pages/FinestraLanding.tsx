@@ -48,7 +48,7 @@ export default function FinestraLanding() {
             </h1>
             <p className="text-lg text-[#08080C] opacity-80 max-w-[640px] leading-relaxed">
               Nós cuidamos da estratégia, da produção e da publicação. Você acompanha o posicionamento no Google e
-              nas IAs pela plataforma — sem montar time interno nem virar ponte entre ferramentas.
+              nas IAs pela plataforma.
             </p>
           </div>
 
@@ -251,61 +251,74 @@ export default function FinestraLanding() {
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#37489d]/5 border border-[#37489d]/10 text-sm font-medium text-[#37489d] mb-6">
               <ShieldCheck className="w-4 h-4" />
-              Método alinhado ao Google
+              Documentação oficial do Google
             </div>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-medium leading-[110%] tracking-tight text-[#08080C] mb-5">
-              Guiados pela documentação oficial do Google
+              Conteúdo criado conforme práticas de IA recomendadas pelo próprio Google
             </h2>
             <p className="text-lg text-[#6B7280] leading-[170%] max-w-2xl mx-auto">
-              A AdzHub opera de forma estrita com as orientações da Central da Pesquisa Google sobre SEO vigente e
-              otimização para recursos de IA generativa — Visões Gerais Criadas por IA e Modo IA — não com “truques”
-              de AEO/GEO inventados na internet.
+              A AdzHub utiliza uma metodologia proprietária baseada nas orientações oficiais do Google sobre o SEO
+              vigente (2026) e otimização para recursos de IA generativa, não com “truques” de AEO/GEO inventados na
+              internet.
             </p>
           </div>
 
           <div className="grid sm:grid-cols-3 gap-4 mb-10">
             <div className="rounded-2xl border border-[#08080C]/8 bg-[#F8F8F8] p-5">
               <BookOpen className="w-6 h-6 text-[#37489d] mb-3" />
-              <h3 className="text-base font-semibold text-[#08080C] mb-2">SEO continua sendo SEO</h3>
+              <h3 className="text-base font-semibold text-[#08080C] mb-2">SEO continua valendo</h3>
               <p className="text-sm text-[#6B7280] leading-relaxed">
-                O Google deixa claro: otimizar para pesquisa com IA generativa é otimizar a experiência de pesquisa
-                no geral. A base segue sendo conteúdo útil, confiável e que prioriza as pessoas.
+                Aparecer nas respostas de IA do Google segue as mesmas regras de um bom site: conteúdo útil, claro e
+                feito para pessoas de verdade.
               </p>
             </div>
             <div className="rounded-2xl border border-[#08080C]/8 bg-[#F8F8F8] p-5">
               <Sparkles className="w-6 h-6 text-[#37489d] mb-3" />
-              <h3 className="text-base font-semibold text-[#08080C] mb-2">Conteúdo exclusivo, não genérico</h3>
+              <h3 className="text-base font-semibold text-[#08080C] mb-2">Conteúdo com a cara da marca</h3>
               <p className="text-sm text-[#6B7280] leading-relaxed">
-                Evitamos texto reciclável ou facilmente gerado por qualquer modelo. Priorizamos perspectiva da marca,
-                estrutura clara e valor real — o que o Google recomenda para aparecer em respostas de IA.
+                Nada de texto genérico que qualquer um gera no ChatGPT. Criamos conteúdo com o ponto de vista e a
+                experiência da sua empresa.
               </p>
             </div>
             <div className="rounded-2xl border border-[#08080C]/8 bg-[#F8F8F8] p-5">
               <BarChart3 className="w-6 h-6 text-[#37489d] mb-3" />
-              <h3 className="text-base font-semibold text-[#08080C] mb-2">Fundamentos técnicos</h3>
+              <h3 className="text-base font-semibold text-[#08080C] mb-2">Base técnica em ordem</h3>
               <p className="text-sm text-[#6B7280] leading-relaxed">
-                Rastreabilidade, indexação, experiência na página e leitura no Search Console — a mesma base que
-                alimenta a Pesquisa tradicional e os sistemas de IA generativa do Google.
+                Site rápido, páginas encontradas pelo Google e acompanhamento no Search Console — o básico bem feito
+                para a marca ser encontrada.
               </p>
             </div>
           </div>
 
-          <div className="rounded-2xl border border-[#37489d]/15 bg-[#37489d]/[0.04] p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center gap-5 sm:justify-between">
+          <div className="rounded-2xl border border-[#37489d]/15 bg-[#37489d]/[0.04] p-6 sm:p-8 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
             <div className="max-w-xl">
               <p className="text-sm font-medium text-[#37489d] mb-1">Fonte oficial</p>
               <p className="text-base text-[#08080C] leading-relaxed">
-                Operamos com base no guia do Google para otimizar sites nos recursos de IA generativa da Pesquisa.
+                Não siga modinha: usamos as recomendações oficiais do próprio Google Developers.
               </p>
             </div>
-            <a
-              href="https://developers.google.com/search/docs/fundamentals/ai-optimization-guide?hl=pt-br"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 shrink-0 rounded-xl bg-[#37489d] px-5 py-3 text-sm font-semibold text-white hover:bg-[#2f3d86] transition-colors"
-            >
-              Ver guia do Google
-              <ExternalLink className="w-4 h-4" />
-            </a>
+            <div className="flex flex-col sm:flex-row gap-2 shrink-0">
+              <a
+                href="https://developers.google.com/search/docs/fundamentals/ai-optimization-guide?hl=pt-br"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#37489d] px-5 py-3 text-sm font-semibold text-white hover:bg-[#2f3d86] transition-colors"
+              >
+                Ver guia do Google
+                <ExternalLink className="w-4 h-4" />
+              </a>
+              <a
+                href="https://open.spotify.com/episode/4HcSiDWhacwoUXihnUUN23?si=eHq2fVDpQ0OlqszBDHo43A"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-[#1DB954] px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-[#1ed760] transition-colors"
+              >
+                <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden>
+                  <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" />
+                </svg>
+                Ouvir no Spotify
+              </a>
+            </div>
           </div>
         </div>
       </section>
