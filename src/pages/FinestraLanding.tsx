@@ -1,7 +1,7 @@
 import { useMemo, lazy, Suspense } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { Star, BarChart3, PenTool, Search, Sparkles, Zap, ArrowRight, Brain, Target } from "lucide-react";
+import { Star, BarChart3, PenTool, Search, Sparkles, Zap, ArrowRight, Brain, Target, BookOpen, ShieldCheck, ExternalLink } from "lucide-react";
 import { StarBorder } from "@/components/ui/star-border";
 import { testimonials } from "@/data/finestraData";
 import { LandingNav } from "@/components/LandingNav";
@@ -27,7 +27,7 @@ export default function FinestraLanding() {
         <title>SEO, GEO e posicionamento no Google e em IAs - AdzHub</title>
         <meta
           name="description"
-          content="Posicionamos sua marca no Google e nas recomendações de IAs (ChatGPT, Claude, Gemini). Estratégia, produção e publicação done-for-you — você acompanha na plataforma."
+          content="Posicionamos sua marca no Google e nas recomendações de IAs (ChatGPT, Claude, Gemini). Estratégia, produção e publicação por nossa equipe — você acompanha na plataforma."
         />
       </Helmet>
 
@@ -39,14 +39,12 @@ export default function FinestraLanding() {
           <div className="flex flex-col items-center text-center gap-6 max-w-[781px] mx-auto mb-10">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/70 backdrop-blur-sm border border-[#37489d]/10 text-sm font-medium text-[#37489d]">
               <Search className="w-4 h-4 shrink-0" />
-              Operação done-for-you de SEO e GEO
+              Operação completa de SEO e GEO
             </div>
-            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-[3.25rem] xl:text-[3.75rem] font-bold leading-[1.08] tracking-tight text-[#08080C] max-w-4xl mx-auto">
+            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-[3.25rem] xl:text-[3.75rem] font-bold leading-[1.15] tracking-tight text-[#08080C] max-w-4xl mx-auto text-balance">
               Sua marca no topo do Google e das{" "}
-              <span className="inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-2">
-                <span className="text-[#37489d]">recomendações das AI</span>
-                <AiBrandLogos />
-              </span>
+              <span className="text-[#37489d]">recomendações das AI</span>{" "}
+              <AiBrandLogos className="relative top-[-0.12em]" />
             </h1>
             <p className="text-lg text-[#08080C] opacity-80 max-w-[640px] leading-relaxed">
               Nós cuidamos da estratégia, da produção e da publicação. Você acompanha o posicionamento no Google e
@@ -102,7 +100,7 @@ export default function FinestraLanding() {
                 Quero posicionar minha marca
               </StarBorder>
               <p className="text-base font-medium text-[#6B7280]">
-                Sem montar departamento interno
+                Sem gerir um departamento inteiro
               </p>
             </div>
           </div>
@@ -134,7 +132,7 @@ export default function FinestraLanding() {
               <div className="bg-white rounded-3xl p-6 mb-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-12 h-12 rounded-full bg-[hsl(41,100%,58%)] flex items-center justify-center text-white font-bold text-lg">2</div>
-                  <p className="text-lg font-semibold text-[#08080C]">Produção done-for-you</p>
+                  <p className="text-lg font-semibold text-[#08080C]">Produção pela nossa equipe</p>
                 </div>
                 <p className="text-sm text-[#6B7280]">
                   Especialistas e IA produzem artigos, capas e metadados com o contexto da sua marca — prontos para
@@ -185,9 +183,10 @@ export default function FinestraLanding() {
               Por que escolher a AdzHub
             </h2>
             <p className="text-lg font-medium text-[#6B7280] leading-[150%] max-w-[420px]">
-              Não é waitlist de ferramenta solta. É{" "}
+              Não é ferramenta genérica de geração de blogs com AI. É{" "}
               <strong className="font-semibold text-[#08080C]">operação de posicionamento</strong> com método, time e
-              plataforma para você acompanhar — sem virar ponte entre ChatGPT, CMS e planilhas.
+              plataforma para você acompanhar. Afinal, gestão de texto genérico qualquer um faz com o ChatGPT e uma
+              planilha.
             </p>
           </div>
 
@@ -205,8 +204,7 @@ export default function FinestraLanding() {
               </div>
               <p className="text-lg font-normal text-[#6B7280] leading-[150%]">
                 Estratégia, produção e publicação ficam com a gente. Você{" "}
-                <strong className="font-medium text-[#1F2937]">acompanha e aprova</strong> na plataforma — não precisa
-                montar fluxo interno do zero.
+                <strong className="font-medium text-[#1F2937]">acompanha e aprova</strong> na plataforma.
               </p>
             </div>
 
@@ -243,6 +241,71 @@ export default function FinestraLanding() {
                 Ferramenta + execução, sem waitlist de produto solto.
               </p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Guia oficial Google — SEO + IA */}
+      <section className="py-20 sm:py-24 bg-white">
+        <div className="max-w-5xl mx-auto px-8">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#37489d]/5 border border-[#37489d]/10 text-sm font-medium text-[#37489d] mb-6">
+              <ShieldCheck className="w-4 h-4" />
+              Método alinhado ao Google
+            </div>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-medium leading-[110%] tracking-tight text-[#08080C] mb-5">
+              Guiados pela documentação oficial do Google
+            </h2>
+            <p className="text-lg text-[#6B7280] leading-[170%] max-w-2xl mx-auto">
+              A AdzHub opera de forma estrita com as orientações da Central da Pesquisa Google sobre SEO vigente e
+              otimização para recursos de IA generativa — Visões Gerais Criadas por IA e Modo IA — não com “truques”
+              de AEO/GEO inventados na internet.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-3 gap-4 mb-10">
+            <div className="rounded-2xl border border-[#08080C]/8 bg-[#F8F8F8] p-5">
+              <BookOpen className="w-6 h-6 text-[#37489d] mb-3" />
+              <h3 className="text-base font-semibold text-[#08080C] mb-2">SEO continua sendo SEO</h3>
+              <p className="text-sm text-[#6B7280] leading-relaxed">
+                O Google deixa claro: otimizar para pesquisa com IA generativa é otimizar a experiência de pesquisa
+                no geral. A base segue sendo conteúdo útil, confiável e que prioriza as pessoas.
+              </p>
+            </div>
+            <div className="rounded-2xl border border-[#08080C]/8 bg-[#F8F8F8] p-5">
+              <Sparkles className="w-6 h-6 text-[#37489d] mb-3" />
+              <h3 className="text-base font-semibold text-[#08080C] mb-2">Conteúdo exclusivo, não genérico</h3>
+              <p className="text-sm text-[#6B7280] leading-relaxed">
+                Evitamos texto reciclável ou facilmente gerado por qualquer modelo. Priorizamos perspectiva da marca,
+                estrutura clara e valor real — o que o Google recomenda para aparecer em respostas de IA.
+              </p>
+            </div>
+            <div className="rounded-2xl border border-[#08080C]/8 bg-[#F8F8F8] p-5">
+              <BarChart3 className="w-6 h-6 text-[#37489d] mb-3" />
+              <h3 className="text-base font-semibold text-[#08080C] mb-2">Fundamentos técnicos</h3>
+              <p className="text-sm text-[#6B7280] leading-relaxed">
+                Rastreabilidade, indexação, experiência na página e leitura no Search Console — a mesma base que
+                alimenta a Pesquisa tradicional e os sistemas de IA generativa do Google.
+              </p>
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-[#37489d]/15 bg-[#37489d]/[0.04] p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center gap-5 sm:justify-between">
+            <div className="max-w-xl">
+              <p className="text-sm font-medium text-[#37489d] mb-1">Fonte oficial</p>
+              <p className="text-base text-[#08080C] leading-relaxed">
+                Operamos com base no guia do Google para otimizar sites nos recursos de IA generativa da Pesquisa.
+              </p>
+            </div>
+            <a
+              href="https://developers.google.com/search/docs/fundamentals/ai-optimization-guide?hl=pt-br"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 shrink-0 rounded-xl bg-[#37489d] px-5 py-3 text-sm font-semibold text-white hover:bg-[#2f3d86] transition-colors"
+            >
+              Ver guia do Google
+              <ExternalLink className="w-4 h-4" />
+            </a>
           </div>
         </div>
       </section>

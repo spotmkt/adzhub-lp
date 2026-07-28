@@ -9,7 +9,7 @@ const LOGOS = [
 export function AiBrandLogos({ className = "" }: { className?: string }) {
   return (
     <span
-      className={`inline-flex items-center gap-1.5 align-middle ${className}`}
+      className={`inline-flex items-center gap-1 align-middle ${className}`}
       role="img"
       aria-label="Gemini, ChatGPT e Claude"
     >
@@ -17,9 +17,9 @@ export function AiBrandLogos({ className = "" }: { className?: string }) {
         <span
           key={name}
           title={name}
-          className="inline-flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full bg-white border border-[#08080C]/08 shadow-sm"
+          className="inline-flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full bg-white border border-[#08080C]/08 shadow-sm"
         >
-          <img src={src} alt="" className="h-4 w-4 sm:h-5 sm:w-5" width={20} height={20} />
+          <img src={src} alt="" className="h-3.5 w-3.5 sm:h-4 sm:w-4" width={16} height={16} />
         </span>
       ))}
     </span>

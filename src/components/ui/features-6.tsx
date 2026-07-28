@@ -5,7 +5,7 @@ export function Features() {
         <section className="pt-8 pb-16 md:pt-12 md:pb-32">
             <div className="mx-auto max-w-5xl space-y-12 px-6">
                 <div className="relative z-10 grid items-center gap-4 md:grid-cols-2 md:gap-12">
-                    <h2 className="text-4xl font-semibold text-[#08080C]">Operação + plataforma no mesmo fluxo</h2>
+                    <h2 className="text-4xl font-semibold text-[#08080C]">Na mesma plataforma</h2>
                     <p className="max-w-sm sm:ml-auto text-[#6B7280]">Nós produzimos e publicamos com método. Você acompanha estratégia, conteúdo e resultados na AdzHub — ferramenta e operação juntas.</p>
                 </div>
 
@@ -44,7 +44,7 @@ export function Features() {
                     <div className="space-y-3">
                         <div className="flex items-center gap-2">
                             <Zap className="size-4 text-[hsl(224,47%,42%)]" />
-                            <h3 className="text-sm font-medium text-[#08080C]">Done-for-you</h3>
+                            <h3 className="text-sm font-medium text-[#08080C]">Nós executamos</h3>
                         </div>
                         <p className="text-[#6B7280] text-sm">A operação é nossa. Você acompanha e decide o rumo na plataforma.</p>
                     </div>
@@ -65,7 +65,7 @@ export function Features() {
                     <div className="space-y-2">
                         <div className="flex items-center gap-2">
                             <Sparkles className="size-4 text-[hsl(224,47%,42%)]" />
-                            <h3 className="text-sm font-medium text-[#08080C]">Ferramenta + time</h3>
+                            <h3 className="text-sm font-medium text-[#08080C]">Ferramenta + Especialistas</h3>
                         </div>
                         <p className="text-[#6B7280] text-sm">Plataforma para acompanhar; especialistas e IA para executar.</p>
                     </div>
