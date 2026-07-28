@@ -618,13 +618,13 @@ export default function AdzHubLanding() {
           <div className="text-center mt-14 rounded-3xl border border-[#37489d]/15 bg-gradient-to-b from-[#37489d]/[0.06] to-white px-6 py-12 sm:py-14 max-w-3xl mx-auto">
             <p className="text-sm font-medium uppercase tracking-wider text-[#37489d] mb-3">Próximo passo</p>
             <h3 className="text-2xl sm:text-3xl font-semibold text-[#08080C] mb-6 leading-tight">
-              Vamos começar?
+              Entre na lista de espera
             </h3>
             <p className="text-[#6B7280] mb-8 max-w-lg mx-auto">
-              Entre na lista de espera e solicite um convite. Liberamos o acesso em ondas conforme a capacidade da equipe.
+              Solicite um convite e acompanhe a liberação do acesso — abrimos em ondas conforme a capacidade da equipe.
             </p>
             <StarBorder as="button" type="button" onClick={openWaitlist} color="hsl(224, 47%, 42%)" speed="8s">
-              Começar grátis
+              Solicitar convite
             </StarBorder>
           </div>
         </div>
