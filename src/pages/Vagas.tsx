@@ -552,7 +552,7 @@ export default function Vagas() {
             >
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/90 backdrop-blur-sm border border-[#37489d]/15 text-sm font-medium text-[#37489d] shadow-sm">
                 <MapPin className="w-4 h-4 shrink-0" />
-                Presencial em BH/MG - sede da SPOT MKT
+                Em BH/MG - sede SPOT MKT
               </div>
 
               <h1 className="text-3xl sm:text-4xl md:text-[2.55rem] lg:text-[2.75rem] xl:text-[3.05rem] font-bold leading-[1.08] tracking-tight text-[#08080C]">
@@ -564,6 +564,23 @@ export default function Vagas() {
                 A SPOT está formando o time de desenvolvimento da AdzHub, uma plataforma AI-First para o
                 marketing empresarial criada a partir das metodologias da SPOT MKT.
               </p>
+
+              <div className="relative aspect-[4/3] w-full max-w-[540px] overflow-hidden rounded-2xl border border-[#08080C]/8 bg-[#F8F8F8] shadow-lg lg:hidden">
+                <img
+                  src="/vagas/maps/spot-maps-3.jpg"
+                  alt="Time SPOT trabalhando no escritório"
+                  className="absolute inset-0 h-full w-full object-cover object-[center_35%]"
+                  width={1080}
+                  height={1440}
+                  loading="eager"
+                  decoding="async"
+                />
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/55 via-black/15 to-transparent px-4 pb-4 pt-16">
+                  <p className="text-xs font-medium text-white drop-shadow-sm sm:text-sm">
+                    Time SPOT trabalhando no escritório
+                  </p>
+                </div>
+              </div>
 
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
                 <StarBorder type="button" onClick={openApplication} color="hsl(224, 47%, 42%)" speed="8s" className="w-full sm:w-auto text-center">
@@ -593,31 +610,8 @@ export default function Vagas() {
               </div>
             </motion.div>
 
-            <div className="w-full max-w-lg mx-auto lg:max-w-none lg:mx-0">
-              <motion.div
-                className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-[#08080C]/8 bg-[#F8F8F8] shadow-lg lg:hidden"
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.55, delay: 0.12, ease: "easeOut" }}
-              >
-                <img
-                  src="/vagas/maps/spot-maps-3.jpg"
-                  alt="Time SPOT trabalhando no escritório"
-                  className="absolute inset-0 h-full w-full object-cover object-[center_35%]"
-                  width={1080}
-                  height={1440}
-                  loading="eager"
-                  decoding="async"
-                />
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/55 via-black/15 to-transparent px-4 pb-4 pt-16">
-                  <p className="text-xs font-medium text-white drop-shadow-sm sm:text-sm">
-                    Time SPOT trabalhando no escritório
-                  </p>
-                </div>
-              </motion.div>
-              <div className="hidden lg:block">
-                <VagasTerminalMotion />
-              </div>
+            <div className="hidden w-full max-w-lg mx-auto lg:block lg:max-w-none lg:mx-0">
+              <VagasTerminalMotion />
             </div>
           </div>
         </div>
