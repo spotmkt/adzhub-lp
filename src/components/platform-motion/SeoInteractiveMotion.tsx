@@ -29,9 +29,9 @@ const TABS: Tab[] = [
   {
     id: "gsc",
     icon: LayoutDashboard,
-    title: "Monitore no Search Console",
+    title: "Monitoramos no Search Console",
     description:
-      "Cliques, impressões, CTR e posição média com dicas por página, igual ao dashboard SEO do MVP.",
+      "Cliques, impressões, CTR e posição média com prioridades por página — a leitura que guia a operação.",
     view: "gsc",
     phases: [
       { duration: 2800, listScrollY: 0, highlightNav: null, highlightEditIndex: null },
@@ -41,8 +41,8 @@ const TABS: Tab[] = [
   {
     id: "ideas",
     icon: ListChecks,
-    title: "Planeje com Big Ideas",
-    description: "Ideias com keyword, tipo volume/notícia e botão Pipeline → Postagens.",
+    title: "Planejamos com Big Ideas",
+    description: "Ideias com keyword e tipo (volume/notícia) entram no pipeline da operação.",
     view: "ideas",
     phases: [
       { duration: 2500, listScrollY: 0, highlightNav: null, highlightEditIndex: null },
@@ -52,8 +52,8 @@ const TABS: Tab[] = [
   {
     id: "posts",
     icon: List,
-    title: "Revise postagens",
-    description: "Lista de artigos pendentes com busca, filtros e ações de edição.",
+    title: "Produzimos as postagens",
+    description: "Artigos em revisão com busca, filtros e ações — você acompanha o status.",
     view: "posts",
     phases: [
       { duration: 2000, listScrollY: 0, highlightNav: null, highlightEditIndex: null },
@@ -63,8 +63,8 @@ const TABS: Tab[] = [
   {
     id: "editor",
     icon: Edit,
-    title: "Publique com SEO",
-    description: "Capa com IA, metadados e score de SEO antes de ir ao blog.",
+    title: "Publicamos com SEO",
+    description: "Capa, metadados e score de SEO antes de ir ao ar no seu blog.",
     view: "editor",
     phases: [
       { duration: 3200, listScrollY: 0, highlightNav: null, highlightEditIndex: null },

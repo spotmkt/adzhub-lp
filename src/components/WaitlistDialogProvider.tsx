@@ -64,7 +64,7 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
     const trimmedName = name.trim();
     const trimmed = email.trim();
     const trimmedPhone = phone.trim();
-    const trimmedCompany = company.trim();
+    const trimmedSite = company.trim().replace(/^https?:\/\//i, "").replace(/\/$/, "");
 
     if (!trimmedName) {
       toast.error("Informe seu nome.");
@@ -83,8 +83,8 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
       toast.error("Selecione se você é profissional de marketing ou empresário(a).");
       return;
     }
-    if (!trimmedCompany) {
-      toast.error("Informe o nome da empresa.");
+    if (!trimmedSite || !trimmedSite.includes(".")) {
+      toast.error("Informe o site da empresa (ex.: empresa.com.br).");
       return;
     }
 
@@ -97,7 +97,7 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
       `E-mail: ${trimmed}`,
       `Telefone: ${trimmedPhone}`,
       `Perfil: ${ROLE_LABEL[role]}`,
-      `Empresa: ${trimmedCompany}`,
+      `Site da empresa: ${trimmedSite}`,
     ];
     lines.push("", "Obrigado!");
 
@@ -196,16 +196,18 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
 
             <div className="space-y-2">
               <Label htmlFor="waitlist-company" className="text-[#37489d]">
-                Nome da empresa
+                Site da empresa
               </Label>
               <Input
                 id="waitlist-company"
+                type="text"
                 required
                 value={company}
                 onChange={(ev) => setCompany(ev.target.value)}
-                placeholder="Nome fantasia ou razão social"
+                placeholder="empresa.com.br"
                 className="border-[#37489d]/20"
-                autoComplete="organization"
+                autoComplete="url"
+                inputMode="url"
               />
             </div>
 

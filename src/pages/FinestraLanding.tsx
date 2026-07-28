@@ -1,13 +1,14 @@
 import { useMemo, lazy, Suspense } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { Star, BarChart3, PenTool, Search, Sparkles, Zap, ArrowRight, Brain } from "lucide-react";
+import { Star, BarChart3, PenTool, Search, Sparkles, Zap, ArrowRight, Brain, Target } from "lucide-react";
 import { StarBorder } from "@/components/ui/star-border";
 import { testimonials } from "@/data/finestraData";
 import { LandingNav } from "@/components/LandingNav";
 import { Footer } from "@/components/Footer";
 import { useWaitlistDialog } from "@/components/WaitlistDialogProvider";
 import { SeoInteractiveMotion } from "@/components/platform-motion";
+import { AiBrandLogos } from "@/components/AiBrandLogos";
 
 const TestimonialsColumn = lazy(() => import("@/components/ui/testimonials-columns-1").then(m => ({ default: m.TestimonialsColumn })));
 const Features = lazy(() => import("@/components/ui/features-6").then(m => ({ default: m.Features })));
@@ -26,7 +27,7 @@ export default function FinestraLanding() {
         <title>SEO, GEO e posicionamento no Google e em IAs - AdzHub</title>
         <meta
           name="description"
-          content="Estratégia de posicionamento orgânico no Google e em IAs (ChatGPT, Claude, Gemini). Da estratégia à execução, com acompanhamento na plataforma AdzHub."
+          content="Posicionamos sua marca no Google e nas recomendações de IAs (ChatGPT, Claude, Gemini). Estratégia, produção e publicação done-for-you — você acompanha na plataforma."
         />
       </Helmet>
 
@@ -38,28 +39,31 @@ export default function FinestraLanding() {
           <div className="flex flex-col items-center text-center gap-6 max-w-[781px] mx-auto mb-10">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/70 backdrop-blur-sm border border-[#37489d]/10 text-sm font-medium text-[#37489d]">
               <Search className="w-4 h-4 shrink-0" />
-              Estratégias de SEO e GEO para aumentar suas vendas
+              Operação done-for-you de SEO e GEO
             </div>
             <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-[3.25rem] xl:text-[3.75rem] font-bold leading-[1.08] tracking-tight text-[#08080C] max-w-4xl mx-auto">
               Sua marca no topo do Google e das{" "}
-              <span className="text-[#37489d]">recomendações das AI</span>
+              <span className="inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-2">
+                <span className="text-[#37489d]">recomendações das AI</span>
+                <AiBrandLogos />
+              </span>
             </h1>
             <p className="text-lg text-[#08080C] opacity-80 max-w-[640px] leading-relaxed">
-              Posicione sua marca nas recomendações orgânicas do Google e de AIs (como ChatGPT, Claude, Gemini…). Da
-              estratégia até a execução, nós fazemos por você e você acompanha tudo pela plataforma!
+              Nós cuidamos da estratégia, da produção e da publicação. Você acompanha o posicionamento no Google e
+              nas IAs pela plataforma — sem montar time interno nem virar ponte entre ferramentas.
             </p>
           </div>
 
           <div className="flex items-center justify-center mb-5">
             <StarBorder as="button" type="button" onClick={openWaitlist} color="hsl(224, 47%, 42%)" speed="8s">
-              Começar Grátis
+              Quero posicionar minha marca
             </StarBorder>
           </div>
 
           <div className="flex items-center justify-center gap-5 flex-wrap mb-14">
             <div className="flex items-center gap-2 min-h-[28px]">
               <span className="text-sm font-medium text-[#08080C]/70">
-                Conteúdo gerado por IA e especialistas
+                Especialistas + IA na operação
               </span>
             </div>
             <div className="flex items-center gap-2">
@@ -81,24 +85,24 @@ export default function FinestraLanding() {
         <Features />
       </Suspense>
 
-      {/* Como Funciona Section */}
+      {/* Como Funciona — operação nossa, acompanhamento seu */}
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-8">
           <div className="flex flex-col lg:flex-row justify-between items-end mb-16 gap-8">
             <div className="max-w-[649px]">
               <h2 className="text-4xl md:text-6xl lg:text-[72px] font-medium leading-[100%] tracking-tight text-[#08080C] mb-6">
-                Simples de usar, poderoso nos resultados
+                Como nós posicionamos sua marca
               </h2>
               <p className="text-lg font-medium text-[#6B7280] leading-[170%]">
-                Em apenas 3 passos você cria e publica conteúdo profissional para blog e redes sociais com ajuda da IA
+                Três etapas da nossa operação. Você acompanha o andamento e os resultados na plataforma.
               </p>
             </div>
             <div className="flex flex-col gap-2">
               <StarBorder as="button" type="button" onClick={openWaitlist} color="hsl(224, 47%, 42%)" speed="8s">
-                Começar Grátis
+                Quero posicionar minha marca
               </StarBorder>
-              <p className="text-base font-medium text-[#6B7280] capitalize">
-                sem cartão de crédito
+              <p className="text-base font-medium text-[#6B7280]">
+                Sem montar departamento interno
               </p>
             </div>
           </div>
@@ -108,18 +112,19 @@ export default function FinestraLanding() {
               <div className="bg-white rounded-3xl p-6 mb-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-12 h-12 rounded-full bg-[#37489d] flex items-center justify-center text-white font-bold text-lg">1</div>
-                  <p className="text-lg font-semibold text-[#08080C]">Escolha o tema</p>
+                  <p className="text-lg font-semibold text-[#08080C]">Diagnóstico e estratégia</p>
                 </div>
                 <p className="text-sm text-[#6B7280]">
-                  Defina o assunto, palavras-chave e o tom de voz. A IA pesquisa referências e sugere estruturas otimizadas.
+                  Analisamos seu site, palavras-chave e concorrência. Definimos o mapa editorial de SEO e GEO para
+                  Google e IAs.
                 </p>
               </div>
               <div className="bg-white rounded-3xl p-4">
                 <div className="flex items-center gap-3">
-                  <Search className="w-5 h-5 text-[#37489d]" />
+                  <Target className="w-5 h-5 text-[#37489d]" />
                   <div>
-                    <p className="text-sm font-medium text-[#08080C]">Pesquisa inteligente</p>
-                    <p className="text-xs text-[#6B7280]">5 referências encontradas • SEO analisado</p>
+                    <p className="text-sm font-medium text-[#08080C]">Plano de posicionamento</p>
+                    <p className="text-xs text-[#6B7280]">Oportunidades + prioridades no GSC</p>
                   </div>
                 </div>
               </div>
@@ -129,18 +134,19 @@ export default function FinestraLanding() {
               <div className="bg-white rounded-3xl p-6 mb-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-12 h-12 rounded-full bg-[hsl(41,100%,58%)] flex items-center justify-center text-white font-bold text-lg">2</div>
-                  <p className="text-lg font-semibold text-[#08080C]">Gere o conteúdo</p>
+                  <p className="text-lg font-semibold text-[#08080C]">Produção done-for-you</p>
                 </div>
                 <p className="text-sm text-[#6B7280]">
-                  A IA cria artigos, posts e legendas personalizados. Edite, ajuste o tom e adicione sua identidade visual.
+                  Especialistas e IA produzem artigos, capas e metadados com o contexto da sua marca — prontos para
+                  publicar.
                 </p>
               </div>
               <div className="bg-white rounded-3xl p-4">
                 <div className="flex items-center gap-3">
                   <PenTool className="w-5 h-5 text-[hsl(41,100%,58%)]" />
                   <div>
-                    <p className="text-sm font-medium text-[#08080C]">Artigo gerado</p>
-                    <p className="text-xs text-[#6B7280]">1.200 palavras • SEO otimizado</p>
+                    <p className="text-sm font-medium text-[#08080C]">Conteúdo na operação</p>
+                    <p className="text-xs text-[#6B7280]">SEO + GEO no mesmo fluxo</p>
                   </div>
                 </div>
               </div>
@@ -150,18 +156,19 @@ export default function FinestraLanding() {
               <div className="bg-white rounded-3xl p-6 mb-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-12 h-12 rounded-full bg-emerald-500 flex items-center justify-center text-white font-bold text-lg">3</div>
-                  <p className="text-lg font-semibold text-[#08080C]">Publique e acompanhe</p>
+                  <p className="text-lg font-semibold text-[#08080C]">Publicação e acompanhamento</p>
                 </div>
                 <p className="text-sm text-[#6B7280]">
-                  Publique direto no blog ou agende para redes sociais. Acompanhe métricas de engajamento e tráfego.
+                  Publicamos no seu site e você acompanha desempenho, cliques e evolução do posicionamento na
+                  plataforma.
                 </p>
               </div>
               <div className="bg-white rounded-3xl p-4">
                 <div className="flex items-center gap-3">
                   <BarChart3 className="w-5 h-5 text-emerald-500" />
                   <div>
-                    <p className="text-sm font-medium text-[#08080C]">Post publicado</p>
-                    <p className="text-xs text-[#6B7280]">340 visualizações • 12% engajamento</p>
+                    <p className="text-sm font-medium text-[#08080C]">Resultado na plataforma</p>
+                    <p className="text-xs text-[#6B7280]">Métricas + próximo ciclo editorial</p>
                   </div>
                 </div>
               </div>
@@ -178,8 +185,9 @@ export default function FinestraLanding() {
               Por que escolher a AdzHub
             </h2>
             <p className="text-lg font-medium text-[#6B7280] leading-[150%] max-w-[420px]">
-              Um chat genérico entrega texto solto. A AdzHub entrega <strong className="font-semibold text-[#08080C]">blog com método</strong>: estratégia, SEO, publicação no seu site e leitura em dados, sem você virar ponte entre
-              ferramentas e planilhas.
+              Não é waitlist de ferramenta solta. É{" "}
+              <strong className="font-semibold text-[#08080C]">operação de posicionamento</strong> com método, time e
+              plataforma para você acompanhar — sem virar ponte entre ChatGPT, CMS e planilhas.
             </p>
           </div>
 
@@ -187,17 +195,18 @@ export default function FinestraLanding() {
             <div className="bg-white rounded-3xl p-6">
               <div className="inline-flex items-center gap-2 px-2 py-1 rounded bg-[hsl(224,47%,42%)]/10 mb-4">
                 <div className="w-6 h-6 rounded-full bg-[hsl(224,47%,42%)]"></div>
-                <span className="text-base font-medium text-[hsl(224,47%,42%)]">Do rascunho ao ar</span>
+                <span className="text-base font-medium text-[hsl(224,47%,42%)]">Nós executamos</span>
               </div>
               <div className="flex items-start mb-8">
                 <span className="text-6xl md:text-[100px] font-normal leading-[120%] tracking-tight text-[#1F2937]">1</span>
                 <span className="text-3xl md:text-[50px] font-medium leading-[120%] tracking-tight text-[#1F2937] pl-1 pt-4 md:pt-8">
-                  fluxo
+                  operação
                 </span>
               </div>
               <p className="text-lg font-normal text-[#6B7280] leading-[150%]">
-                Copiar um artigo do ChatGPT ainda deixa para você o CMS, imagens, calendário e o “colar no site”. Na AdzHub, produção e <strong className="font-medium text-[#1F2937]">publicação</strong> conversam no mesmo ambiente da sua
-                operação.
+                Estratégia, produção e publicação ficam com a gente. Você{" "}
+                <strong className="font-medium text-[#1F2937]">acompanha e aprova</strong> na plataforma — não precisa
+                montar fluxo interno do zero.
               </p>
             </div>
 
@@ -213,8 +222,9 @@ export default function FinestraLanding() {
                 </span>
               </div>
               <p className="text-lg font-normal text-[#6B7280] leading-[150%]">
-                Prompt em ferramenta aberta não guarda seu posicionamento nem sua linha editorial. Aqui a IA trabalha com o <strong className="font-medium text-[#1F2937]">contexto da sua empresa</strong> e com regras de SEO e GEO, não com
-                respostas “para qualquer um”.
+                Prompt em ferramenta aberta não guarda seu posicionamento. Aqui a operação trabalha com o{" "}
+                <strong className="font-medium text-[#1F2937]">contexto da sua empresa</strong> e regras de SEO e GEO
+                para Google e IAs.
               </p>
             </div>
 
@@ -228,7 +238,9 @@ export default function FinestraLanding() {
                 <span className="text-3xl md:text-[40px] font-medium leading-[120%] tracking-tight text-[#1F2937]">%</span>
               </div>
               <p className="text-lg font-normal text-[#6B7280] leading-[150%]">
-                Artigo solto no site não mostra se funcionou. Na AdzHub você acompanha desempenho e evolução <strong className="font-medium text-[#1F2937]">no mesmo lugar</strong> em que estratégia, produção e publicação acontecem. Menos achismo, mais leitura de dados.
+                Você vê desempenho e evolução{" "}
+                <strong className="font-medium text-[#1F2937]">no mesmo lugar</strong> em que a operação acontece.
+                Ferramenta + execução, sem waitlist de produto solto.
               </p>
             </div>
           </div>
@@ -246,7 +258,7 @@ export default function FinestraLanding() {
               O que nossos clientes dizem
             </h2>
             <p className="text-center text-[#6B7280] text-lg">
-              Empresas de todos os tamanhos confiam na AdzHub para transformar sua estratégia de conteúdo em resultados reais.
+              Empresas que já operam posicionamento orgânico com a AdzHub — método, conteúdo e acompanhamento.
             </p>
           </div>
 
@@ -271,7 +283,7 @@ export default function FinestraLanding() {
               O Blog é apenas o começo
             </h2>
             <p className="text-lg font-medium text-[#6B7280] leading-[170%] max-w-[650px] mx-auto">
-              Este módulo faz parte de uma plataforma maior: a AdzHub, que combina Supercérebro (IA contextual), 
+              Este módulo faz parte de uma plataforma maior: a AdzHub, que combina Supercérebro (IA contextual),
               módulos integrados e metodologia aplicada para transformar o marketing de PMEs.
             </p>
           </div>
@@ -281,7 +293,7 @@ export default function FinestraLanding() {
               <div className="absolute -top-3 left-4 px-3 py-0.5 bg-[#37489d] text-white text-xs font-medium rounded-full">Atual</div>
               <Sparkles className="w-8 h-8 text-[#37489d] mb-3" />
               <h3 className="text-base font-bold text-[#08080C] mb-1">Blog</h3>
-              <p className="text-xs text-[#6B7280]">Blog, SEO e conteúdo com IA</p>
+              <p className="text-xs text-[#6B7280]">SEO, GEO e conteúdo com operação</p>
             </div>
             <div className="bg-white rounded-2xl p-6 border border-[#08080C]/10 opacity-60">
               <Zap className="w-8 h-8 text-[#6B7280] mb-3" />
