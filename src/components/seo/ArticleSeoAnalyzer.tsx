@@ -1,6 +1,8 @@
 import * as React from "react";
-import { Link2, FileText, Loader2, Lock, Check, Circle } from "lucide-react";
+import { Link2, FileText, Lock } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { ColorOrb } from "@/components/ui/ColorOrb";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -53,6 +55,13 @@ const ANALYSIS_PHASES = [
 ] as const;
 
 const PHASE_INTERVAL_MS = 2800;
+
+const ADZ_ORB_TONES = {
+  base: "oklch(95% 0.05 330)",
+  accent1: "oklch(70% 0.18 50)",
+  accent2: "oklch(62% 0.24 280)",
+  accent3: "oklch(40% 0.15 265)",
+};
 
 function scoreTone(score: number) {
   if (score >= 75) return "text-emerald-700";
@@ -313,7 +322,7 @@ export function ArticleSeoAnalyzer() {
         >
           {analyzing ? (
             <>
-              <Loader2 className="w-4 h-4 animate-spin" />
+              <ColorOrb dimension="18px" tones={ADZ_ORB_TONES} spinDuration={3} />
               Analisando…
             </>
           ) : (
@@ -323,64 +332,36 @@ export function ArticleSeoAnalyzer() {
       </div>
 
       {analyzing && (
-        <div className="mt-8 rounded-2xl border border-[#37489d]/15 bg-[#37489d]/[0.04] p-5 sm:p-6">
-          <div className="flex items-center gap-2 mb-5">
-            <Loader2 className="w-4 h-4 text-[#37489d] animate-spin shrink-0" />
-            <p className="text-sm font-semibold text-[#08080C]">
-              Gerando auditoria AdzSEO Analytics…
-            </p>
-          </div>
-          <ol className="space-y-3">
-            {ANALYSIS_PHASES.map((phase, i) => {
-              const done = i < phaseIndex;
-              const active = i === phaseIndex;
-              return (
-                <li
-                  key={phase.id}
-                  className={`flex items-center gap-3 text-sm transition-opacity duration-300 ${
-                    done || active ? "opacity-100" : "opacity-40"
-                  }`}
-                >
-                  <span
-                    className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${
-                      done
-                        ? "bg-emerald-500 text-white"
-                        : active
-                          ? "bg-[#37489d] text-white"
-                          : "bg-white border border-[#37489d]/20 text-[#9CA3AF]"
-                    }`}
-                  >
-                    {done ? (
-                      <Check className="w-3.5 h-3.5" strokeWidth={2.5} />
-                    ) : active ? (
-                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                    ) : (
-                      <Circle className="w-2.5 h-2.5 fill-current" />
-                    )}
-                  </span>
-                  <span
-                    className={
-                      active
-                        ? "font-medium text-[#08080C]"
-                        : done
-                          ? "text-[#4B5563]"
-                          : "text-[#6B7280]"
-                    }
-                  >
-                    {phase.label}
-                    {active ? "…" : ""}
-                  </span>
-                </li>
-              );
-            })}
-          </ol>
-          <div className="mt-5 h-1.5 rounded-full bg-white overflow-hidden">
-            <div
-              className="h-full rounded-full bg-[#37489d] transition-all duration-700 ease-out"
-              style={{
-                width: `${((phaseIndex + 1) / ANALYSIS_PHASES.length) * 100}%`,
-              }}
+        <div
+          role="status"
+          aria-live="polite"
+          className="mt-8 flex min-h-24 items-center gap-4 rounded-2xl border border-[#37489d]/15 bg-[#37489d]/[0.04] px-5 py-5 sm:px-6"
+        >
+          <div className="relative flex h-12 w-12 shrink-0 items-center justify-center">
+            <motion.span
+              aria-hidden
+              className="absolute inset-0 rounded-full border border-[#37489d]/15"
+              animate={{ scale: [0.85, 1.18, 0.85], opacity: [0.2, 0.65, 0.2] }}
+              transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
             />
+            <ColorOrb dimension="34px" tones={ADZ_ORB_TONES} spinDuration={3} />
+          </div>
+          <div className="min-w-0">
+            <p className="mb-1 text-xs font-medium uppercase tracking-[0.14em] text-[#37489d]/65">
+              AdzSEO Analytics
+            </p>
+            <AnimatePresence mode="wait">
+              <motion.p
+                key={ANALYSIS_PHASES[phaseIndex].id}
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -5 }}
+                transition={{ duration: 0.22 }}
+                className="adzseo-status-shimmer text-sm font-semibold sm:text-base"
+              >
+                {ANALYSIS_PHASES[phaseIndex].label}…
+              </motion.p>
+            </AnimatePresence>
           </div>
         </div>
       )}

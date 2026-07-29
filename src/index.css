@@ -236,3 +236,35 @@ html, body {
 .vagas-modal-scroll::-webkit-scrollbar-thumb:hover {
   background: rgba(55, 72, 157, 0.45);
 }
+
+/* Shimmer do status dinâmico da auditoria AdzSEO */
+.adzseo-status-shimmer {
+  color: transparent;
+  background-image: linear-gradient(
+    100deg,
+    #08080c 20%,
+    #5264bd 42%,
+    #80dced 50%,
+    #5264bd 58%,
+    #08080c 80%
+  );
+  background-size: 220% 100%;
+  background-position: 100% center;
+  background-clip: text;
+  -webkit-background-clip: text;
+  animation: adzseo-status-shimmer 1.8s linear infinite;
+}
+
+@keyframes adzseo-status-shimmer {
+  to {
+    background-position: -120% center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .adzseo-status-shimmer {
+    color: #08080c;
+    background: none;
+    animation: none;
+  }
+}
