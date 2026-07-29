@@ -97,6 +97,7 @@ const ROLE_LABEL: Record<ProfileRole, string> = {
 export function WaitlistDialogProvider({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = React.useState(false);
   const [submitting, setSubmitting] = React.useState(false);
+  const [submitted, setSubmitted] = React.useState(false);
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [phone, setPhone] = React.useState("");
@@ -119,6 +120,7 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
 
   const openWaitlist = React.useCallback((opts?: OpenWaitlistOptions) => {
     onSuccessRef.current = opts?.onSuccess ?? null;
+    setSubmitted(false);
     setOpen(true);
   }, []);
 
@@ -127,6 +129,7 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
       if (submitting) return;
       setOpen(next);
       if (!next) {
+        setSubmitted(false);
         resetForm();
         onSuccessRef.current = null;
       }
@@ -202,10 +205,9 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
         page_path: typeof window !== "undefined" ? window.location.pathname : "",
         role: role || undefined,
       });
-      toast.success(data.message || "Solicitação enviada!");
       const after = onSuccessRef.current;
       onSuccessRef.current = null;
-      setOpen(false);
+      setSubmitted(true);
       resetForm();
       after?.();
     } catch {
@@ -224,25 +226,13 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
     <WaitlistContext.Provider value={value}>
       {children}
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className="max-h-[calc(100dvh-2rem)] max-w-[min(100vw-2rem,26rem)] overflow-y-auto border-[#37489d]/15 bg-white p-0 shadow-2xl sm:max-w-md">
-          <div className="relative overflow-hidden rounded-t-lg bg-gradient-to-br from-[#37489d] to-[#5264bd] px-6 pb-5 pt-6 text-white">
-            <motion.div
-              aria-hidden
-              className="absolute -right-10 -top-12 h-36 w-36 rounded-full bg-white/10 blur-sm"
-              animate={{ scale: [1, 1.12, 1], x: [0, -6, 0], y: [0, 5, 0] }}
-              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-            />
-            <motion.div
-              aria-hidden
-              className="absolute -bottom-12 left-10 h-24 w-24 rounded-full bg-[#80dced]/20 blur-sm"
-              animate={{ scale: [1.1, 0.9, 1.1], x: [0, 8, 0] }}
-              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-            />
+        <DialogContent className="vagas-modal-scroll max-h-[calc(100dvh-2rem)] max-w-[min(100vw-2rem,26rem)] overflow-y-auto overscroll-contain rounded-3xl border-[#37489d]/15 bg-white p-0 shadow-2xl sm:max-w-md sm:rounded-3xl">
+          <div className="relative overflow-hidden rounded-t-lg bg-white px-6 pb-5 pt-6">
             <DialogHeader className="relative space-y-2 pr-6 text-left">
-            <DialogTitle className="text-xl font-semibold text-white sm:text-2xl">
+            <DialogTitle className="text-xl font-semibold text-[#37489d] sm:text-2xl">
               Lista de espera
             </DialogTitle>
-            <p className="max-w-sm text-sm leading-relaxed text-white/80">
+            <p className="max-w-sm text-sm leading-relaxed text-[#37489d]/70">
               Seja um dos primeiros a transformar sua operação de marketing com a AdzHub.
             </p>
             <DialogDescription className="sr-only">
@@ -251,7 +241,46 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
             </DialogHeader>
           </div>
 
+          <AnimatePresence mode="wait">
+          {submitted ? (
+            <motion.div
+              key="waitlist-success"
+              role="status"
+              aria-live="polite"
+              className="p-6 pt-2"
+              initial={{ opacity: 0, scale: 0.97, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.97 }}
+              transition={{ duration: 0.25, ease: "easeOut" }}
+            >
+              <div className="rounded-2xl border border-[#37489d]/20 bg-white px-6 py-10 text-center">
+                <motion.div
+                  initial={{ scale: 0.45, rotate: -25 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  transition={{ type: "spring", stiffness: 180, damping: 14 }}
+                  className="mx-auto mb-4 inline-flex h-14 w-14 items-center justify-center rounded-full bg-[#37489d]/10"
+                >
+                  <Check className="h-7 w-7 text-[#37489d]" />
+                </motion.div>
+                <h3 className="mb-2 text-xl font-semibold text-[#08080C]">
+                  Recebemos seu interesse!
+                </h3>
+                <p className="text-sm leading-relaxed text-[#6B7280]">
+                  Sua solicitação foi enviada para o nosso time. Avisaremos você assim que o acesso
+                  estiver disponível.
+                </p>
+                <Button
+                  type="button"
+                  onClick={() => handleOpenChange(false)}
+                  className="mt-7 w-full rounded-xl bg-[#37489d] text-white transition-colors hover:bg-[#37489d]/90"
+                >
+                  Continuar
+                </Button>
+              </div>
+            </motion.div>
+          ) : (
           <motion.form
+            key="waitlist-form"
             onSubmit={handleSubmit}
             className="space-y-4 p-6"
             initial="hidden"
@@ -359,27 +388,30 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
             <AnimatePresence initial={false}>
               {role === "entrepreneur" && (
               <motion.div
-                initial={{ opacity: 0, height: 0, y: -8 }}
-                animate={{ opacity: 1, height: "auto", y: 0 }}
-                exit={{ opacity: 0, height: 0, y: -8 }}
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
                 transition={{ duration: 0.22, ease: "easeOut" }}
-                className="space-y-2 overflow-hidden"
+                className="overflow-hidden"
               >
-                <Label htmlFor="waitlist-company" className="text-[#37489d]">
-                  Site da empresa
-                </Label>
-                <Input
-                  id="waitlist-company"
-                  type="text"
-                  required
-                  value={company}
-                  onChange={(ev) => setCompany(ev.target.value)}
-                  placeholder="empresa.com.br"
-                  className="border-[#37489d]/20"
-                  autoComplete="url"
-                  inputMode="url"
-                  disabled={submitting}
-                />
+                {/* padding evita o clipping do focus ring pelo overflow-hidden da animação */}
+                <div className="space-y-2 p-1">
+                  <Label htmlFor="waitlist-company" className="text-[#37489d]">
+                    Site da empresa
+                  </Label>
+                  <Input
+                    id="waitlist-company"
+                    type="text"
+                    required
+                    value={company}
+                    onChange={(ev) => setCompany(ev.target.value)}
+                    placeholder="empresa.com.br"
+                    className="border-[#37489d]/20"
+                    autoComplete="url"
+                    inputMode="url"
+                    disabled={submitting}
+                  />
+                </div>
               </motion.div>
               )}
             </AnimatePresence>
@@ -388,7 +420,7 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
               <Button
               type="submit"
               disabled={submitting}
-              className="group w-full rounded-xl bg-[#37489d] text-white shadow-lg shadow-[#37489d]/20 transition-all hover:-translate-y-0.5 hover:bg-[#37489d]/90 hover:shadow-xl hover:shadow-[#37489d]/25"
+              className="group w-full rounded-xl bg-[#37489d] text-white transition-colors hover:bg-[#37489d]/90"
             >
               <AnimatePresence mode="wait" initial={false}>
                 {submitting ? (
@@ -418,6 +450,8 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
               </Button>
             </motion.div>
           </motion.form>
+          )}
+          </AnimatePresence>
         </DialogContent>
       </Dialog>
     </WaitlistContext.Provider>
