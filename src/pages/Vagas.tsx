@@ -40,6 +40,7 @@ import { GrowthFlywheel } from "@/components/vagas/GrowthFlywheel";
 import { VagasSpotlightCard } from "@/components/vagas/VagasSpotlightCard";
 import { VagasCardStack } from "@/components/vagas/VagasCardStack";
 import { BorderBeamCard } from "@/components/vagas/BorderBeamCard";
+import { pushDataLayer } from "@/lib/gtm";
 
 const inputCls =
   "w-full rounded-xl border border-[#08080C]/12 bg-[#FAFAFA] px-4 py-3 text-sm text-[#08080C] placeholder:text-[#6B7280]/70 focus:outline-none focus:border-[#37489d]/40 focus:ring-2 focus:ring-[#37489d]/10 transition-colors";
@@ -450,11 +451,9 @@ export default function Vagas() {
         );
       }
 
-      // GTM: evento personalizado → aciona tags LEAD FORM (GTM-WR3H8GCD)
-      const w = window as Window & { dataLayer?: Record<string, unknown>[] };
-      w.dataLayer = w.dataLayer || [];
-      w.dataLayer.push({
-        event: "generate_lead",
+      // GTM: conversão Pixel Vaga (GTM-WR3H8GCD)
+      pushDataLayer({
+        event: "candidatura_vaga",
         form_name: "vagas_candidatura",
         form_id: "vagas",
         page_path: "/vagas",

@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { useWaitlistDialog } from "@/components/WaitlistDialogProvider";
+import { pushDataLayer } from "@/lib/gtm";
 
 type InputMode = "url" | "text";
 
@@ -224,6 +225,13 @@ export function ArticleSeoAnalyzer() {
         issues: data.issues || [],
         summary: data.summary || "",
         intent_facets: data.intent_facets || [],
+      });
+      pushDataLayer({
+        event: "seo_audit_ready",
+        form_name: "adzseo_analytics",
+        form_id: "seo_audit",
+        page_path: typeof window !== "undefined" ? window.location.pathname : "/seo",
+        overall_score: data.overall_score ?? undefined,
       });
       if (hasJoinedWaitlist) setUnlocked(true);
     } catch {

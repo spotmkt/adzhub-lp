@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "sonner";
+import { pushDataLayer } from "@/lib/gtm";
 
 type ProfileRole = "marketing" | "entrepreneur";
 
@@ -157,6 +158,13 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
       }
       markWaitlistJoined();
       setHasJoinedWaitlist(true);
+      pushDataLayer({
+        event: "waitlist_submit",
+        form_name: "lista_espera",
+        form_id: "waitlist",
+        page_path: typeof window !== "undefined" ? window.location.pathname : "",
+        role: role || undefined,
+      });
       toast.success(data.message || "Solicitação enviada!");
       const after = onSuccessRef.current;
       onSuccessRef.current = null;
