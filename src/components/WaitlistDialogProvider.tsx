@@ -12,10 +12,47 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "sonner";
 import { pushDataLayer } from "@/lib/gtm";
+import { AnimatePresence, motion } from "framer-motion";
+import { Check, Loader2, Phone } from "lucide-react";
 
 type ProfileRole = "marketing" | "entrepreneur";
 
 const WAITLIST_STORAGE_KEY = "adzhub_waitlist_joined";
+
+function formatBrazilianPhone(value: string): string {
+  let digits = value.replace(/\D/g, "");
+
+  if (digits.startsWith("55") && digits.length > 11) {
+    digits = digits.slice(2);
+  }
+
+  digits = digits.slice(0, 11);
+  if (digits.length <= 2) return digits ? `(${digits}` : "";
+  if (digits.length <= 6) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+  if (digits.length <= 10) {
+    return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`;
+  }
+  return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+}
+
+function getBrazilianPhoneDigits(value: string): string {
+  const digits = value.replace(/\D/g, "");
+  return digits.startsWith("55") && digits.length > 11 ? digits.slice(2) : digits;
+}
+
+function isValidBrazilianPhone(value: string): boolean {
+  const digits = getBrazilianPhoneDigits(value);
+  return (
+    (digits.length === 10 || digits.length === 11) &&
+    !/^(\d)\1+$/.test(digits) &&
+    Number(digits.slice(0, 2)) >= 11
+  );
+}
+
+const fieldAnimation = {
+  hidden: { opacity: 0, y: 10 },
+  visible: { opacity: 1, y: 0 },
+};
 
 export function readWaitlistJoined(): boolean {
   try {
@@ -112,8 +149,8 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
       toast.error("Informe um e-mail válido.");
       return;
     }
-    const digits = trimmedPhone.replace(/\D/g, "");
-    if (digits.length < 10) {
+    const phoneDigits = getBrazilianPhoneDigits(trimmedPhone);
+    if (!isValidBrazilianPhone(trimmedPhone)) {
       toast.error("Informe um telefone válido (com DDD).");
       return;
     }
@@ -134,7 +171,7 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
         body: JSON.stringify({
           nome: trimmedName,
           email: trimmed,
-          telefone: trimmedPhone,
+          telefone: `+55${phoneDigits}`,
           role,
           site: role === "entrepreneur" ? trimmedSite : "",
           pagePath: typeof window !== "undefined" ? window.location.pathname : "",
@@ -187,18 +224,41 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
     <WaitlistContext.Provider value={value}>
       {children}
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className="max-w-[min(100vw-2rem,26rem)] sm:max-w-md border-[#37489d]/15 bg-white">
-          <DialogHeader className="text-left space-y-2 pr-6">
-            <DialogTitle className="text-xl sm:text-2xl font-semibold text-[#37489d]">
+        <DialogContent className="max-h-[calc(100dvh-2rem)] max-w-[min(100vw-2rem,26rem)] overflow-y-auto border-[#37489d]/15 bg-white p-0 shadow-2xl sm:max-w-md">
+          <div className="relative overflow-hidden rounded-t-lg bg-gradient-to-br from-[#37489d] to-[#5264bd] px-6 pb-5 pt-6 text-white">
+            <motion.div
+              aria-hidden
+              className="absolute -right-10 -top-12 h-36 w-36 rounded-full bg-white/10 blur-sm"
+              animate={{ scale: [1, 1.12, 1], x: [0, -6, 0], y: [0, 5, 0] }}
+              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <motion.div
+              aria-hidden
+              className="absolute -bottom-12 left-10 h-24 w-24 rounded-full bg-[#80dced]/20 blur-sm"
+              animate={{ scale: [1.1, 0.9, 1.1], x: [0, 8, 0] }}
+              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <DialogHeader className="relative space-y-2 pr-6 text-left">
+            <DialogTitle className="text-xl font-semibold text-white sm:text-2xl">
               Lista de espera
             </DialogTitle>
+            <p className="max-w-sm text-sm leading-relaxed text-white/80">
+              Seja um dos primeiros a transformar sua operação de marketing com a AdzHub.
+            </p>
             <DialogDescription className="sr-only">
               Formulário de inscrição na lista de espera da plataforma AdzHub.
             </DialogDescription>
-          </DialogHeader>
+            </DialogHeader>
+          </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4 pt-2">
-            <div className="space-y-2">
+          <motion.form
+            onSubmit={handleSubmit}
+            className="space-y-4 p-6"
+            initial="hidden"
+            animate="visible"
+            variants={{ visible: { transition: { staggerChildren: 0.06, delayChildren: 0.08 } } }}
+          >
+            <motion.div variants={fieldAnimation} className="space-y-2">
               <Label htmlFor="waitlist-name" className="text-[#37489d]">
                 Nome
               </Label>
@@ -212,9 +272,9 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
                 required
                 disabled={submitting}
               />
-            </div>
+            </motion.div>
 
-            <div className="space-y-2">
+            <motion.div variants={fieldAnimation} className="space-y-2">
               <Label htmlFor="waitlist-email" className="text-[#37489d]">
                 E-mail
               </Label>
@@ -229,26 +289,47 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
                 autoComplete="email"
                 disabled={submitting}
               />
-            </div>
+            </motion.div>
 
-            <div className="space-y-2">
+            <motion.div variants={fieldAnimation} className="space-y-2">
               <Label htmlFor="waitlist-phone" className="text-[#37489d]">
-                Telefone
+                WhatsApp
               </Label>
-              <Input
-                id="waitlist-phone"
-                type="tel"
-                required
-                value={phone}
-                onChange={(ev) => setPhone(ev.target.value)}
-                placeholder="(11) 99999-9999"
-                className="border-[#37489d]/20"
-                autoComplete="tel"
-                disabled={submitting}
-              />
-            </div>
+              <div className="flex h-10 overflow-hidden rounded-md border border-[#37489d]/20 bg-white transition-all focus-within:border-[#37489d]/50 focus-within:ring-2 focus-within:ring-[#37489d]/10">
+                <div className="flex shrink-0 items-center gap-2 border-r border-[#37489d]/15 bg-[#37489d]/[0.04] px-3 text-sm text-[#37489d]">
+                  <span aria-hidden>🇧🇷</span>
+                  <span className="font-medium">+55</span>
+                </div>
+                <div className="relative min-w-0 flex-1">
+                  <Phone
+                    aria-hidden
+                    className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#37489d]/45"
+                  />
+                  <Input
+                    id="waitlist-phone"
+                    type="tel"
+                    required
+                    value={phone}
+                    onChange={(ev) => setPhone(formatBrazilianPhone(ev.target.value))}
+                    placeholder="(11) 99999-9999"
+                    className="h-full border-0 pl-9 shadow-none focus-visible:ring-0"
+                    autoComplete="tel-national"
+                    inputMode="numeric"
+                    maxLength={15}
+                    disabled={submitting}
+                    aria-describedby="waitlist-phone-hint"
+                  />
+                </div>
+              </div>
+              <p id="waitlist-phone-hint" className="text-xs text-[#37489d]/60">
+                Usaremos este número apenas para falar sobre seu acesso.
+              </p>
+            </motion.div>
 
-            <fieldset className="space-y-3 rounded-xl border border-[#37489d]/12 bg-[#37489d]/[0.04] p-3">
+            <motion.fieldset
+              variants={fieldAnimation}
+              className="space-y-3 rounded-xl border border-[#37489d]/12 bg-[#37489d]/[0.04] p-3"
+            >
               <legend className="px-1 text-sm font-medium text-[#08080C]">Eu sou</legend>
               <RadioGroup
                 value={role || undefined}
@@ -273,10 +354,17 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
                   </Label>
                 </div>
               </RadioGroup>
-            </fieldset>
+            </motion.fieldset>
 
-            {role === "entrepreneur" && (
-              <div className="space-y-2">
+            <AnimatePresence initial={false}>
+              {role === "entrepreneur" && (
+              <motion.div
+                initial={{ opacity: 0, height: 0, y: -8 }}
+                animate={{ opacity: 1, height: "auto", y: 0 }}
+                exit={{ opacity: 0, height: 0, y: -8 }}
+                transition={{ duration: 0.22, ease: "easeOut" }}
+                className="space-y-2 overflow-hidden"
+              >
                 <Label htmlFor="waitlist-company" className="text-[#37489d]">
                   Site da empresa
                 </Label>
@@ -292,17 +380,44 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
                   inputMode="url"
                   disabled={submitting}
                 />
-              </div>
-            )}
+              </motion.div>
+              )}
+            </AnimatePresence>
 
-            <Button
+            <motion.div variants={fieldAnimation}>
+              <Button
               type="submit"
               disabled={submitting}
-              className="w-full rounded-xl bg-[#37489d] hover:bg-[#37489d]/90 text-white"
+              className="group w-full rounded-xl bg-[#37489d] text-white shadow-lg shadow-[#37489d]/20 transition-all hover:-translate-y-0.5 hover:bg-[#37489d]/90 hover:shadow-xl hover:shadow-[#37489d]/25"
             >
-              {submitting ? "Enviando…" : "Enviar solicitação"}
-            </Button>
-          </form>
+              <AnimatePresence mode="wait" initial={false}>
+                {submitting ? (
+                  <motion.span
+                    key="submitting"
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    className="flex items-center gap-2"
+                  >
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Enviando solicitação…
+                  </motion.span>
+                ) : (
+                  <motion.span
+                    key="idle"
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    className="flex items-center gap-2"
+                  >
+                    Quero entrar na lista
+                    <Check className="h-4 w-4 transition-transform group-hover:scale-110" />
+                  </motion.span>
+                )}
+              </AnimatePresence>
+              </Button>
+            </motion.div>
+          </motion.form>
         </DialogContent>
       </Dialog>
     </WaitlistContext.Provider>
