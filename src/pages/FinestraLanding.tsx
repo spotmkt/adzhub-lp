@@ -9,6 +9,7 @@ import { Footer } from "@/components/Footer";
 import { useWaitlistDialog } from "@/components/WaitlistDialogProvider";
 import { SeoInteractiveMotion } from "@/components/platform-motion";
 import { AiBrandLogos } from "@/components/AiBrandLogos";
+import { ArticleSeoAnalyzer } from "@/components/seo/ArticleSeoAnalyzer";
 
 const TestimonialsColumn = lazy(() => import("@/components/ui/testimonials-columns-1").then(m => ({ default: m.TestimonialsColumn })));
 const Features = lazy(() => import("@/components/ui/features-6").then(m => ({ default: m.Features })));
@@ -320,6 +321,25 @@ export default function FinestraLanding() {
               </a>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Avaliar artigo — AdzSEO Analytics (fluxo real) */}
+      <section id="avaliar-artigo" className="py-20 sm:py-24 bg-[#F8F8F8] scroll-mt-28">
+        <div className="max-w-3xl mx-auto px-5 sm:px-8">
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[#37489d]/10 text-sm font-medium text-[#37489d] mb-6">
+              <BarChart3 className="w-4 h-4" />
+              AdzSEO Analytics
+            </div>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-medium leading-[110%] tracking-tight text-[#08080C] mb-4">
+              Avalie um artigo agora mesmo
+            </h2>
+            <p className="text-lg text-[#6B7280] leading-[170%] max-w-2xl mx-auto">
+              Envie a URL ou o texto. E receba a auditoria da AdzHub.
+            </p>
+          </div>
+          <ArticleSeoAnalyzer />
         </div>
       </section>
 

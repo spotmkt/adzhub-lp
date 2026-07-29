@@ -14,8 +14,31 @@ import { toast } from "sonner";
 
 type ProfileRole = "marketing" | "entrepreneur";
 
+const WAITLIST_STORAGE_KEY = "adzhub_waitlist_joined";
+
+export function readWaitlistJoined(): boolean {
+  try {
+    return typeof window !== "undefined" && localStorage.getItem(WAITLIST_STORAGE_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+export function markWaitlistJoined(): void {
+  try {
+    localStorage.setItem(WAITLIST_STORAGE_KEY, "1");
+  } catch {
+    /* ignore quota / private mode */
+  }
+}
+
+type OpenWaitlistOptions = {
+  onSuccess?: () => void;
+};
+
 type WaitlistContextValue = {
-  openWaitlist: () => void;
+  openWaitlist: (opts?: OpenWaitlistOptions) => void;
+  hasJoinedWaitlist: boolean;
 };
 
 const WaitlistContext = React.createContext<WaitlistContextValue | null>(null);
@@ -41,6 +64,12 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
   const [phone, setPhone] = React.useState("");
   const [company, setCompany] = React.useState("");
   const [role, setRole] = React.useState<ProfileRole | "">("");
+  const [hasJoinedWaitlist, setHasJoinedWaitlist] = React.useState(false);
+  const onSuccessRef = React.useRef<(() => void) | null>(null);
+
+  React.useEffect(() => {
+    setHasJoinedWaitlist(readWaitlistJoined());
+  }, []);
 
   const resetForm = React.useCallback(() => {
     setName("");
@@ -50,13 +79,19 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
     setRole("");
   }, []);
 
-  const openWaitlist = React.useCallback(() => setOpen(true), []);
+  const openWaitlist = React.useCallback((opts?: OpenWaitlistOptions) => {
+    onSuccessRef.current = opts?.onSuccess ?? null;
+    setOpen(true);
+  }, []);
 
   const handleOpenChange = React.useCallback(
     (next: boolean) => {
       if (submitting) return;
       setOpen(next);
-      if (!next) resetForm();
+      if (!next) {
+        resetForm();
+        onSuccessRef.current = null;
+      }
     },
     [resetForm, submitting]
   );
@@ -120,9 +155,14 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
         toast.error(data.message || "Não conseguimos concluir o envio agora. Tente novamente.");
         return;
       }
+      markWaitlistJoined();
+      setHasJoinedWaitlist(true);
       toast.success(data.message || "Solicitação enviada!");
+      const after = onSuccessRef.current;
+      onSuccessRef.current = null;
       setOpen(false);
       resetForm();
+      after?.();
     } catch {
       toast.error("Não conseguimos concluir o envio agora. Tente novamente.");
     } finally {
@@ -130,7 +170,10 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
     }
   };
 
-  const value = React.useMemo(() => ({ openWaitlist }), [openWaitlist]);
+  const value = React.useMemo(
+    () => ({ openWaitlist, hasJoinedWaitlist }),
+    [openWaitlist, hasJoinedWaitlist],
+  );
 
   return (
     <WaitlistContext.Provider value={value}>

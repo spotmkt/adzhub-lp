@@ -30,6 +30,7 @@ function localApiHandlers(): Plugin {
       const routes: Record<string, string> = {
         "/api/vagas-candidatura": "api/vagas-candidatura.mjs",
         "/api/waitlist": "api/waitlist.mjs",
+        "/api/seo-audit": "api/seo-audit.mjs",
       };
 
       server.middlewares.use(async (req, res, next) => {
