@@ -226,14 +226,14 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
     <WaitlistContext.Provider value={value}>
       {children}
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className="vagas-modal-scroll max-h-[calc(100dvh-2rem)] max-w-[min(100vw-2rem,26rem)] overflow-y-auto overscroll-contain rounded-3xl border-[#37489d]/15 bg-white p-0 shadow-2xl sm:max-w-md sm:rounded-3xl">
-          <div className="relative overflow-hidden rounded-t-lg bg-white px-6 pb-5 pt-6">
+        <DialogContent className="vagas-modal-scroll max-h-[calc(100dvh-2rem)] max-w-[min(100vw-2rem,26rem)] gap-0 overflow-y-auto overscroll-contain rounded-3xl border-[#37489d]/15 bg-white p-0 shadow-2xl sm:max-w-md sm:rounded-3xl">
+          <div className="relative overflow-hidden rounded-t-lg bg-white px-6 pb-2 pt-6">
             <DialogHeader className="relative space-y-2 pr-6 text-left">
             <DialogTitle className="text-xl font-semibold text-[#37489d] sm:text-2xl">
               Solicitar Demonstração
             </DialogTitle>
             <p className="max-w-sm text-sm leading-relaxed text-[#37489d]/70">
-              Conte um pouco sobre você. Nossa equipe entra em contato para agendar a demonstração.
+              Preencha seus dados. Nossa equipe entra em contato para agendar a demonstração.
             </p>
             <DialogDescription className="sr-only">
               Formulário para solicitar uma demonstração da plataforma AdzHub.
@@ -281,7 +281,7 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
           <motion.form
             key="waitlist-form"
             onSubmit={handleSubmit}
-            className="space-y-4 p-6"
+            className="space-y-4 px-6 pb-6 pt-2"
             initial="hidden"
             animate="visible"
             variants={{ visible: { transition: { staggerChildren: 0.06, delayChildren: 0.08 } } }}

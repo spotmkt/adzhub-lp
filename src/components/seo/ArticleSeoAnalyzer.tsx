@@ -320,14 +320,7 @@ export function ArticleSeoAnalyzer() {
           disabled={analyzing}
           className="w-full sm:w-auto rounded-xl bg-[#37489d] hover:bg-[#37489d]/90 text-white"
         >
-          {analyzing ? (
-            <>
-              <ColorOrb dimension="18px" tones={ADZ_ORB_TONES} spinDuration={3} />
-              Analisando…
-            </>
-          ) : (
-            "Analisar Agora"
-          )}
+          {analyzing ? "Analisando…" : "Analisar Agora"}
         </Button>
       </div>
 
@@ -387,8 +380,7 @@ export function ArticleSeoAnalyzer() {
                     Relatório pronto
                   </p>
                   <p className="text-sm text-[#6B7280] leading-relaxed mb-5">
-                    Solicite uma demonstração para liberar o score completo, as dimensões e os
-                    pontos de atenção da auditoria.
+                    Preencha seus dados para ver o resultado completo da auditoria.
                   </p>
                   <Button
                     type="button"
