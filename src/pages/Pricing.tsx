@@ -34,7 +34,7 @@ const pricingPlans = [
       "Suporte por email",
       "Templates básicos",
     ],
-    cta: "Começar Grátis",
+    cta: "Solicitar Demonstração",
     highlighted: false,
   },
   {
@@ -51,7 +51,7 @@ const pricingPlans = [
       "Redes sociais integradas à operação",
       "Relatórios avançados",
     ],
-    cta: "Começar Agora",
+    cta: "Solicitar Demonstração",
     highlighted: true,
   },
   {

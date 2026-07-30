@@ -387,7 +387,7 @@ export function ArticleSeoAnalyzer() {
                     Relatório pronto
                   </p>
                   <p className="text-sm text-[#6B7280] leading-relaxed mb-5">
-                    Entre na lista de espera para liberar o score completo, as dimensões e os
+                    Solicite uma demonstração para liberar o score completo, as dimensões e os
                     pontos de atenção da auditoria.
                   </p>
                   <Button
@@ -395,7 +395,7 @@ export function ArticleSeoAnalyzer() {
                     onClick={handleUnlock}
                     className="w-full rounded-xl bg-[#37489d] hover:bg-[#37489d]/90 text-white"
                   >
-                    Entrar na lista de espera
+                    Solicitar Demonstração
                   </Button>
                 </div>
               </div>

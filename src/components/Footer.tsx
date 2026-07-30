@@ -28,7 +28,7 @@ interface FooterProps {
   ctaLabel?: string;
 }
 
-export function Footer({ showCta = true, ctaLabel = "Começar grátis" }: FooterProps) {
+export function Footer({ showCta = true, ctaLabel = "Solicitar Demonstração" }: FooterProps) {
   const location = useLocation();
   const { openWaitlist } = useWaitlistDialog();
 

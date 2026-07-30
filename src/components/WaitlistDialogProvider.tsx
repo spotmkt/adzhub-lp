@@ -187,7 +187,7 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
       } catch {
         toast.error(
           resp.status === 405 || resp.status === 404
-            ? "API de lista de espera ainda não está no ar. Faça o deploy e tente de novo."
+            ? "API de solicitação ainda não está no ar. Faça o deploy e tente de novo."
             : "Não conseguimos concluir o envio agora. Tente novamente.",
         );
         return;
@@ -200,8 +200,8 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
       setHasJoinedWaitlist(true);
       pushDataLayer({
         event: "waitlist_submit",
-        form_name: "lista_espera",
-        form_id: "waitlist",
+        form_name: "solicitar_demonstracao",
+        form_id: "demo_request",
         page_path: typeof window !== "undefined" ? window.location.pathname : "",
         role: role || undefined,
       });
@@ -230,13 +230,13 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
           <div className="relative overflow-hidden rounded-t-lg bg-white px-6 pb-5 pt-6">
             <DialogHeader className="relative space-y-2 pr-6 text-left">
             <DialogTitle className="text-xl font-semibold text-[#37489d] sm:text-2xl">
-              Lista de espera
+              Solicitar Demonstração
             </DialogTitle>
             <p className="max-w-sm text-sm leading-relaxed text-[#37489d]/70">
-              Seja um dos primeiros a transformar sua operação de marketing com a AdzHub.
+              Conte um pouco sobre você. Nossa equipe entra em contato para agendar a demonstração.
             </p>
             <DialogDescription className="sr-only">
-              Formulário de inscrição na lista de espera da plataforma AdzHub.
+              Formulário para solicitar uma demonstração da plataforma AdzHub.
             </DialogDescription>
             </DialogHeader>
           </div>
@@ -263,11 +263,10 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
                   <Check className="h-7 w-7 text-[#37489d]" />
                 </motion.div>
                 <h3 className="mb-2 text-xl font-semibold text-[#08080C]">
-                  Recebemos seu interesse!
+                  Recebemos sua solicitação!
                 </h3>
                 <p className="text-sm leading-relaxed text-[#6B7280]">
-                  Sua solicitação foi enviada para o nosso time. Avisaremos você assim que o acesso
-                  estiver disponível.
+                  Nossa equipe vai entrar em contato para agendar a demonstração da AdzHub.
                 </p>
                 <Button
                   type="button"
@@ -351,7 +350,7 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
                 </div>
               </div>
               <p id="waitlist-phone-hint" className="text-xs text-[#37489d]/60">
-                Usaremos este número apenas para falar sobre seu acesso.
+                Usaremos este número apenas para falar sobre a demonstração.
               </p>
             </motion.div>
 
@@ -442,7 +441,7 @@ export function WaitlistDialogProvider({ children }: { children: React.ReactNode
                     exit={{ opacity: 0, y: -4 }}
                     className="flex items-center gap-2"
                   >
-                    Quero entrar na lista
+                    Solicitar Demonstração
                     <Check className="h-4 w-4 transition-transform group-hover:scale-110" />
                   </motion.span>
                 )}

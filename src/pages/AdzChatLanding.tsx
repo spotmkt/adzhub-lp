@@ -177,7 +177,7 @@ export default function AdzChatLanding() {
 
           <div className="flex items-center justify-center gap-4 mb-5 flex-wrap">
             <StarBorder as="button" type="button" onClick={openWaitlist} color="hsl(224, 47%, 42%)" speed="8s">
-              Experimentar Grátis
+              Solicitar Demonstração
             </StarBorder>
             <a
               href="#agentes"
@@ -237,7 +237,7 @@ export default function AdzChatLanding() {
             </div>
             <div className="flex flex-col gap-2">
               <StarBorder as="button" type="button" onClick={openWaitlist} color="hsl(224, 47%, 42%)" speed="8s">
-                Começar Agora
+                Solicitar Demonstração
               </StarBorder>
               <p className="text-base font-medium text-[#6B7280]">sem cartão de crédito</p>
             </div>

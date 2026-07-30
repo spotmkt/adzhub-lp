@@ -33,7 +33,7 @@ export default function AdzHubLanding() {
         <title>AdzHub - Sua agência de marketing em uma única plataforma</title>
         <meta
           name="description"
-          content="Planejamento, execução e evolução contínua do marketing em uma única plataforma. Entre na lista de espera e comece grátis quando liberarmos o acesso."
+          content="Planejamento, execução e evolução contínua do marketing em uma única plataforma. Solicite uma demonstração e veja como a AdzHub organiza sua operação."
         />
         <meta property="og:title" content="AdzHub - Sua agência de marketing em uma única plataforma" />
         <meta
@@ -75,7 +75,7 @@ export default function AdzHubLanding() {
                 speed="8s"
                 className="w-full max-w-sm sm:w-auto text-center"
               >
-                Começar grátis
+                Solicitar Demonstração
               </StarBorder>
               <a
                 href="#como-funciona"
@@ -144,7 +144,7 @@ export default function AdzHubLanding() {
           </div>
           <div className="mt-10 flex justify-center">
             <StarBorder as="button" type="button" onClick={openWaitlist} color="hsl(224, 47%, 42%)" speed="8s">
-              Começar grátis
+              Solicitar Demonstração
             </StarBorder>
           </div>
         </div>
@@ -439,7 +439,7 @@ export default function AdzHubLanding() {
           <div className="mt-10 text-center">
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               <StarBorder as="button" type="button" onClick={openWaitlist} color="hsl(224, 47%, 42%)" speed="8s">
-                Começar grátis
+                Solicitar Demonstração
               </StarBorder>
               <a
                 href="https://app.adzhub.com.br"
@@ -618,13 +618,13 @@ export default function AdzHubLanding() {
           <div className="text-center mt-14 rounded-3xl border border-[#37489d]/15 bg-gradient-to-b from-[#37489d]/[0.06] to-white px-6 py-12 sm:py-14 max-w-3xl mx-auto">
             <p className="text-sm font-medium uppercase tracking-wider text-[#37489d] mb-3">Próximo passo</p>
             <h3 className="text-2xl sm:text-3xl font-semibold text-[#08080C] mb-6 leading-tight">
-              Entre na lista de espera
+              Solicite uma demonstração
             </h3>
             <p className="text-[#6B7280] mb-8 max-w-lg mx-auto">
-              Solicite um convite e acompanhe a liberação do acesso — abrimos em ondas conforme a capacidade da equipe.
+              Veja como a AdzHub centraliza planejamento, execução e evolução do marketing da sua empresa.
             </p>
             <StarBorder as="button" type="button" onClick={openWaitlist} color="hsl(224, 47%, 42%)" speed="8s">
-              Solicitar convite
+              Solicitar Demonstração
             </StarBorder>
           </div>
         </div>

@@ -86,7 +86,7 @@ export default function AdzHubLanding2() {
                 speed="8s"
                 className="w-full max-w-sm sm:w-auto text-center"
               >
-                Começar grátis
+                Solicitar Demonstração
               </StarBorder>
               <a
                 href="#como-funciona"
@@ -234,7 +234,7 @@ export default function AdzHubLanding2() {
           </div>
           <div className="mt-10 flex justify-center">
             <StarBorder as="button" type="button" onClick={openWaitlist} color="hsl(224, 47%, 42%)" speed="8s">
-              Começar grátis
+              Solicitar Demonstração
             </StarBorder>
           </div>
         </div>
@@ -486,7 +486,7 @@ export default function AdzHubLanding2() {
 
           <div className="mt-10 text-center">
             <StarBorder as="button" type="button" onClick={openWaitlist} color="hsl(224, 47%, 42%)" speed="8s">
-              Começar grátis
+              Solicitar Demonstração
             </StarBorder>
           </div>
         </div>
@@ -555,7 +555,7 @@ export default function AdzHubLanding2() {
             Comece com sua equipe de marketing na AdzHub
           </h2>
           <p className="text-[#6B7280] mb-8 leading-relaxed">
-            Entre na lista de espera — plataforma para acompanhar, operação para executar, sem montar departamento do
+            Solicite uma demonstração — plataforma para acompanhar, operação para executar, sem montar departamento do
             zero. Compare com a{" "}
             <Link to="/" className="text-[#37489d] underline">
               home atual
@@ -563,7 +563,7 @@ export default function AdzHubLanding2() {
             .
           </p>
           <StarBorder as="button" type="button" onClick={openWaitlist} color="hsl(224, 47%, 42%)" speed="8s">
-            Começar grátis
+            Solicitar Demonstração
           </StarBorder>
         </div>
       </section>

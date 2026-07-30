@@ -244,7 +244,7 @@ export const LandingNav = ({ activeSection = "home" }: LandingNavProps) => {
             onClick={openWaitlist}
             className="px-4 py-1.5 rounded-full bg-[#37489d] text-white text-sm hover:bg-[#37489d]/90 transition-colors font-medium"
           >
-            Começar grátis
+            Solicitar Demonstração
           </button>
         </div>
 
@@ -336,7 +336,7 @@ export const LandingNav = ({ activeSection = "home" }: LandingNavProps) => {
                 openWaitlist();
               }}
             >
-              Começar grátis
+              Solicitar Demonstração
             </button>
           </div>
         </div>
