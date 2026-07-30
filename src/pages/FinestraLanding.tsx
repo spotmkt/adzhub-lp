@@ -200,7 +200,7 @@ export default function FinestraLanding() {
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-medium leading-[110%] tracking-tight text-[#08080C] mb-5">
               Conteúdo criado conforme práticas de IA recomendadas pelo próprio Google
             </h2>
-            <p className="mx-auto max-w-2xl text-base leading-relaxed text-[#6B7280] sm:text-lg sm:leading-[170%]">
+            <p className="mx-auto hidden max-w-2xl text-base leading-relaxed text-[#6B7280] md:block md:text-lg md:leading-[170%]">
               A AdzHub utiliza uma metodologia proprietária baseada nas orientações oficiais do Google sobre o SEO
               vigente (2026) e otimização para recursos de IA generativa, não com “truques” de AEO/GEO inventados na
               internet.
