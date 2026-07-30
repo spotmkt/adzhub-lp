@@ -86,7 +86,7 @@ function buildBlocks(data) {
   return [
     {
       type: "header",
-      text: { type: "plain_text", text: "Nova solicitação · Lista de espera", emoji: true },
+      text: { type: "plain_text", text: "Nova solicitação de Demonstração", emoji: true },
     },
     {
       type: "section",
@@ -200,7 +200,7 @@ export default async function handler(req, res) {
     try {
       const posted = await slackApi("chat.postMessage", token, {
         channel: CHANNEL_ID,
-        text: `Nova lista de espera: ${data.nome} · ${data.email}${role === "entrepreneur" ? ` · ${site}` : ""}`,
+        text: `Nova solicitação de Demonstração: ${data.nome} · ${data.email}${role === "entrepreneur" ? ` · ${site}` : ""}`,
         blocks: buildBlocks(data),
       });
       if (!posted.ok) throw new Error(posted.error || "slack_post_failed");
