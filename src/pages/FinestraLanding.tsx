@@ -1,7 +1,7 @@
 import { useMemo, lazy, Suspense } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { Star, BarChart3, PenTool, Search, Sparkles, Zap, ArrowRight, Brain, Target, BookOpen, ShieldCheck, ExternalLink } from "lucide-react";
+import { Star, BarChart3, PenTool, Search, Sparkles, Zap, ArrowRight, Brain, BookOpen, ShieldCheck, ExternalLink } from "lucide-react";
 import { StarBorder } from "@/components/ui/star-border";
 import { testimonials } from "@/data/finestraData";
 import { LandingNav } from "@/components/LandingNav";
@@ -10,11 +10,19 @@ import { useWaitlistDialog } from "@/components/WaitlistDialogProvider";
 import { SeoInteractiveMotion } from "@/components/platform-motion";
 import { AiBrandLogos } from "@/components/AiBrandLogos";
 import { ArticleSeoAnalyzer } from "@/components/seo/ArticleSeoAnalyzer";
+import { ColorOrb } from "@/components/ui/ColorOrb";
 
 const TestimonialsColumn = lazy(() => import("@/components/ui/testimonials-columns-1").then(m => ({ default: m.TestimonialsColumn })));
 const Features = lazy(() => import("@/components/ui/features-6").then(m => ({ default: m.Features })));
 
 const LoadingFallback = () => <div className="w-full h-32 bg-muted/30 rounded-lg" />;
+
+const ADZ_ORB_TONES = {
+  base: "oklch(95% 0.05 330)",
+  accent1: "oklch(70% 0.18 50)",
+  accent2: "oklch(62% 0.24 280)",
+  accent3: "oklch(40% 0.15 265)",
+};
 
 export default function FinestraLanding() {
   const { openWaitlist } = useWaitlistDialog();
@@ -35,9 +43,9 @@ export default function FinestraLanding() {
       <LandingNav activeSection="conteudo" />
 
       {/* Hero Section */}
-      <section className="relative pt-20 pb-16 overflow-hidden bg-gradient-to-br from-[#D4EFF4]/30 via-[#F9C7B2]/20 to-[#F9B2D4]/20 rounded-[32px] mx-5 mt-[83px]">
-        <div className="relative max-w-5xl mx-auto px-8 z-10">
-          <div className="flex flex-col items-center text-center gap-6 max-w-[781px] mx-auto mb-10">
+      <section className="relative mx-3 mt-[75px] overflow-hidden rounded-[24px] bg-gradient-to-br from-[#D4EFF4]/30 via-[#F9C7B2]/20 to-[#F9B2D4]/20 pb-10 pt-12 sm:mx-5 sm:mt-[83px] sm:rounded-[32px] sm:pb-16 sm:pt-20">
+        <div className="relative z-10 mx-auto max-w-5xl px-5 sm:px-8">
+          <div className="mx-auto mb-8 flex max-w-[781px] flex-col items-center gap-4 text-center sm:mb-10 sm:gap-6">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/70 backdrop-blur-sm border border-[#37489d]/10 text-sm font-medium text-[#37489d]">
               <Search className="w-4 h-4 shrink-0" />
               Operação completa de SEO e GEO
@@ -47,15 +55,20 @@ export default function FinestraLanding() {
               <span className="text-[#37489d]">recomendações das AI</span>{" "}
               <AiBrandLogos className="relative top-[-0.12em]" />
             </h1>
-            <p className="text-lg text-[#08080C] opacity-80 max-w-[640px] leading-relaxed">
+            <p className="max-w-[640px] text-base leading-relaxed text-[#08080C]/80 sm:text-lg">
+              <span className="sm:hidden">
+                Estratégia, produção e publicação para posicionar sua marca no Google e nas IAs.
+              </span>
+              <span className="hidden sm:inline">
               Nós cuidamos da estratégia, da produção e da publicação. Você acompanha o posicionamento no Google e
               nas IAs pela plataforma.
+              </span>
             </p>
           </div>
 
           <div className="flex items-center justify-center mb-5">
             <StarBorder as="button" type="button" onClick={openWaitlist} color="hsl(224, 47%, 42%)" speed="8s">
-              Quero posicionar minha marca
+              Solicitar Demonstração
             </StarBorder>
           </div>
 
@@ -84,172 +97,102 @@ export default function FinestraLanding() {
         <Features />
       </Suspense>
 
-      {/* Como Funciona — operação nossa, acompanhamento seu */}
-      <section className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-8">
-          <div className="flex flex-col lg:flex-row justify-between items-end mb-16 gap-8">
-            <div className="max-w-[649px]">
-              <h2 className="text-4xl md:text-6xl lg:text-[72px] font-medium leading-[100%] tracking-tight text-[#08080C] mb-6">
-                Como nós posicionamos sua marca
-              </h2>
-              <p className="text-lg font-medium text-[#6B7280] leading-[170%]">
-                Três etapas da nossa operação. Você acompanha o andamento e os resultados na plataforma.
-              </p>
-            </div>
-            <div className="flex flex-col gap-2">
-              <StarBorder as="button" type="button" onClick={openWaitlist} color="hsl(224, 47%, 42%)" speed="8s">
-                Quero posicionar minha marca
-              </StarBorder>
-              <p className="text-base font-medium text-[#6B7280]">
-                Sem gerir um departamento inteiro
-              </p>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <div className="rounded-3xl bg-[#F6F6F6] p-8 md:p-10">
-              <div className="bg-white rounded-3xl p-6 mb-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 rounded-full bg-[#37489d] flex items-center justify-center text-white font-bold text-lg">1</div>
-                  <p className="text-lg font-semibold text-[#08080C]">Diagnóstico e estratégia</p>
-                </div>
-                <p className="text-sm text-[#6B7280]">
-                  Analisamos seu site, palavras-chave e concorrência. Definimos o mapa editorial de SEO e GEO para
-                  Google e IAs.
-                </p>
-              </div>
-              <div className="bg-white rounded-3xl p-4">
-                <div className="flex items-center gap-3">
-                  <Target className="w-5 h-5 text-[#37489d]" />
-                  <div>
-                    <p className="text-sm font-medium text-[#08080C]">Plano de posicionamento</p>
-                    <p className="text-xs text-[#6B7280]">Oportunidades + prioridades no GSC</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="rounded-3xl bg-[#F6F6F6] p-8 md:p-10">
-              <div className="bg-white rounded-3xl p-6 mb-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 rounded-full bg-[hsl(41,100%,58%)] flex items-center justify-center text-white font-bold text-lg">2</div>
-                  <p className="text-lg font-semibold text-[#08080C]">Produção pela nossa equipe</p>
-                </div>
-                <p className="text-sm text-[#6B7280]">
-                  Especialistas e IA produzem artigos, capas e metadados com o contexto da sua marca — prontos para
-                  publicar.
-                </p>
-              </div>
-              <div className="bg-white rounded-3xl p-4">
-                <div className="flex items-center gap-3">
-                  <PenTool className="w-5 h-5 text-[hsl(41,100%,58%)]" />
-                  <div>
-                    <p className="text-sm font-medium text-[#08080C]">Conteúdo na operação</p>
-                    <p className="text-xs text-[#6B7280]">SEO + GEO no mesmo fluxo</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="rounded-3xl bg-[#F6F6F6] p-8 md:p-10">
-              <div className="bg-white rounded-3xl p-6 mb-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 rounded-full bg-emerald-500 flex items-center justify-center text-white font-bold text-lg">3</div>
-                  <p className="text-lg font-semibold text-[#08080C]">Publicação e acompanhamento</p>
-                </div>
-                <p className="text-sm text-[#6B7280]">
-                  Publicamos no seu site e você acompanha desempenho, cliques e evolução do posicionamento na
-                  plataforma.
-                </p>
-              </div>
-              <div className="bg-white rounded-3xl p-4">
-                <div className="flex items-center gap-3">
-                  <BarChart3 className="w-5 h-5 text-emerald-500" />
-                  <div>
-                    <p className="text-sm font-medium text-[#08080C]">Resultado na plataforma</p>
-                    <p className="text-xs text-[#6B7280]">Métricas + próximo ciclo editorial</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Números Section */}
-      <section className="py-24 bg-[#F8F8F8] rounded-3xl mx-5">
-        <div className="max-w-7xl mx-auto px-8">
-          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-16 gap-8">
-            <h2 className="text-4xl md:text-6xl lg:text-[72px] font-medium leading-[100%] tracking-tight text-[#08080C] max-w-[600px]">
+      <section className="mx-3 rounded-3xl bg-[#F8F8F8] py-10 sm:mx-5 sm:py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-8">
+          <div className="mb-7 max-w-2xl sm:mb-12">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#37489d] sm:text-sm">
+              Diferenciais
+            </p>
+            <h2 className="text-3xl font-semibold leading-tight tracking-tight text-[#08080C] sm:text-5xl">
               Por que escolher a AdzHub
             </h2>
-            <p className="text-lg font-medium text-[#6B7280] leading-[150%] max-w-[420px]">
-              Não é ferramenta genérica de geração de blogs com AI. É{" "}
-              <strong className="font-semibold text-[#08080C]">operação de posicionamento</strong> com método, time e
-              plataforma para você acompanhar. Afinal, gestão de texto genérico qualquer um faz com o ChatGPT e uma
-              planilha.
+            <p className="mt-3 text-sm leading-relaxed text-[#6B7280] sm:mt-4 sm:text-lg">
+              Time, contexto e dados trabalhando no mesmo fluxo.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-white rounded-3xl p-6">
-              <div className="inline-flex items-center gap-2 px-2 py-1 rounded bg-[hsl(224,47%,42%)]/10 mb-4">
-                <div className="w-6 h-6 rounded-full bg-[hsl(224,47%,42%)]"></div>
-                <span className="text-base font-medium text-[hsl(224,47%,42%)]">Nós executamos</span>
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-3 md:gap-5">
+            <article className="group relative overflow-hidden rounded-2xl border border-[#37489d]/10 bg-white p-4 sm:rounded-3xl sm:p-6">
+              <span className="absolute right-4 top-3 text-4xl font-bold text-[#37489d]/[0.06] sm:right-6 sm:top-4 sm:text-6xl">
+                01
+              </span>
+              <div className="relative flex items-start gap-3 md:block">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#37489d] sm:h-12 sm:w-12 md:mb-6">
+                  <PenTool className="h-5 w-5 text-white sm:h-6 sm:w-6" />
+                </div>
+                <div>
+                  <h3 className="text-base font-semibold text-[#08080C] sm:text-xl">Execução ponta a ponta</h3>
+                  <p className="mt-1 text-sm leading-relaxed text-[#6B7280] sm:mt-2 sm:text-base">
+                    Planejamos, produzimos e publicamos. Você acompanha e aprova.
+                  </p>
+                </div>
               </div>
-              <div className="flex items-start mb-8">
-                <span className="text-6xl md:text-[100px] font-normal leading-[120%] tracking-tight text-[#1F2937]">1</span>
-                <span className="text-3xl md:text-[50px] font-medium leading-[120%] tracking-tight text-[#1F2937] pl-1 pt-4 md:pt-8">
-                  operação
-                </span>
+              <div className="mt-4 flex items-center gap-1.5 text-[11px] font-medium text-[#37489d] sm:mt-7 sm:text-xs">
+                {["Estratégia", "Produção", "Publicação"].map((step, index) => (
+                  <div key={step} className="contents">
+                    {index > 0 && <ArrowRight className="h-3 w-3 shrink-0 opacity-45" />}
+                    <span className="rounded-full bg-[#37489d]/8 px-2 py-1">{step}</span>
+                  </div>
+                ))}
               </div>
-              <p className="text-lg font-normal text-[#6B7280] leading-[150%]">
-                Estratégia, produção e publicação ficam com a gente. Você{" "}
-                <strong className="font-medium text-[#1F2937]">acompanha e aprova</strong> na plataforma.
-              </p>
-            </div>
+            </article>
 
-            <div className="bg-white rounded-3xl p-6">
-              <div className="inline-flex items-center gap-2 px-2 py-1 rounded bg-[hsl(41,100%,58%)]/10 mb-4">
-                <div className="w-6 h-6 rounded-full bg-[hsl(41,100%,58%)]"></div>
-                <span className="text-base font-medium text-[hsl(41,100%,58%)]">Marca &amp; SEO</span>
+            <article className="group relative overflow-hidden rounded-2xl border border-amber-200/60 bg-white p-4 sm:rounded-3xl sm:p-6">
+              <span className="absolute right-4 top-3 text-4xl font-bold text-amber-500/[0.08] sm:right-6 sm:top-4 sm:text-6xl">
+                02
+              </span>
+              <div className="relative flex items-start gap-3 md:block">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-500 sm:h-12 sm:w-12 md:mb-6">
+                  <ShieldCheck className="h-5 w-5 text-white sm:h-6 sm:w-6" />
+                </div>
+                <div>
+                  <h3 className="text-base font-semibold text-[#08080C] sm:text-xl">Conteúdo com contexto</h3>
+                  <p className="mt-1 text-sm leading-relaxed text-[#6B7280] sm:mt-2 sm:text-base">
+                    Sua marca, experiência e posicionamento orientam cada conteúdo.
+                  </p>
+                </div>
               </div>
-              <div className="flex items-start mb-8">
-                <span className="text-6xl md:text-[100px] font-normal leading-[120%] tracking-tight text-[#1F2937]">0</span>
-                <span className="text-3xl md:text-[40px] font-medium leading-[120%] tracking-tight text-[#1F2937] pl-1 pt-4 md:pt-10">
-                  genérico
-                </span>
+              <div className="mt-4 flex flex-wrap gap-1.5 text-[11px] font-medium text-amber-800 sm:mt-7 sm:text-xs">
+                <span className="rounded-full bg-amber-100 px-2.5 py-1">Marca</span>
+                <span className="rounded-full bg-amber-100 px-2.5 py-1">SEO</span>
+                <span className="rounded-full bg-amber-100 px-2.5 py-1">GEO</span>
               </div>
-              <p className="text-lg font-normal text-[#6B7280] leading-[150%]">
-                Prompt em ferramenta aberta não guarda seu posicionamento. Aqui a operação trabalha com o{" "}
-                <strong className="font-medium text-[#1F2937]">contexto da sua empresa</strong> e regras de SEO e GEO
-                para Google e IAs.
-              </p>
-            </div>
+            </article>
 
-            <div className="bg-white rounded-3xl p-6">
-              <div className="inline-flex items-center gap-2 px-2 py-1 rounded bg-[hsl(224,47%,42%)]/10 mb-4">
-                <div className="w-6 h-6 rounded-full bg-[hsl(224,47%,42%)]"></div>
-                <span className="text-base font-medium text-[hsl(224,47%,42%)]">Resultado mensurável</span>
+            <article className="group relative overflow-hidden rounded-2xl border border-emerald-200/70 bg-white p-4 sm:rounded-3xl sm:p-6">
+              <span className="absolute right-4 top-3 text-4xl font-bold text-emerald-500/[0.08] sm:right-6 sm:top-4 sm:text-6xl">
+                03
+              </span>
+              <div className="relative flex items-start gap-3 md:block">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500 sm:h-12 sm:w-12 md:mb-6">
+                  <BarChart3 className="h-5 w-5 text-white sm:h-6 sm:w-6" />
+                </div>
+                <div>
+                  <h3 className="text-base font-semibold text-[#08080C] sm:text-xl">Evolução visível</h3>
+                  <p className="mt-1 text-sm leading-relaxed text-[#6B7280] sm:mt-2 sm:text-base">
+                    Cliques, impressões e posicionamento em um único painel.
+                  </p>
+                </div>
               </div>
-              <div className="flex items-start mb-8">
-                <span className="text-6xl md:text-[100px] font-normal leading-[120%] tracking-tight text-[#1F2937]">100</span>
-                <span className="text-3xl md:text-[40px] font-medium leading-[120%] tracking-tight text-[#1F2937]">%</span>
+              <div className="mt-4 flex h-7 items-end gap-1 rounded-xl bg-emerald-50 px-3 pb-2 pt-1 sm:mt-7 sm:h-9">
+                {[28, 42, 38, 58, 72, 88].map((height, index) => (
+                  <span
+                    key={index}
+                    className="flex-1 rounded-sm bg-emerald-500/70"
+                    style={{ height: `${height}%` }}
+                  />
+                ))}
               </div>
-              <p className="text-lg font-normal text-[#6B7280] leading-[150%]">
-                Você vê desempenho e evolução{" "}
-                <strong className="font-medium text-[#1F2937]">no mesmo lugar</strong> em que a operação acontece.
-                Ferramenta + execução, sem waitlist de produto solto.
-              </p>
-            </div>
+            </article>
           </div>
         </div>
       </section>
 
       {/* Guia oficial Google — SEO + IA */}
-      <section className="py-20 sm:py-24 bg-white">
-        <div className="max-w-5xl mx-auto px-8">
-          <div className="text-center mb-12">
+      <section className="bg-white py-14 md:py-24">
+        <div className="mx-auto max-w-5xl px-5 sm:px-8">
+          <div className="mb-8 text-center sm:mb-12">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#37489d]/5 border border-[#37489d]/10 text-sm font-medium text-[#37489d] mb-6">
               <ShieldCheck className="w-4 h-4" />
               Documentação oficial do Google
@@ -257,14 +200,14 @@ export default function FinestraLanding() {
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-medium leading-[110%] tracking-tight text-[#08080C] mb-5">
               Conteúdo criado conforme práticas de IA recomendadas pelo próprio Google
             </h2>
-            <p className="text-lg text-[#6B7280] leading-[170%] max-w-2xl mx-auto">
+            <p className="mx-auto max-w-2xl text-base leading-relaxed text-[#6B7280] sm:text-lg sm:leading-[170%]">
               A AdzHub utiliza uma metodologia proprietária baseada nas orientações oficiais do Google sobre o SEO
               vigente (2026) e otimização para recursos de IA generativa, não com “truques” de AEO/GEO inventados na
               internet.
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-3 gap-4 mb-10">
+          <div className="mb-10 hidden grid-cols-3 gap-4 md:grid">
             <div className="rounded-2xl border border-[#08080C]/8 bg-[#F8F8F8] p-5">
               <BookOpen className="w-6 h-6 text-[#37489d] mb-3" />
               <h3 className="text-base font-semibold text-[#08080C] mb-2">SEO continua valendo</h3>
@@ -291,7 +234,7 @@ export default function FinestraLanding() {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-[#37489d]/15 bg-[#37489d]/[0.04] p-6 sm:p-8 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="hidden rounded-2xl border border-[#37489d]/15 bg-[#37489d]/[0.04] p-6 md:flex md:flex-row md:items-center md:justify-between md:gap-5 md:p-8">
             <div className="max-w-xl">
               <p className="text-sm font-medium text-[#37489d] mb-1">Fonte oficial</p>
               <p className="text-base text-[#08080C] leading-relaxed">
@@ -325,7 +268,7 @@ export default function FinestraLanding() {
       </section>
 
       {/* Avaliar artigo — AdzSEO Analytics (fluxo real) */}
-      <section id="avaliar-artigo" className="py-20 sm:py-24 bg-[#F8F8F8] scroll-mt-28">
+      <section id="avaliar-artigo" className="scroll-mt-28 bg-[#F8F8F8] py-14 sm:py-24">
         <div className="max-w-3xl mx-auto px-5 sm:px-8">
           <div className="text-center mb-10">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[#37489d]/10 text-sm font-medium text-[#37489d] mb-6">
@@ -344,22 +287,22 @@ export default function FinestraLanding() {
       </section>
 
       {/* Depoimentos Section */}
-      <section className="py-24 bg-white relative">
-        <div className="container z-10 mx-auto">
-          <div className="flex flex-col items-center justify-center max-w-[600px] mx-auto mb-4">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#37489d]/5 border border-[#37489d]/10 text-sm font-medium text-[#37489d] mb-6">
+      <section className="relative bg-white py-14 sm:py-20">
+        <div className="container z-10 mx-auto px-5 sm:px-8">
+          <div className="mx-auto mb-2 flex max-w-[600px] flex-col items-center justify-center">
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#37489d]/10 bg-[#37489d]/5 px-4 py-1.5 text-sm font-medium text-[#37489d] sm:mb-6">
               Depoimentos
             </div>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-center text-[#08080C] mb-4">
+            <h2 className="mb-2 text-center text-3xl font-bold tracking-tight text-[#08080C] sm:mb-4 md:text-5xl">
               O que nossos clientes dizem
             </h2>
-            <p className="text-center text-[#6B7280] text-lg">
+            <p className="hidden text-center text-lg text-[#6B7280] sm:block">
               Empresas que já operam posicionamento orgânico com a AdzHub — método, conteúdo e acompanhamento.
             </p>
           </div>
 
           <Suspense fallback={<LoadingFallback />}>
-            <div className="flex justify-center gap-6 mt-10 [mask-image:linear-gradient(to_bottom,transparent,black_25%,black_75%,transparent)] max-h-[740px] overflow-hidden">
+            <div className="mt-5 flex max-h-[360px] justify-center gap-6 overflow-hidden [mask-image:linear-gradient(to_bottom,transparent,black_18%,black_82%,transparent)] sm:mt-8 sm:max-h-[480px] lg:max-h-[520px]">
               <TestimonialsColumn testimonials={firstColumn} duration={15} />
               <TestimonialsColumn testimonials={secondColumn} className="hidden md:block" duration={19} />
               <TestimonialsColumn testimonials={thirdColumn} className="hidden lg:block" duration={17} />
@@ -369,7 +312,7 @@ export default function FinestraLanding() {
       </section>
 
       {/* Parte do Ecossistema AdzHub */}
-      <section className="py-24 bg-[#F8F8F8] rounded-3xl mx-5">
+      <section className="mx-5 hidden rounded-3xl bg-[#F8F8F8] py-24 md:block">
         <div className="max-w-5xl mx-auto px-8">
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[#37489d]/10 text-sm font-medium text-[#37489d] mb-6">
@@ -414,7 +357,18 @@ export default function FinestraLanding() {
         </div>
       </section>
 
-      <Footer />
+      <Footer ctaLabel="Solicitar Demonstração" />
+
+      <div className="pointer-events-none fixed inset-x-0 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-50 flex justify-center px-4 md:hidden">
+        <button
+          type="button"
+          onClick={openWaitlist}
+          className="pointer-events-auto inline-flex h-14 items-center justify-center gap-3 rounded-full bg-[#37489d] pl-4 pr-7 text-base font-semibold text-white shadow-[0_10px_30px_-8px_rgba(55,72,157,0.55)] transition-colors active:bg-[#2f3d86]"
+        >
+          <ColorOrb dimension="28px" tones={ADZ_ORB_TONES} />
+          Solicitar Demonstração
+        </button>
+      </div>
     </div>
   );
 }

@@ -25,9 +25,10 @@ const SOCIAL_LINKS = [
 
 interface FooterProps {
   showCta?: boolean;
+  ctaLabel?: string;
 }
 
-export function Footer({ showCta = true }: FooterProps) {
+export function Footer({ showCta = true, ctaLabel = "Começar grátis" }: FooterProps) {
   const location = useLocation();
   const { openWaitlist } = useWaitlistDialog();
 
@@ -49,20 +50,14 @@ export function Footer({ showCta = true }: FooterProps) {
                 Planejamento, execução e evolução contínua do marketing em uma única plataforma. Ideal para donos de PMEs que
                 querem estrutura sem fragmentar fornecedores.
               </p>
-              <div className="flex flex-col sm:flex-row flex-wrap gap-3">
+              <div>
                 <button
                   type="button"
                   onClick={openWaitlist}
                   className="inline-flex h-11 items-center justify-center rounded-xl bg-[#37489d] px-8 py-2 font-medium text-white hover:bg-[#37489d]/90 transition-colors"
                 >
-                  Começar grátis
+                  {ctaLabel}
                 </button>
-                <a
-                  href="https://app.adzhub.com.br"
-                  className="inline-flex h-11 items-center justify-center rounded-xl border border-[#37489d]/25 bg-white px-8 py-2 font-medium text-[#37489d] hover:bg-[#37489d]/5 transition-colors"
-                >
-                  Acessar plataforma
-                </a>
               </div>
             </div>
           </div>

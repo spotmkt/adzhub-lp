@@ -1,12 +1,12 @@
-import { Cpu, Lock, Sparkles, Zap, PenTool, Search, Calendar, BarChart3 } from 'lucide-react'
+import { PenTool, Search, Calendar, BarChart3 } from 'lucide-react'
 
 export function Features() {
     return (
-        <section className="pt-8 pb-16 md:pt-12 md:pb-32">
-            <div className="mx-auto max-w-5xl space-y-12 px-6">
+        <section className="pb-12 pt-6 md:pb-24 md:pt-12">
+            <div className="mx-auto max-w-5xl space-y-6 px-6 sm:space-y-12">
                 <div className="relative z-10 grid items-center gap-4 md:grid-cols-2 md:gap-12">
-                    <h2 className="text-4xl font-semibold text-[#08080C]">Na mesma plataforma</h2>
-                    <p className="max-w-sm sm:ml-auto text-[#6B7280]">Nós produzimos e publicamos com método. Você acompanha estratégia, conteúdo e resultados na AdzHub — ferramenta e operação juntas.</p>
+                    <h2 className="text-4xl font-semibold text-[#08080C]">Ferramenta + execução no mesmo lugar</h2>
+                    <p className="hidden max-w-sm text-[#6B7280] sm:ml-auto sm:block">Nós produzimos e publicamos com método. Você acompanha estratégia, conteúdo e resultados na AdzHub — ferramenta e operação juntas.</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -40,36 +40,6 @@ export function Features() {
                     </div>
                 </div>
 
-                <div className="relative mx-auto grid grid-cols-2 gap-x-3 gap-y-6 sm:gap-8 lg:grid-cols-4">
-                    <div className="space-y-3">
-                        <div className="flex items-center gap-2">
-                            <Zap className="size-4 text-[hsl(224,47%,42%)]" />
-                            <h3 className="text-sm font-medium text-[#08080C]">Nós executamos</h3>
-                        </div>
-                        <p className="text-[#6B7280] text-sm">A operação é nossa. Você acompanha e decide o rumo na plataforma.</p>
-                    </div>
-                    <div className="space-y-2">
-                        <div className="flex items-center gap-2">
-                            <Cpu className="size-4 text-[hsl(224,47%,42%)]" />
-                            <h3 className="text-sm font-medium text-[#08080C]">Método</h3>
-                        </div>
-                        <p className="text-[#6B7280] text-sm">SEO, GEO, publicação e leitura de dados no mesmo fluxo operacional.</p>
-                    </div>
-                    <div className="space-y-2">
-                        <div className="flex items-center gap-2">
-                            <Lock className="size-4 text-[hsl(224,47%,42%)]" />
-                            <h3 className="text-sm font-medium text-[#08080C]">Contexto da marca</h3>
-                        </div>
-                        <p className="text-[#6B7280] text-sm">Conteúdo alinhado ao posicionamento da empresa, sem genérico de chat aberto.</p>
-                    </div>
-                    <div className="space-y-2">
-                        <div className="flex items-center gap-2">
-                            <Sparkles className="size-4 text-[hsl(224,47%,42%)]" />
-                            <h3 className="text-sm font-medium text-[#08080C]">Ferramenta + Especialistas</h3>
-                        </div>
-                        <p className="text-[#6B7280] text-sm">Plataforma para acompanhar; especialistas e IA para executar.</p>
-                    </div>
-                </div>
             </div>
         </section>
     )

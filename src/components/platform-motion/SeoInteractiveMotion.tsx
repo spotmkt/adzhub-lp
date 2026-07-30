@@ -154,7 +154,7 @@ export function SeoInteractiveMotion({ embedded = false, id }: SeoInteractiveMot
               Na operação
             </p>
             <h2 className="text-2xl sm:text-3xl font-bold text-[#08080C]">
-              Ferramenta + execução no mesmo lugar
+              Na mesma plataforma
             </h2>
             <p className="text-sm text-[#6B7280] mt-3 leading-relaxed">
               Search Console, pauta, postagens e calendário — nós operamos, você acompanha.
@@ -166,16 +166,6 @@ export function SeoInteractiveMotion({ embedded = false, id }: SeoInteractiveMot
           <div>
             {!embedded && (
               <p className="text-xs font-medium text-[#37489d] mb-6 lg:hidden">Toque para explorar</p>
-            )}
-            {embedded && (
-              <div className="mb-6">
-                <p className="text-sm font-semibold text-[#37489d] uppercase tracking-wider mb-2">
-                  Na operação
-                </p>
-                <h2 className="text-2xl sm:text-3xl font-bold text-[#08080C]">
-                  Ferramenta + execução no mesmo lugar
-                </h2>
-              </div>
             )}
             <div className="flex flex-col gap-1">
               {TABS.map((t, i) => {
