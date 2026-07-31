@@ -411,6 +411,9 @@ export default function Vagas() {
       if (!selectedCityId) {
         throw new Error("Selecione sua cidade na lista de municípios do IBGE.");
       }
+      if (!form.pretensao.trim()) {
+        throw new Error("Informe sua pretensão de remuneração.");
+      }
 
       let curriculoBase64: string | undefined;
       let curriculoNome: string | undefined;
@@ -1325,9 +1328,17 @@ export default function Vagas() {
                   </div>
                   <div>
                     <label htmlFor="pretensao" className={labelCls}>
-                      Pretensão de remuneração <span className="text-[#9CA3AF] font-normal">(opcional)</span>
+                      Pretensão de remuneração *
                     </label>
-                    <input id="pretensao" type="text" placeholder="Ex.: R$ 3.000 a R$ 5.000" value={form.pretensao} onChange={(e) => update("pretensao", e.target.value)} className={inputCls} />
+                    <input
+                      id="pretensao"
+                      type="text"
+                      required
+                      placeholder="Ex.: R$ 3.000 a R$ 5.000"
+                      value={form.pretensao}
+                      onChange={(e) => update("pretensao", e.target.value)}
+                      className={inputCls}
+                    />
                   </div>
                 </div>
 

@@ -43,9 +43,10 @@ const VALIDATION_MESSAGES = {
   invalid_pdf_signature: "O arquivo enviado não é um PDF válido.",
   invalid_pdf: "Não foi possível ler o PDF enviado. Tente outro arquivo.",
   lgpd_required: "É necessário autorizar o uso dos dados (LGPD) para continuar.",
+  pretensao_required: "Informe sua pretensão de remuneração.",
 };
 
-const REQUIRED = ["nome", "whatsapp", "cidade", "nivel", "disponibilidade", "ia"];
+const REQUIRED = ["nome", "whatsapp", "cidade", "nivel", "pretensao", "disponibilidade", "ia"];
 
 function json(res, status, body) {
   res.statusCode = status;
@@ -278,7 +279,9 @@ export default async function handler(req, res) {
   }
 
   for (const key of REQUIRED) {
-    if (!String(payload[key] || "").trim()) return fail(res, "invalid_json");
+    if (!String(payload[key] || "").trim()) {
+      return fail(res, key === "pretensao" ? "pretensao_required" : "invalid_json");
+    }
   }
   if (!payload.lgpd) return fail(res, "lgpd_required");
 
