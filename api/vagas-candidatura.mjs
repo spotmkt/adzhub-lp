@@ -44,9 +44,10 @@ const VALIDATION_MESSAGES = {
   invalid_pdf: "Não foi possível ler o PDF enviado. Tente outro arquivo.",
   lgpd_required: "É necessário autorizar o uso dos dados (LGPD) para continuar.",
   pretensao_required: "Informe sua pretensão de remuneração.",
+  motivo_required: "Conte por que você é o candidato certo para a AdzHub.",
 };
 
-const REQUIRED = ["nome", "whatsapp", "cidade", "nivel", "pretensao", "disponibilidade", "ia"];
+const REQUIRED = ["nome", "whatsapp", "cidade", "nivel", "pretensao", "disponibilidade", "ia", "motivo"];
 
 function json(res, status, body) {
   res.statusCode = status;
@@ -136,6 +137,13 @@ function buildBlocks(data) {
       },
     },
     {
+      type: "section",
+      text: {
+        type: "mrkdwn",
+        text: `*Por que é o candidato certo para a AdzHub*\n${String(data.motivo).slice(0, 2800)}`,
+      },
+    },
+    {
       type: "context",
       elements: [
         {
@@ -170,6 +178,8 @@ function buildEmailHtml(data) {
     <table style="border-collapse:collapse;width:100%;background:#FAFAFA;border-radius:8px">${rows}</table>
     <h3 style="color:#08080C;margin-top:20px;font-size:15px">Como usa IA no desenvolvimento</h3>
     <p style="color:#374151;font-size:14px;line-height:1.6;white-space:pre-wrap">${escapeHtml(data.ia)}</p>
+    <h3 style="color:#08080C;margin-top:20px;font-size:15px">Por que é o candidato certo para a AdzHub</h3>
+    <p style="color:#374151;font-size:14px;line-height:1.6;white-space:pre-wrap">${escapeHtml(data.motivo)}</p>
     <p style="color:#9CA3AF;font-size:12px;margin-top:16px">LGPD: ${
       data.lgpd ? "autorizado" : "não marcado"
     }${data.curriculoNome ? " · Currículo anexado no Slack (#vaga-dev)" : ""}</p>
@@ -221,6 +231,7 @@ async function saveToSupabase(data, extra) {
       p_pretensao: data.pretensao || null,
       p_disponibilidade: data.disponibilidade,
       p_ia: data.ia,
+      p_motivo: data.motivo,
       p_lgpd: data.lgpd,
       p_curriculo_nome: data.curriculoNome || null,
       p_slack_ts: extra.slackTs ?? null,
@@ -280,7 +291,9 @@ export default async function handler(req, res) {
 
   for (const key of REQUIRED) {
     if (!String(payload[key] || "").trim()) {
-      return fail(res, key === "pretensao" ? "pretensao_required" : "invalid_json");
+      if (key === "pretensao") return fail(res, "pretensao_required");
+      if (key === "motivo") return fail(res, "motivo_required");
+      return fail(res, "invalid_json");
     }
   }
   if (!payload.lgpd) return fail(res, "lgpd_required");
@@ -329,6 +342,7 @@ export default async function handler(req, res) {
     pretensao: String(payload.pretensao || "").trim(),
     disponibilidade: String(payload.disponibilidade).trim(),
     ia: String(payload.ia).trim(),
+    motivo: String(payload.motivo).trim(),
     lgpd: Boolean(payload.lgpd),
     curriculoNome: pdfName,
   };

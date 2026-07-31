@@ -185,6 +185,7 @@ type FormFields = {
   pretensao: string;
   disponibilidade: string;
   ia: string;
+  motivo: string;
   lgpd: boolean;
 };
 
@@ -198,6 +199,7 @@ const emptyForm: FormFields = {
   pretensao: "",
   disponibilidade: "",
   ia: "",
+  motivo: "",
   lgpd: false,
 };
 
@@ -413,6 +415,9 @@ export default function Vagas() {
       }
       if (!form.pretensao.trim()) {
         throw new Error("Informe sua pretensão de remuneração.");
+      }
+      if (!form.motivo.trim()) {
+        throw new Error("Conte por que você é o candidato certo para a AdzHub.");
       }
 
       let curriculoBase64: string | undefined;
@@ -1371,6 +1376,23 @@ export default function Vagas() {
                     placeholder="Ferramentas, fluxos e como a IA acelera sua construção…"
                     value={form.ia}
                     onChange={(e) => update("ia", e.target.value)}
+                    className={`${inputCls} resize-none`}
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="motivo" className={labelCls}>
+                    <span className="flex items-center gap-1.5">
+                      <MessageSquare className="w-3.5 h-3.5" /> Por que você é o candidato certo para a AdzHub? *
+                    </span>
+                  </label>
+                  <textarea
+                    id="motivo"
+                    required
+                    rows={4}
+                    placeholder="Conte o que te diferencia e por que faz sentido trabalhar na AdzHub…"
+                    value={form.motivo}
+                    onChange={(e) => update("motivo", e.target.value)}
                     className={`${inputCls} resize-none`}
                   />
                 </div>
